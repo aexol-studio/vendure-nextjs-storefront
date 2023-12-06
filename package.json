@@ -1,0 +1,51 @@
+{
+    "name": "vendure-nextjs-storefront",
+    "version": "0.0.1",
+    "private": true,
+    "author": {"email": "aexol@aexol.com","name": "aexol","url": "https://aexol.com"},
+    "scripts": {
+        "dev": "next dev",
+        "build": "next build && next export",
+        "start": "next start",
+        "zeus": "zeus http://localhost:3000/shop-api ./src --td",
+        "toc": "i18next-resources-for-ts toc -i ./public/locales/en -o ./src/@types/resources.ts",
+        "interface": "i18next-resources-for-ts interface -i ./public/locales/en -o ./src/@types/resources.d.ts",
+        "lint": "next lint"
+    },
+    "dependencies": {
+        "@emotion/core": "^11.0.0",
+        "@emotion/css": "^11.11.2",
+        "@emotion/react": "^11.11.1",
+        "@emotion/styled": "^11.11.0",
+        "@next/font": "^14.0.3",
+        "country-flag-icons": "^1.5.9",
+        "framer-motion": "^10.16.14",
+        "gray-matter": "^4.0.3",
+        "i18next": "^23.7.7",
+        "i18next-resources-for-ts": "^1.4.0",
+        "next": "^14.0.3",
+        "next-i18next": "^15.0.0",
+        "next-language-detector": "^1.1.0",
+        "react": "^18.2.0",
+        "react-dom": "^18.2.0",
+        "react-i18next": "^13.5.0",
+        "react-laag": "^2.0.5",
+        "remark": "^15.0.1",
+        "remark-html": "^16.0.1",
+        "unstated-next": "^1.1.0"
+    },
+    "devDependencies": {
+        "@types/node": "^20.10.2",
+        "@types/prettier": "^2.7.3",
+        "@types/react": "^18.2.41",
+        "@typescript-eslint/eslint-plugin": "^6.13.1",
+        "@typescript-eslint/parser": "^6.13.1",
+        "eslint": "^8.55.0",
+        "eslint-config-prettier": "^9.1.0",
+        "eslint-plugin-prettier": "^5.0.1",
+        "eslint-plugin-react": "^7.33.2",
+        "graphql-zeus": "^5.3.2",
+        "prettier": "^3.1.0",
+        "typescript": "^5.3.2"
+    }
+}

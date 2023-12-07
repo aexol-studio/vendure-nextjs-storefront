@@ -33,6 +33,7 @@ export type BaseRemUnit = `${BaseUnit}rem`;
 export interface BaseFlexParams {
     column?: boolean;
     reverse?: boolean;
+    flexWrap?: boolean;
     itemsCenter?: boolean;
     justifyEnd?: boolean;
     justifyBetween?: boolean;

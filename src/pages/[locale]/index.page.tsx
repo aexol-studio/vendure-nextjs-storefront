@@ -30,7 +30,11 @@ export const Index: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = p
 const getStaticProps = async (ctx: ContextModel) => {
     const products = await storefrontApiQuery({
         products: [
-            { options: {} },
+            {
+                options: {
+                    take: 12,
+                },
+            },
             {
                 items: ProductTileSelector,
             },

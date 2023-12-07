@@ -45,6 +45,7 @@ const Main = styled(Stack)`
     position: fixed;
     background: ${p => p.theme.gray(0)};
     z-index: 1;
+    border-bottom: 1px solid ${p => p.theme.gray(100)};
     svg {
         max-height: 4rem;
     }

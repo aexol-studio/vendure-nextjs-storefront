@@ -1,4 +1,3 @@
-import { useLayer, Arrow } from 'react-laag';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useState } from 'react';
 import styled from '@emotion/styled';
@@ -6,66 +5,98 @@ import { TH2, TP } from '@/src/components/atoms/TypoGraphy';
 import { Stack } from '@/src/components/atoms/Stack';
 import { Button, IconButton } from '@/src/components/molecules/Button';
 import { ActiveOrderType } from '@/src/graphql/selectors';
-import { ShoppingCartIcon } from 'lucide-react';
+import { ShoppingCartIcon, X } from 'lucide-react';
+import { ContentContainer } from '@/src/components/atoms/ContentContainer';
+import { QuantityCounter } from '@/src/components/molecules/QuantityCounter';
+import { useCart } from '@/src/state/cart';
+import { useTranslation } from 'react-i18next';
 export const Cart = ({ activeOrder }: { activeOrder?: ActiveOrderType }) => {
+    const { setItemQuantityInCart } = useCart();
+    const { t } = useTranslation('common');
     const [isOpen, setOpen] = useState(false);
 
     // helper function to close the menu
     const close = () => {
-        // setOpen(false);
+        setOpen(false);
     };
-
-    const { renderLayer, triggerProps, layerProps, arrowProps } = useLayer({
-        isOpen,
-        onOutsideClick: close, // close the menu when the user clicks outside
-        onDisappear: close, // close the menu when the menu gets scrolled out of sight
-        overflowContainer: false, // keep the menu positioned inside the container
-        auto: true, // automatically find the best placement
-        placement: 'bottom-center', // we prefer to place the menu "top-end"
-        triggerOffset: 12, // keep some distance to the trigger
-        containerOffset: 16, // give the menu some room to breath relative to the container
-        arrowOffset: 16, // let the arrow have some room to breath also
-    });
-
     // Again, we're using framer-motion for the transition effect
     return (
         <>
-            <IconButton {...triggerProps} onClick={() => setOpen(!isOpen)}>
+            <IconButton onClick={() => setOpen(!isOpen)}>
                 <ShoppingCartIcon />
             </IconButton>
-            {renderLayer(
-                <AnimatePresence>
-                    {isOpen && (
-                        <CartComponentMain
-                            {...layerProps}
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            exit={{ opacity: 0 }}>
-                            <Stack column gap="2rem">
-                                <TH2>Cart</TH2>
-                                {activeOrder?.lines.map(l => (
-                                    <Stack gap="1rem" key={l.id}>
-                                        <TP>{l.productVariant.name}</TP>
-                                        <TP>{l.quantity}</TP>
-                                        <TP>{l.linePriceWithTax}</TP>
+            <AnimatePresence>
+                {isOpen && (
+                    <CartComponentMain initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+                        <ContentContainer>
+                            <CartContainer column gap="2rem">
+                                <Stack justifyBetween>
+                                    <TH2>{t('cart')}</TH2>
+                                    <IconButton onClick={close}>
+                                        <X />
+                                    </IconButton>
+                                </Stack>
+                                <Stack gap="12rem">
+                                    <Stack column>
+                                        {activeOrder?.lines.map(l => (
+                                            <CartRow gap="12rem" key={l.id}>
+                                                <CartImage src={l.featuredAsset?.preview} />
+                                                <Stack column gap="2.5rem">
+                                                    <TP weight={500} size="1.75rem">
+                                                        {l.productVariant.name}
+                                                    </TP>
+                                                    <QuantityCounter
+                                                        v={l.quantity}
+                                                        onChange={v => setItemQuantityInCart(l.id, v)}
+                                                    />
+                                                </Stack>
+                                                <TP>{l.linePriceWithTax}</TP>
+                                            </CartRow>
+                                        ))}
                                     </Stack>
-                                ))}
-                                <Button>Checkout</Button>
-                                <Arrow {...arrowProps} />
-                            </Stack>
-                        </CartComponentMain>
-                    )}
-                </AnimatePresence>,
-            )}
+                                    <CartSummary column gap="3rem">
+                                        <TP size="2.5rem" weight={600}>
+                                            {t('cart-summary')}
+                                        </TP>
+                                        <TP>{activeOrder?.total}</TP>
+                                        <Button>Checkout</Button>
+                                    </CartSummary>
+                                </Stack>
+                            </CartContainer>
+                        </ContentContainer>
+                    </CartComponentMain>
+                )}
+            </AnimatePresence>
         </>
     );
 };
+const CartContainer = styled(Stack)`
+    padding: 4rem 0;
+`;
+const CartSummary = styled(Stack)`
+    padding: 3rem;
+    border: 1px solid ${p => p.theme.gray(100)};
+`;
+const CartRow = styled(Stack)`
+    padding: 3rem 0;
+    border-bottom: 1px solid ${p => p.theme.gray(50)};
+`;
+const CartImage = styled.img`
+    object-fit: cover;
+    width: 12.6rem;
+    height: 17.5rem;
+    border: 1px solid ${p => p.theme.gray(200)};
+`;
 
-const CartComponentMain = styled(motion.ul)`
-    padding: 2rem;
-    border-radius: ${p => p.theme.borderRadius};
+const CartComponentMain = styled(motion.div)`
+    position: absolute;
     z-index: 1;
     opacity: 0;
+    inset: 0;
+    top: 8.6rem;
+    height: calc(100vh - 8.6rem + 12px);
+    overflow-y: auto;
+    width: 100%;
     border: 1px solid ${p => p.theme.accent(50)};
     background: ${p => p.theme.gray(0)};
 `;

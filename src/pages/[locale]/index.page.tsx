@@ -7,7 +7,7 @@ import { storefrontApiQuery } from '@/src/graphql/client';
 import { ProductSearchSelector } from '@/src/graphql/selectors';
 import { ProductTile } from '@/src/components/molecules/ProductTile';
 import { ContentContainer } from '@/src/components/atoms/ContentContainer';
-import { TH1 } from '@/src/components/atoms/TypoGraphy';
+import { TCategory, TH1 } from '@/src/components/atoms/TypoGraphy';
 import { getCollections } from '@/src/graphql/sharedQueries';
 import { MainGrid } from '@/src/components/atoms/MainGrid';
 import { Hero } from '@/src/components/organisms/Hero';
@@ -28,7 +28,7 @@ export const Index: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = p
                 />
                 <ContentContainer>
                     <Stack gap="4rem" column>
-                        <TH1>{t('most-wanted')}</TH1>
+                        <TCategory>{t('most-wanted')}</TCategory>
                         <MainGrid>
                             {props.products.map(p => {
                                 return <ProductTile collections={props.collections} product={p} key={p.slug} />;

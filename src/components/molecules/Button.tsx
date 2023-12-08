@@ -15,7 +15,7 @@ export const FullWidthButton = styled(Button)`
     width: 100%;
 `;
 
-export const IconButton = styled.button`
+export const IconButton = styled.button<{ isActive?: boolean }>`
     color: ${p => p.theme.gray(900)};
     border: 0;
     border-radius: 100%;
@@ -30,5 +30,8 @@ export const IconButton = styled.button`
     svg {
         width: 2rem;
         height: 2rem;
+    }
+    :hover {
+        box-shadow: none;
     }
 `;

@@ -3,5 +3,7 @@
     "search-products":"Search products",
     "made-by":"Made by VendureAgency.com 2023",
     "select-category":"Select category",
-    "filters":"Filters"
+    "filters":"Filters",
+    "cart":"Cart",
+    "cart-summary":"Cart summary"
 }

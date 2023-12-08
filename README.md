@@ -17,6 +17,7 @@ Just remember you need to have the Vendure store running locally to use this sto
   - [Zeus](#zeus)
   - [Page naming convention](#page-naming-convention)
   - [Internationalization with i18next](#internationalization-with-i18next)
+  - [Styles](#styles)
   - [Useful Links](#useful-links)
   - [Who?](#who)
   - [Roadmap](#roadmap)
@@ -45,6 +46,29 @@ In this project, we have integrated i18next to make it easy for you to create mu
 2. **Locale Configuration**: We configure i18next to load the appropriate translation files based on the user's selected locale.
 
 3. **Integration with React**: We use the `react-i18next` package to integrate i18next with React components, making it seamless to access translations in your React components.
+
+## Styles
+
+I really like tailwind - that's why we are building our own engine based on styled components with props like in tailwind. For example `Stack`:
+
+```tsx
+export const Stack = styled.div<BaseFlexParams>`
+    gap: ${p => p.gap || 0};
+    display: flex;
+    flex-direction: ${p => (p.column ? (p.reverse ? 'column-reverse' : 'column') : p.reverse ? 'row-reverse' : 'row')};
+    flex-wrap: ${p => (p.flexWrap ? 'wrap' : 'nowrap')};
+    justify-content: ${p =>
+        p.justifyBetween ? 'space-between' : p.justifyCenter ? 'center' : p.justifyEnd ? 'end' : 'start'};
+    align-items: ${p => (p.itemsCenter ? 'center' : 'initial')};
+`;
+```
+
+So you can use it as follows:
+```tsx
+<Stack column gap="2rem">
+  {children}
+</Stack>
+```
 
 ## Useful Links
 

@@ -8,11 +8,20 @@ export const Footer = () => {
     const { t } = useTranslation('common');
     return (
         <Main>
-            <ContentContainer>
-                <Stack justifyCenter>
-                    <TP>{t('made-by')}</TP>
-                </Stack>
-            </ContentContainer>
+            <Light>
+                <ContentContainer>
+                    <Stack justifyCenter>
+                        <TP>{t('made-by')}</TP>
+                    </Stack>
+                </ContentContainer>
+            </Light>
+            <Dark>
+                <ContentContainer>
+                    <Stack justifyCenter>
+                        <TP>{t('made-by')}</TP>
+                    </Stack>
+                </ContentContainer>
+            </Dark>
         </Main>
     );
 };
@@ -20,6 +29,12 @@ export const Footer = () => {
 const Main = styled.footer`
     width: 100%;
     margin-top: auto;
+`;
+const Light = styled(Stack)`
+    padding: 4rem;
+    background-color: ${p => p.theme.gray(50)};
+`;
+const Dark = styled(Stack)`
     padding: 4rem;
     background-color: ${p => p.theme.gray(100)};
 `;

@@ -69,8 +69,7 @@ const ProductPriceValue = styled(Stack)`
 `;
 const Main = styled(Stack)`
     font-size: 1.5rem;
-    min-width: 300px;
     position: relative;
-    max-width: 100%;
+    width: 100%;
     font-weight: 500;
 `;

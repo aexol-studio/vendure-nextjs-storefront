@@ -10,11 +10,20 @@ import { ContentContainer } from '@/src/components/atoms/ContentContainer';
 import { TH1 } from '@/src/components/atoms/TypoGraphy';
 import { getCollections } from '@/src/graphql/sharedQueries';
 import { MainGrid } from '@/src/components/atoms/MainGrid';
+import { Hero } from '@/src/components/organisms/Hero';
 
 export const Index: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = props => {
     const { t } = useTranslation('homepage');
     return (
         <Layout categories={props.collections} pageTitle="HomePage">
+            <Hero
+                cta={t('hero-cta')}
+                h1={t('hero-h1')}
+                h2={t('hero-h2')}
+                desc={t('hero-p')}
+                link="/collections/electronics"
+                image={props.products[0].featuredAsset?.source || ''}
+            />
             <ContentContainer>
                 <TH1>{t('most-wanted')}</TH1>
                 <MainGrid>

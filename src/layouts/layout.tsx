@@ -19,7 +19,7 @@ const Container = styled.div`
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding-top: 12rem;
+    padding-top: 8.6rem;
 `;
 const MainStack = styled(Stack)`
     min-height: 100vh;

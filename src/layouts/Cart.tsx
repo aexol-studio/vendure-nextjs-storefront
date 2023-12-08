@@ -4,9 +4,9 @@ import { useState } from 'react';
 import styled from '@emotion/styled';
 import { TH2, TP } from '@/src/components/atoms/TypoGraphy';
 import { Stack } from '@/src/components/atoms/Stack';
-import { Button } from '@/src/components/molecules/Button';
+import { Button, IconButton } from '@/src/components/molecules/Button';
 import { ActiveOrderType } from '@/src/graphql/selectors';
-
+import { ShoppingCartIcon } from 'lucide-react';
 export const Cart = ({ activeOrder }: { activeOrder?: ActiveOrderType }) => {
     const [isOpen, setOpen] = useState(false);
 
@@ -30,9 +30,9 @@ export const Cart = ({ activeOrder }: { activeOrder?: ActiveOrderType }) => {
     // Again, we're using framer-motion for the transition effect
     return (
         <>
-            <Button {...triggerProps} onClick={() => setOpen(!isOpen)}>
-                {isOpen ? 'Hide' : 'Cart'}
-            </Button>
+            <IconButton {...triggerProps} onClick={() => setOpen(!isOpen)}>
+                <ShoppingCartIcon />
+            </IconButton>
             {renderLayer(
                 <AnimatePresence>
                     {isOpen && (

@@ -1,7 +1,7 @@
 import styled from '@emotion/styled';
 
 export const Button = styled.button`
-    background-color: ${p => p.theme.accent(900)};
+    background-color: ${p => p.theme.gray(900)};
     color: ${p => p.theme.gray(0)};
     border: 0;
     border-radius: ${p => p.theme.borderRadius};
@@ -13,4 +13,22 @@ export const Button = styled.button`
 
 export const FullWidthButton = styled(Button)`
     width: 100%;
+`;
+
+export const IconButton = styled.button`
+    color: ${p => p.theme.gray(900)};
+    border: 0;
+    border-radius: 100%;
+    font-weight: 600;
+    outline: 0;
+    width: 3rem;
+    height: 3rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    svg {
+        width: 2rem;
+        height: 2rem;
+    }
 `;

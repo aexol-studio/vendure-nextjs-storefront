@@ -2,6 +2,7 @@ import { BaseFlexParams } from '@/src/components/sharedStyles';
 import styled from '@emotion/styled';
 
 export const Stack = styled.div<BaseFlexParams>`
+    width: 100%;
     gap: ${p => p.gap || 0};
     display: flex;
     flex-direction: ${p => (p.column ? (p.reverse ? 'column-reverse' : 'column') : p.reverse ? 'row-reverse' : 'row')};

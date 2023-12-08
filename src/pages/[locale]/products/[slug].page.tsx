@@ -7,7 +7,7 @@ import { storefrontApiQuery } from '@/src/graphql/client';
 import { ProductDetailSelector, ProductSlugSelector } from '@/src/graphql/selectors';
 import { getCollections } from '@/src/graphql/sharedQueries';
 import { Layout } from '@/src/layouts';
-import { localizeGetStaticPaths } from '@/src/lib/getStatic';
+import { ContextModel, localizeGetStaticPaths, makeStaticProps } from '@/src/lib/getStatic';
 import { useCart } from '@/src/state/cart';
 import styled from '@emotion/styled';
 import { InferGetStaticPropsType } from 'next';
@@ -61,7 +61,7 @@ export const getStaticPaths = async () => {
     return { paths, fallback: false };
 };
 
-export const getStaticProps = async (context: { params: { slug?: string } }) => {
+export const getStaticProps = async (context: ContextModel<{ slug?: string }>) => {
     const { slug } = context.params || {};
     const collections = await getCollections();
     const response =
@@ -70,10 +70,12 @@ export const getStaticProps = async (context: { params: { slug?: string } }) => 
                   product: [{ slug }, ProductDetailSelector],
               })
             : undefined;
+    const r = await makeStaticProps(['common'])(context);
     const returnedStuff = {
         slug: context.params?.slug,
         product: response?.product,
         collections: collections,
+        ...r.props,
     };
     return {
         props: returnedStuff,

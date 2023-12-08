@@ -1,34 +1,41 @@
 import { Link } from '@/src/components/atoms/Link';
 import { ProductImageGrid } from '@/src/components/atoms/ProductImage';
 import { Stack } from '@/src/components/atoms/Stack';
-import { ProductTileType } from '@/src/graphql/selectors';
+import { CollectionTileType, ProductSearchType } from '@/src/graphql/selectors';
 import styled from '@emotion/styled';
 import React from 'react';
 
 export const ProductTile: React.FC<{
-    product: ProductTileType;
-}> = ({ product }) => {
+    product: ProductSearchType;
+    collections: CollectionTileType[];
+}> = ({ product, collections }) => {
+    const priceValue =
+        'value' in product.priceWithTax
+            ? product.priceWithTax.value.toFixed(2)
+            : `${product.priceWithTax.min.toFixed(2)} - ${product.priceWithTax.max.toFixed(2)}`;
     return (
         <Main column gap="2rem">
             <Link href={`/products/${product.slug}/`}>
-                <ProductImageGrid src={product.featuredAsset?.source} />
+                <ProductImageGrid src={product.productAsset?.preview} />
             </Link>
             <Categories gap="0.5rem">
-                {product.collections.map(c => (
-                    <ProductCategory href={`/collections/${c.slug}/`} key={c.slug}>
-                        {c.name}
-                    </ProductCategory>
-                ))}
+                {product.collectionIds
+                    .map(cId => collections.find(c => c.id === cId))
+                    .map(c => (
+                        <ProductCategory href={`/collections/${c?.slug}/`} key={c?.slug}>
+                            {c?.name}
+                        </ProductCategory>
+                    ))}
             </Categories>
             <Stack column gap="0.25rem">
                 <Stack column gap="0.5rem">
                     <Link href={`/products/${product.slug}/`}>
-                        <ProductName>{product.name}</ProductName>
+                        <ProductName>{product.productName}</ProductName>
                     </Link>
                 </Stack>
                 <ProductPrice gap="0.25rem">
-                    <ProductPriceValue>{product.variants[0].price.toFixed(2)}</ProductPriceValue>
-                    <ProductPriceCurrency>{product.variants[0].currencyCode}</ProductPriceCurrency>
+                    <ProductPriceValue>{priceValue}</ProductPriceValue>
+                    <ProductPriceCurrency>{product.currencyCode}</ProductPriceCurrency>
                 </ProductPrice>
             </Stack>
         </Main>
@@ -46,7 +53,7 @@ const ProductName = styled.div`
     color: ${p => p.theme.gray(900)};
     font-size: 1.5rem;
 `;
-const ImageLink = styled(Link);
+// const ImageLink = styled(Link);
 const ProductCategory = styled(Link)`
     font-weight: 600;
     text-transform: uppercase;

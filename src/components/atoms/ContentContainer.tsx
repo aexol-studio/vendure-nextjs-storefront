@@ -7,6 +7,7 @@ export const ContentContainer = styled.div`
     display: flex;
     flex-direction: column;
     gap: 4rem;
+    margin: auto;
     ${css`
         @media (max-width: 1560px) {
             width: 1280px;

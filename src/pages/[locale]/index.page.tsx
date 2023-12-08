@@ -4,48 +4,53 @@ import React from 'react';
 import { Layout } from '@/src/layouts';
 import type { InferGetStaticPropsType } from 'next';
 import { storefrontApiQuery } from '@/src/graphql/client';
-import { ProductTileSelector } from '@/src/graphql/selectors';
+import { ProductSearchSelector } from '@/src/graphql/selectors';
 import { ProductTile } from '@/src/components/molecules/ProductTile';
 import { ContentContainer } from '@/src/components/atoms/ContentContainer';
 import { TH1 } from '@/src/components/atoms/TypoGraphy';
 import { getCollections } from '@/src/graphql/sharedQueries';
 import { MainGrid } from '@/src/components/atoms/MainGrid';
 import { Hero } from '@/src/components/organisms/Hero';
+import { Stack } from '@/src/components/atoms/Stack';
 
 export const Index: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = props => {
     const { t } = useTranslation('homepage');
     return (
         <Layout categories={props.collections} pageTitle="HomePage">
-            <Hero
-                cta={t('hero-cta')}
-                h1={t('hero-h1')}
-                h2={t('hero-h2')}
-                desc={t('hero-p')}
-                link="/collections/electronics"
-                image={props.products[0].featuredAsset?.source || ''}
-            />
-            <ContentContainer>
-                <TH1>{t('most-wanted')}</TH1>
-                <MainGrid>
-                    {props.products.map(p => {
-                        return <ProductTile product={p} key={p.id} />;
-                    })}
-                </MainGrid>
-            </ContentContainer>
+            <Stack column gap="4rem">
+                <Hero
+                    cta={t('hero-cta')}
+                    h1={t('hero-h1')}
+                    h2={t('hero-h2')}
+                    desc={t('hero-p')}
+                    link="/collections/electronics"
+                    image={props.products[0].productAsset?.preview || ''}
+                />
+                <ContentContainer>
+                    <Stack gap="4rem" column>
+                        <TH1>{t('most-wanted')}</TH1>
+                        <MainGrid>
+                            {props.products.map(p => {
+                                return <ProductTile collections={props.collections} product={p} key={p.slug} />;
+                            })}
+                        </MainGrid>
+                    </Stack>
+                </ContentContainer>
+            </Stack>
         </Layout>
     );
 };
 
 const getStaticProps = async (ctx: ContextModel) => {
     const products = await storefrontApiQuery({
-        products: [
+        search: [
             {
-                options: {
+                input: {
                     take: 12,
                 },
             },
             {
-                items: ProductTileSelector,
+                items: ProductSearchSelector,
             },
         ],
     });
@@ -53,7 +58,7 @@ const getStaticProps = async (ctx: ContextModel) => {
     const sprops = makeStaticProps(['common', 'homepage']);
     const r = await sprops(ctx);
     const returnedStuff = {
-        props: { ...r.props, products: products.products.items, collections },
+        props: { ...r.props, products: products.search.items, collections },
         revalidate: 10, // In seconds
     };
     return returnedStuff;

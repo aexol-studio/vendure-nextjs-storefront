@@ -2,7 +2,11 @@
     "name": "vendure-nextjs-storefront",
     "version": "0.0.1",
     "private": true,
-    "author": {"email": "aexol@aexol.com","name": "aexol","url": "https://aexol.com"},
+    "author": {
+        "email": "aexol@aexol.com",
+        "name": "aexol",
+        "url": "https://aexol.com"
+    },
     "scripts": {
         "dev": "next dev",
         "build": "next build && next export",
@@ -23,6 +27,7 @@
         "gray-matter": "^4.0.3",
         "i18next": "^23.7.7",
         "i18next-resources-for-ts": "^1.4.0",
+        "lucide-react": "^0.294.0",
         "next": "^14.0.3",
         "next-i18next": "^15.0.0",
         "next-language-detector": "^1.1.0",

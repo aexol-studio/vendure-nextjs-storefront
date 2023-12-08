@@ -18,6 +18,25 @@ export const ProductTileSelector = Selector('Product')({
         preview: true,
     },
 });
+export const ProductSearchSelector = Selector('SearchResult')({
+    productName: true,
+    slug: true,
+    collectionIds: true,
+    currencyCode: true,
+    priceWithTax: {
+        '...on PriceRange': {
+            max: true,
+            min: true,
+        },
+        '...on SinglePrice': {
+            value: true,
+        },
+    },
+    productAsset: {
+        preview: true,
+    },
+});
+export type ProductSearchType = FromSelector<typeof ProductSearchSelector, 'SearchResult', typeof scalars>;
 
 export const FacetSelector = Selector('Facet')({
     name: true,

@@ -5,7 +5,7 @@ import { TH1, TP } from '@/src/components/atoms/TypoGraphy';
 import { FacetFilterCheckbox } from '@/src/components/molecules/FacetFilter';
 import { ProductTile } from '@/src/components/molecules/ProductTile';
 import { storefrontApiQuery } from '@/src/graphql/client';
-import { FacetSelector, ProductTileSelector } from '@/src/graphql/selectors';
+import { FacetSelector, ProductSearchSelector } from '@/src/graphql/selectors';
 import { getCollections } from '@/src/graphql/sharedQueries';
 import { Layout } from '@/src/layouts';
 import { ContextModel, makeStaticProps } from '@/src/lib/getStatic';
@@ -47,7 +47,7 @@ const ProductPage: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = pr
                     </Stack>
                     <MainGrid>
                         {props.products?.map(p => {
-                            return <ProductTile product={p} key={p.id} />;
+                            return <ProductTile collections={props.collections} product={p} key={p.slug} />;
                         })}
                     </MainGrid>
                 </Stack>
@@ -93,17 +93,10 @@ export const getStaticProps = async (context: ContextModel<{ slug?: string }>) =
         ],
     });
     const productsQuery = await storefrontApiQuery({
-        collection: [
-            { slug },
+        search: [
+            { input: { collectionSlug: slug, groupByProduct: true } },
             {
-                productVariants: [
-                    {},
-                    {
-                        items: {
-                            product: ProductTileSelector,
-                        },
-                    },
-                ],
+                items: ProductSearchSelector,
             },
         ],
     });
@@ -111,7 +104,7 @@ export const getStaticProps = async (context: ContextModel<{ slug?: string }>) =
         slug: context.params?.slug,
         collections: collections,
         name: collections.find(c => c.slug === slug)?.name,
-        products: productsQuery.collection?.productVariants.items.map(p => p.product),
+        products: productsQuery.search?.items,
         facets: facets.facets.items,
         ...r.props,
     };

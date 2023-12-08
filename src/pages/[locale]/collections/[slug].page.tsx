@@ -13,7 +13,9 @@ import styled from '@emotion/styled';
 import { InferGetStaticPropsType } from 'next';
 import React, { useState } from 'react';
 import { useTranslation } from 'next-i18next';
-import { Button } from '@/src/components/molecules/Button';
+import { IconButton } from '@/src/components/molecules/Button';
+import { Filter, X } from 'lucide-react';
+import { AnimatePresence, motion } from 'framer-motion';
 
 const ProductPage: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = props => {
     const { t } = useTranslation('common');
@@ -21,29 +23,46 @@ const ProductPage: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = pr
     return (
         <Layout categories={props.collections}>
             <ContentContainer>
-                {filtersOpen && (
-                    <Facets>
-                        <FacetsFilters>
-                            <Stack column gap="3rem">
-                                <Stack justifyBetween>
-                                    <TP weight={400} upperCase>
-                                        {t('filters')}
-                                    </TP>
-                                    <Button onClick={() => setFiltersOpen(false)}>X</Button>
+                <AnimatePresence>
+                    {filtersOpen && (
+                        <Facets
+                            onClick={() => setFiltersOpen(false)}
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}>
+                            <FacetsFilters
+                                onClick={e => e.stopPropagation()}
+                                initial={{ translateX: '-100%' }}
+                                animate={{ translateX: '0%' }}
+                                exit={{ translateX: '-100%' }}>
+                                <Stack column gap="3rem">
+                                    <Stack justifyBetween itemsCenter>
+                                        <TP weight={400} upperCase>
+                                            {t('filters')}
+                                        </TP>
+                                        <IconButton onClick={() => setFiltersOpen(false)}>
+                                            <X />
+                                        </IconButton>
+                                    </Stack>
+                                    <Stack column>
+                                        {props.facets.map(f => (
+                                            <FacetFilterCheckbox facet={f} key={f.code} />
+                                        ))}
+                                    </Stack>
                                 </Stack>
-                                <Stack column>
-                                    {props.facets.map(f => (
-                                        <FacetFilterCheckbox facet={f} key={f.code} />
-                                    ))}
-                                </Stack>
-                            </Stack>
-                        </FacetsFilters>
-                    </Facets>
-                )}
+                            </FacetsFilters>
+                        </Facets>
+                    )}
+                </AnimatePresence>
                 <Stack gap="2rem" column>
-                    <Stack justifyBetween>
+                    <Stack justifyBetween itemsCenter>
                         <TH1>{props.name}</TH1>
-                        <Button onClick={() => setFiltersOpen(true)}>{t('filters')}</Button>
+                        <Filters onClick={() => setFiltersOpen(true)}>
+                            <TP>{t('filters')}</TP>
+                            <IconButton title={t('filters')}>
+                                <Filter />
+                            </IconButton>
+                        </Filters>
                     </Stack>
                     <MainGrid>
                         {props.products?.map(p => {
@@ -56,13 +75,18 @@ const ProductPage: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = pr
     );
 };
 
-const Facets = styled.div`
+const Filters = styled(Stack)`
+    width: auto;
+    cursor: pointer;
+`;
+
+const Facets = styled(motion.div)`
     background: ${p => p.theme.grayAlpha(900, 0.5)};
     position: fixed;
     inset: 0;
     z-index: 1;
 `;
-const FacetsFilters = styled.div`
+const FacetsFilters = styled(motion.div)`
     background: ${p => p.theme.gray(0)};
     position: absolute;
     top: 0;

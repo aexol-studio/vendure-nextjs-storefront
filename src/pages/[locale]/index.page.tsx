@@ -7,7 +7,7 @@ import { storefrontApiQuery } from '@/src/graphql/client';
 import { ProductSearchSelector } from '@/src/graphql/selectors';
 import { ProductTile } from '@/src/components/molecules/ProductTile';
 import { ContentContainer } from '@/src/components/atoms/ContentContainer';
-import { TCategory, TH1 } from '@/src/components/atoms/TypoGraphy';
+import { TCategory } from '@/src/components/atoms/TypoGraphy';
 import { getCollections } from '@/src/graphql/sharedQueries';
 import { MainGrid } from '@/src/components/atoms/MainGrid';
 import { Hero } from '@/src/components/organisms/Hero';

@@ -47,6 +47,7 @@ const getStaticProps = async (ctx: ContextModel) => {
             {
                 input: {
                     take: 12,
+                    groupByProduct: true,
                 },
             },
             {

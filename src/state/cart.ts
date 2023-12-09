@@ -12,7 +12,6 @@ const useCartContainer = createContainer(() => {
         const response = await storefrontApiQuery({
             activeOrder: ActiveOrderSelector,
         });
-        console.log({ response });
         setActiveOrder(response.activeOrder);
         return response.activeOrder;
     };
@@ -166,7 +165,6 @@ const useCartContainer = createContainer(() => {
             return r.adjustOrderLine;
         });
     };
-    console.log({ activeOrder });
     return {
         activeOrder,
         cart: activeOrder,

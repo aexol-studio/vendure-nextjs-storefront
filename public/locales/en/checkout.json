@@ -1,0 +1,33 @@
+{
+    "orderForm": {
+        "contactInfo": "Contact Information",
+        "emailAddress": "Email Address",
+        "firstName": "First Name",
+        "lastName": "Last Name",
+        "shippingInfo": "Shipping Information",
+        "company": "Company",
+        "address": "Address",
+        "streetAddress": "Apartment, suite, etc.",
+        "city": "City",
+        "country": "Country",
+        "state": "State / Province",
+        "postalCode": "Postal Code",
+        "phone": "Phone",
+        "continue-to-payment": "Continue to Payment"
+    },
+    "orderSummary": {
+        "title": "Order Summary",
+        "subtotal": "Subtotal",
+        "shipping": "Shipping",
+        "total": "Total",
+        "quantity": "Quantity",
+        "remove": "Remove"
+    },
+    "deliveryMethod": {
+        "title": "Delivery Method"
+    },
+    "paymentMethod": {
+        "title": "Payment Method",
+        "submit": "Submit Payment"
+    }
+}

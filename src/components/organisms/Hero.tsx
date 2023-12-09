@@ -33,6 +33,7 @@ export const Hero: React.FC<{
         </Main>
     );
 };
+
 const Main = styled(Stack)`
     width: 100%;
     background: ${p => p.theme.gray(50)};

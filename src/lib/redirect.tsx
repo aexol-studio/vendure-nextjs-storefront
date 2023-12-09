@@ -1,8 +1,10 @@
 import { useRouter } from 'next/router';
-import { useEffect } from 'react';
+import { useCallback, useEffect } from 'react';
 import React from 'react';
 import languageDetector from './lngDetector';
 import styled from '@emotion/styled';
+import { Url } from 'next/dist/shared/lib/router/router';
+
 const AppLoader = styled.div``;
 
 export const useRedirect = ({ to }: { to?: string }) => {
@@ -41,4 +43,21 @@ export const Redirect =
 export const getRedirect = (to?: string) => () => {
     useRedirect({ to });
     return <AppLoader />;
+};
+
+interface TransitionOptions {
+    shallow?: boolean;
+    scroll?: boolean;
+    unstable_skipClientCache?: boolean;
+}
+
+export const usePush = () => {
+    const router = useRouter();
+    const lang = languageDetector.detect();
+    return useCallback(
+        (to?: string, as?: Url, options?: TransitionOptions) => {
+            router.push(`/${lang}${to}`, as, options);
+        },
+        [lang],
+    );
 };

@@ -22,6 +22,7 @@
         "@emotion/react": "^11.11.1",
         "@emotion/styled": "^11.11.0",
         "@graphql-typed-document-node/core": "^3.2.0",
+        "@hookform/resolvers": "^3.3.2",
         "@next/font": "^14.0.3",
         "country-flag-icons": "^1.5.9",
         "framer-motion": "^10.16.14",
@@ -35,11 +36,13 @@
         "next-language-detector": "^1.1.0",
         "react": "^18.2.0",
         "react-dom": "^18.2.0",
+        "react-hook-form": "^7.48.2",
         "react-i18next": "^13.5.0",
         "react-laag": "^2.0.5",
         "remark": "^15.0.1",
         "remark-html": "^16.0.1",
-        "unstated-next": "^1.1.0"
+        "unstated-next": "^1.1.0",
+        "zod": "^3.22.4"
     },
     "devDependencies": {
         "@types/node": "^20.10.2",

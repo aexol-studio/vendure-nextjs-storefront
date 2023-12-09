@@ -35,7 +35,8 @@ const ProductPage: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = pr
                         </Stack>
                         <TP>{props.product?.description}</TP>
                         <Stack gap="2.5rem" justifyBetween>
-                            <FullWidthButton onClick={() => props.product?.id && addToCart(props.product.id, 1)}>
+                            <FullWidthButton
+                                onClick={() => props.product?.id && addToCart(props.product.variants[0].id, 1)}>
                                 Add to cart
                             </FullWidthButton>
                         </Stack>

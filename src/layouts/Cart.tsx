@@ -8,8 +8,12 @@ import { ActiveOrderType } from '@/src/graphql/selectors';
 import { ShoppingCartIcon, X } from 'lucide-react';
 import { ContentContainer } from '@/src/components/atoms/ContentContainer';
 import { QuantityCounter } from '@/src/components/molecules/QuantityCounter';
+import { Divider } from '@/src/components/atoms/Divider';
 import { useCart } from '@/src/state/cart';
-import { useTranslation } from 'react-i18next';
+import { Link } from '@/src/components/atoms/Link';
+import { useTranslation } from 'next-i18next';
+import { priceFormatter } from '../util/priceFomatter';
+
 export const Cart = ({ activeOrder }: { activeOrder?: ActiveOrderType }) => {
     const { setItemQuantityInCart } = useCart();
     const { t } = useTranslation('common');
@@ -24,6 +28,7 @@ export const Cart = ({ activeOrder }: { activeOrder?: ActiveOrderType }) => {
         <>
             <IconButton onClick={() => setOpen(!isOpen)}>
                 <ShoppingCartIcon />
+                <span>{activeOrder?.totalQuantity}</span>
             </IconButton>
             <AnimatePresence>
                 {isOpen && (
@@ -31,7 +36,14 @@ export const Cart = ({ activeOrder }: { activeOrder?: ActiveOrderType }) => {
                         <ContentContainer>
                             <CartContainer column gap="2rem">
                                 <Stack justifyBetween>
-                                    <TH2>{t('cart')}</TH2>
+                                    <Stack itemsCenter gap="2.5rem">
+                                        <TH2>{t('your-cart')}</TH2>
+                                        {activeOrder?.totalQuantity ? (
+                                            <TP>
+                                                ({activeOrder?.totalQuantity} {t('items')})
+                                            </TP>
+                                        ) : null}
+                                    </Stack>
                                     <IconButton onClick={close}>
                                         <X />
                                     </IconButton>
@@ -50,7 +62,7 @@ export const Cart = ({ activeOrder }: { activeOrder?: ActiveOrderType }) => {
                                                         onChange={v => setItemQuantityInCart(l.id, v)}
                                                     />
                                                 </Stack>
-                                                <TP>{l.linePriceWithTax}</TP>
+                                                <TP>{priceFormatter(l.linePriceWithTax)}</TP>
                                             </CartRow>
                                         ))}
                                     </Stack>
@@ -58,8 +70,40 @@ export const Cart = ({ activeOrder }: { activeOrder?: ActiveOrderType }) => {
                                         <TP size="2.5rem" weight={600}>
                                             {t('cart-summary')}
                                         </TP>
-                                        <TP>{activeOrder?.total}</TP>
-                                        <Button>Checkout</Button>
+                                        <Stack column>
+                                            <Stack justifyBetween>
+                                                <TP>{t('price')}</TP>
+                                                {activeOrder?.subTotalWithTax ? (
+                                                    <TP size="2rem">{priceFormatter(activeOrder?.subTotalWithTax)}</TP>
+                                                ) : null}
+                                            </Stack>
+                                            <Stack justifyBetween>
+                                                <TP>{t('discount')}</TP>
+                                                {activeOrder?.totalWithTax ? (
+                                                    <TP>{priceFormatter(activeOrder?.totalWithTax)}</TP>
+                                                ) : null}
+                                            </Stack>
+                                            {activeOrder?.discounts.map(d => (
+                                                <Stack key={d.description} justifyBetween>
+                                                    <TP>{d.description}</TP>
+                                                    <TP>{priceFormatter(d.amountWithTax)}</TP>
+                                                </Stack>
+                                            ))}
+                                            <Stack justifyBetween>
+                                                <TP>{t('shipping')}</TP>
+                                                {activeOrder?.shippingWithTax ? (
+                                                    <TP>{priceFormatter(activeOrder?.shippingWithTax)}</TP>
+                                                ) : null}
+                                            </Stack>
+                                            <Divider />
+                                        </Stack>
+                                        {activeOrder?.totalWithTax ? (
+                                            <TP>{priceFormatter(activeOrder?.totalWithTax)}</TP>
+                                        ) : null}
+                                        {activeOrder?.totalQuantity ? (
+                                            <Link href="/checkout">{t('proceed-to-checkout')}</Link>
+                                        ) : null}
+                                        <Button onClick={close}>{t('continue-shopping')}</Button>
                                     </CartSummary>
                                 </Stack>
                             </CartContainer>

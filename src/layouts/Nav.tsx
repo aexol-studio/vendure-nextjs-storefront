@@ -6,7 +6,7 @@ import styled from '@emotion/styled';
 import { LanguageSwitcher } from '@/src/components';
 import { Select } from '@/src/components/atoms/Select';
 import { Link } from '@/src/components/atoms/Link';
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from 'next-i18next';
 import { Cart } from '@/src/layouts/Cart';
 import { useCart } from '@/src/state/cart';
 

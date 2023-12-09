@@ -165,6 +165,25 @@ const useCartContainer = createContainer(() => {
             return r.adjustOrderLine;
         });
     };
+
+    const changeShippingMethod = async (id: string) => {
+        const { setOrderShippingMethod } = await storefrontApiMutation({
+            setOrderShippingMethod: [
+                { shippingMethodId: [id] },
+                {
+                    __typename: true,
+                    '...on Order': ActiveOrderSelector,
+                    '...on IneligibleShippingMethodError': { errorCode: true, message: true },
+                    '...on NoActiveOrderError': { errorCode: true, message: true },
+                    '...on OrderModificationError': { errorCode: true, message: true },
+                },
+            ],
+        });
+        if (setOrderShippingMethod.__typename === 'Order') {
+            setActiveOrder(setOrderShippingMethod);
+            return;
+        }
+    };
     return {
         activeOrder,
         cart: activeOrder,
@@ -173,6 +192,7 @@ const useCartContainer = createContainer(() => {
         setTemporaryCustomerForOrder,
         removeFromCart,
         fetchActiveOrder,
+        changeShippingMethod,
     };
 });
 

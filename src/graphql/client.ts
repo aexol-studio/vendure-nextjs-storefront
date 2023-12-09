@@ -8,6 +8,10 @@ export const scalars = ZeusScalars({
     },
 });
 
+//use 'http://localhost:3000/shop-api/' in local .env file for localhost development and provide env to use on prod/dev envs
+
+export const VENDURE_HOST = `${process.env.NEXT_PUBLIC_VENDURE_HOST || 'https://readonlydemo.vendure.io'}/shop-api`;
+
 const apiFetchVendure =
     (options: fetchOptions) =>
     (query: string, variables: Record<string, unknown> = {}) => {
@@ -50,15 +54,14 @@ const apiFetchVendure =
 
 export const VendureChain = (...options: chainOptions) => Thunder(apiFetchVendure(options));
 
-export const storefrontApiQuery = VendureChain('http://localhost:3000/shop-api/', {
+export const storefrontApiQuery = VendureChain(VENDURE_HOST, {
     headers: {
         'Content-Type': 'application/json',
     },
 })('query', {
     scalars,
 });
-
-export const storefrontApiMutation = VendureChain('http://localhost:3000/shop-api/', {
+export const storefrontApiMutation = VendureChain(VENDURE_HOST, {
     headers: {
         'Content-Type': 'application/json',
     },

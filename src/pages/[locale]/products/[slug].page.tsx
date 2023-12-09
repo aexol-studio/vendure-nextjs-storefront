@@ -9,6 +9,8 @@ import { getCollections } from '@/src/graphql/sharedQueries';
 import { Layout } from '@/src/layouts';
 import { ContextModel, localizeGetStaticPaths, makeStaticProps } from '@/src/lib/getStatic';
 import { useCart } from '@/src/state/cart';
+import { priceFormatter } from '@/src/util/priceFomatter';
+import { CurrencyCode } from '@/src/zeus';
 import styled from '@emotion/styled';
 import { InferGetStaticPropsType } from 'next';
 import React from 'react';
@@ -18,7 +20,7 @@ const ProductPage: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = pr
     return (
         <Layout categories={props.collections}>
             <ContentContainer>
-                <Stack gap="5rem">
+                <Main gap="5rem">
                     <Stack gap="3rem">
                         <AssetBrowser column>
                             {props.product?.assets.map(a => (
@@ -30,7 +32,12 @@ const ProductPage: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = pr
                     <Stack column gap="2.5rem">
                         <TH1>{props.product?.name}</TH1>
                         <Stack gap="1rem">
-                            <TPriceBig>{props.product?.variants[0].price}</TPriceBig>
+                            <TPriceBig>
+                                {priceFormatter(
+                                    props.product?.variants[0].price || 0,
+                                    props.product?.variants[0].currencyCode || CurrencyCode.USD,
+                                )}
+                            </TPriceBig>
                             <TPriceBig>{props.product?.variants[0].currencyCode}</TPriceBig>
                         </Stack>
                         <TP>{props.product?.description}</TP>
@@ -41,11 +48,14 @@ const ProductPage: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = pr
                             </FullWidthButton>
                         </Stack>
                     </Stack>
-                </Stack>
+                </Main>
             </ContentContainer>
         </Layout>
     );
 };
+const Main = styled(Stack)`
+    padding: 4rem 0;
+`;
 const AssetBrowser = styled(Stack)`
     width: 10rem;
 `;

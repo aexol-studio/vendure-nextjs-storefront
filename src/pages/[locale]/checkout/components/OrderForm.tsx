@@ -174,6 +174,7 @@ export const OrderForm = () => {
             </Stack>
             {shippingMethods && (
                 <DeliveryMethod
+                    currencyCode={cart?.currencyCode}
                     changeShippingMethod={changeShippingMethod}
                     shippingMethods={shippingMethods}
                     shippingLines={cart?.shippingLines}

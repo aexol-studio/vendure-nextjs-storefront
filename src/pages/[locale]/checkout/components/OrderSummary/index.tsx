@@ -20,7 +20,7 @@ export const OrderSummary = () => {
                 {t('orderSummary.title')}
             </TH2>
             <Stack column>
-                {cart?.lines.map((line, i) => <Line key={i} {...line} />)}
+                {cart?.lines.map((line, i) => <Line currencyCode={cart.currencyCode} key={i} lines={line} />)}
                 <Stack column>
                     <Stack justifyBetween>
                         <TP>{t('orderSummary.subtotal')}</TP>

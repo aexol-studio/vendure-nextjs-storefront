@@ -7,8 +7,12 @@ import { ActiveOrderType } from '@/src/graphql/selectors';
 import { useCart } from '@/src/state/cart';
 import { priceFormatter } from '@/src/util/priceFomatter';
 import { useTranslation } from 'next-i18next';
+import { CurrencyCode } from '@/src/zeus';
 
-export const Line: React.FC<ActiveOrderType['lines'][number]> = ({ id, productVariant, quantity, featuredAsset }) => {
+export const Line: React.FC<{ lines: ActiveOrderType['lines'][number]; currencyCode?: CurrencyCode }> = ({
+    lines: { id, productVariant, quantity, featuredAsset },
+    currencyCode = CurrencyCode.USD,
+}) => {
     const { t } = useTranslation('checkout');
     const { setItemQuantityInCart, removeFromCart } = useCart();
 
@@ -23,7 +27,7 @@ export const Line: React.FC<ActiveOrderType['lines'][number]> = ({ id, productVa
                         {productVariant.product.name} {productVariant.name}
                     </TP>
                 </Stack>
-                <TP>{priceFormatter(productVariant.price)}</TP>
+                <TP>{priceFormatter(productVariant.price, currencyCode)}</TP>
             </Stack>
             <Stack justifyBetween>
                 <Stack>

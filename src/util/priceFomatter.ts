@@ -1,31 +1,34 @@
-import languageDetector from '@/src/lib/lngDetector';
+import { CurrencyCode } from '@/src/zeus';
 /**
  * @param price - price to format
  */
-export function priceFormatter(price: number) {
+export function priceFormatter(price: number, currencyCode: CurrencyCode) {
     //TODO: more universal solution
-    const translations = {
-        en: {
+    const translations: Partial<Record<CurrencyCode, { country: string }>> = {
+        [CurrencyCode.USD]: {
             country: 'US',
-            currency: 'USD',
         },
-        de: {
+        [CurrencyCode.EUR]: {
             country: 'DE',
-            currency: 'EUR',
         },
-        pl: {
+        [CurrencyCode.PLN]: {
             country: 'PL',
-            currency: 'PLN',
         },
     };
+    const c = translations[currencyCode];
+    if (!c) {
+        const formatterCode = new Intl.NumberFormat('US', {
+            style: 'currency',
+            currencyDisplay: 'symbol',
+            currency: 'USD',
+        });
+        return formatterCode.format(price / 100);
+    }
 
-    let detectedLng = (languageDetector?.detect() || 'en') as keyof typeof translations;
-    if (!translations[detectedLng]) detectedLng = 'en';
-
-    const formatterCode = new Intl.NumberFormat(translations[detectedLng].country, {
+    const formatterCode = new Intl.NumberFormat(c.country, {
         style: 'currency',
         currencyDisplay: 'symbol',
-        currency: translations[detectedLng].currency,
+        currency: currencyCode,
     });
     return formatterCode.format(price / 100);
 }

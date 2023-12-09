@@ -17,6 +17,7 @@ Just remember you need to have the Vendure store running locally to use this sto
   - [Zeus](#zeus)
   - [Page naming convention](#page-naming-convention)
   - [Internationalization with i18next](#internationalization-with-i18next)
+  - [Icons](#icons)
   - [Styles](#styles)
   - [Useful Links](#useful-links)
   - [Who?](#who)
@@ -46,6 +47,10 @@ In this project, we have integrated i18next to make it easy for you to create mu
 2. **Locale Configuration**: We configure i18next to load the appropriate translation files based on the user's selected locale.
 
 3. **Integration with React**: We use the `react-i18next` package to integrate i18next with React components, making it seamless to access translations in your React components.
+
+## Icons
+
+Lucide icons
 
 ## Styles
 

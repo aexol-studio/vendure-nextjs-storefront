@@ -2,7 +2,7 @@ import nextI18nextConfig from '@/next-i18next.config';
 import { i18n } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import resources from '@/src/@types/resources';
-export interface ContextModel<T = {}> {
+export interface ContextModel<T = Record<string, string>> {
     params: { locale: string } & T;
 }
 

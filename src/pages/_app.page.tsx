@@ -1,7 +1,7 @@
 import '../styles/global.css';
 import { AppProps } from 'next/app';
 import { appWithTranslation } from 'next-i18next';
-import { Nunito, Noto_Sans_HK } from 'next/font/google';
+import { Noto_Sans_HK } from 'next/font/google';
 import { Global, ThemeProvider } from '@emotion/react';
 import { LightTheme } from '@/src/theme';
 import { CartProvider } from '@/src/state/cart';

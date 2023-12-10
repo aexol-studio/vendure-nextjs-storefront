@@ -62,11 +62,11 @@ export const Nav: React.FC<{ categories: CollectionTileType[] }> = ({ categories
         </Main>
     );
 };
-
 const Main = styled(Stack)`
     width: 100%;
     padding: 2rem;
-    position: fixed;
+    position: sticky;
+    top: 0;
     background: ${p => p.theme.gray(0)};
     z-index: 1;
     border-bottom: 1px solid ${p => p.theme.gray(100)};

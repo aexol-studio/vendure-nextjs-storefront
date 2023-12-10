@@ -1,7 +1,7 @@
 /* eslint-disable */
 
 import { AllTypesProps, ReturnTypes, Ops } from './const';
-export const HOST = "https://readonlydemo.vendure.io/shop-api"
+export const HOST = "http://localhost:8080/shop-api"
 
 
 export const HEADERS = {}
@@ -868,6 +868,7 @@ orderByCode?: [{	code: string | Variable<any, string>},ValueTypes["Order"]],
 product?: [{	id?: string | undefined | null | Variable<any, string>,	slug?: string | undefined | null | Variable<any, string>},ValueTypes["Product"]],
 products?: [{	options?: ValueTypes["ProductListOptions"] | undefined | null | Variable<any, string>},ValueTypes["ProductList"]],
 search?: [{	input: ValueTypes["SearchInput"] | Variable<any, string>},ValueTypes["SearchResponse"]],
+	getBanner?:ValueTypes["AnnouncementBanner"],
 		__typename?: boolean | `@${string}`
 }>;
 	["Mutation"]: AliasType<{
@@ -1175,6 +1176,7 @@ current session. */
 		['...on CollectionList']?: Omit<ValueTypes["CollectionList"],keyof ValueTypes["PaginatedList"]>;
 		['...on CustomerList']?: Omit<ValueTypes["CustomerList"],keyof ValueTypes["PaginatedList"]>;
 		['...on FacetList']?: Omit<ValueTypes["FacetList"],keyof ValueTypes["PaginatedList"]>;
+		['...on FacetValueList']?: Omit<ValueTypes["FacetValueList"],keyof ValueTypes["PaginatedList"]>;
 		['...on HistoryEntryList']?: Omit<ValueTypes["HistoryEntryList"],keyof ValueTypes["PaginatedList"]>;
 		['...on OrderList']?: Omit<ValueTypes["OrderList"],keyof ValueTypes["PaginatedList"]>;
 		['...on ProductList']?: Omit<ValueTypes["ProductList"],keyof ValueTypes["PaginatedList"]>;
@@ -1401,7 +1403,8 @@ by FacetValue ID. Examples:
 	groupByProduct?: boolean | undefined | null | Variable<any, string>,
 	take?: number | undefined | null | Variable<any, string>,
 	skip?: number | undefined | null | Variable<any, string>,
-	sort?: ValueTypes["SearchResultSortParameter"] | undefined | null | Variable<any, string>
+	sort?: ValueTypes["SearchResultSortParameter"] | undefined | null | Variable<any, string>,
+	inStock?: boolean | undefined | null | Variable<any, string>
 };
 	["SearchResultSortParameter"]: {
 	name?: ValueTypes["SortOrder"] | undefined | null | Variable<any, string>,
@@ -1714,6 +1717,7 @@ orders?: [{	options?: ValueTypes["OrderListOptions"] | undefined | null | Variab
 	updatedAt?:boolean | `@${string}`,
 	languageCode?:boolean | `@${string}`,
 	facet?:ValueTypes["Facet"],
+	facetId?:boolean | `@${string}`,
 	name?:boolean | `@${string}`,
 	code?:boolean | `@${string}`,
 	translations?:ValueTypes["FacetValueTranslation"],
@@ -1736,6 +1740,7 @@ orders?: [{	options?: ValueTypes["OrderListOptions"] | undefined | null | Variab
 	name?:boolean | `@${string}`,
 	code?:boolean | `@${string}`,
 	values?:ValueTypes["FacetValue"],
+valueList?: [{	options?: ValueTypes["FacetValueListOptions"] | undefined | null | Variable<any, string>},ValueTypes["FacetValueList"]],
 	translations?:ValueTypes["FacetTranslation"],
 	customFields?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
@@ -1750,6 +1755,23 @@ orders?: [{	options?: ValueTypes["OrderListOptions"] | undefined | null | Variab
 }>;
 	["FacetList"]: AliasType<{
 	items?:ValueTypes["Facet"],
+	totalItems?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	["FacetValueListOptions"]: {
+	/** Skips the first n results, for use in pagination */
+	skip?: number | undefined | null | Variable<any, string>,
+	/** Takes n results, for use in pagination */
+	take?: number | undefined | null | Variable<any, string>,
+	/** Specifies which properties to sort the results by */
+	sort?: ValueTypes["FacetValueSortParameter"] | undefined | null | Variable<any, string>,
+	/** Allows the results to be filtered */
+	filter?: ValueTypes["FacetValueFilterParameter"] | undefined | null | Variable<any, string>,
+	/** Specifies whether multiple "filter" arguments should be combines with a logical AND or OR operation. Defaults to AND. */
+	filterOperator?: ValueTypes["LogicalOperator"] | undefined | null | Variable<any, string>
+};
+	["FacetValueList"]: AliasType<{
+	items?:ValueTypes["FacetValue"],
 	totalItems?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
@@ -1918,6 +1940,7 @@ and refund calculations. */
 	proratedUnitPrice?:boolean | `@${string}`,
 	/** The proratedUnitPrice including tax */
 	proratedUnitPriceWithTax?:boolean | `@${string}`,
+	/** The quantity of items purchased */
 	quantity?:boolean | `@${string}`,
 	/** The quantity at the time the Order was placed */
 	orderPlacedQuantity?:boolean | `@${string}`,
@@ -2088,7 +2111,6 @@ and refund calculations. */
 	totalItems?:boolean | `@${string}`,
 	facetValues?:ValueTypes["FacetValueResult"],
 	collections?:ValueTypes["CollectionResult"],
-	cacheIdentifier?:ValueTypes["SearchResponseCacheIdentifier"],
 		__typename?: boolean | `@${string}`
 }>;
 	/** Which FacetValues are present in the products returned
@@ -2130,6 +2152,7 @@ by the search, and in what quantity. */
 	collectionIds?:boolean | `@${string}`,
 	/** A relevance score for the result. Differs between database implementations */
 	score?:boolean | `@${string}`,
+	inStock?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
 	/** The price of a search result product, either as a range or as a single price */
@@ -2227,6 +2250,7 @@ variantList?: [{	options?: ValueTypes["ProductVariantListOptions"] | undefined |
 	endsAt?:boolean | `@${string}`,
 	couponCode?:boolean | `@${string}`,
 	perCustomerUsageLimit?:boolean | `@${string}`,
+	usageLimit?:boolean | `@${string}`,
 	name?:boolean | `@${string}`,
 	description?:boolean | `@${string}`,
 	enabled?:boolean | `@${string}`,
@@ -2709,12 +2733,21 @@ data generated by the payment provider. */
 		["...on NoActiveOrderError"] : ValueTypes["NoActiveOrderError"]
 		__typename?: boolean | `@${string}`
 }>;
-	/** This type is here to allow us to easily purge the Stellate cache
-of any search results where the collectionSlug is used. We cannot rely on
-simply purging the SearchResult type, because in the case of an empty 'items'
-array, Stellate cannot know that that particular query now needs to be purged. */
-["SearchResponseCacheIdentifier"]: AliasType<{
-	collectionSlug?:boolean | `@${string}`,
+	["Schedule"]: AliasType<{
+	start?:boolean | `@${string}`,
+	end?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	["AnnouncementBannerEntry"]: AliasType<{
+	text?:boolean | `@${string}`,
+	link?:boolean | `@${string}`,
+	color?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	["AnnouncementBanner"]: AliasType<{
+	enabled?:boolean | `@${string}`,
+	schedule?:ValueTypes["Schedule"],
+	entries?:ValueTypes["AnnouncementBannerEntry"],
 		__typename?: boolean | `@${string}`
 }>;
 	["ProductVariantFilterParameter"]: {
@@ -2793,6 +2826,23 @@ array, Stellate cannot know that that particular query now needs to be purged. *
 	shippingWithTax?: ValueTypes["SortOrder"] | undefined | null | Variable<any, string>,
 	total?: ValueTypes["SortOrder"] | undefined | null | Variable<any, string>,
 	totalWithTax?: ValueTypes["SortOrder"] | undefined | null | Variable<any, string>
+};
+	["FacetValueFilterParameter"]: {
+	id?: ValueTypes["IDOperators"] | undefined | null | Variable<any, string>,
+	createdAt?: ValueTypes["DateOperators"] | undefined | null | Variable<any, string>,
+	updatedAt?: ValueTypes["DateOperators"] | undefined | null | Variable<any, string>,
+	languageCode?: ValueTypes["StringOperators"] | undefined | null | Variable<any, string>,
+	facetId?: ValueTypes["IDOperators"] | undefined | null | Variable<any, string>,
+	name?: ValueTypes["StringOperators"] | undefined | null | Variable<any, string>,
+	code?: ValueTypes["StringOperators"] | undefined | null | Variable<any, string>
+};
+	["FacetValueSortParameter"]: {
+	id?: ValueTypes["SortOrder"] | undefined | null | Variable<any, string>,
+	createdAt?: ValueTypes["SortOrder"] | undefined | null | Variable<any, string>,
+	updatedAt?: ValueTypes["SortOrder"] | undefined | null | Variable<any, string>,
+	facetId?: ValueTypes["SortOrder"] | undefined | null | Variable<any, string>,
+	name?: ValueTypes["SortOrder"] | undefined | null | Variable<any, string>,
+	code?: ValueTypes["SortOrder"] | undefined | null | Variable<any, string>
 };
 	["HistoryEntryFilterParameter"]: {
 	id?: ValueTypes["IDOperators"] | undefined | null | Variable<any, string>,
@@ -2893,6 +2943,7 @@ orderByCode?: [{	code: string},ResolverInputTypes["Order"]],
 product?: [{	id?: string | undefined | null,	slug?: string | undefined | null},ResolverInputTypes["Product"]],
 products?: [{	options?: ResolverInputTypes["ProductListOptions"] | undefined | null},ResolverInputTypes["ProductList"]],
 search?: [{	input: ResolverInputTypes["SearchInput"]},ResolverInputTypes["SearchResponse"]],
+	getBanner?:ResolverInputTypes["AnnouncementBanner"],
 		__typename?: boolean | `@${string}`
 }>;
 	["Mutation"]: AliasType<{
@@ -3200,6 +3251,7 @@ current session. */
 		['...on CollectionList']?: Omit<ResolverInputTypes["CollectionList"],keyof ResolverInputTypes["PaginatedList"]>;
 		['...on CustomerList']?: Omit<ResolverInputTypes["CustomerList"],keyof ResolverInputTypes["PaginatedList"]>;
 		['...on FacetList']?: Omit<ResolverInputTypes["FacetList"],keyof ResolverInputTypes["PaginatedList"]>;
+		['...on FacetValueList']?: Omit<ResolverInputTypes["FacetValueList"],keyof ResolverInputTypes["PaginatedList"]>;
 		['...on HistoryEntryList']?: Omit<ResolverInputTypes["HistoryEntryList"],keyof ResolverInputTypes["PaginatedList"]>;
 		['...on OrderList']?: Omit<ResolverInputTypes["OrderList"],keyof ResolverInputTypes["PaginatedList"]>;
 		['...on ProductList']?: Omit<ResolverInputTypes["ProductList"],keyof ResolverInputTypes["PaginatedList"]>;
@@ -3426,7 +3478,8 @@ by FacetValue ID. Examples:
 	groupByProduct?: boolean | undefined | null,
 	take?: number | undefined | null,
 	skip?: number | undefined | null,
-	sort?: ResolverInputTypes["SearchResultSortParameter"] | undefined | null
+	sort?: ResolverInputTypes["SearchResultSortParameter"] | undefined | null,
+	inStock?: boolean | undefined | null
 };
 	["SearchResultSortParameter"]: {
 	name?: ResolverInputTypes["SortOrder"] | undefined | null,
@@ -3744,6 +3797,7 @@ orders?: [{	options?: ResolverInputTypes["OrderListOptions"] | undefined | null}
 	updatedAt?:boolean | `@${string}`,
 	languageCode?:boolean | `@${string}`,
 	facet?:ResolverInputTypes["Facet"],
+	facetId?:boolean | `@${string}`,
 	name?:boolean | `@${string}`,
 	code?:boolean | `@${string}`,
 	translations?:ResolverInputTypes["FacetValueTranslation"],
@@ -3766,6 +3820,7 @@ orders?: [{	options?: ResolverInputTypes["OrderListOptions"] | undefined | null}
 	name?:boolean | `@${string}`,
 	code?:boolean | `@${string}`,
 	values?:ResolverInputTypes["FacetValue"],
+valueList?: [{	options?: ResolverInputTypes["FacetValueListOptions"] | undefined | null},ResolverInputTypes["FacetValueList"]],
 	translations?:ResolverInputTypes["FacetTranslation"],
 	customFields?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
@@ -3780,6 +3835,23 @@ orders?: [{	options?: ResolverInputTypes["OrderListOptions"] | undefined | null}
 }>;
 	["FacetList"]: AliasType<{
 	items?:ResolverInputTypes["Facet"],
+	totalItems?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	["FacetValueListOptions"]: {
+	/** Skips the first n results, for use in pagination */
+	skip?: number | undefined | null,
+	/** Takes n results, for use in pagination */
+	take?: number | undefined | null,
+	/** Specifies which properties to sort the results by */
+	sort?: ResolverInputTypes["FacetValueSortParameter"] | undefined | null,
+	/** Allows the results to be filtered */
+	filter?: ResolverInputTypes["FacetValueFilterParameter"] | undefined | null,
+	/** Specifies whether multiple "filter" arguments should be combines with a logical AND or OR operation. Defaults to AND. */
+	filterOperator?: ResolverInputTypes["LogicalOperator"] | undefined | null
+};
+	["FacetValueList"]: AliasType<{
+	items?:ResolverInputTypes["FacetValue"],
 	totalItems?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
@@ -3948,6 +4020,7 @@ and refund calculations. */
 	proratedUnitPrice?:boolean | `@${string}`,
 	/** The proratedUnitPrice including tax */
 	proratedUnitPriceWithTax?:boolean | `@${string}`,
+	/** The quantity of items purchased */
 	quantity?:boolean | `@${string}`,
 	/** The quantity at the time the Order was placed */
 	orderPlacedQuantity?:boolean | `@${string}`,
@@ -4118,7 +4191,6 @@ and refund calculations. */
 	totalItems?:boolean | `@${string}`,
 	facetValues?:ResolverInputTypes["FacetValueResult"],
 	collections?:ResolverInputTypes["CollectionResult"],
-	cacheIdentifier?:ResolverInputTypes["SearchResponseCacheIdentifier"],
 		__typename?: boolean | `@${string}`
 }>;
 	/** Which FacetValues are present in the products returned
@@ -4160,6 +4232,7 @@ by the search, and in what quantity. */
 	collectionIds?:boolean | `@${string}`,
 	/** A relevance score for the result. Differs between database implementations */
 	score?:boolean | `@${string}`,
+	inStock?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
 	/** The price of a search result product, either as a range or as a single price */
@@ -4258,6 +4331,7 @@ variantList?: [{	options?: ResolverInputTypes["ProductVariantListOptions"] | und
 	endsAt?:boolean | `@${string}`,
 	couponCode?:boolean | `@${string}`,
 	perCustomerUsageLimit?:boolean | `@${string}`,
+	usageLimit?:boolean | `@${string}`,
 	name?:boolean | `@${string}`,
 	description?:boolean | `@${string}`,
 	enabled?:boolean | `@${string}`,
@@ -4754,12 +4828,21 @@ data generated by the payment provider. */
 	NoActiveOrderError?:ResolverInputTypes["NoActiveOrderError"],
 		__typename?: boolean | `@${string}`
 }>;
-	/** This type is here to allow us to easily purge the Stellate cache
-of any search results where the collectionSlug is used. We cannot rely on
-simply purging the SearchResult type, because in the case of an empty 'items'
-array, Stellate cannot know that that particular query now needs to be purged. */
-["SearchResponseCacheIdentifier"]: AliasType<{
-	collectionSlug?:boolean | `@${string}`,
+	["Schedule"]: AliasType<{
+	start?:boolean | `@${string}`,
+	end?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	["AnnouncementBannerEntry"]: AliasType<{
+	text?:boolean | `@${string}`,
+	link?:boolean | `@${string}`,
+	color?:boolean | `@${string}`,
+		__typename?: boolean | `@${string}`
+}>;
+	["AnnouncementBanner"]: AliasType<{
+	enabled?:boolean | `@${string}`,
+	schedule?:ResolverInputTypes["Schedule"],
+	entries?:ResolverInputTypes["AnnouncementBannerEntry"],
 		__typename?: boolean | `@${string}`
 }>;
 	["ProductVariantFilterParameter"]: {
@@ -4838,6 +4921,23 @@ array, Stellate cannot know that that particular query now needs to be purged. *
 	shippingWithTax?: ResolverInputTypes["SortOrder"] | undefined | null,
 	total?: ResolverInputTypes["SortOrder"] | undefined | null,
 	totalWithTax?: ResolverInputTypes["SortOrder"] | undefined | null
+};
+	["FacetValueFilterParameter"]: {
+	id?: ResolverInputTypes["IDOperators"] | undefined | null,
+	createdAt?: ResolverInputTypes["DateOperators"] | undefined | null,
+	updatedAt?: ResolverInputTypes["DateOperators"] | undefined | null,
+	languageCode?: ResolverInputTypes["StringOperators"] | undefined | null,
+	facetId?: ResolverInputTypes["IDOperators"] | undefined | null,
+	name?: ResolverInputTypes["StringOperators"] | undefined | null,
+	code?: ResolverInputTypes["StringOperators"] | undefined | null
+};
+	["FacetValueSortParameter"]: {
+	id?: ResolverInputTypes["SortOrder"] | undefined | null,
+	createdAt?: ResolverInputTypes["SortOrder"] | undefined | null,
+	updatedAt?: ResolverInputTypes["SortOrder"] | undefined | null,
+	facetId?: ResolverInputTypes["SortOrder"] | undefined | null,
+	name?: ResolverInputTypes["SortOrder"] | undefined | null,
+	code?: ResolverInputTypes["SortOrder"] | undefined | null
 };
 	["HistoryEntryFilterParameter"]: {
 	id?: ResolverInputTypes["IDOperators"] | undefined | null,
@@ -4955,7 +5055,8 @@ general anonymous access to Order data. */
 	/** Get a list of Products */
 	products: ModelTypes["ProductList"],
 	/** Search Products based on the criteria set by the `SearchInput` */
-	search: ModelTypes["SearchResponse"]
+	search: ModelTypes["SearchResponse"],
+	getBanner?: ModelTypes["AnnouncementBanner"] | undefined
 };
 	["Mutation"]: {
 		/** Adds an item to the order. If custom fields are defined on the OrderLine entity, a third argument 'customFields' will be available. */
@@ -5248,7 +5349,7 @@ current session. */
 ["Upload"]:any;
 	/** The `Money` scalar type represents monetary values and supports signed double-precision fractional values as specified by [IEEE 754](https://en.wikipedia.org/wiki/IEEE_floating_point). */
 ["Money"]:any;
-	["PaginatedList"]: ModelTypes["AssetList"] | ModelTypes["CollectionList"] | ModelTypes["CustomerList"] | ModelTypes["FacetList"] | ModelTypes["HistoryEntryList"] | ModelTypes["OrderList"] | ModelTypes["ProductList"] | ModelTypes["ProductVariantList"] | ModelTypes["PromotionList"] | ModelTypes["CountryList"] | ModelTypes["ProvinceList"] | ModelTypes["RoleList"] | ModelTypes["ShippingMethodList"] | ModelTypes["TagList"] | ModelTypes["TaxRateList"];
+	["PaginatedList"]: ModelTypes["AssetList"] | ModelTypes["CollectionList"] | ModelTypes["CustomerList"] | ModelTypes["FacetList"] | ModelTypes["FacetValueList"] | ModelTypes["HistoryEntryList"] | ModelTypes["OrderList"] | ModelTypes["ProductList"] | ModelTypes["ProductVariantList"] | ModelTypes["PromotionList"] | ModelTypes["CountryList"] | ModelTypes["ProvinceList"] | ModelTypes["RoleList"] | ModelTypes["ShippingMethodList"] | ModelTypes["TagList"] | ModelTypes["TaxRateList"];
 	["Node"]: ModelTypes["Address"] | ModelTypes["Asset"] | ModelTypes["Channel"] | ModelTypes["Collection"] | ModelTypes["CustomerGroup"] | ModelTypes["Customer"] | ModelTypes["FacetValue"] | ModelTypes["Facet"] | ModelTypes["HistoryEntry"] | ModelTypes["Order"] | ModelTypes["OrderLine"] | ModelTypes["Payment"] | ModelTypes["Refund"] | ModelTypes["Fulfillment"] | ModelTypes["Surcharge"] | ModelTypes["PaymentMethod"] | ModelTypes["ProductOptionGroup"] | ModelTypes["ProductOption"] | ModelTypes["Product"] | ModelTypes["ProductVariant"] | ModelTypes["Promotion"] | ModelTypes["Region"] | ModelTypes["Country"] | ModelTypes["Province"] | ModelTypes["Role"] | ModelTypes["Seller"] | ModelTypes["ShippingMethod"] | ModelTypes["Tag"] | ModelTypes["TaxCategory"] | ModelTypes["TaxRate"] | ModelTypes["User"] | ModelTypes["AuthenticationMethod"] | ModelTypes["Zone"];
 	["ErrorResult"]: ModelTypes["NativeAuthStrategyError"] | ModelTypes["InvalidCredentialsError"] | ModelTypes["OrderStateTransitionError"] | ModelTypes["EmailAddressConflictError"] | ModelTypes["GuestCheckoutError"] | ModelTypes["OrderLimitError"] | ModelTypes["NegativeQuantityError"] | ModelTypes["InsufficientStockError"] | ModelTypes["CouponCodeInvalidError"] | ModelTypes["CouponCodeExpiredError"] | ModelTypes["CouponCodeLimitError"] | ModelTypes["OrderModificationError"] | ModelTypes["IneligibleShippingMethodError"] | ModelTypes["NoActiveOrderError"] | ModelTypes["OrderPaymentStateError"] | ModelTypes["IneligiblePaymentMethodError"] | ModelTypes["PaymentFailedError"] | ModelTypes["PaymentDeclinedError"] | ModelTypes["AlreadyLoggedInError"] | ModelTypes["MissingPasswordError"] | ModelTypes["PasswordValidationError"] | ModelTypes["PasswordAlreadySetError"] | ModelTypes["VerificationTokenInvalidError"] | ModelTypes["VerificationTokenExpiredError"] | ModelTypes["IdentifierChangeTokenInvalidError"] | ModelTypes["IdentifierChangeTokenExpiredError"] | ModelTypes["PasswordResetTokenInvalidError"] | ModelTypes["PasswordResetTokenExpiredError"] | ModelTypes["NotVerifiedError"];
 	["Adjustment"]: {
@@ -5386,7 +5487,8 @@ by FacetValue ID. Examples:
 	groupByProduct?: boolean | undefined,
 	take?: number | undefined,
 	skip?: number | undefined,
-	sort?: ModelTypes["SearchResultSortParameter"] | undefined
+	sort?: ModelTypes["SearchResultSortParameter"] | undefined,
+	inStock?: boolean | undefined
 };
 	["SearchResultSortParameter"]: {
 	name?: ModelTypes["SortOrder"] | undefined,
@@ -5629,6 +5731,7 @@ See https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/datetime-loc
 	updatedAt: ModelTypes["DateTime"],
 	languageCode: ModelTypes["LanguageCode"],
 	facet: ModelTypes["Facet"],
+	facetId: string,
 	name: string,
 	code: string,
 	translations: Array<ModelTypes["FacetValueTranslation"]>,
@@ -5649,6 +5752,8 @@ See https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/datetime-loc
 	name: string,
 	code: string,
 	values: Array<ModelTypes["FacetValue"]>,
+	/** Returns a paginated, sortable, filterable list of the Facet's values. Added in v2.1.0. */
+	valueList: ModelTypes["FacetValueList"],
 	translations: Array<ModelTypes["FacetTranslation"]>,
 	customFields?: ModelTypes["JSON"] | undefined
 };
@@ -5661,6 +5766,22 @@ See https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/datetime-loc
 };
 	["FacetList"]: {
 		items: Array<ModelTypes["Facet"]>,
+	totalItems: number
+};
+	["FacetValueListOptions"]: {
+	/** Skips the first n results, for use in pagination */
+	skip?: number | undefined,
+	/** Takes n results, for use in pagination */
+	take?: number | undefined,
+	/** Specifies which properties to sort the results by */
+	sort?: ModelTypes["FacetValueSortParameter"] | undefined,
+	/** Allows the results to be filtered */
+	filter?: ModelTypes["FacetValueFilterParameter"] | undefined,
+	/** Specifies whether multiple "filter" arguments should be combines with a logical AND or OR operation. Defaults to AND. */
+	filterOperator?: ModelTypes["LogicalOperator"] | undefined
+};
+	["FacetValueList"]: {
+		items: Array<ModelTypes["FacetValue"]>,
 	totalItems: number
 };
 	["HistoryEntry"]: {
@@ -5813,6 +5934,7 @@ and refund calculations. */
 	proratedUnitPrice: ModelTypes["Money"],
 	/** The proratedUnitPrice including tax */
 	proratedUnitPriceWithTax: ModelTypes["Money"],
+	/** The quantity of items purchased */
 	quantity: number,
 	/** The quantity at the time the Order was placed */
 	orderPlacedQuantity: number,
@@ -5968,8 +6090,7 @@ and refund calculations. */
 		items: Array<ModelTypes["SearchResult"]>,
 	totalItems: number,
 	facetValues: Array<ModelTypes["FacetValueResult"]>,
-	collections: Array<ModelTypes["CollectionResult"]>,
-	cacheIdentifier?: ModelTypes["SearchResponseCacheIdentifier"] | undefined
+	collections: Array<ModelTypes["CollectionResult"]>
 };
 	/** Which FacetValues are present in the products returned
 by the search, and in what quantity. */
@@ -6006,7 +6127,8 @@ by the search, and in what quantity. */
 	/** An array of ids of the Collections in which this result appears */
 	collectionIds: Array<string>,
 	/** A relevance score for the result. Differs between database implementations */
-	score: number
+	score: number,
+	inStock: boolean
 };
 	/** The price of a search result product, either as a range or as a single price */
 ["SearchResultPrice"]:ModelTypes["PriceRange"] | ModelTypes["SinglePrice"];
@@ -6093,6 +6215,7 @@ by the search, and in what quantity. */
 	endsAt?: ModelTypes["DateTime"] | undefined,
 	couponCode?: string | undefined,
 	perCustomerUsageLimit?: number | undefined,
+	usageLimit?: number | undefined,
 	name: string,
 	description: string,
 	enabled: boolean,
@@ -6453,12 +6576,19 @@ data generated by the payment provider. */
 	["NativeAuthenticationResult"]:ModelTypes["CurrentUser"] | ModelTypes["InvalidCredentialsError"] | ModelTypes["NotVerifiedError"] | ModelTypes["NativeAuthStrategyError"];
 	["AuthenticationResult"]:ModelTypes["CurrentUser"] | ModelTypes["InvalidCredentialsError"] | ModelTypes["NotVerifiedError"];
 	["ActiveOrderResult"]:ModelTypes["Order"] | ModelTypes["NoActiveOrderError"];
-	/** This type is here to allow us to easily purge the Stellate cache
-of any search results where the collectionSlug is used. We cannot rely on
-simply purging the SearchResult type, because in the case of an empty 'items'
-array, Stellate cannot know that that particular query now needs to be purged. */
-["SearchResponseCacheIdentifier"]: {
-		collectionSlug?: string | undefined
+	["Schedule"]: {
+		start: string,
+	end: string
+};
+	["AnnouncementBannerEntry"]: {
+		text: string,
+	link: string,
+	color: string
+};
+	["AnnouncementBanner"]: {
+		enabled: boolean,
+	schedule: ModelTypes["Schedule"],
+	entries: Array<ModelTypes["AnnouncementBannerEntry"]>
 };
 	["ProductVariantFilterParameter"]: {
 	id?: ModelTypes["IDOperators"] | undefined,
@@ -6536,6 +6666,23 @@ array, Stellate cannot know that that particular query now needs to be purged. *
 	shippingWithTax?: ModelTypes["SortOrder"] | undefined,
 	total?: ModelTypes["SortOrder"] | undefined,
 	totalWithTax?: ModelTypes["SortOrder"] | undefined
+};
+	["FacetValueFilterParameter"]: {
+	id?: ModelTypes["IDOperators"] | undefined,
+	createdAt?: ModelTypes["DateOperators"] | undefined,
+	updatedAt?: ModelTypes["DateOperators"] | undefined,
+	languageCode?: ModelTypes["StringOperators"] | undefined,
+	facetId?: ModelTypes["IDOperators"] | undefined,
+	name?: ModelTypes["StringOperators"] | undefined,
+	code?: ModelTypes["StringOperators"] | undefined
+};
+	["FacetValueSortParameter"]: {
+	id?: ModelTypes["SortOrder"] | undefined,
+	createdAt?: ModelTypes["SortOrder"] | undefined,
+	updatedAt?: ModelTypes["SortOrder"] | undefined,
+	facetId?: ModelTypes["SortOrder"] | undefined,
+	name?: ModelTypes["SortOrder"] | undefined,
+	code?: ModelTypes["SortOrder"] | undefined
 };
 	["HistoryEntryFilterParameter"]: {
 	id?: ModelTypes["IDOperators"] | undefined,
@@ -6653,7 +6800,8 @@ general anonymous access to Order data. */
 	/** Get a list of Products */
 	products: GraphQLTypes["ProductList"],
 	/** Search Products based on the criteria set by the `SearchInput` */
-	search: GraphQLTypes["SearchResponse"]
+	search: GraphQLTypes["SearchResponse"],
+	getBanner?: GraphQLTypes["AnnouncementBanner"] | undefined
 };
 	["Mutation"]: {
 	__typename: "Mutation",
@@ -7003,13 +7151,14 @@ current session. */
 	/** The `Money` scalar type represents monetary values and supports signed double-precision fractional values as specified by [IEEE 754](https://en.wikipedia.org/wiki/IEEE_floating_point). */
 ["Money"]: "scalar" & { name: "Money" };
 	["PaginatedList"]: {
-	__typename:"AssetList" | "CollectionList" | "CustomerList" | "FacetList" | "HistoryEntryList" | "OrderList" | "ProductList" | "ProductVariantList" | "PromotionList" | "CountryList" | "ProvinceList" | "RoleList" | "ShippingMethodList" | "TagList" | "TaxRateList",
+	__typename:"AssetList" | "CollectionList" | "CustomerList" | "FacetList" | "FacetValueList" | "HistoryEntryList" | "OrderList" | "ProductList" | "ProductVariantList" | "PromotionList" | "CountryList" | "ProvinceList" | "RoleList" | "ShippingMethodList" | "TagList" | "TaxRateList",
 	items: Array<GraphQLTypes["Node"]>,
 	totalItems: number
 	['...on AssetList']: '__union' & GraphQLTypes["AssetList"];
 	['...on CollectionList']: '__union' & GraphQLTypes["CollectionList"];
 	['...on CustomerList']: '__union' & GraphQLTypes["CustomerList"];
 	['...on FacetList']: '__union' & GraphQLTypes["FacetList"];
+	['...on FacetValueList']: '__union' & GraphQLTypes["FacetValueList"];
 	['...on HistoryEntryList']: '__union' & GraphQLTypes["HistoryEntryList"];
 	['...on OrderList']: '__union' & GraphQLTypes["OrderList"];
 	['...on ProductList']: '__union' & GraphQLTypes["ProductList"];
@@ -7235,7 +7384,8 @@ by FacetValue ID. Examples:
 	groupByProduct?: boolean | undefined,
 	take?: number | undefined,
 	skip?: number | undefined,
-	sort?: GraphQLTypes["SearchResultSortParameter"] | undefined
+	sort?: GraphQLTypes["SearchResultSortParameter"] | undefined,
+	inStock?: boolean | undefined
 };
 	["SearchResultSortParameter"]: {
 		name?: GraphQLTypes["SortOrder"] | undefined,
@@ -7554,6 +7704,7 @@ See https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/datetime-loc
 	updatedAt: GraphQLTypes["DateTime"],
 	languageCode: GraphQLTypes["LanguageCode"],
 	facet: GraphQLTypes["Facet"],
+	facetId: string,
 	name: string,
 	code: string,
 	translations: Array<GraphQLTypes["FacetValueTranslation"]>,
@@ -7576,6 +7727,8 @@ See https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/datetime-loc
 	name: string,
 	code: string,
 	values: Array<GraphQLTypes["FacetValue"]>,
+	/** Returns a paginated, sortable, filterable list of the Facet's values. Added in v2.1.0. */
+	valueList: GraphQLTypes["FacetValueList"],
 	translations: Array<GraphQLTypes["FacetTranslation"]>,
 	customFields?: GraphQLTypes["JSON"] | undefined
 };
@@ -7590,6 +7743,23 @@ See https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/datetime-loc
 	["FacetList"]: {
 	__typename: "FacetList",
 	items: Array<GraphQLTypes["Facet"]>,
+	totalItems: number
+};
+	["FacetValueListOptions"]: {
+		/** Skips the first n results, for use in pagination */
+	skip?: number | undefined,
+	/** Takes n results, for use in pagination */
+	take?: number | undefined,
+	/** Specifies which properties to sort the results by */
+	sort?: GraphQLTypes["FacetValueSortParameter"] | undefined,
+	/** Allows the results to be filtered */
+	filter?: GraphQLTypes["FacetValueFilterParameter"] | undefined,
+	/** Specifies whether multiple "filter" arguments should be combines with a logical AND or OR operation. Defaults to AND. */
+	filterOperator?: GraphQLTypes["LogicalOperator"] | undefined
+};
+	["FacetValueList"]: {
+	__typename: "FacetValueList",
+	items: Array<GraphQLTypes["FacetValue"]>,
 	totalItems: number
 };
 	["HistoryEntry"]: {
@@ -7758,6 +7928,7 @@ and refund calculations. */
 	proratedUnitPrice: GraphQLTypes["Money"],
 	/** The proratedUnitPrice including tax */
 	proratedUnitPriceWithTax: GraphQLTypes["Money"],
+	/** The quantity of items purchased */
 	quantity: number,
 	/** The quantity at the time the Order was placed */
 	orderPlacedQuantity: number,
@@ -7927,8 +8098,7 @@ and refund calculations. */
 	items: Array<GraphQLTypes["SearchResult"]>,
 	totalItems: number,
 	facetValues: Array<GraphQLTypes["FacetValueResult"]>,
-	collections: Array<GraphQLTypes["CollectionResult"]>,
-	cacheIdentifier?: GraphQLTypes["SearchResponseCacheIdentifier"] | undefined
+	collections: Array<GraphQLTypes["CollectionResult"]>
 };
 	/** Which FacetValues are present in the products returned
 by the search, and in what quantity. */
@@ -7969,7 +8139,8 @@ by the search, and in what quantity. */
 	/** An array of ids of the Collections in which this result appears */
 	collectionIds: Array<string>,
 	/** A relevance score for the result. Differs between database implementations */
-	score: number
+	score: number,
+	inStock: boolean
 };
 	/** The price of a search result product, either as a range or as a single price */
 ["SearchResultPrice"]:{
@@ -8069,6 +8240,7 @@ by the search, and in what quantity. */
 	endsAt?: GraphQLTypes["DateTime"] | undefined,
 	couponCode?: string | undefined,
 	perCustomerUsageLimit?: number | undefined,
+	usageLimit?: number | undefined,
 	name: string,
 	description: string,
 	enabled: boolean,
@@ -8564,13 +8736,22 @@ data generated by the payment provider. */
         	['...on Order']: '__union' & GraphQLTypes["Order"];
 	['...on NoActiveOrderError']: '__union' & GraphQLTypes["NoActiveOrderError"];
 };
-	/** This type is here to allow us to easily purge the Stellate cache
-of any search results where the collectionSlug is used. We cannot rely on
-simply purging the SearchResult type, because in the case of an empty 'items'
-array, Stellate cannot know that that particular query now needs to be purged. */
-["SearchResponseCacheIdentifier"]: {
-	__typename: "SearchResponseCacheIdentifier",
-	collectionSlug?: string | undefined
+	["Schedule"]: {
+	__typename: "Schedule",
+	start: string,
+	end: string
+};
+	["AnnouncementBannerEntry"]: {
+	__typename: "AnnouncementBannerEntry",
+	text: string,
+	link: string,
+	color: string
+};
+	["AnnouncementBanner"]: {
+	__typename: "AnnouncementBanner",
+	enabled: boolean,
+	schedule: GraphQLTypes["Schedule"],
+	entries: Array<GraphQLTypes["AnnouncementBannerEntry"]>
 };
 	["ProductVariantFilterParameter"]: {
 		id?: GraphQLTypes["IDOperators"] | undefined,
@@ -8648,6 +8829,23 @@ array, Stellate cannot know that that particular query now needs to be purged. *
 	shippingWithTax?: GraphQLTypes["SortOrder"] | undefined,
 	total?: GraphQLTypes["SortOrder"] | undefined,
 	totalWithTax?: GraphQLTypes["SortOrder"] | undefined
+};
+	["FacetValueFilterParameter"]: {
+		id?: GraphQLTypes["IDOperators"] | undefined,
+	createdAt?: GraphQLTypes["DateOperators"] | undefined,
+	updatedAt?: GraphQLTypes["DateOperators"] | undefined,
+	languageCode?: GraphQLTypes["StringOperators"] | undefined,
+	facetId?: GraphQLTypes["IDOperators"] | undefined,
+	name?: GraphQLTypes["StringOperators"] | undefined,
+	code?: GraphQLTypes["StringOperators"] | undefined
+};
+	["FacetValueSortParameter"]: {
+		id?: GraphQLTypes["SortOrder"] | undefined,
+	createdAt?: GraphQLTypes["SortOrder"] | undefined,
+	updatedAt?: GraphQLTypes["SortOrder"] | undefined,
+	facetId?: GraphQLTypes["SortOrder"] | undefined,
+	name?: GraphQLTypes["SortOrder"] | undefined,
+	code?: GraphQLTypes["SortOrder"] | undefined
 };
 	["HistoryEntryFilterParameter"]: {
 		id?: GraphQLTypes["IDOperators"] | undefined,
@@ -9298,6 +9496,7 @@ type ZEUS_VARIABLES = {
 	["UpdateAddressInput"]: ValueTypes["UpdateAddressInput"];
 	["CurrencyCode"]: ValueTypes["CurrencyCode"];
 	["CustomerListOptions"]: ValueTypes["CustomerListOptions"];
+	["FacetValueListOptions"]: ValueTypes["FacetValueListOptions"];
 	["HistoryEntryType"]: ValueTypes["HistoryEntryType"];
 	["HistoryEntryListOptions"]: ValueTypes["HistoryEntryListOptions"];
 	["LanguageCode"]: ValueTypes["LanguageCode"];
@@ -9318,6 +9517,8 @@ type ZEUS_VARIABLES = {
 	["CustomerSortParameter"]: ValueTypes["CustomerSortParameter"];
 	["OrderFilterParameter"]: ValueTypes["OrderFilterParameter"];
 	["OrderSortParameter"]: ValueTypes["OrderSortParameter"];
+	["FacetValueFilterParameter"]: ValueTypes["FacetValueFilterParameter"];
+	["FacetValueSortParameter"]: ValueTypes["FacetValueSortParameter"];
 	["HistoryEntryFilterParameter"]: ValueTypes["HistoryEntryFilterParameter"];
 	["HistoryEntrySortParameter"]: ValueTypes["HistoryEntrySortParameter"];
 	["CollectionFilterParameter"]: ValueTypes["CollectionFilterParameter"];

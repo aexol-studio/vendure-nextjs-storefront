@@ -11,14 +11,10 @@ import { getCollections } from '@/src/graphql/sharedQueries';
 const CheckoutPage: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = props => {
     return (
         <Layout categories={props.collections}>
-            <ContentContainer>
+            <ContentContainer style={{ marginBlock: '4rem' }}>
                 <Stack>
-                    <Stack>
-                        <OrderPayment />
-                    </Stack>
-                    <Stack style={{ width: '100%', position: 'sticky', top: '96px', height: 'fit-content' }}>
-                        <OrderSummary />
-                    </Stack>
+                    <OrderPayment />
+                    <OrderSummary />
                 </Stack>
             </ContentContainer>
         </Layout>

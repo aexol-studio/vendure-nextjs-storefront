@@ -127,7 +127,7 @@ export const ActiveOrderSelector = Selector('Order')({
         id: true,
         quantity: true,
         linePriceWithTax: true,
-        unitPriceWithTax: true,
+        discountedLinePriceWithTax: true,
         featuredAsset: {
             id: true,
             preview: true,
@@ -157,6 +157,27 @@ export const ActiveOrderSelector = Selector('Order')({
 
 export type ActiveOrderType = FromSelector<typeof ActiveOrderSelector, 'Order', typeof scalars>;
 
+export const OrderSelector = Selector('Order')({
+    subTotalWithTax: true,
+    shippingWithTax: true,
+    totalWithTax: true,
+    lines: {
+        quantity: true,
+        linePriceWithTax: true,
+        featuredAsset: {
+            id: true,
+            preview: true,
+        },
+        productVariant: {
+            name: true,
+            currencyCode: true,
+            product: {
+                name: true,
+            },
+        },
+    },
+});
+export type OrderType = FromSelector<typeof OrderSelector, 'Order', typeof scalars>;
 export const ShippingMethodsSelector = Selector('ShippingMethodQuote')({
     id: true,
     name: true,

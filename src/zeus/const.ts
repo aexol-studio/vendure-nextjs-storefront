@@ -209,6 +209,16 @@ export const AllTypesProps: Record<string,any> = {
 			options:"OrderListOptions"
 		}
 	},
+	Facet:{
+		valueList:{
+			options:"FacetValueListOptions"
+		}
+	},
+	FacetValueListOptions:{
+		sort:"FacetValueSortParameter",
+		filter:"FacetValueFilterParameter",
+		filterOperator:"LogicalOperator"
+	},
 	HistoryEntryType: "enum" as const,
 	HistoryEntryListOptions:{
 		sort:"HistoryEntrySortParameter",
@@ -344,6 +354,23 @@ export const AllTypesProps: Record<string,any> = {
 		total:"SortOrder",
 		totalWithTax:"SortOrder"
 	},
+	FacetValueFilterParameter:{
+		id:"IDOperators",
+		createdAt:"DateOperators",
+		updatedAt:"DateOperators",
+		languageCode:"StringOperators",
+		facetId:"IDOperators",
+		name:"StringOperators",
+		code:"StringOperators"
+	},
+	FacetValueSortParameter:{
+		id:"SortOrder",
+		createdAt:"SortOrder",
+		updatedAt:"SortOrder",
+		facetId:"SortOrder",
+		name:"SortOrder",
+		code:"SortOrder"
+	},
 	HistoryEntryFilterParameter:{
 		id:"IDOperators",
 		createdAt:"DateOperators",
@@ -431,7 +458,8 @@ export const ReturnTypes: Record<string,any> = {
 		orderByCode:"Order",
 		product:"Product",
 		products:"ProductList",
-		search:"SearchResponse"
+		search:"SearchResponse",
+		getBanner:"AnnouncementBanner"
 	},
 	Mutation:{
 		addItemToOrder:"UpdateOrderItemsResult",
@@ -649,6 +677,7 @@ export const ReturnTypes: Record<string,any> = {
 		"...on CollectionList": "CollectionList",
 		"...on CustomerList": "CustomerList",
 		"...on FacetList": "FacetList",
+		"...on FacetValueList": "FacetValueList",
 		"...on HistoryEntryList": "HistoryEntryList",
 		"...on OrderList": "OrderList",
 		"...on ProductList": "ProductList",
@@ -1001,6 +1030,7 @@ export const ReturnTypes: Record<string,any> = {
 		updatedAt:"DateTime",
 		languageCode:"LanguageCode",
 		facet:"Facet",
+		facetId:"ID",
 		name:"String",
 		code:"String",
 		translations:"FacetValueTranslation",
@@ -1021,6 +1051,7 @@ export const ReturnTypes: Record<string,any> = {
 		name:"String",
 		code:"String",
 		values:"FacetValue",
+		valueList:"FacetValueList",
 		translations:"FacetTranslation",
 		customFields:"JSON"
 	},
@@ -1033,6 +1064,10 @@ export const ReturnTypes: Record<string,any> = {
 	},
 	FacetList:{
 		items:"Facet",
+		totalItems:"Int"
+	},
+	FacetValueList:{
+		items:"FacetValue",
 		totalItems:"Int"
 	},
 	HistoryEntry:{
@@ -1276,8 +1311,7 @@ export const ReturnTypes: Record<string,any> = {
 		items:"SearchResult",
 		totalItems:"Int",
 		facetValues:"FacetValueResult",
-		collections:"CollectionResult",
-		cacheIdentifier:"SearchResponseCacheIdentifier"
+		collections:"CollectionResult"
 	},
 	FacetValueResult:{
 		facetValue:"FacetValue",
@@ -1308,7 +1342,8 @@ export const ReturnTypes: Record<string,any> = {
 		facetIds:"ID",
 		facetValueIds:"ID",
 		collectionIds:"ID",
-		score:"Float"
+		score:"Float",
+		inStock:"Boolean"
 	},
 	SearchResultPrice:{
 		"...on PriceRange":"PriceRange",
@@ -1393,6 +1428,7 @@ export const ReturnTypes: Record<string,any> = {
 		endsAt:"DateTime",
 		couponCode:"String",
 		perCustomerUsageLimit:"Int",
+		usageLimit:"Int",
 		name:"String",
 		description:"String",
 		enabled:"Boolean",
@@ -1724,8 +1760,19 @@ export const ReturnTypes: Record<string,any> = {
 		"...on Order":"Order",
 		"...on NoActiveOrderError":"NoActiveOrderError"
 	},
-	SearchResponseCacheIdentifier:{
-		collectionSlug:"String"
+	Schedule:{
+		start:"String",
+		end:"String"
+	},
+	AnnouncementBannerEntry:{
+		text:"String",
+		link:"String",
+		color:"String"
+	},
+	AnnouncementBanner:{
+		enabled:"Boolean",
+		schedule:"Schedule",
+		entries:"AnnouncementBannerEntry"
 	}
 }
 

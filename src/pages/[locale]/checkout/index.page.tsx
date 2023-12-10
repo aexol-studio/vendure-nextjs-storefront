@@ -4,7 +4,6 @@ import { Layout } from '@/src/layouts';
 import { ContextModel, getStaticPaths, makeStaticProps } from '@/src/lib/getStatic';
 import { InferGetStaticPropsType } from 'next';
 import React from 'react';
-
 import { OrderSummary } from './components/OrderSummary';
 import { OrderForm } from './components/OrderForm';
 import { getCollections } from '@/src/graphql/sharedQueries';
@@ -12,14 +11,10 @@ import { getCollections } from '@/src/graphql/sharedQueries';
 const CheckoutPage: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = props => {
     return (
         <Layout categories={props.collections}>
-            <ContentContainer>
-                <Stack>
-                    <Stack column>
-                        <OrderForm />
-                    </Stack>
-                    <Stack style={{ width: '100%', position: 'sticky', top: '96px', height: 'fit-content' }}>
-                        <OrderSummary />
-                    </Stack>
+            <ContentContainer style={{ marginBlock: '4rem' }}>
+                <Stack gap="5rem">
+                    <OrderForm />
+                    <OrderSummary />
                 </Stack>
             </ContentContainer>
         </Layout>

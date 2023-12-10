@@ -1,7 +1,7 @@
 import { Stack } from '@/src/components/atoms/Stack';
 import { TypoGraphy } from '@/src/components/atoms/TypoGraphy';
 import React, { Fragment } from 'react';
-
+import { MoveRight } from 'lucide-react';
 const steps = [{ name: 'shipping' }, { name: 'payment' }, { name: 'confirmation' }];
 export const CheckoutStatus: React.FC<{ step: 'shipping' | 'payment' | 'confirmation' }> = ({ step }) => {
     return (
@@ -32,7 +32,7 @@ export const CheckoutStatus: React.FC<{ step: 'shipping' | 'payment' | 'confirma
                                 </TypoGraphy>
                             </Stack>
                         </Stack>
-                        {index !== steps.length - 1 && <TypoGraphy size="2rem" weight={500}>{`>`}</TypoGraphy>}
+                        {index !== steps.length - 1 && <MoveRight size={42} />}
                     </Fragment>
                 );
             })}

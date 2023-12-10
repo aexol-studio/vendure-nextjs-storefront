@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 
-import { TypoGraphy } from '@/src/components/atoms/TypoGraphy';
+import { TH2 } from '@/src/components/atoms/TypoGraphy';
 import { Stack } from '@/src/components/atoms/Stack';
 import { Button } from '@/src/components/molecules/Button';
 
@@ -115,6 +115,7 @@ export const OrderForm = () => {
                 },
             ],
         });
+
         if (setCustomerForOrder?.__typename === 'Order' || setCustomerForOrder?.__typename === 'AlreadyLoggedInError') {
             const { setOrderShippingAddress } = await storefrontApiMutation({
                 setOrderShippingAddress: [
@@ -126,60 +127,73 @@ export const OrderForm = () => {
                     },
                 ],
             });
-
             if (setOrderShippingAddress?.__typename === 'Order') push('/checkout/payment');
         }
     };
 
     return (
-        <form onSubmit={handleSubmit(onSubmit)}>
-            {/* Customer Part */}
-            <Stack gap="1rem" column>
-                <TypoGraphy size="2rem" weight={500}>
-                    {t('orderForm.contactInfo')}
-                </TypoGraphy>
-                <Input label={t('orderForm.emailAddress')} {...register('emailAddress')} error={errors.emailAddress} />
-                <Stack>
-                    <Input label={t('orderForm.firstName')} {...register('firstName')} error={errors.firstName} />
-                    <Input label={t('orderForm.lastName')} {...register('lastName')} error={errors.lastName} />
+        <Stack column>
+            <form onSubmit={handleSubmit(onSubmit)}>
+                {/* Customer Part */}
+                <Stack column>
+                    <TH2 size="2rem" weight={500} style={{ marginBottom: '1.75rem' }}>
+                        {t('orderForm.contactInfo')}
+                    </TH2>
+                    <Input
+                        label={t('orderForm.emailAddress')}
+                        {...register('emailAddress')}
+                        error={errors.emailAddress}
+                    />
+                    <Stack gap="1.75rem">
+                        <Input label={t('orderForm.firstName')} {...register('firstName')} error={errors.firstName} />
+                        <Input label={t('orderForm.lastName')} {...register('lastName')} error={errors.lastName} />
+                    </Stack>
                 </Stack>
-            </Stack>
 
-            {/* Shipping Part */}
-            <Stack column style={{ margin: '128px 0 0 0' }}>
-                <TypoGraphy size="2rem" weight={500}>
-                    {t('orderForm.shippingInfo')}
-                </TypoGraphy>
-                <Input label={t('orderForm.contactInfo')} {...register('fullName')} error={errors.fullName} />
-                <Input label={t('orderForm.company')} {...register('company')} error={errors.company} />
-                <Input label={t('orderForm.address')} {...register('streetLine1')} error={errors.province} />
-                <Input label={t('orderForm.streetAddress')} {...register('streetLine2')} error={errors.postalCode} />
-                <Stack>
-                    <Input label={t('orderForm.city')} {...register('city')} error={errors.city} />
-                    {availableCountries && (
-                        <CountrySelector
-                            {...register('countryCode')}
-                            label={t('orderForm.country')}
-                            defaultValue={cart?.billingAddress?.country}
-                            options={availableCountries}
-                            error={errors.countryCode}
+                {/* Shipping Part */}
+                <Stack column>
+                    <TH2 size="2rem" weight={500} style={{ marginBottom: '1.75rem' }}>
+                        {t('orderForm.shippingInfo')}
+                    </TH2>
+                    <Input label={t('orderForm.contactInfo')} {...register('fullName')} error={errors.fullName} />
+                    <Input label={t('orderForm.company')} {...register('company')} error={errors.company} />
+                    <Input label={t('orderForm.address')} {...register('streetLine1')} error={errors.province} />
+                    <Input
+                        label={t('orderForm.streetAddress')}
+                        {...register('streetLine2')}
+                        error={errors.postalCode}
+                    />
+                    <Stack gap="1.75rem">
+                        <Input label={t('orderForm.city')} {...register('city')} error={errors.city} />
+                        {availableCountries && (
+                            <CountrySelector
+                                {...register('countryCode')}
+                                label={t('orderForm.country')}
+                                defaultValue={cart?.billingAddress?.country}
+                                options={availableCountries}
+                                error={errors.countryCode}
+                            />
+                        )}
+                    </Stack>
+                    <Stack gap="1.75rem">
+                        <Input label={t('orderForm.state')} {...register('province')} error={errors.province} />
+                        <Input
+                            label={t('orderForm.postalCode')}
+                            {...register('postalCode')}
+                            error={errors.postalCode}
                         />
-                    )}
+                    </Stack>
+                    <Input label={t('orderForm.phone')} {...register('phoneNumber')} error={errors.phoneNumber} />
                 </Stack>
-                <Stack>
-                    <Input label={t('orderForm.state')} {...register('province')} error={errors.province} />
-                    <Input label={t('orderForm.postalCode')} {...register('postalCode')} error={errors.postalCode} />
-                </Stack>
-                <Input label={t('orderForm.phone')} {...register('phoneNumber')} error={errors.phoneNumber} />
-            </Stack>
-            {shippingMethods && (
-                <DeliveryMethod
-                    changeShippingMethod={changeShippingMethod}
-                    shippingMethods={shippingMethods}
-                    shippingLines={cart?.shippingLines}
-                />
-            )}
-            <Button type="submit">{t('orderForm.continue-to-payment')}</Button>
-        </form>
+                {shippingMethods && (
+                    <DeliveryMethod
+                        changeShippingMethod={changeShippingMethod}
+                        shippingMethods={shippingMethods}
+                        shippingLines={cart?.shippingLines}
+                    />
+                )}
+                <Button type="submit">{t('orderForm.continue-to-payment')}</Button>
+            </form>
+        </Stack>
     );
 };

@@ -99,18 +99,6 @@ const useCartContainer = createContainer(() => {
                 { orderLineId: id },
                 {
                     '...on Order': ActiveOrderSelector,
-                    '...on OrderLimitError': {
-                        errorCode: true,
-                        message: true,
-                    },
-                    '...on InsufficientStockError': {
-                        errorCode: true,
-                        message: true,
-                    },
-                    '...on NegativeQuantityError': {
-                        errorCode: true,
-                        message: true,
-                    },
                     '...on OrderModificationError': {
                         errorCode: true,
                         message: true,
@@ -184,6 +172,36 @@ const useCartContainer = createContainer(() => {
             return;
         }
     };
+
+    const applyCouponCode = async (code: string) => {
+        const { applyCouponCode } = await storefrontApiMutation({
+            applyCouponCode: [
+                { couponCode: code },
+                {
+                    __typename: true,
+                    '...on Order': ActiveOrderSelector,
+                    '...on CouponCodeExpiredError': { errorCode: true, message: true },
+                    '...on CouponCodeInvalidError': { errorCode: true, message: true },
+                    '...on CouponCodeLimitError': { errorCode: true, message: true },
+                },
+            ],
+        });
+        if (applyCouponCode.__typename === 'Order') {
+            setActiveOrder(applyCouponCode);
+            return;
+        }
+    };
+
+    const removeCouponCode = async (code: string) => {
+        const { removeCouponCode } = await storefrontApiMutation({
+            removeCouponCode: [{ couponCode: code }, ActiveOrderSelector],
+        });
+        if (removeCouponCode?.id) {
+            setActiveOrder(removeCouponCode);
+            return;
+        }
+    };
+
     return {
         activeOrder,
         cart: activeOrder,
@@ -193,6 +211,9 @@ const useCartContainer = createContainer(() => {
         removeFromCart,
         fetchActiveOrder,
         changeShippingMethod,
+
+        applyCouponCode,
+        removeCouponCode,
     };
 });
 

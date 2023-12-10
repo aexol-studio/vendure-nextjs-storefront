@@ -1,11 +1,12 @@
 import { InputHTMLAttributes, forwardRef } from 'react';
 import { FieldError } from 'react-hook-form';
-import { motion } from 'framer-motion';
 import styled from '@emotion/styled';
 import { Label } from '@/src/components/atoms/Label';
 import { Stack } from '@/src/components/atoms/Stack';
+import { FormError } from './FormError';
 
 export const StyledInput = styled.input<{ error?: boolean }>`
+    margin-top: 4px;
     padding: 0.5rem 0.75rem;
     color: ${p => p.theme.gray(900)};
     border: 1px solid ${p => p.theme.gray(100)};
@@ -26,13 +27,9 @@ export const Input = forwardRef((props: InputType, ref: React.ForwardedRef<HTMLI
         <Stack column gap="0.25rem">
             <Label>{label}</Label>
             <StyledInput ref={ref} {...rest} />
-            <motion.span
-                style={{ height: '1.4rem', color: '#f00', fontSize: '1.2rem', fontWeight: 500 }}
-                initial={{ opacity: 0 }}
-                animate={{ opacity: error ? 1 : 0 }}
-                transition={{ duration: 0.2 }}>
+            <FormError initial={{ opacity: 0 }} animate={{ opacity: error ? 1 : 0 }} transition={{ duration: 0.2 }}>
                 {error?.message}
-            </motion.span>
+            </FormError>
         </Stack>
     );
 });

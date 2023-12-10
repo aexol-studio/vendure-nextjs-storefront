@@ -11,7 +11,7 @@
         "dev": "next dev",
         "build": "next build",
         "start": "next start",
-        "zeus": "zeus http://localhost:3000/shop-api ./src --td",
+        "zeus": "zeus http://localhost:8080/shop-api ./src --td",
         "toc": "i18next-resources-for-ts toc -i ./public/locales/en -o ./src/@types/resources.ts",
         "interface": "i18next-resources-for-ts interface -i ./public/locales/en -o ./src/@types/resources.d.ts",
         "lint": "next lint"
@@ -24,6 +24,8 @@
         "@graphql-typed-document-node/core": "^3.2.0",
         "@hookform/resolvers": "^3.3.2",
         "@next/font": "^14.0.3",
+        "@stripe/react-stripe-js": "^2.4.0",
+        "@stripe/stripe-js": "^2.2.0",
         "country-flag-icons": "^1.5.9",
         "framer-motion": "^10.16.14",
         "graphql-tag": "^2.12.6",

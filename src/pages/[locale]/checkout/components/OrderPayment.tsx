@@ -11,7 +11,9 @@ import { useTranslation } from 'next-i18next';
 import { Stack } from '@/src/components/atoms/Stack';
 import { PaymentMethods } from './PaymentMethods';
 
-export const OrderPayment = () => {
+interface OrderPaymentProps {}
+
+export const OrderPayment: React.FC<OrderPaymentProps> = () => {
     const { t } = useTranslation('checkout');
     const push = usePush();
     const [availablePaymentMethods, setAvailablePaymentMethods] = useState<AvailablePaymentMethodsType[]>();
@@ -30,7 +32,17 @@ export const OrderPayment = () => {
         // Add payment to order
         const { addPaymentToOrder } = await storefrontApiMutation({
             addPaymentToOrder: [
-                { input: { metadata: {}, method } },
+                {
+                    input: {
+                        method,
+                        metadata: {
+                            // TODO: Try to add some metadata
+                            // shouldDecline: true,
+                            // shouldError: false,
+                            // shouldErrorOnSettle: true,
+                        },
+                    },
+                },
                 {
                     __typename: true,
                     '...on Order': ActiveOrderSelector,

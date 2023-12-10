@@ -15,5 +15,5 @@
     "shipping": "Shipping",
     "subtotal":"Subtotal",
     "coupon-code":"Coupon Code",
-    "estimited-delivery":"Estimated Delivery by"
+    "empty-cart": "Your cart is empty"
 }

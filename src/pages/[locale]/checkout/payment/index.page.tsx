@@ -1,22 +1,21 @@
-import { ContentContainer } from '@/src/components/atoms/ContentContainer';
-import { Stack } from '@/src/components/atoms/Stack';
-import { Layout } from '@/src/layouts';
-import { ContextModel, getStaticPaths, makeStaticProps } from '@/src/lib/getStatic';
-import { InferGetStaticPropsType } from 'next';
 import React from 'react';
+import { Layout } from '@/src/layouts';
+import { InferGetStaticPropsType } from 'next';
+import { ContextModel, getStaticPaths, makeStaticProps } from '@/src/lib/getStatic';
 import { OrderSummary } from '../components/OrderSummary';
 import { OrderPayment } from '../components/OrderPayment';
 import { getCollections } from '@/src/graphql/sharedQueries';
+import { Content, Main } from '../components/ui/Shared';
 
 const CheckoutPage: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = props => {
     return (
         <Layout categories={props.collections}>
-            <ContentContainer style={{ marginBlock: '4rem' }}>
-                <Stack>
+            <Content>
+                <Main>
                     <OrderPayment />
-                    <OrderSummary />
-                </Stack>
-            </ContentContainer>
+                    <OrderSummary hideQuantity />
+                </Main>
+            </Content>
         </Layout>
     );
 };

@@ -188,8 +188,9 @@ const useCartContainer = createContainer(() => {
         });
         if (applyCouponCode.__typename === 'Order') {
             setActiveOrder(applyCouponCode);
-            return;
+            return true;
         }
+        return false;
     };
 
     const removeCouponCode = async (code: string) => {

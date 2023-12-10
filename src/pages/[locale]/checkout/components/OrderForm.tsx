@@ -9,14 +9,13 @@ import { usePush } from '@/src/lib/redirect';
 
 import { storefrontApiMutation, storefrontApiQuery } from '@/src/graphql/client';
 import {
-    ActiveCustomerSelector,
     CreateAddressType,
     ShippingMethodType,
-    ShippingMethodsSelector,
-    AvailableCountriesSelector,
     AvailableCountriesType,
     CreateCustomerType,
     ActiveOrderSelector,
+    ActiveCustomerSelector,
+    ShippingMethodsSelector,
 } from '@/src/graphql/selectors';
 
 import { Input } from './ui/Input';
@@ -28,73 +27,65 @@ import * as z from 'zod';
 import { CountrySelector } from './ui/CountrySelector';
 import { useTranslation } from 'next-i18next';
 
-const schema = z.object({
-    emailAddress: z.string().email(),
-    firstName: z.string(),
-    lastName: z.string(),
-
-    countryCode: z.string(),
-    streetLine1: z.string(),
-    city: z.string(),
-    // company: z.string(),
-    fullName: z.string(),
-    phoneNumber: z.string(),
-    postalCode: z.string(),
-    province: z.string(),
-    streetLine2: z.string(),
-});
-
 type Form = CreateAddressType & CreateCustomerType;
 
-export const OrderForm = () => {
-    const { t } = useTranslation('checkout');
+interface OrderFormProps {
+    availableCountries?: AvailableCountriesType[];
+}
 
-    const push = usePush();
+export const OrderForm: React.FC<OrderFormProps> = ({ availableCountries }) => {
     const { cart, changeShippingMethod } = useCart();
+    const { t } = useTranslation('checkout');
+    const push = usePush();
     const [activeCustomer, setActiveCustomer] = useState<Form>();
     const [shippingMethods, setShippingMethods] = useState<ShippingMethodType[]>();
-    const [availableCountries, setAvailableCountries] = useState<AvailableCountriesType[]>();
 
     useEffect(() => {
-        storefrontApiQuery({
-            activeCustomer: ActiveCustomerSelector,
-        }).then(response => {
-            if (response?.activeCustomer?.addresses && response?.activeCustomer?.addresses.length > 0) {
+        Promise.all([
+            storefrontApiQuery({
+                activeCustomer: ActiveCustomerSelector,
+            }),
+            storefrontApiQuery({
+                eligibleShippingMethods: ShippingMethodsSelector,
+            }),
+        ]).then(([activeCustomer, eligibleShippingMethods]) => {
+            if (activeCustomer?.activeCustomer?.addresses && activeCustomer?.activeCustomer?.addresses.length > 0) {
                 setActiveCustomer({
-                    ...response.activeCustomer.addresses[0],
-                    countryCode: response.activeCustomer.addresses[0].country.code,
-                    firstName: response.activeCustomer.firstName,
-                    lastName: response.activeCustomer.lastName,
-                    emailAddress: response.activeCustomer.emailAddress,
+                    ...activeCustomer.activeCustomer.addresses[0],
+                    countryCode: activeCustomer.activeCustomer.addresses[0].country.code,
+                    firstName: activeCustomer.activeCustomer.firstName,
+                    lastName: activeCustomer.activeCustomer.lastName,
+                    emailAddress: activeCustomer.activeCustomer.emailAddress,
                 });
             }
-        });
-        storefrontApiQuery({
-            eligibleShippingMethods: ShippingMethodsSelector,
-        }).then(response => {
-            if (response) {
-                if (response.eligibleShippingMethods) {
-                    setShippingMethods(response.eligibleShippingMethods);
-                }
-            }
-        });
-        storefrontApiQuery({
-            availableCountries: AvailableCountriesSelector,
-        }).then(response => {
-            if (response) {
-                if (response.availableCountries) {
-                    setAvailableCountries(response.availableCountries);
-                }
+            if (eligibleShippingMethods?.eligibleShippingMethods) {
+                setShippingMethods(eligibleShippingMethods.eligibleShippingMethods);
             }
         });
     }, []);
+
+    const schema = z.object({
+        emailAddress: z.string().email(),
+        firstName: z.string().min(1, { message: t('orderForm.errors.firstName') }),
+        lastName: z.string().min(1, { message: t('orderForm.errors.lastName') }),
+        countryCode: z.string().length(2, { message: t('orderForm.errors.countryCode') }),
+        streetLine1: z.string().min(1, { message: t('orderForm.errors.streetLine1') }),
+        city: z.string().min(1, { message: t('orderForm.errors.city') }),
+        company: z.string().optional(),
+        fullName: z.string().min(1, { message: t('orderForm.errors.fullName') }),
+        phoneNumber: z.string().min(1, { message: t('orderForm.errors.phone') }),
+        postalCode: z.string().min(1, { message: t('orderForm.errors.postalCode') }),
+        province: z.string().min(1, { message: t('orderForm.errors.province') }),
+        streetLine2: z.string().optional(),
+    });
 
     const {
         register,
         handleSubmit,
         formState: { errors },
     } = useForm<Form>({
-        defaultValues: { ...activeCustomer, ...cart?.customer },
+        //TODO: Verify what customer we will use
+        defaultValues: { ...cart?.customer, ...activeCustomer },
         resolver: zodResolver(schema),
     });
 
@@ -112,8 +103,8 @@ export const OrderForm = () => {
             ],
         });
         if (setOrderShippingAddress?.__typename === 'Order' && setOrderShippingAddress?.state !== 'ArrangingPayment') {
+            // Set the customer for the order if there is no customer (it gets automatically set if there is a customer on provided address)
             if (!setOrderShippingAddress.customer) {
-                // Set the customer for the order
                 await storefrontApiMutation({
                     setCustomerForOrder: [
                         { input: { emailAddress, firstName, lastName } },
@@ -128,6 +119,7 @@ export const OrderForm = () => {
                     ],
                 });
             }
+
             // Set the order state to ArrangingPayment
             const { transitionOrderToState } = await storefrontApiMutation({
                 transitionOrderToState: [
@@ -145,13 +137,14 @@ export const OrderForm = () => {
                     },
                 ],
             });
+
             if (transitionOrderToState?.__typename === 'Order') {
                 // Redirect to payment page
                 push('/checkout/payment');
             }
         } else {
-            // Redirect to payment page
-            push('/checkout/payment');
+            //TODO: Handle error
+            console.log('Error setting shipping address');
         }
     };
 
@@ -172,7 +165,14 @@ export const OrderForm = () => {
                         <Input label={t('orderForm.firstName')} {...register('firstName')} error={errors.firstName} />
                         <Input label={t('orderForm.lastName')} {...register('lastName')} error={errors.lastName} />
                     </Stack>
-                    <Input label={t('orderForm.phone')} {...register('phoneNumber')} error={errors.phoneNumber} />
+                    <Input
+                        type="tel"
+                        label={t('orderForm.phone')}
+                        {...register('phoneNumber', {
+                            onChange: e => (e.target.value = e.target.value.replace(/[^0-9]/g, '')),
+                        })}
+                        error={errors.phoneNumber}
+                    />
                 </Stack>
 
                 {/* Shipping Part */}
@@ -180,28 +180,25 @@ export const OrderForm = () => {
                     <TH2 size="2rem" weight={500} style={{ marginBottom: '1.75rem' }}>
                         {t('orderForm.shippingInfo')}
                     </TH2>
-                    <Input label={t('orderForm.contactInfo')} {...register('fullName')} error={errors.fullName} />
+                    <Input label={t('orderForm.fullName')} {...register('fullName')} error={errors.fullName} />
                     <Input label={t('orderForm.company')} {...register('company')} error={errors.company} />
-                    <Input label={t('orderForm.address')} {...register('streetLine1')} error={errors.province} />
-                    <Input
-                        label={t('orderForm.streetAddress')}
-                        {...register('streetLine2')}
-                        error={errors.postalCode}
-                    />
+                    <Input label={t('orderForm.streetLine1')} {...register('streetLine1')} error={errors.province} />
+                    <Input label={t('orderForm.streetLine2')} {...register('streetLine2')} error={errors.postalCode} />
                     <Stack gap="1.75rem">
                         <Input label={t('orderForm.city')} {...register('city')} error={errors.city} />
                         {availableCountries && (
                             <CountrySelector
                                 {...register('countryCode')}
-                                label={t('orderForm.country')}
-                                defaultValue={cart?.billingAddress?.country}
+                                label={t('orderForm.countryCode')}
+                                //TODO: Verify what country we will use
+                                defaultValue={cart?.billingAddress?.country ?? 'US'}
                                 options={availableCountries}
                                 error={errors.countryCode}
                             />
                         )}
                     </Stack>
                     <Stack gap="1.75rem">
-                        <Input label={t('orderForm.state')} {...register('province')} error={errors.province} />
+                        <Input label={t('orderForm.province')} {...register('province')} error={errors.province} />
                         <Input
                             label={t('orderForm.postalCode')}
                             {...register('postalCode')}
@@ -211,9 +208,10 @@ export const OrderForm = () => {
                 </Stack>
                 {shippingMethods && (
                     <DeliveryMethod
-                        changeShippingMethod={changeShippingMethod}
+                        onChange={changeShippingMethod}
                         shippingMethods={shippingMethods}
                         shippingLines={cart?.shippingLines}
+                        currencyCode={cart?.currencyCode}
                     />
                 )}
                 <Button type="submit">{t('orderForm.continue-to-payment')}</Button>

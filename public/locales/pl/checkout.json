@@ -1,0 +1,57 @@
+{
+    "steps": {
+        "shipping":"Dane do wysyłki",
+        "payment": "Płatność",
+        "confirmation": "Potwierdzenie"
+    },
+    "orderForm": {
+        "contactInfo": "Informacje kontaktowe",
+        "emailAddress": "Adres e-mail",
+        "firstName": "Imię",
+        "lastName": "Nazwisko",
+        "phone": "Telefon",
+        "shippingInfo": "Informacje o dostawie",
+        "fullName": "Imię i nazwisko",
+        "company": "Firma",
+        "streetLine1": "Adres",
+        "streetLine2": "Apartament, suite, itp.",
+        "city": "Miasto",
+        "countryCode": "Kod kraju",
+        "province": "Województwo",
+        "postalCode": "Kod pocztowy",
+        "continue-to-payment": "Przejdź do płatności",
+        "errors": {
+            "emailAddress": "Pole Imię jest wymagane",
+            "firstName": "Pole Nazwisko jest wymagane",
+            "lastName": "Pole Adres e-mail jest wymagane",
+            "phone": "Pole Kod pocztowy jest wymagane",
+            "fullName": "Pole Województwo jest wymagane",
+            "company": "Pole Kod kraju jest wymagane",
+            "streetLine1": "Pole Adres jest wymagane",
+            "streetLine2": "Proszę wypełnić wszystkie wymagane pola",
+            "city": "Pole Miasto jest wymagane",
+            "countryCode": "Adres e-mail jest nieprawidłowy",
+            "province": "Proszę wypełnić wszystkie wymagane pola",
+            "postalCode": "Pole Telefon jest wymagane"
+        }
+    },
+    "orderSummary": {
+        "title": "Podsumowanie zamówienia",
+        "subtotal": "Suma częściowa",
+        "shipping": "Wysyłka",
+        "total": "Razem",
+        "quantity": "Ilość",
+        "remove": "Usuń"
+    },
+    "deliveryMethod": {
+        "title": "Metoda dostawy"
+    },
+    "paymentMethod": {
+        "title": "To jest płatność demonstracyjna tylko w celach prezentacyjnych",
+        "submit": "Zapłać standardową metodą płatności",
+        "notAvailable": "Domyślna metoda płatności jest niedostępna"
+    },
+    "confirmation": {
+        "orderReceived": "Twoje zamówienie <1>{{code}}</1> zostało odebrane"
+    }
+}

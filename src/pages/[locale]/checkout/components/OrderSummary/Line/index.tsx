@@ -7,50 +7,56 @@ import { ActiveOrderType } from '@/src/graphql/selectors';
 import { Divider } from '@/src/components/atoms/Divider';
 import { useCart } from '@/src/state/cart';
 import { priceFormatter } from '@/src/util/priceFomatter';
-import { useTranslation } from 'next-i18next';
 import { Minus, Plus } from 'lucide-react';
 import { CurrencyCode } from '@/src/zeus';
 
-export const Line: React.FC<{ line: ActiveOrderType['lines'][number]; currencyCode?: CurrencyCode }> = ({
+export const Line: React.FC<{
+    line: ActiveOrderType['lines'][number];
+    currencyCode?: CurrencyCode;
+    hideQuantity?: boolean;
+}> = ({
     line: { id, productVariant, quantity, featuredAsset, linePriceWithTax, discountedLinePriceWithTax },
     currencyCode = CurrencyCode.USD,
+    hideQuantity,
 }) => {
-    const { t } = useTranslation('checkout');
     const { setItemQuantityInCart } = useCart();
-
+    const optionInName = productVariant.name.replace(productVariant.product.name, '') !== '';
     const isPriceDiscounted = linePriceWithTax !== discountedLinePriceWithTax;
-    const isDefaultVariant = productVariant.name.includes(productVariant.product.name);
     return (
         <Stack column style={{ paddingBottom: '2rem' }}>
             <Stack justifyBetween>
-                <Stack gap="1.75rem" itemsCenter>
+                <Stack gap="1.75rem" itemsStart>
                     <ProductImage src={featuredAsset?.preview} size="thumbnail" />
-                    <Stack column gap="0.75rem">
+                    <Stack column gap="0.75rem" justifyBetween style={{ height: '100%' }}>
                         <Stack gap="1.25rem">
-                            <TypoGraphy size="1.75rem" weight={500}>
-                                {!isDefaultVariant
-                                    ? `${productVariant.product.name} ${productVariant.name}`
-                                    : productVariant.name}
-                            </TypoGraphy>
+                            <Stack column gap="0.5rem">
+                                <TypoGraphy size="1.5rem" weight={500} style={{ whiteSpace: 'nowrap' }}>
+                                    {productVariant.product.name}
+                                </TypoGraphy>
+                                {optionInName && (
+                                    <TypoGraphy size="1.25rem" weight={400}>
+                                        {productVariant.name.replace(productVariant.product.name, '')}
+                                    </TypoGraphy>
+                                )}
+                            </Stack>
                         </Stack>
-                        <Stack column gap="0.25rem">
-                            <TypoGraphy size="1rem" weight={500}>
-                                {t('orderSummary.quantity')}
-                            </TypoGraphy>
-                            <OrderQuantityCounter v={quantity} onChange={q => setItemQuantityInCart(id, q)} />
-                        </Stack>
+                        {!hideQuantity && (
+                            <Stack column gap="0.25rem">
+                                <OrderQuantityCounter v={quantity} onChange={q => setItemQuantityInCart(id, q)} />
+                            </Stack>
+                        )}
                     </Stack>
                 </Stack>
                 <Stack itemsStart justifyEnd gap="2rem">
-                    {!isPriceDiscounted ? (
-                        <TP>{priceFormatter(linePriceWithTax, currencyCode)}</TP>
-                    ) : (
+                    {isPriceDiscounted ? (
                         <Stack justifyEnd gap="0.5rem">
-                            <TP style={{ textDecoration: 'line-through' }}>
+                            <TP size="1.25rem" style={{ textDecoration: 'line-through', lineHeight: '2.4rem' }}>
                                 {priceFormatter(linePriceWithTax, currencyCode)}
                             </TP>
                             <TP style={{ color: 'red' }}>{priceFormatter(discountedLinePriceWithTax, currencyCode)}</TP>
                         </Stack>
+                    ) : (
+                        <TP>{priceFormatter(linePriceWithTax, currencyCode)}</TP>
                     )}
                 </Stack>
             </Stack>

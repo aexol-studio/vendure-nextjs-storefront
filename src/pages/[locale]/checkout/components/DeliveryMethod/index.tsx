@@ -8,16 +8,16 @@ import { priceFormatter } from '@/src/util/priceFomatter';
 import { CurrencyCode } from '@/src/zeus';
 
 interface Props {
+    onChange: (id: string) => void;
     shippingMethods: ShippingMethodType[];
     shippingLines?: ActiveOrderType['shippingLines'];
     currencyCode?: ActiveOrderType['currencyCode'];
-    changeShippingMethod: (id: string) => void;
 }
 
 export const DeliveryMethod: React.FC<Props> = ({
+    onChange,
     shippingMethods,
     shippingLines,
-    changeShippingMethod,
     currencyCode = CurrencyCode.USD,
 }) => {
     const { t } = useTranslation('checkout');
@@ -28,7 +28,7 @@ export const DeliveryMethod: React.FC<Props> = ({
                 {shippingMethods?.map(({ id, name, description, price }) => {
                     const isSelected = !!shippingLines?.find(({ shippingMethod }) => shippingMethod.id === id);
                     return (
-                        <Box isSelected={isSelected} key={id} column onClick={() => changeShippingMethod(id)}>
+                        <Box isSelected={isSelected} key={id} column onClick={() => onChange(id)}>
                             <TP>{name}</TP>
                             <StyledDescription dangerouslySetInnerHTML={{ __html: description }} />
                             <TP>{priceFormatter(price, currencyCode)}</TP>
@@ -52,7 +52,7 @@ const Box = styled(Stack)<{ isSelected: boolean }>`
 `;
 
 const StyledDescription = styled.div`
-    color: #000;
+    color: ${p => p.theme.gray(1000)};
     & > p {
         font-size: 1rem;
     }

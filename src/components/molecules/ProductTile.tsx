@@ -2,6 +2,7 @@ import { Link } from '@/src/components/atoms/Link';
 import { ProductImageGrid } from '@/src/components/atoms/ProductImage';
 import { Stack } from '@/src/components/atoms/Stack';
 import { CollectionTileType, ProductSearchType } from '@/src/graphql/selectors';
+import { priceFormatter } from '@/src/util/priceFomatter';
 import styled from '@emotion/styled';
 import React from 'react';
 
@@ -11,8 +12,11 @@ export const ProductTile: React.FC<{
 }> = ({ product, collections }) => {
     const priceValue =
         'value' in product.priceWithTax
-            ? product.priceWithTax.value.toFixed(2)
-            : `${product.priceWithTax.min.toFixed(2)} - ${product.priceWithTax.max.toFixed(2)}`;
+            ? priceFormatter(product.priceWithTax.value, product.currencyCode)
+            : `${priceFormatter(product.priceWithTax.min, product.currencyCode)} - ${priceFormatter(
+                  product.priceWithTax.max,
+                  product.currencyCode,
+              )}`;
     return (
         <Main column gap="2rem">
             <Link href={`/products/${product.slug}/`}>
@@ -35,7 +39,6 @@ export const ProductTile: React.FC<{
                 </Stack>
                 <ProductPrice gap="0.25rem">
                     <ProductPriceValue>{priceValue}</ProductPriceValue>
-                    <ProductPriceCurrency>{product.currencyCode}</ProductPriceCurrency>
                 </ProductPrice>
             </Stack>
         </Main>
@@ -67,9 +70,6 @@ const ProductCategory = styled(Link)`
 `;
 const ProductPrice = styled(Stack)`
     font-size: 1.25rem;
-`;
-const ProductPriceCurrency = styled(Stack)`
-    font-weight: 400;
 `;
 const ProductPriceValue = styled(Stack)`
     font-weight: 400;

@@ -27,65 +27,48 @@ export const OrderPayment = () => {
     }, []);
 
     const onClick = async (method: string) => {
-        const { transitionOrderToState } = await storefrontApiMutation({
-            transitionOrderToState: [
-                { state: 'ArrangingPayment' },
+        // Add payment to order
+        const { addPaymentToOrder } = await storefrontApiMutation({
+            addPaymentToOrder: [
+                { input: { metadata: {}, method } },
                 {
                     __typename: true,
                     '...on Order': ActiveOrderSelector,
-                    '...on OrderStateTransitionError': {
-                        errorCode: true,
+                    '...on IneligiblePaymentMethodError': {
                         message: true,
+                        errorCode: true,
+                        eligibilityCheckerMessage: true,
+                    },
+                    '...on NoActiveOrderError': {
+                        message: true,
+                        errorCode: true,
+                    },
+                    '...on OrderPaymentStateError': {
+                        message: true,
+                        errorCode: true,
+                    },
+                    '...on OrderStateTransitionError': {
+                        message: true,
+                        errorCode: true,
                         fromState: true,
                         toState: true,
                         transitionError: true,
                     },
+                    '...on PaymentDeclinedError': {
+                        errorCode: true,
+                        message: true,
+                        paymentErrorMessage: true,
+                    },
+                    '...on PaymentFailedError': {
+                        errorCode: true,
+                        message: true,
+                        paymentErrorMessage: true,
+                    },
                 },
             ],
         });
-        if (transitionOrderToState?.__typename === 'Order') {
-            const { addPaymentToOrder } = await storefrontApiMutation({
-                addPaymentToOrder: [
-                    { input: { metadata: {}, method } },
-                    {
-                        __typename: true,
-                        '...on Order': ActiveOrderSelector,
-                        '...on IneligiblePaymentMethodError': {
-                            message: true,
-                            errorCode: true,
-                            eligibilityCheckerMessage: true,
-                        },
-                        '...on NoActiveOrderError': {
-                            message: true,
-                            errorCode: true,
-                        },
-                        '...on OrderPaymentStateError': {
-                            message: true,
-                            errorCode: true,
-                        },
-                        '...on OrderStateTransitionError': {
-                            message: true,
-                            errorCode: true,
-                            fromState: true,
-                            toState: true,
-                            transitionError: true,
-                        },
-                        '...on PaymentDeclinedError': {
-                            errorCode: true,
-                            message: true,
-                            paymentErrorMessage: true,
-                        },
-                        '...on PaymentFailedError': {
-                            errorCode: true,
-                            message: true,
-                            paymentErrorMessage: true,
-                        },
-                    },
-                ],
-            });
-            if (addPaymentToOrder.__typename === 'Order' && addPaymentToOrder.state === 'PaymentAuthorized') {
-                push(`/checkout/confirmation?code=${addPaymentToOrder.code}`);
-            }
+        if (addPaymentToOrder.__typename === 'Order' && addPaymentToOrder.state === 'PaymentAuthorized') {
+            push(`/checkout/confirmation?code=${addPaymentToOrder.code}`);
         }
     };
     return (

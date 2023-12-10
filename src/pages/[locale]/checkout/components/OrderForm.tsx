@@ -69,7 +69,6 @@ export const OrderForm = () => {
                 });
             }
         });
-
         storefrontApiQuery({
             eligibleShippingMethods: ShippingMethodsSelector,
         }).then(response => {
@@ -79,7 +78,6 @@ export const OrderForm = () => {
                 }
             }
         });
-
         storefrontApiQuery({
             availableCountries: AvailableCountriesSelector,
         }).then(response => {
@@ -96,38 +94,64 @@ export const OrderForm = () => {
         handleSubmit,
         formState: { errors },
     } = useForm<Form>({
-        defaultValues: { ...activeCustomer },
+        defaultValues: { ...activeCustomer, ...cart?.customer },
         resolver: zodResolver(schema),
     });
 
     const onSubmit: SubmitHandler<Form> = async data => {
         const { emailAddress, firstName, lastName, ...rest } = data;
-        const { setCustomerForOrder } = await storefrontApiMutation({
-            setCustomerForOrder: [
-                { input: { emailAddress, firstName, lastName } },
+        // Set the shipping address for the order
+        const { setOrderShippingAddress } = await storefrontApiMutation({
+            setOrderShippingAddress: [
+                { input: { ...rest } },
                 {
                     __typename: true,
                     '...on Order': ActiveOrderSelector,
-                    '...on AlreadyLoggedInError': { message: true, errorCode: true },
-                    '...on EmailAddressConflictError': { message: true, errorCode: true },
-                    '...on GuestCheckoutError': { message: true, errorCode: true },
                     '...on NoActiveOrderError': { message: true, errorCode: true },
                 },
             ],
         });
-
-        if (setCustomerForOrder?.__typename === 'Order' || setCustomerForOrder?.__typename === 'AlreadyLoggedInError') {
-            const { setOrderShippingAddress } = await storefrontApiMutation({
-                setOrderShippingAddress: [
-                    { input: { ...rest } },
+        if (setOrderShippingAddress?.__typename === 'Order' && setOrderShippingAddress?.state !== 'ArrangingPayment') {
+            if (!setOrderShippingAddress.customer) {
+                // Set the customer for the order
+                await storefrontApiMutation({
+                    setCustomerForOrder: [
+                        { input: { emailAddress, firstName, lastName } },
+                        {
+                            __typename: true,
+                            '...on Order': ActiveOrderSelector,
+                            '...on AlreadyLoggedInError': { message: true, errorCode: true },
+                            '...on EmailAddressConflictError': { message: true, errorCode: true },
+                            '...on GuestCheckoutError': { message: true, errorCode: true },
+                            '...on NoActiveOrderError': { message: true, errorCode: true },
+                        },
+                    ],
+                });
+            }
+            // Set the order state to ArrangingPayment
+            const { transitionOrderToState } = await storefrontApiMutation({
+                transitionOrderToState: [
+                    { state: 'ArrangingPayment' },
                     {
                         __typename: true,
                         '...on Order': ActiveOrderSelector,
-                        '...on NoActiveOrderError': { message: true, errorCode: true },
+                        '...on OrderStateTransitionError': {
+                            errorCode: true,
+                            message: true,
+                            fromState: true,
+                            toState: true,
+                            transitionError: true,
+                        },
                     },
                 ],
             });
-            if (setOrderShippingAddress?.__typename === 'Order') push('/checkout/payment');
+            if (transitionOrderToState?.__typename === 'Order') {
+                // Redirect to payment page
+                push('/checkout/payment');
+            }
+        } else {
+            // Redirect to payment page
+            push('/checkout/payment');
         }
     };
 
@@ -148,6 +172,7 @@ export const OrderForm = () => {
                         <Input label={t('orderForm.firstName')} {...register('firstName')} error={errors.firstName} />
                         <Input label={t('orderForm.lastName')} {...register('lastName')} error={errors.lastName} />
                     </Stack>
+                    <Input label={t('orderForm.phone')} {...register('phoneNumber')} error={errors.phoneNumber} />
                 </Stack>
 
                 {/* Shipping Part */}
@@ -183,7 +208,6 @@ export const OrderForm = () => {
                             error={errors.postalCode}
                         />
                     </Stack>
-                    <Input label={t('orderForm.phone')} {...register('phoneNumber')} error={errors.phoneNumber} />
                 </Stack>
                 {shippingMethods && (
                     <DeliveryMethod

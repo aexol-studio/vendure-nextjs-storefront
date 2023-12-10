@@ -8,11 +8,13 @@ import { Line } from './Line';
 import { useRouter } from 'next/router';
 import { useTranslation } from 'next-i18next';
 import { priceFormatter } from '@/src/util/priceFomatter';
+import { CurrencyCode } from '@/src/zeus';
 export const OrderSummary = () => {
     const { t } = useTranslation('checkout');
     const { asPath } = useRouter();
     const { cart } = useCart();
     const step = asPath.includes('payment') ? 'payment' : 'shipping';
+    const currencyCode = cart?.currencyCode ?? CurrencyCode.USD;
 
     return (
         <Stack style={{ width: '100%', position: 'sticky', top: '9.6rem', height: 'fit-content' }}>
@@ -22,20 +24,20 @@ export const OrderSummary = () => {
                     {t('orderSummary.title')}
                 </TH2>
                 <Stack column>
-                    {cart?.lines.map((line, i) => <Line key={i} {...line} />)}
+                    {cart?.lines.map((line, i) => <Line currencyCode={currencyCode} key={i} line={line} />)}
                     <Stack column gap="2.5rem">
                         <Stack justifyBetween>
                             <TP>{t('orderSummary.subtotal')}</TP>
-                            <TP>{priceFormatter(cart?.subTotalWithTax ?? 0)}</TP>
+                            <TP>{priceFormatter(cart?.subTotalWithTax ?? 0, currencyCode)}</TP>
                         </Stack>
                         <Stack justifyBetween>
                             <TP>{t('orderSummary.shipping')}</TP>
-                            <TP>{priceFormatter(cart?.shipping ?? 0)}</TP>
+                            <TP>{priceFormatter(cart?.shipping ?? 0, currencyCode)}</TP>
                         </Stack>
                         {cart?.discounts.map(d => (
                             <Stack key={d.description} justifyBetween>
                                 <TP>{d.description}</TP>
-                                <TP>{priceFormatter(d.amountWithTax)}</TP>
+                                <TP>{priceFormatter(d.amountWithTax, currencyCode)}</TP>
                             </Stack>
                         ))}
                         <Divider />
@@ -44,7 +46,7 @@ export const OrderSummary = () => {
                                 {t('orderSummary.total')}
                             </TP>
                             <TP size="1.75rem" weight={600}>
-                                {priceFormatter(cart?.totalWithTax ?? 0)}
+                                {priceFormatter(cart?.totalWithTax ?? 0, currencyCode)}
                             </TP>
                         </Stack>
                     </Stack>

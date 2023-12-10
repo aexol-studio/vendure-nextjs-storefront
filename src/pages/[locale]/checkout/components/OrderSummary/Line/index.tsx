@@ -9,17 +9,14 @@ import { useCart } from '@/src/state/cart';
 import { priceFormatter } from '@/src/util/priceFomatter';
 import { useTranslation } from 'next-i18next';
 import { Minus, Plus } from 'lucide-react';
-export const Line: React.FC<ActiveOrderType['lines'][number]> = ({
-    id,
-    productVariant,
-    quantity,
-    featuredAsset,
-    linePriceWithTax,
-    discountedLinePriceWithTax,
+import { CurrencyCode } from '@/src/zeus';
+
+export const Line: React.FC<{ line: ActiveOrderType['lines'][number]; currencyCode?: CurrencyCode }> = ({
+    line: { id, productVariant, quantity, featuredAsset, linePriceWithTax, discountedLinePriceWithTax },
+    currencyCode = CurrencyCode.USD,
 }) => {
     const { t } = useTranslation('checkout');
     const { setItemQuantityInCart } = useCart();
-    console.log(linePriceWithTax, discountedLinePriceWithTax);
 
     const isPriceDiscounted = linePriceWithTax !== discountedLinePriceWithTax;
     const isDefaultVariant = productVariant.name.includes(productVariant.product.name);
@@ -46,16 +43,17 @@ export const Line: React.FC<ActiveOrderType['lines'][number]> = ({
                 </Stack>
                 <Stack itemsStart justifyEnd gap="2rem">
                     {!isPriceDiscounted ? (
-                        <TP>{priceFormatter(linePriceWithTax)}</TP>
+                        <TP>{priceFormatter(linePriceWithTax, currencyCode)}</TP>
                     ) : (
                         <Stack justifyEnd gap="0.5rem">
-                            <TP style={{ textDecoration: 'line-through' }}>{priceFormatter(linePriceWithTax)}</TP>
-                            <TP style={{ color: 'red' }}>{priceFormatter(discountedLinePriceWithTax)}</TP>
+                            <TP style={{ textDecoration: 'line-through' }}>
+                                {priceFormatter(linePriceWithTax, currencyCode)}
+                            </TP>
+                            <TP style={{ color: 'red' }}>{priceFormatter(discountedLinePriceWithTax, currencyCode)}</TP>
                         </Stack>
                     )}
                 </Stack>
             </Stack>
-
             <Divider style={{ marginTop: '2rem' }} />
         </Stack>
     );

@@ -5,14 +5,21 @@ import styled from '@emotion/styled';
 import React from 'react';
 import { useTranslation } from 'next-i18next';
 import { priceFormatter } from '@/src/util/priceFomatter';
+import { CurrencyCode } from '@/src/zeus';
 
 interface Props {
     shippingMethods: ShippingMethodType[];
     shippingLines?: ActiveOrderType['shippingLines'];
+    currencyCode?: ActiveOrderType['currencyCode'];
     changeShippingMethod: (id: string) => void;
 }
 
-export const DeliveryMethod: React.FC<Props> = ({ shippingMethods, shippingLines, changeShippingMethod }) => {
+export const DeliveryMethod: React.FC<Props> = ({
+    shippingMethods,
+    shippingLines,
+    changeShippingMethod,
+    currencyCode = CurrencyCode.USD,
+}) => {
     const { t } = useTranslation('checkout');
     return (
         <Stack column>
@@ -24,7 +31,7 @@ export const DeliveryMethod: React.FC<Props> = ({ shippingMethods, shippingLines
                         <Box isSelected={isSelected} key={id} column onClick={() => changeShippingMethod(id)}>
                             <TP>{name}</TP>
                             <StyledDescription dangerouslySetInnerHTML={{ __html: description }} />
-                            <TP>{priceFormatter(price)}</TP>
+                            <TP>{priceFormatter(price, currencyCode)}</TP>
                         </Box>
                     );
                 })}

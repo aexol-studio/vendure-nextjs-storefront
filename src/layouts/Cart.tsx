@@ -62,7 +62,7 @@ export const Cart = ({ activeOrder }: { activeOrder?: ActiveOrderType }) => {
                                                         onChange={v => setItemQuantityInCart(l.id, v)}
                                                     />
                                                 </Stack>
-                                                <TP>{priceFormatter(l.linePriceWithTax)}</TP>
+                                                <TP>{priceFormatter(l.linePriceWithTax, activeOrder.currencyCode)}</TP>
                                             </CartRow>
                                         ))}
                                     </Stack>
@@ -74,31 +74,48 @@ export const Cart = ({ activeOrder }: { activeOrder?: ActiveOrderType }) => {
                                             <Stack justifyBetween>
                                                 <TP>{t('price')}</TP>
                                                 {activeOrder?.subTotalWithTax ? (
-                                                    <TP size="2rem">{priceFormatter(activeOrder?.subTotalWithTax)}</TP>
+                                                    <TP size="2rem">
+                                                        {priceFormatter(
+                                                            activeOrder?.subTotalWithTax,
+                                                            activeOrder.currencyCode,
+                                                        )}
+                                                    </TP>
                                                 ) : null}
                                             </Stack>
                                             <Stack justifyBetween>
                                                 <TP>{t('discount')}</TP>
                                                 {activeOrder?.totalWithTax ? (
-                                                    <TP>{priceFormatter(activeOrder?.totalWithTax)}</TP>
+                                                    <TP>
+                                                        {priceFormatter(
+                                                            activeOrder?.totalWithTax,
+                                                            activeOrder.currencyCode,
+                                                        )}
+                                                    </TP>
                                                 ) : null}
                                             </Stack>
                                             {activeOrder?.discounts.map(d => (
                                                 <Stack key={d.description} justifyBetween>
                                                     <TP>{d.description}</TP>
-                                                    <TP>{priceFormatter(d.amountWithTax)}</TP>
+                                                    <TP>{priceFormatter(d.amountWithTax, activeOrder.currencyCode)}</TP>
                                                 </Stack>
                                             ))}
                                             <Stack justifyBetween>
                                                 <TP>{t('shipping')}</TP>
                                                 {activeOrder?.shippingWithTax ? (
-                                                    <TP>{priceFormatter(activeOrder?.shippingWithTax)}</TP>
+                                                    <TP>
+                                                        {priceFormatter(
+                                                            activeOrder?.shippingWithTax,
+                                                            activeOrder.currencyCode,
+                                                        )}
+                                                    </TP>
                                                 ) : null}
                                             </Stack>
                                             <Divider />
                                         </Stack>
                                         {activeOrder?.totalWithTax ? (
-                                            <TP>{priceFormatter(activeOrder?.totalWithTax)}</TP>
+                                            <TP>
+                                                {priceFormatter(activeOrder?.totalWithTax, activeOrder.currencyCode)}
+                                            </TP>
                                         ) : null}
                                         {activeOrder?.totalQuantity ? (
                                             <Link href="/checkout">{t('proceed-to-checkout')}</Link>

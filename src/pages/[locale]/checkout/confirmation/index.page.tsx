@@ -74,7 +74,7 @@ const ConfirmationPage: React.FC<InferGetStaticPropsType<typeof getStaticProps>>
                                         </Stack>
                                     </Stack>
                                     <TP size="2rem" weight={600}>
-                                        {priceFormatter(line.linePriceWithTax)}
+                                        {priceFormatter(line.linePriceWithTax, line.productVariant.currencyCode)}
                                     </TP>
                                 </Stack>
                                 <Divider style={{ marginBlock: '3rem' }} />

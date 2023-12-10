@@ -153,6 +153,12 @@ export const ActiveOrderSelector = Selector('Order')({
     couponCodes: true,
     currencyCode: true,
     code: true,
+    customer: {
+        id: true,
+        firstName: true,
+        lastName: true,
+        emailAddress: true,
+    },
 });
 
 export type ActiveOrderType = FromSelector<typeof ActiveOrderSelector, 'Order', typeof scalars>;

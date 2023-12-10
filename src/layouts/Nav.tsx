@@ -9,10 +9,21 @@ import { Link } from '@/src/components/atoms/Link';
 import { useTranslation } from 'next-i18next';
 import { Cart } from '@/src/layouts/Cart';
 import { useCart } from '@/src/state/cart';
+import { useMemo, useState } from 'react';
+import { usePush } from '@/src/lib/redirect';
 
 export const Nav: React.FC<{ categories: CollectionTileType[] }> = ({ categories }) => {
     const { t } = useTranslation('common');
+    const [selectedCategorySlug, setSelectedCategorySlug] = useState<string>();
+    const [searchPhrase, setSearchPhrase] = useState('');
     const { cart } = useCart();
+    const push = usePush();
+    const searchParams = useMemo(() => {
+        const u = new URLSearchParams();
+        if (selectedCategorySlug) u.set('collection', selectedCategorySlug);
+        if (searchPhrase) u.set('q', searchPhrase);
+        return u.toString();
+    }, [selectedCategorySlug, searchPhrase]);
     return (
         <Main justifyCenter>
             <ContentContainer>
@@ -24,12 +35,25 @@ export const Nav: React.FC<{ categories: CollectionTileType[] }> = ({ categories
                     </Stack>
                     <Stack>
                         <Select
+                            value={selectedCategorySlug}
+                            setValue={e => setSelectedCategorySlug(e)}
                             options={categories.map(c => ({
                                 label: c.name,
-                                value: c.id,
+                                value: c.slug,
                             }))}
                         />
-                        <Search placeholder={t('search-products')} />
+                        <Search
+                            value={searchPhrase}
+                            onChange={e => setSearchPhrase(e.target.value)}
+                            onKeyDown={e => {
+                                if (e.key === 'Enter') {
+                                    if (!searchPhrase) return;
+                                    push(`/search/?${searchParams}`);
+                                    return false;
+                                }
+                            }}
+                            placeholder={t('search-products')}
+                        />
                     </Stack>
                     <LanguageSwitcher />
                     <Cart activeOrder={cart} />

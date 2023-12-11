@@ -1,44 +1,43 @@
 import React, { useEffect, useState } from 'react';
 import { InferGetStaticPropsType } from 'next';
 import { useRouter } from 'next/router';
-
-import { ContentContainer } from '@/src/components/atoms/ContentContainer';
-import { Stack } from '@/src/components/atoms/Stack';
-
-import { Layout } from '@/src/layouts';
 import { ContextModel, getStaticPaths, makeStaticProps } from '@/src/lib/getStatic';
 import { getCollections } from '@/src/graphql/sharedQueries';
 import { storefrontApiQuery } from '@/src/graphql/client';
-
-import { CheckoutStatus } from '../components/ui/CheckoutStatus';
+import { OrderSelector, OrderType } from '@/src/graphql/selectors';
+import { Layout } from '@/src/layouts';
+import { OrderConfirmation } from '../components/OrderConfirmation';
+import { Content } from '../components/ui/Shared';
 
 const ConfirmationPage: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = props => {
     const { query } = useRouter();
     const code = query.code as string;
-
-    const [order, setOrder] = useState<{
-        code: string;
-        active: boolean;
-    }>();
-    console.log(order);
+    const [order, setOrder] = useState<OrderType>();
+    const router = useRouter();
 
     useEffect(() => {
-        storefrontApiQuery({
-            orderByCode: [{ code }, { active: true, code: true }],
-        }).then(r => {
-            setOrder(r?.orderByCode);
-        });
+        if (!code) {
+            router.push('/');
+        } else {
+            storefrontApiQuery({
+                orderByCode: [{ code }, OrderSelector],
+            })
+                .then(r => {
+                    if (r.orderByCode) {
+                        setOrder(r.orderByCode);
+                    } else router.push('/');
+                })
+                .catch(() => router.push('/'));
+        }
     }, [code]);
 
-    return (
+    return code ? (
         <Layout categories={props.collections}>
-            <ContentContainer>
-                <Stack>
-                    <CheckoutStatus step={'confirmation'} />
-                </Stack>
-            </ContentContainer>
+            <Content>
+                <OrderConfirmation code={code} order={order} />
+            </Content>
         </Layout>
-    );
+    ) : null;
 };
 
 const getStaticProps = async (context: ContextModel) => {

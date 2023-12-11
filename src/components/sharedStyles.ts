@@ -35,6 +35,8 @@ export interface BaseFlexParams {
     reverse?: boolean;
     flexWrap?: boolean;
     itemsCenter?: boolean;
+    itemsStart?: boolean;
+    itemsEnd?: boolean;
     justifyEnd?: boolean;
     justifyBetween?: boolean;
     justifyCenter?: boolean;

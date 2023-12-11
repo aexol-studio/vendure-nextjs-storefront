@@ -1,23 +1,44 @@
 {
+    "steps": {
+        "shipping": "Shipping",
+        "payment": "Payment",
+        "confirmation": "Confirmation"
+    },
     "orderForm": {
         "contactInfo": "Contact Information",
         "emailAddress": "Email Address",
         "firstName": "First Name",
         "lastName": "Last Name",
-        "shippingInfo": "Shipping Information",
-        "company": "Company",
-        "address": "Address",
-        "streetAddress": "Apartment, suite, etc.",
-        "city": "City",
-        "country": "Country",
-        "state": "State / Province",
-        "postalCode": "Postal Code",
         "phone": "Phone",
-        "continue-to-payment": "Continue to Payment"
+        "shippingInfo": "Shipping Information",
+        "fullName": "Full Name",
+        "company": "Company",
+        "streetLine1": "Address",
+        "streetLine2": "Apartment, suite, etc.",
+        "city": "City",
+        "countryCode": "Country",
+        "province": "State / Province",
+        "postalCode": "Postal Code",
+        "continue-to-payment": "Continue to Payment",
+        "errors": {
+            "emailAddress": "First name is required",
+            "firstName": "Last name is required",
+            "lastName": "Email address is required",
+            "phone": "Postal code is required",
+            "fullName": "State is required",
+            "company": "Country is required",
+            "streetLine1": "Street address is required",
+            "streetLine2": "Please fill in all required fields",
+            "city": "City is required",
+            "countryCode": "Email address is invalid",
+            "province": "Please fill in all required fields",
+            "postalCode": "Phone is required"
+        }
     },
     "orderSummary": {
         "title": "Order Summary",
         "subtotal": "Subtotal",
+        "discount": "Discount",
         "shipping": "Shipping",
         "total": "Total",
         "quantity": "Quantity",
@@ -27,7 +48,11 @@
         "title": "Delivery Method"
     },
     "paymentMethod": {
-        "title": "Payment Method",
-        "submit": "Submit Payment"
+        "title": "This is a dummy payment for demonstration purposes only",
+        "submit": "Pay with Standard Payment",
+        "notAvailable": "Default payment method is not available"
+    },
+    "confirmation": {
+        "orderReceived": "Your order <1>{{code}}</1> has been received"
     }
 }

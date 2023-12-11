@@ -1,21 +1,24 @@
 import { motion, AnimatePresence } from 'framer-motion';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import styled from '@emotion/styled';
 import { TH2, TP } from '@/src/components/atoms/TypoGraphy';
 import { Stack } from '@/src/components/atoms/Stack';
-import { Button, IconButton } from '@/src/components/molecules/Button';
+import { IconButton } from '@/src/components/molecules/Button';
 import { ActiveOrderType } from '@/src/graphql/selectors';
-import { ShoppingCartIcon, X } from 'lucide-react';
+import { ShoppingCartIcon, X, Trash2 } from 'lucide-react';
 import { ContentContainer } from '@/src/components/atoms/ContentContainer';
 import { QuantityCounter } from '@/src/components/molecules/QuantityCounter';
 import { Divider } from '@/src/components/atoms/Divider';
 import { useCart } from '@/src/state/cart';
 import { Link } from '@/src/components/atoms/Link';
 import { useTranslation } from 'next-i18next';
-import { priceFormatter } from '../util/priceFomatter';
+import { priceFormatter } from '@/src/util/priceFomatter';
+import { DiscountForm } from '@/src/components/molecules/DiscountForm';
+import { CurrencyCode } from '../zeus';
+import { ShippingProtection } from '../components/molecules/Shipptection';
 
 export const Cart = ({ activeOrder }: { activeOrder?: ActiveOrderType }) => {
-    const { setItemQuantityInCart } = useCart();
+    const { setItemQuantityInCart, removeFromCart, removeCouponCode } = useCart();
     const { t } = useTranslation('common');
     const [isOpen, setOpen] = useState(false);
 
@@ -24,6 +27,21 @@ export const Cart = ({ activeOrder }: { activeOrder?: ActiveOrderType }) => {
         setOpen(false);
     };
     // Again, we're using framer-motion for the transition effect
+
+    const currencyCode = activeOrder?.currencyCode || CurrencyCode.USD;
+    const discountsSum = useMemo(() => {
+        const discounts = activeOrder?.discounts?.reduce((acc, discount) => acc - discount.amountWithTax, 0) ?? 0;
+        return discounts;
+    }, [activeOrder]);
+
+    const [isShippingProtection, setIsShippingProtection] = useState(false);
+
+    const fakeShippingValue = useMemo(() => {
+        const total = activeOrder?.totalWithTax || 0;
+        const discounts = activeOrder?.discounts?.reduce((acc, discount) => acc - discount.amountWithTax, 0) ?? 0;
+        return (total - discounts) * 0.02;
+    }, [activeOrder]);
+
     return (
         <>
             <IconButton onClick={() => setOpen(!isOpen)}>
@@ -48,79 +66,170 @@ export const Cart = ({ activeOrder }: { activeOrder?: ActiveOrderType }) => {
                                         <X />
                                     </IconButton>
                                 </Stack>
+
                                 <Stack gap="12rem">
-                                    <Stack column>
-                                        {activeOrder?.lines.map(l => (
-                                            <CartRow gap="12rem" key={l.id}>
-                                                <CartImage src={l.featuredAsset?.preview} />
-                                                <Stack column gap="2.5rem">
-                                                    <TP weight={500} size="1.75rem">
-                                                        {l.productVariant.name}
-                                                    </TP>
-                                                    <QuantityCounter
-                                                        v={l.quantity}
-                                                        onChange={v => setItemQuantityInCart(l.id, v)}
-                                                    />
-                                                </Stack>
-                                                <TP>{priceFormatter(l.linePriceWithTax, activeOrder.currencyCode)}</TP>
-                                            </CartRow>
-                                        ))}
-                                    </Stack>
+                                    <CartList column>
+                                        {activeOrder?.lines.map(
+                                            ({
+                                                productVariant,
+                                                id,
+                                                featuredAsset,
+                                                quantity,
+                                                linePriceWithTax,
+                                                discountedLinePriceWithTax,
+                                            }) => {
+                                                const optionInName =
+                                                    productVariant.name.replace(productVariant.product.name, '') !== '';
+                                                const isPriceDiscounted =
+                                                    linePriceWithTax !== discountedLinePriceWithTax;
+
+                                                return (
+                                                    <CartRow gap="12rem" key={id}>
+                                                        <CartImage src={featuredAsset?.preview} />
+                                                        <Stack column gap="2.5rem">
+                                                            <Stack column>
+                                                                <TP
+                                                                    size="1.75rem"
+                                                                    weight={500}
+                                                                    style={{ whiteSpace: 'nowrap' }}>
+                                                                    {productVariant.product.name}
+                                                                </TP>
+                                                                {optionInName && (
+                                                                    <TP size="1.5rem" weight={400}>
+                                                                        {productVariant.name.replace(
+                                                                            productVariant.product.name,
+                                                                            '',
+                                                                        )}
+                                                                    </TP>
+                                                                )}
+                                                            </Stack>
+                                                            <QuantityCounter
+                                                                v={quantity}
+                                                                onChange={v => setItemQuantityInCart(id, v)}
+                                                            />
+                                                            <Remove onClick={() => removeFromCart(id)}>
+                                                                <Trash2 size={20} />
+                                                                <TP weight={600} size="1.25rem" upperCase>
+                                                                    {t('remove')}
+                                                                </TP>
+                                                            </Remove>
+                                                        </Stack>
+                                                        {isPriceDiscounted ? (
+                                                            <Stack justifyEnd gap="0.5rem">
+                                                                <TP
+                                                                    size="1.25rem"
+                                                                    style={{
+                                                                        textDecoration: 'line-through',
+                                                                        lineHeight: '2.4rem',
+                                                                    }}>
+                                                                    {priceFormatter(linePriceWithTax, currencyCode)}
+                                                                </TP>
+                                                                <TP style={{ color: 'red' }}>
+                                                                    {priceFormatter(
+                                                                        discountedLinePriceWithTax,
+                                                                        currencyCode,
+                                                                    )}
+                                                                </TP>
+                                                            </Stack>
+                                                        ) : (
+                                                            <TP>{priceFormatter(linePriceWithTax, currencyCode)}</TP>
+                                                        )}
+                                                    </CartRow>
+                                                );
+                                            },
+                                        )}
+                                    </CartList>
                                     <CartSummary column gap="3rem">
                                         <TP size="2.5rem" weight={600}>
                                             {t('cart-summary')}
                                         </TP>
-                                        <Stack column>
-                                            <Stack justifyBetween>
-                                                <TP>{t('price')}</TP>
-                                                {activeOrder?.subTotalWithTax ? (
-                                                    <TP size="2rem">
-                                                        {priceFormatter(
-                                                            activeOrder?.subTotalWithTax,
-                                                            activeOrder.currencyCode,
-                                                        )}
-                                                    </TP>
-                                                ) : null}
-                                            </Stack>
-                                            <Stack justifyBetween>
-                                                <TP>{t('discount')}</TP>
+                                        {activeOrder && activeOrder.totalQuantity > 0 ? (
+                                            <Stack column gap="2.5rem">
                                                 {activeOrder?.totalWithTax ? (
-                                                    <TP>
-                                                        {priceFormatter(
-                                                            activeOrder?.totalWithTax,
-                                                            activeOrder.currencyCode,
-                                                        )}
-                                                    </TP>
+                                                    <Stack justifyBetween>
+                                                        <TP>{t('price')}</TP>
+                                                        <TP>
+                                                            {priceFormatter(activeOrder?.totalWithTax, currencyCode)}
+                                                        </TP>
+                                                    </Stack>
                                                 ) : null}
-                                            </Stack>
-                                            {activeOrder?.discounts.map(d => (
-                                                <Stack key={d.description} justifyBetween>
-                                                    <TP>{d.description}</TP>
-                                                    <TP>{priceFormatter(d.amountWithTax, activeOrder.currencyCode)}</TP>
-                                                </Stack>
-                                            ))}
-                                            <Stack justifyBetween>
-                                                <TP>{t('shipping')}</TP>
+                                                {discountsSum !== 0 ? (
+                                                    <Stack justifyBetween>
+                                                        <TP>{t('discount')}</TP>
+                                                        <TP>-{priceFormatter(discountsSum, currencyCode)}</TP>
+                                                    </Stack>
+                                                ) : null}
                                                 {activeOrder?.shippingWithTax ? (
-                                                    <TP>
-                                                        {priceFormatter(
-                                                            activeOrder?.shippingWithTax,
-                                                            activeOrder.currencyCode,
-                                                        )}
-                                                    </TP>
+                                                    <Stack justifyBetween>
+                                                        <TP>{t('shipping')}</TP>
+                                                        <TP>
+                                                            {priceFormatter(activeOrder?.shippingWithTax, currencyCode)}
+                                                        </TP>
+                                                    </Stack>
                                                 ) : null}
+                                                {activeOrder?.discounts?.map(d => (
+                                                    <Stack key={d.description} justifyBetween>
+                                                        <Stack itemsCenter gap="1.25rem">
+                                                            <Remove onClick={() => removeCouponCode(d.description)}>
+                                                                <X size={16} />
+                                                            </Remove>
+                                                            <TP>
+                                                                {t('coupon-code')} {d.description}
+                                                            </TP>
+                                                        </Stack>
+                                                        <TP>{priceFormatter(d.amountWithTax, currencyCode)}</TP>
+                                                    </Stack>
+                                                ))}
+                                                <Divider style={{ margin: '3.2rem 0' }} />
+                                                <Stack column gap="2.5rem">
+                                                    {activeOrder?.totalWithTax ? (
+                                                        <Stack justifyBetween>
+                                                            <TP>{t('subtotal')}</TP>
+                                                            <TP>
+                                                                {priceFormatter(
+                                                                    activeOrder.totalWithTax - discountsSum,
+                                                                    currencyCode,
+                                                                )}
+                                                            </TP>
+                                                        </Stack>
+                                                    ) : null}
+                                                    <DiscountForm />
+                                                    <ShippingProtection
+                                                        value={fakeShippingValue}
+                                                        active={isShippingProtection}
+                                                        onClick={v => setIsShippingProtection(v)}
+                                                        currencyCode={currencyCode}
+                                                    />
+                                                    <Divider />
+                                                    {activeOrder?.totalWithTax ? (
+                                                        <Stack justifyBetween>
+                                                            <TP>{t('total')}</TP>
+                                                            <TP>
+                                                                {priceFormatter(
+                                                                    activeOrder.totalWithTax - discountsSum,
+                                                                    currencyCode,
+                                                                )}
+                                                            </TP>
+                                                        </Stack>
+                                                    ) : null}
+                                                    <Stack column gap="3rem">
+                                                        <StyledLink href="/checkout">
+                                                            {t('proceed-to-checkout')}
+                                                        </StyledLink>
+                                                        <StyledButton onClick={close}>
+                                                            {t('continue-shopping')}
+                                                        </StyledButton>
+                                                    </Stack>
+                                                </Stack>
                                             </Stack>
-                                            <Divider />
-                                        </Stack>
-                                        {activeOrder?.totalWithTax ? (
-                                            <TP>
-                                                {priceFormatter(activeOrder?.totalWithTax, activeOrder.currencyCode)}
-                                            </TP>
-                                        ) : null}
-                                        {activeOrder?.totalQuantity ? (
-                                            <Link href="/checkout">{t('proceed-to-checkout')}</Link>
-                                        ) : null}
-                                        <Button onClick={close}>{t('continue-shopping')}</Button>
+                                        ) : (
+                                            <Stack column itemsCenter gap="3rem">
+                                                <TP weight={600}>{t('empty-cart')}</TP>
+                                                <StyledButton dark onClick={close}>
+                                                    {t('continue-shopping')}
+                                                </StyledButton>
+                                            </Stack>
+                                        )}
                                     </CartSummary>
                                 </Stack>
                             </CartContainer>
@@ -131,13 +240,59 @@ export const Cart = ({ activeOrder }: { activeOrder?: ActiveOrderType }) => {
         </>
     );
 };
+
+const Remove = styled.button`
+    appearance: none;
+    border: none;
+    background: transparent;
+
+    display: flex;
+    align-items: center;
+    width: fit-content;
+
+    gap: 0.4rem;
+`;
+
+const StyledButton = styled.button<{ dark?: boolean }>`
+    appearance: none;
+    border: none;
+    background: ${p => (p.dark ? p.theme.gray(1000) : p.theme.gray(0))};
+
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 1.6rem 0.8rem;
+
+    color: ${p => (p.dark ? p.theme.gray(0) : p.theme.gray(1000))};
+    text-align: center;
+    text-transform: uppercase;
+    font-weight: 500;
+    font-size: 1.6rem;
+`;
+const StyledLink = styled(Link)`
+    padding: 1.6rem 0.8rem;
+    background: ${p => p.theme.gray(1000)};
+
+    color: ${p => p.theme.gray(0)};
+    text-align: center;
+    text-transform: uppercase;
+    font-weight: 500;
+    font-size: 1.6rem;
+`;
 const CartContainer = styled(Stack)`
     padding: 4rem 0;
 `;
 const CartSummary = styled(Stack)`
+    //TODO: Remove this when left side is done
+    min-width: 390px;
+    max-width: 390px;
+
     padding: 3rem;
     border: 1px solid ${p => p.theme.gray(100)};
 `;
+const CartList = styled(Stack)``;
 const CartRow = styled(Stack)`
     padding: 3rem 0;
     border-bottom: 1px solid ${p => p.theme.gray(50)};

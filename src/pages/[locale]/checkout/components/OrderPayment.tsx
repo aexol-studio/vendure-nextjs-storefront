@@ -7,17 +7,17 @@ import {
 } from '@/src/graphql/selectors';
 import { usePush } from '@/src/lib/redirect';
 import React, { useEffect, useState } from 'react';
-import { SubmitHandler, useForm } from 'react-hook-form';
 import { useTranslation } from 'next-i18next';
+import { Stack } from '@/src/components/atoms/Stack';
+import { PaymentMethods } from './PaymentMethods';
 
-type Form = {
-    paymentMethod: string;
-};
+interface OrderPaymentProps {}
 
-export const OrderPayment = () => {
+export const OrderPayment: React.FC<OrderPaymentProps> = () => {
     const { t } = useTranslation('checkout');
     const push = usePush();
     const [availablePaymentMethods, setAvailablePaymentMethods] = useState<AvailablePaymentMethodsType[]>();
+
     useEffect(() => {
         storefrontApiQuery({
             eligiblePaymentMethods: AvailablePaymentMethodsSelector,
@@ -26,40 +26,21 @@ export const OrderPayment = () => {
                 setAvailablePaymentMethods(response.eligiblePaymentMethods);
             }
         });
-        storefrontApiMutation({
-            transitionOrderToState: [
-                { state: 'ArrangingPayment' },
-                {
-                    '...on Order': ActiveOrderSelector,
-                    '...on OrderStateTransitionError': {
-                        errorCode: true,
-                        message: true,
-                        fromState: true,
-                        toState: true,
-                        transitionError: true,
-                    },
-                },
-            ],
-        }).then(response => {
-            console.log(response);
-        });
     }, []);
 
-    const {
-        register,
-        handleSubmit,
-        // watch,
-        // formState: { errors },
-    } = useForm<Form>({});
-
-    const onSubmit: SubmitHandler<Form> = async data => {
-        console.log(data);
+    const onClick = async (method: string) => {
+        // Add payment to order
         const { addPaymentToOrder } = await storefrontApiMutation({
             addPaymentToOrder: [
                 {
                     input: {
-                        metadata: {},
-                        method: data.paymentMethod,
+                        method,
+                        metadata: {
+                            // TODO: Try to add some metadata
+                            // shouldDecline: true,
+                            // shouldError: false,
+                            // shouldErrorOnSettle: true,
+                        },
                     },
                 },
                 {
@@ -98,31 +79,16 @@ export const OrderPayment = () => {
                 },
             ],
         });
-        console.log(addPaymentToOrder);
         if (addPaymentToOrder.__typename === 'Order' && addPaymentToOrder.state === 'PaymentAuthorized') {
-            push(`/checkout/confirmation?${addPaymentToOrder.code}`);
+            push(`/checkout/confirmation?code=${addPaymentToOrder.code}`);
         }
     };
-
     return (
-        <div>
-            <TP>{t('paymentMethod.title')}</TP>
-            <form onSubmit={handleSubmit(onSubmit)}>
-                {availablePaymentMethods?.map(paymentMethod => {
-                    return (
-                        <div key={paymentMethod.code}>
-                            <input
-                                id={paymentMethod.code}
-                                value={paymentMethod.code}
-                                type="radio"
-                                {...register('paymentMethod')}
-                            />
-                            <label htmlFor={paymentMethod.code}>{paymentMethod.name}</label>
-                        </div>
-                    );
-                })}
-                <button type="submit">{t('paymentMethod.submit')}</button>
-            </form>
-        </div>
+        <Stack>
+            <Stack column itemsCenter gap="1.25rem">
+                <TP>{t('paymentMethod.title')}</TP>
+                <PaymentMethods availablePaymentMethods={availablePaymentMethods} onClick={onClick} />
+            </Stack>
+        </Stack>
     );
 };

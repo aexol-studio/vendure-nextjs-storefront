@@ -9,5 +9,5 @@ export const Stack = styled.div<BaseFlexParams>`
     flex-wrap: ${p => (p.flexWrap ? 'wrap' : 'nowrap')};
     justify-content: ${p =>
         p.justifyBetween ? 'space-between' : p.justifyCenter ? 'center' : p.justifyEnd ? 'end' : 'start'};
-    align-items: ${p => (p.itemsCenter ? 'center' : 'initial')};
+    align-items: ${p => (p.itemsCenter ? 'center' : p.itemsStart ? 'flex-start' : p.itemsEnd ? 'flex-end' : 'initial')};
 `;

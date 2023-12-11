@@ -71,8 +71,9 @@ export const ProductDetailSelector = Selector('Product')({
     },
     variants: {
         id: true,
+        name: true,
         currencyCode: true,
-        price: true,
+        priceWithTax: true,
     },
     featuredAsset: {
         source: true,
@@ -107,82 +108,10 @@ export const ProductVariantSelector = Selector('ProductVariant')({
     },
 });
 
-export const ActiveOrderSelector = Selector('Order')({
-    id: true,
-    totalQuantity: true,
-    shippingWithTax: true,
-    totalWithTax: true,
-    subTotalWithTax: true,
-    shipping: true,
-    discounts: {
-        description: true,
-        amountWithTax: true,
-    },
-    active: true,
-    billingAddress: {
-        city: true,
-        country: true,
-    },
-    lines: {
-        id: true,
-        quantity: true,
-        linePriceWithTax: true,
-        unitPriceWithTax: true,
-        featuredAsset: {
-            id: true,
-            preview: true,
-        },
-        productVariant: {
-            name: true,
-            id: true,
-            sku: true,
-            price: true,
-            product: {
-                name: true,
-            },
-        },
-    },
-    shippingLines: {
-        shippingMethod: {
-            id: true,
-            description: true,
-        },
-        priceWithTax: true,
-    },
-    state: true,
-    couponCodes: true,
-    currencyCode: true,
-    code: true,
-});
-
-export type ActiveOrderType = FromSelector<typeof ActiveOrderSelector, 'Order', typeof scalars>;
-
-export const ShippingMethodsSelector = Selector('ShippingMethodQuote')({
-    id: true,
-    name: true,
-    price: true,
-    description: true,
-});
-
-export type ShippingMethodType = FromSelector<typeof ShippingMethodsSelector, 'ShippingMethodQuote', typeof scalars>;
-
-export const AvailablePaymentMethodsSelector = Selector('PaymentMethodQuote')({
-    id: true,
-    name: true,
-    description: true,
-    code: true,
-    isEligible: true,
-});
-
-export type AvailablePaymentMethodsType = FromSelector<
-    typeof AvailablePaymentMethodsSelector,
-    'PaymentMethodQuote',
-    typeof scalars
->;
-
 export const AvailableCountriesSelector = Selector('Country')({
     code: true,
     name: true,
+    languageCode: true,
 });
 export type AvailableCountriesType = FromSelector<typeof AvailableCountriesSelector, 'Country', typeof scalars>;
 
@@ -208,10 +137,112 @@ export const ActiveCustomerSelector = Selector('Customer')({
     lastName: true,
     firstName: true,
     emailAddress: true,
+    phoneNumber: true,
     addresses: ActiveAddressSelector,
 });
 
-export type ActiveCustomerType = FromSelector<typeof ActiveCustomerSelector, 'CurrentUser', typeof scalars>;
+export type ActiveCustomerType = FromSelector<typeof ActiveCustomerSelector, 'Customer', typeof scalars>;
+
+export const ActiveOrderSelector = Selector('Order')({
+    id: true,
+    totalQuantity: true,
+    shippingWithTax: true,
+    totalWithTax: true,
+    subTotalWithTax: true,
+    discounts: {
+        description: true,
+        amountWithTax: true,
+    },
+    active: true,
+    billingAddress: {
+        city: true,
+        country: true,
+    },
+    lines: {
+        id: true,
+        quantity: true,
+        linePriceWithTax: true,
+        discountedLinePriceWithTax: true,
+        featuredAsset: {
+            id: true,
+            preview: true,
+        },
+        productVariant: {
+            name: true,
+            id: true,
+            sku: true,
+            price: true,
+            product: {
+                name: true,
+            },
+        },
+    },
+    shippingLines: {
+        shippingMethod: {
+            id: true,
+            description: true,
+        },
+        priceWithTax: true,
+    },
+    state: true,
+    couponCodes: true,
+    currencyCode: true,
+    code: true,
+    customer: ActiveCustomerSelector,
+});
+
+export type ActiveOrderType = FromSelector<typeof ActiveOrderSelector, 'Order', typeof scalars>;
+
+export const OrderSelector = Selector('Order')({
+    state: true,
+    subTotalWithTax: true,
+    shippingWithTax: true,
+    currencyCode: true,
+    totalWithTax: true,
+    discounts: {
+        description: true,
+        amountWithTax: true,
+    },
+    lines: {
+        quantity: true,
+        linePriceWithTax: true,
+        featuredAsset: {
+            id: true,
+            preview: true,
+        },
+        discountedLinePriceWithTax: true,
+        productVariant: {
+            name: true,
+            currencyCode: true,
+            product: {
+                name: true,
+            },
+        },
+    },
+});
+export type OrderType = FromSelector<typeof OrderSelector, 'Order', typeof scalars>;
+export const ShippingMethodsSelector = Selector('ShippingMethodQuote')({
+    id: true,
+    name: true,
+    price: true,
+    description: true,
+});
+
+export type ShippingMethodType = FromSelector<typeof ShippingMethodsSelector, 'ShippingMethodQuote', typeof scalars>;
+
+export const AvailablePaymentMethodsSelector = Selector('PaymentMethodQuote')({
+    id: true,
+    name: true,
+    description: true,
+    code: true,
+    isEligible: true,
+});
+
+export type AvailablePaymentMethodsType = FromSelector<
+    typeof AvailablePaymentMethodsSelector,
+    'PaymentMethodQuote',
+    typeof scalars
+>;
 
 export const CreateCustomerSelector = Selector('CreateCustomerInput')({
     emailAddress: true,

@@ -6,6 +6,10 @@ export const scalars = ZeusScalars({
     Money: {
         decode: e => e as number,
     },
+    JSON: {
+        encode: (e: unknown) => JSON.stringify(e),
+        decode: (e: unknown) => JSON.parse(e as string),
+    },
 });
 
 //use 'http://localhost:3000/shop-api/' in local .env file for localhost development and provide env to use on prod/dev envs

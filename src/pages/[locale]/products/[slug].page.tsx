@@ -1,8 +1,9 @@
 import { ContentContainer } from '@/src/components/atoms/ContentContainer';
-import { ProductImage } from '@/src/components/atoms/ProductImage';
+import { Facet } from '@/src/components/atoms/Facet';
 import { Stack } from '@/src/components/atoms/Stack';
 import { TH1, TP, TPriceBig } from '@/src/components/atoms/TypoGraphy';
 import { Button, FullWidthButton } from '@/src/components/molecules/Button';
+import { ProductPhotosPreview } from '@/src/components/molecules/ProductPhotosPreview';
 import { storefrontApiQuery } from '@/src/graphql/client';
 import { ProductDetailSelector, ProductSlugSelector } from '@/src/graphql/selectors';
 import { getCollections } from '@/src/graphql/sharedQueries';
@@ -10,6 +11,7 @@ import { Layout } from '@/src/layouts';
 import { ContextModel, localizeGetStaticPaths, makeStaticProps } from '@/src/lib/getStatic';
 import { useCart } from '@/src/state/cart';
 import { priceFormatter } from '@/src/util/priceFomatter';
+import { translateProductFacetsNames } from '@/src/util/translateFacetsNames';
 import { CurrencyCode } from '@/src/zeus';
 import styled from '@emotion/styled';
 import { InferGetStaticPropsType } from 'next';
@@ -17,6 +19,7 @@ import React, { useState } from 'react';
 
 const ProductPage: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = props => {
     const { addToCart } = useCart();
+    const language = props._nextI18Next?.initialLocale || 'en';
 
     const sizes = props.product?.variants.map(v => {
         return {
@@ -37,17 +40,15 @@ const ProductPage: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = pr
         <Layout categories={props.collections}>
             <ContentContainer>
                 <Main gap="5rem">
-                    <Stack gap="3rem">
-                        <AssetBrowser column>
-                            {props.product?.assets.map(a => (
-                                <ProductImage key={a.preview} size="thumbnail" src={a.preview} />
-                            ))}
-                        </AssetBrowser>
-                        <ProductImage size="detail" src={props.product?.featuredAsset?.source} />
-                    </Stack>
+                    <ProductPhotosPreview featuredAsset={props.product?.featuredAsset} images={props.product?.assets} />
                     <Stack column gap="2.5rem">
                         <TH1>{props.product?.name}</TH1>
-                        {sizes && sizes?.length > 0 ? (
+                        <FasetContainer gap="1rem">
+                            {translateProductFacetsNames(language, props.product?.facetValues).map(({ id, name }) => (
+                                <Facet key={id}>{name}</Facet>
+                            ))}
+                        </FasetContainer>
+                        {sizes && sizes?.length > 1 ? (
                             <Stack gap="0.5rem">
                                 {sizes.map(s => (
                                     <SizeSelector key={s.id} onClick={() => setSize(s)} selected={s.id === size?.id}>
@@ -78,6 +79,10 @@ const ProductPage: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = pr
     );
 };
 
+const FasetContainer = styled(Stack)`
+    flex-wrap: wrap;
+`;
+
 const SizeSelector = styled(Button)<{ selected: boolean }>`
     border: 1px solid ${p => p.theme.gray(500)};
     background: ${p => p.theme.gray(0)};
@@ -95,9 +100,6 @@ const SizeSelector = styled(Button)<{ selected: boolean }>`
 `;
 const Main = styled(Stack)`
     padding: 4rem 0;
-`;
-const AssetBrowser = styled(Stack)`
-    width: 10rem;
 `;
 
 export const getStaticPaths = async () => {
@@ -122,6 +124,7 @@ export const getStaticProps = async (context: ContextModel<{ slug?: string }>) =
               })
             : undefined;
     const r = await makeStaticProps(['common'])(context);
+
     const returnedStuff = {
         slug: context.params?.slug,
         product: response?.product,

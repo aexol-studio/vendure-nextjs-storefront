@@ -56,6 +56,14 @@ export const ProductSlugSelector = Selector('Product')({
     slug: true,
 });
 
+export const ProductDetailsFacetSelector = Selector('FacetValue')({
+    name: true,
+    id: true,
+    translations: { name: true, languageCode: true, id: true },
+});
+
+export type ProductDetailsFacetType = FromSelector<typeof ProductDetailsFacetSelector, 'FacetValue', typeof scalars>;
+
 export const ProductDetailSelector = Selector('Product')({
     name: true,
     description: true,
@@ -79,6 +87,8 @@ export const ProductDetailSelector = Selector('Product')({
         source: true,
         preview: true,
     },
+
+    facetValues: ProductDetailsFacetSelector,
 });
 
 export type ProductTileType = FromSelector<typeof ProductTileSelector, 'Product', typeof scalars>;

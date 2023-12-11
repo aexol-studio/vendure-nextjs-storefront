@@ -17,12 +17,12 @@ export function Select<T extends string | number>({
     return (
         <Main>
             <select
-                value={value}
+                value={value || ''}
                 placeholder={t('select-category')}
                 onChange={e => {
                     setValue(e.target.value as T);
                 }}>
-                <option value="" disabled selected>
+                <option value="" disabled>
                     Select your option
                 </option>
                 {options?.map(o => (

@@ -1,5 +1,4 @@
 import styled from '@emotion/styled';
-import { motion } from 'framer-motion';
 import { BoxIcon } from 'lucide-react';
 import React from 'react';
 import { Stack } from '../atoms/Stack';
@@ -7,12 +6,6 @@ import { TP } from '../atoms/TypoGraphy';
 import { Trans, useTranslation } from 'next-i18next';
 import { priceFormatter } from '@/src/util/priceFomatter';
 import { CurrencyCode } from '@/src/zeus';
-
-const transition = {
-    type: 'spring',
-    stiffness: 500,
-    damping: 50,
-};
 
 export const ShippingProtection: React.FC<{
     value: number;
@@ -39,20 +32,21 @@ export const ShippingProtection: React.FC<{
                     </TP>
                 </Stack>
             </Stack>
-            <Switch active={active} onClick={() => onClick(!active)}>
-                <Toggle layout transition={transition} />
+            <Switch onClick={() => onClick(!active)}>
+                <Toggle active={active} />
             </Switch>
         </Stack>
     );
 };
 
-const Switch = styled.div<{ active: boolean }>`
+const Switch = styled.div`
+    position: relative;
     width: 4.2rem;
     height: 2.2rem;
     padding: 0.4rem;
 
     display: flex;
-    justify-content: ${p => (p.active ? 'flex-end' : 'flex-start')};
+    justify-content: center;
     border-radius: ${p => p.theme.borderRadius};
 
     border: 1px solid ${p => p.theme.gray(1000)};
@@ -60,8 +54,11 @@ const Switch = styled.div<{ active: boolean }>`
     cursor: pointer;
 `;
 
-const Toggle = styled(motion.div)`
+const Toggle = styled.div<{ active: boolean }>`
+    position: absolute;
     width: 1.4rem;
-    height: 100%;
+    height: 1.2rem;
     background: ${p => p.theme.gray(1000)};
+    transform: ${p => (p.active ? 'translateX(0.8rem)' : 'translateX(-0.8rem)')};
+    transition: transform 0.4s ease-in-out;
 `;

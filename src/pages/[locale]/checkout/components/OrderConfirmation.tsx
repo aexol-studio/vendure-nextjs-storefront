@@ -67,6 +67,7 @@ export const OrderConfirmation: React.FC<{ code: string; order?: OrderType }> = 
                 <Divider style={{ marginBlock: '4rem' }} />
                 {order?.lines.map(line => {
                     const isDefaultVariant = line.productVariant.name.includes(line.productVariant.product.name);
+                    const isPriceDiscounted = line.linePriceWithTax !== line.discountedLinePriceWithTax;
                     return (
                         <Stack key={line.productVariant.name} column>
                             <Stack justifyBetween>
@@ -86,9 +87,20 @@ export const OrderConfirmation: React.FC<{ code: string; order?: OrderType }> = 
                                         </Stack>
                                     </Stack>
                                 </Stack>
-                                <TP size="2rem" weight={600}>
-                                    {priceFormatter(line.linePriceWithTax, line.productVariant.currencyCode)}
-                                </TP>
+                                {isPriceDiscounted ? (
+                                    <Stack justifyEnd gap="0.5rem">
+                                        <TP
+                                            size="1.25rem"
+                                            style={{ textDecoration: 'line-through', lineHeight: '2.4rem' }}>
+                                            {priceFormatter(line.linePriceWithTax, currencyCode)}
+                                        </TP>
+                                        <TP style={{ color: 'red' }}>
+                                            {priceFormatter(line.discountedLinePriceWithTax, currencyCode)}
+                                        </TP>
+                                    </Stack>
+                                ) : (
+                                    <TP>{priceFormatter(line.linePriceWithTax, currencyCode)}</TP>
+                                )}
                             </Stack>
                             <Divider style={{ marginBlock: '3rem' }} />
                         </Stack>

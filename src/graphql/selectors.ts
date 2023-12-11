@@ -71,6 +71,7 @@ export const ProductDetailSelector = Selector('Product')({
     },
     variants: {
         id: true,
+        name: true,
         currencyCode: true,
         priceWithTax: true,
     },
@@ -209,6 +210,7 @@ export const OrderSelector = Selector('Order')({
             id: true,
             preview: true,
         },
+        discountedLinePriceWithTax: true,
         productVariant: {
             name: true,
             currencyCode: true,

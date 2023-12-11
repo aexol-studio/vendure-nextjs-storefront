@@ -5,7 +5,7 @@ import { TH2, TP } from '@/src/components/atoms/TypoGraphy';
 import { Stack } from '@/src/components/atoms/Stack';
 import { IconButton } from '@/src/components/molecules/Button';
 import { ActiveOrderType } from '@/src/graphql/selectors';
-import { ShoppingCartIcon, X } from 'lucide-react';
+import { ShoppingCartIcon, X, Trash2 } from 'lucide-react';
 import { ContentContainer } from '@/src/components/atoms/ContentContainer';
 import { QuantityCounter } from '@/src/components/molecules/QuantityCounter';
 import { Divider } from '@/src/components/atoms/Divider';
@@ -18,7 +18,7 @@ import { CurrencyCode } from '../zeus';
 import { ShippingProtection } from '../components/molecules/Shipptection';
 
 export const Cart = ({ activeOrder }: { activeOrder?: ActiveOrderType }) => {
-    const { setItemQuantityInCart } = useCart();
+    const { setItemQuantityInCart, removeFromCart, removeCouponCode } = useCart();
     const { t } = useTranslation('common');
     const [isOpen, setOpen] = useState(false);
 
@@ -33,9 +33,14 @@ export const Cart = ({ activeOrder }: { activeOrder?: ActiveOrderType }) => {
         const discounts = activeOrder?.discounts?.reduce((acc, discount) => acc - discount.amountWithTax, 0) ?? 0;
         return discounts;
     }, [activeOrder]);
-    console.log(activeOrder);
 
     const [isShippingProtection, setIsShippingProtection] = useState(false);
+
+    const fakeShippingValue = useMemo(() => {
+        const total = activeOrder?.totalWithTax || 0;
+        const discounts = activeOrder?.discounts?.reduce((acc, discount) => acc - discount.amountWithTax, 0) ?? 0;
+        return (total - discounts) * 0.02;
+    }, [activeOrder]);
 
     return (
         <>
@@ -61,8 +66,9 @@ export const Cart = ({ activeOrder }: { activeOrder?: ActiveOrderType }) => {
                                         <X />
                                     </IconButton>
                                 </Stack>
+
                                 <Stack gap="12rem">
-                                    <Stack column>
+                                    <CartList column>
                                         {activeOrder?.lines.map(
                                             ({
                                                 productVariant,
@@ -101,6 +107,12 @@ export const Cart = ({ activeOrder }: { activeOrder?: ActiveOrderType }) => {
                                                                 v={quantity}
                                                                 onChange={v => setItemQuantityInCart(id, v)}
                                                             />
+                                                            <Remove onClick={() => removeFromCart(id)}>
+                                                                <Trash2 size={20} />
+                                                                <TP weight={600} size="1.25rem" upperCase>
+                                                                    {t('remove')}
+                                                                </TP>
+                                                            </Remove>
                                                         </Stack>
                                                         {isPriceDiscounted ? (
                                                             <Stack justifyEnd gap="0.5rem">
@@ -126,13 +138,13 @@ export const Cart = ({ activeOrder }: { activeOrder?: ActiveOrderType }) => {
                                                 );
                                             },
                                         )}
-                                    </Stack>
+                                    </CartList>
                                     <CartSummary column gap="3rem">
                                         <TP size="2.5rem" weight={600}>
                                             {t('cart-summary')}
                                         </TP>
                                         {activeOrder && activeOrder.totalQuantity > 0 ? (
-                                            <Stack column>
+                                            <Stack column gap="2.5rem">
                                                 {activeOrder?.totalWithTax ? (
                                                     <Stack justifyBetween>
                                                         <TP>{t('price')}</TP>
@@ -155,11 +167,16 @@ export const Cart = ({ activeOrder }: { activeOrder?: ActiveOrderType }) => {
                                                         </TP>
                                                     </Stack>
                                                 ) : null}
-                                                {activeOrder?.discounts.map(d => (
+                                                {activeOrder?.discounts?.map(d => (
                                                     <Stack key={d.description} justifyBetween>
-                                                        <TP>
-                                                            {t('coupon-code')} {d.description}
-                                                        </TP>
+                                                        <Stack itemsCenter gap="1.25rem">
+                                                            <Remove onClick={() => removeCouponCode(d.description)}>
+                                                                <X size={16} />
+                                                            </Remove>
+                                                            <TP>
+                                                                {t('coupon-code')} {d.description}
+                                                            </TP>
+                                                        </Stack>
                                                         <TP>{priceFormatter(d.amountWithTax, currencyCode)}</TP>
                                                     </Stack>
                                                 ))}
@@ -178,7 +195,7 @@ export const Cart = ({ activeOrder }: { activeOrder?: ActiveOrderType }) => {
                                                     ) : null}
                                                     <DiscountForm />
                                                     <ShippingProtection
-                                                        value={98}
+                                                        value={fakeShippingValue}
                                                         active={isShippingProtection}
                                                         onClick={v => setIsShippingProtection(v)}
                                                         currencyCode={currencyCode}
@@ -216,9 +233,6 @@ export const Cart = ({ activeOrder }: { activeOrder?: ActiveOrderType }) => {
                                     </CartSummary>
                                 </Stack>
                             </CartContainer>
-                            <Stack justifyBetween>
-                                <TP>Clients also bought</TP>
-                            </Stack>
                         </ContentContainer>
                     </CartComponentMain>
                 )}
@@ -226,6 +240,18 @@ export const Cart = ({ activeOrder }: { activeOrder?: ActiveOrderType }) => {
         </>
     );
 };
+
+const Remove = styled.button`
+    appearance: none;
+    border: none;
+    background: transparent;
+
+    display: flex;
+    align-items: center;
+    width: fit-content;
+
+    gap: 0.4rem;
+`;
 
 const StyledButton = styled.button<{ dark?: boolean }>`
     appearance: none;
@@ -259,9 +285,14 @@ const CartContainer = styled(Stack)`
     padding: 4rem 0;
 `;
 const CartSummary = styled(Stack)`
+    //TODO: Remove this when left side is done
+    min-width: 390px;
+    max-width: 390px;
+
     padding: 3rem;
     border: 1px solid ${p => p.theme.gray(100)};
 `;
+const CartList = styled(Stack)``;
 const CartRow = styled(Stack)`
     padding: 3rem 0;
     border-bottom: 1px solid ${p => p.theme.gray(50)};

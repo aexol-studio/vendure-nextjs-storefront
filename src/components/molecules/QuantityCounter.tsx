@@ -7,11 +7,11 @@ export const QuantityCounter = ({ onChange, v }: { onChange: (v: number) => void
     return (
         <Main gap="4rem" itemsCenter>
             <IconButton>
-                <Minus onClick={() => onChange(v - 1)} />
+                <Minus size={24} onClick={() => onChange(v - 1)} />
             </IconButton>
             <span>{v}</span>
             <IconButton>
-                <Plus onClick={() => onChange(v + 1)} />
+                <Plus size={24} onClick={() => onChange(v + 1)} />
             </IconButton>
         </Main>
     );
@@ -19,10 +19,16 @@ export const QuantityCounter = ({ onChange, v }: { onChange: (v: number) => void
 
 const Main = styled(Stack)`
     border: 1px solid ${p => p.theme.gray(100)};
-    padding: 1.6rem;
+    padding: 1.2rem 1.6rem;
     color: ${p => p.theme.gray(900)};
     align-self: flex-start;
     width: auto;
     font-size: 2rem;
     font-weight: 600;
+
+    span {
+        font-size: 2rem;
+        font-weight: 600;
+        line-height: 2.4rem;
+    }
 `;

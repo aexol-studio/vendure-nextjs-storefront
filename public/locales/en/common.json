@@ -17,6 +17,7 @@
     "total":"Total",
     "coupon-code":"Coupon code:",
     "empty-cart": "Your cart is empty",
+    "remove": "Remove",
     "shipping-protection": {
         "title": "Shipping Protection",
         "subtitle": "From Damage, Loss & Theft for {{value}}"

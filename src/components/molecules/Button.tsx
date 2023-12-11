@@ -21,8 +21,8 @@ export const IconButton = styled.button<{ isActive?: boolean }>`
     border-radius: 100%;
     font-weight: 600;
     outline: 0;
-    width: 3rem;
-    height: 3rem;
+    width: 2.4rem;
+    height: 2.4rem;
     display: flex;
     align-items: center;
     justify-content: center;

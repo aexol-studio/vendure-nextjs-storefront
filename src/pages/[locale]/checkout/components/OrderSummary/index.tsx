@@ -10,7 +10,7 @@ import { useTranslation } from 'next-i18next';
 import { priceFormatter } from '@/src/util/priceFomatter';
 import { CurrencyCode } from '@/src/zeus';
 
-export const OrderSummary: React.FC<{ hideQuantity?: boolean }> = ({ hideQuantity }) => {
+export const OrderSummary: React.FC = () => {
     const { t } = useTranslation('checkout');
     const { asPath } = useRouter();
     const { cart } = useCart();
@@ -32,9 +32,7 @@ export const OrderSummary: React.FC<{ hideQuantity?: boolean }> = ({ hideQuantit
                     {t('orderSummary.title')}
                 </TH2>
                 <Stack column>
-                    {cart?.lines.map(line => (
-                        <Line hideQuantity={hideQuantity} currencyCode={currencyCode} key={line.id} line={line} />
-                    ))}
+                    {cart?.lines.map(line => <Line currencyCode={currencyCode} key={line.id} line={line} />)}
                     <Stack column gap="2.5rem">
                         <Stack justifyBetween>
                             <TP>{t('orderSummary.subtotal')}</TP>

@@ -15,7 +15,6 @@ import { useTranslation } from 'next-i18next';
 import { priceFormatter } from '@/src/util/priceFomatter';
 import { DiscountForm } from '@/src/components/molecules/DiscountForm';
 import { CurrencyCode } from '../zeus';
-import { ShippingProtection } from '../components/molecules/Shipptection';
 
 export const Cart = ({ activeOrder }: { activeOrder?: ActiveOrderType }) => {
     const { setItemQuantityInCart, removeFromCart, removeCouponCode } = useCart();
@@ -34,14 +33,6 @@ export const Cart = ({ activeOrder }: { activeOrder?: ActiveOrderType }) => {
         return discounts;
     }, [activeOrder]);
 
-    const [isShippingProtection, setIsShippingProtection] = useState(false);
-
-    const fakeShippingValue = useMemo(() => {
-        const total = activeOrder?.totalWithTax || 0;
-        const discounts = activeOrder?.discounts?.reduce((acc, discount) => acc - discount.amountWithTax, 0) ?? 0;
-        return (total - discounts) * 0.02;
-    }, [activeOrder]);
-
     return (
         <>
             <IconButton onClick={() => setOpen(!isOpen)}>
@@ -54,10 +45,10 @@ export const Cart = ({ activeOrder }: { activeOrder?: ActiveOrderType }) => {
                         <ContentContainer>
                             <CartContainer column gap="2rem">
                                 <Stack justifyBetween>
-                                    <Stack itemsCenter gap="2.5rem">
+                                    <Stack itemsCenter gap="1.25rem">
                                         <TH2>{t('your-cart')}</TH2>
                                         {activeOrder?.totalQuantity ? (
-                                            <TP>
+                                            <TP style={{ marginTop: '0.8rem' }}>
                                                 ({activeOrder?.totalQuantity} {t('items')})
                                             </TP>
                                         ) : null}
@@ -194,12 +185,6 @@ export const Cart = ({ activeOrder }: { activeOrder?: ActiveOrderType }) => {
                                                         </Stack>
                                                     ) : null}
                                                     <DiscountForm />
-                                                    <ShippingProtection
-                                                        value={fakeShippingValue}
-                                                        active={isShippingProtection}
-                                                        onClick={v => setIsShippingProtection(v)}
-                                                        currencyCode={currencyCode}
-                                                    />
                                                     <Divider />
                                                     {activeOrder?.totalWithTax ? (
                                                         <Stack justifyBetween>
@@ -287,12 +272,14 @@ const CartContainer = styled(Stack)`
 const CartSummary = styled(Stack)`
     //TODO: Remove this when left side is done
     min-width: 390px;
-    max-width: 390px;
+    max-width: 480px;
 
     padding: 3rem;
     border: 1px solid ${p => p.theme.gray(100)};
 `;
-const CartList = styled(Stack)``;
+const CartList = styled(Stack)`
+    flex: 1;
+`;
 const CartRow = styled(Stack)`
     padding: 3rem 0;
     border-bottom: 1px solid ${p => p.theme.gray(50)};

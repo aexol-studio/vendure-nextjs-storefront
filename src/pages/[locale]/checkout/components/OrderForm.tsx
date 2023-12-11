@@ -42,12 +42,8 @@ export const OrderForm: React.FC<OrderFormProps> = ({ availableCountries }) => {
 
     useEffect(() => {
         Promise.all([
-            storefrontApiQuery({
-                activeCustomer: ActiveCustomerSelector,
-            }),
-            storefrontApiQuery({
-                eligibleShippingMethods: ShippingMethodsSelector,
-            }),
+            storefrontApiQuery({ activeCustomer: ActiveCustomerSelector }),
+            storefrontApiQuery({ eligibleShippingMethods: ShippingMethodsSelector }),
         ]).then(([activeCustomer, eligibleShippingMethods]) => {
             if (activeCustomer?.activeCustomer?.addresses && activeCustomer?.activeCustomer?.addresses.length > 0) {
                 setActiveCustomer({
@@ -78,25 +74,28 @@ export const OrderForm: React.FC<OrderFormProps> = ({ availableCountries }) => {
         province: z.string().min(1, { message: t('orderForm.errors.province') }),
         streetLine2: z.string().optional(),
     });
-
     const {
         register,
         handleSubmit,
         formState: { errors },
     } = useForm<Form>({
         //TODO: Verify what customer we will use
-        defaultValues: { ...cart?.customer, ...activeCustomer },
+        values: activeCustomer,
         resolver: zodResolver(schema),
     });
 
     const onSubmit: SubmitHandler<Form> = async data => {
+        if (cart?.shippingLines.length === 0) {
+            //TODO: Handle error (no shipping method)
+            return;
+        }
         const { emailAddress, firstName, lastName, ...rest } = data;
         const { nextOrderStates } = await storefrontApiQuery({
             nextOrderStates: true,
         });
-
+        console.log(nextOrderStates);
         if (!nextOrderStates.includes('ArrangingPayment')) {
-            //TODO: Handle error
+            //TODO: Handle error (no next order state)
             return;
         }
 
@@ -111,9 +110,12 @@ export const OrderForm: React.FC<OrderFormProps> = ({ availableCountries }) => {
                 },
             ],
         });
-        if (setOrderShippingAddress?.__typename === 'Order' && setOrderShippingAddress?.state !== 'ArrangingPayment') {
+        if (setOrderShippingAddress?.__typename === 'NoActiveOrderError') {
+            //TODO: Handle error
+        }
+        if (setOrderShippingAddress.__typename === 'Order' && setOrderShippingAddress?.state !== 'ArrangingPayment') {
             // Set the customer for the order if there is no customer (it gets automatically set if there is a customer on provided address)
-            if (!setOrderShippingAddress.customer) {
+            if (!activeCustomer) {
                 await storefrontApiMutation({
                     setCustomerForOrder: [
                         { input: { emailAddress, firstName, lastName } },
@@ -147,7 +149,9 @@ export const OrderForm: React.FC<OrderFormProps> = ({ availableCountries }) => {
                 ],
             });
 
-            if (transitionOrderToState?.__typename === 'Order') {
+            if (transitionOrderToState?.__typename === 'OrderStateTransitionError') {
+                //TODO: Handle error
+            } else if (transitionOrderToState?.__typename === 'Order') {
                 // Redirect to payment page
                 push('/checkout/payment');
             }

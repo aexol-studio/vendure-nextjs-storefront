@@ -9,7 +9,7 @@ export const ProductImage = styled.img<{ size: 'thumbnail' | 'tile' | 'popup' | 
               : p.size === 'detail'
                 ? '60rem'
                 : p.size === 'thumbnail-big'
-                  ? '20rem'
+                  ? '16rem'
                   : '8rem'};
     width: ${p =>
         p.size === 'tile'
@@ -19,7 +19,7 @@ export const ProductImage = styled.img<{ size: 'thumbnail' | 'tile' | 'popup' | 
               : p.size === 'detail'
                 ? '52rem'
                 : p.size === 'thumbnail-big'
-                  ? '20rem'
+                  ? '16rem'
                   : '8rem'};
     object-fit: cover;
     flex: 0 0 auto;

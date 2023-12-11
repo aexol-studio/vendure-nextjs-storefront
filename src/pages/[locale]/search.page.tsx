@@ -8,7 +8,7 @@ import { storefrontApiQuery } from '@/src/graphql/client';
 import { FacetSelector, ProductSearchSelector, ProductSearchType } from '@/src/graphql/selectors';
 import { getCollections } from '@/src/graphql/sharedQueries';
 import { Layout } from '@/src/layouts';
-import { ContextModel, localizeGetStaticPaths, makeStaticProps } from '@/src/lib/getStatic';
+import { ContextModel, makeStaticProps } from '@/src/lib/getStatic';
 import styled from '@emotion/styled';
 import { InferGetStaticPropsType } from 'next';
 import React, { useEffect, useState } from 'react';
@@ -115,16 +115,6 @@ const FacetsFilters = styled(motion.div)`
     z-index: 1;
     overflow-y: auto;
 `;
-export const getStaticPaths = async () => {
-    const resp = await getCollections();
-    const paths = localizeGetStaticPaths(
-        resp.map(collection => ({
-            params: { id: collection.id, slug: collection.slug },
-        })),
-    );
-    return { paths, fallback: false };
-};
-
 export const getStaticProps = async (context: ContextModel) => {
     const r = await makeStaticProps(['common'])(context);
     const collections = await getCollections();

@@ -42,7 +42,7 @@ export const OrderSummary: React.FC<{ hideQuantity?: boolean }> = ({ hideQuantit
                         </Stack>
                         <Stack justifyBetween>
                             <TP>{t('orderSummary.shipping')}</TP>
-                            <TP>{priceFormatter(cart?.shipping ?? 0, currencyCode)}</TP>
+                            <TP>{priceFormatter(cart?.shippingWithTax ?? 0, currencyCode)}</TP>
                         </Stack>
                         {cart?.discounts.map(d => (
                             <Stack key={d.description} justifyBetween>

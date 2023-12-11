@@ -7,8 +7,10 @@ import { Stack } from '../atoms/Stack';
 import { FormError } from '@/src/pages/[locale]/checkout/components/ui/FormError';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useTranslation } from 'next-i18next';
 
 export const DiscountForm = () => {
+    const { t } = useTranslation('common');
     const schema = z.object({ code: z.string().min(1, 'Please enter a code') });
     const { applyCouponCode } = useCart();
     const {
@@ -36,12 +38,13 @@ export const DiscountForm = () => {
     return (
         <Stack column gap="0.25rem">
             <Form onSubmit={handleSubmit(onSubmit)}>
-                <Input {...register('code', { required: true })} placeholder="Coupon Code" />
+                <Input {...register('code', { required: true })} placeholder={t('coupon-code')} />
                 <Button type="submit">
                     <TagIcon size={24} />
                 </Button>
             </Form>
             <FormError
+                style={{ margin: 0 }}
                 initial={{ opacity: 0 }}
                 animate={{ opacity: errors.code?.message ? 1 : 0 }}
                 transition={{ duration: 0.2 }}>

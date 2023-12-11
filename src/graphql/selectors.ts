@@ -72,7 +72,7 @@ export const ProductDetailSelector = Selector('Product')({
     variants: {
         id: true,
         currencyCode: true,
-        price: true,
+        priceWithTax: true,
     },
     featuredAsset: {
         source: true,
@@ -148,7 +148,6 @@ export const ActiveOrderSelector = Selector('Order')({
     shippingWithTax: true,
     totalWithTax: true,
     subTotalWithTax: true,
-    shipping: true,
     discounts: {
         description: true,
         amountWithTax: true,
@@ -199,9 +198,9 @@ export const OrderSelector = Selector('Order')({
     shippingWithTax: true,
     currencyCode: true,
     totalWithTax: true,
-    promotions: {
-        couponCode: true,
-        name: true,
+    discounts: {
+        description: true,
+        amountWithTax: true,
     },
     lines: {
         quantity: true,

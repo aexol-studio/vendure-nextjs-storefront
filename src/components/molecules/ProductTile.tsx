@@ -24,6 +24,7 @@ export const ProductTile: React.FC<{
             </Link>
             <Categories gap="0.5rem">
                 {product.collectionIds
+                    .filter((cId, index) => product.collectionIds.indexOf(cId) === index)
                     .map(cId => collections.find(c => c.id === cId))
                     .map(c => (
                         <ProductCategory href={`/collections/${c?.slug}/`} key={c?.slug}>

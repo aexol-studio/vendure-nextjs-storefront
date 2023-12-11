@@ -38,6 +38,7 @@
     "orderSummary": {
         "title": "Order Summary",
         "subtotal": "Subtotal",
+        "discount": "Discount",
         "shipping": "Shipping",
         "total": "Total",
         "quantity": "Quantity",
@@ -51,5 +52,7 @@
         "submit": "Pay with Standard Payment",
         "notAvailable": "Default payment method is not available"
     },
-    "confirmation":{"orderReceived":"Your order <1>{{code}}</1> has been received"}
+    "confirmation": {
+        "orderReceived": "Your order <1>{{code}}</1> has been received"
+    }
 }

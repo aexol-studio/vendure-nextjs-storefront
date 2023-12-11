@@ -44,8 +44,6 @@ const getStaticProps = async (context: ContextModel) => {
     const r = await makeStaticProps(['common', 'checkout'])(context);
     const collections = await getCollections();
 
-    console.log(r.props);
-
     const returnedStuff = {
         ...r.props,
         collections,

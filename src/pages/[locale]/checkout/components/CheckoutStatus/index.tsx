@@ -34,7 +34,7 @@ const Circle = styled.span<{ active: boolean }>`
     width: 24px;
     height: 24px;
     border-radius: 100%;
-    background: ${props => props.theme.accent(1000)};
+    background: ${props => props.theme.gray(1000)};
     opacity: ${props => (props.active ? 1 : 0.5)};
     color: #fff;
     font-size: 12px;

@@ -34,7 +34,7 @@ const ProductPage: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = pr
                         <Stack gap="1rem">
                             <TPriceBig>
                                 {priceFormatter(
-                                    props.product?.variants[0].price || 0,
+                                    props.product?.variants[0].priceWithTax || 0,
                                     props.product?.variants[0].currencyCode || CurrencyCode.USD,
                                 )}
                             </TPriceBig>

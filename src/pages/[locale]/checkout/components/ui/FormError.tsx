@@ -5,6 +5,6 @@ export const FormError = styled(motion.span)`
     color: ${p => p.theme.error};
     font-size: 1.2rem;
     font-weight: 500;
-    min-height: 1.5rem;
+    min-height: 1.8rem;
     margin: 0.4rem 0 0.8rem 0;
 `;

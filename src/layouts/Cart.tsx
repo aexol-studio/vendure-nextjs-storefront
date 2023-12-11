@@ -1,5 +1,5 @@
 import { motion, AnimatePresence } from 'framer-motion';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import styled from '@emotion/styled';
 import { TH2, TP } from '@/src/components/atoms/TypoGraphy';
 import { Stack } from '@/src/components/atoms/Stack';
@@ -15,6 +15,7 @@ import { useTranslation } from 'next-i18next';
 import { priceFormatter } from '@/src/util/priceFomatter';
 import { DiscountForm } from '@/src/components/molecules/DiscountForm';
 import { CurrencyCode } from '../zeus';
+import { ShippingProtection } from '../components/molecules/Shipptection';
 
 export const Cart = ({ activeOrder }: { activeOrder?: ActiveOrderType }) => {
     const { setItemQuantityInCart } = useCart();
@@ -28,6 +29,13 @@ export const Cart = ({ activeOrder }: { activeOrder?: ActiveOrderType }) => {
     // Again, we're using framer-motion for the transition effect
 
     const currencyCode = activeOrder?.currencyCode || CurrencyCode.USD;
+    const discountsSum = useMemo(() => {
+        const discounts = activeOrder?.discounts?.reduce((acc, discount) => acc - discount.amountWithTax, 0) ?? 0;
+        return discounts;
+    }, [activeOrder]);
+    console.log(activeOrder);
+
+    const [isShippingProtection, setIsShippingProtection] = useState(false);
 
     return (
         <>
@@ -125,55 +133,86 @@ export const Cart = ({ activeOrder }: { activeOrder?: ActiveOrderType }) => {
                                         </TP>
                                         {activeOrder && activeOrder.totalQuantity > 0 ? (
                                             <Stack column>
-                                                <Stack justifyBetween>
-                                                    <TP>{t('price')}</TP>
-                                                    {activeOrder?.totalWithTax ? (
-                                                        <TP size="2rem">
+                                                {activeOrder?.totalWithTax ? (
+                                                    <Stack justifyBetween>
+                                                        <TP>{t('price')}</TP>
+                                                        <TP>
                                                             {priceFormatter(activeOrder?.totalWithTax, currencyCode)}
                                                         </TP>
-                                                    ) : null}
-                                                </Stack>
-                                                <Stack justifyBetween>
-                                                    <TP>{t('discount')}</TP>
-                                                    {activeOrder?.subTotalWithTax ? (
-                                                        <TP>
-                                                            {priceFormatter(activeOrder?.subTotalWithTax, currencyCode)}
-                                                        </TP>
-                                                    ) : null}
-                                                </Stack>
-                                                {activeOrder?.discounts.map(d => (
-                                                    <Stack key={d.description} justifyBetween>
-                                                        <TP>{d.description}</TP>
-                                                        <TP>{priceFormatter(d.amountWithTax, currencyCode)}</TP>
                                                     </Stack>
-                                                ))}
-                                                <Stack justifyBetween>
-                                                    <TP>{t('shipping')}</TP>
-                                                    {activeOrder?.shippingWithTax ? (
+                                                ) : null}
+                                                {discountsSum !== 0 ? (
+                                                    <Stack justifyBetween>
+                                                        <TP>{t('discount')}</TP>
+                                                        <TP>-{priceFormatter(discountsSum, currencyCode)}</TP>
+                                                    </Stack>
+                                                ) : null}
+                                                {activeOrder?.shippingWithTax ? (
+                                                    <Stack justifyBetween>
+                                                        <TP>{t('shipping')}</TP>
                                                         <TP>
                                                             {priceFormatter(activeOrder?.shippingWithTax, currencyCode)}
                                                         </TP>
-                                                    ) : null}
-                                                </Stack>
-                                                <Divider />
-                                                <DiscountForm />
-                                                {activeOrder?.totalWithTax ? (
-                                                    <TP>{priceFormatter(activeOrder?.totalWithTax, currencyCode)}</TP>
+                                                    </Stack>
                                                 ) : null}
-                                                <Stack column gap="3.5rem">
-                                                    {activeOrder?.totalQuantity ? (
+                                                {activeOrder?.discounts.map(d => (
+                                                    <Stack key={d.description} justifyBetween>
+                                                        <TP>
+                                                            {t('coupon-code')} {d.description}
+                                                        </TP>
+                                                        <TP>{priceFormatter(d.amountWithTax, currencyCode)}</TP>
+                                                    </Stack>
+                                                ))}
+                                                <Divider style={{ margin: '3.2rem 0' }} />
+                                                <Stack column gap="2.5rem">
+                                                    {activeOrder?.totalWithTax ? (
+                                                        <Stack justifyBetween>
+                                                            <TP>{t('subtotal')}</TP>
+                                                            <TP>
+                                                                {priceFormatter(
+                                                                    activeOrder.totalWithTax - discountsSum,
+                                                                    currencyCode,
+                                                                )}
+                                                            </TP>
+                                                        </Stack>
+                                                    ) : null}
+                                                    <DiscountForm />
+                                                    <ShippingProtection
+                                                        value={98}
+                                                        active={isShippingProtection}
+                                                        onClick={v => setIsShippingProtection(v)}
+                                                        currencyCode={currencyCode}
+                                                    />
+                                                    <Divider />
+                                                    {activeOrder?.totalWithTax ? (
+                                                        <Stack justifyBetween>
+                                                            <TP>{t('total')}</TP>
+                                                            <TP>
+                                                                {priceFormatter(
+                                                                    activeOrder.totalWithTax - discountsSum,
+                                                                    currencyCode,
+                                                                )}
+                                                            </TP>
+                                                        </Stack>
+                                                    ) : null}
+                                                    <Stack column gap="3rem">
                                                         <StyledLink href="/checkout">
                                                             {t('proceed-to-checkout')}
                                                         </StyledLink>
-                                                    ) : null}
+                                                        <StyledButton onClick={close}>
+                                                            {t('continue-shopping')}
+                                                        </StyledButton>
+                                                    </Stack>
                                                 </Stack>
                                             </Stack>
                                         ) : (
-                                            <Stack column itemsCenter>
+                                            <Stack column itemsCenter gap="3rem">
                                                 <TP weight={600}>{t('empty-cart')}</TP>
+                                                <StyledButton dark onClick={close}>
+                                                    {t('continue-shopping')}
+                                                </StyledButton>
                                             </Stack>
                                         )}
-                                        <StyledButton onClick={close}>{t('continue-shopping')}</StyledButton>
                                     </CartSummary>
                                 </Stack>
                             </CartContainer>
@@ -188,10 +227,10 @@ export const Cart = ({ activeOrder }: { activeOrder?: ActiveOrderType }) => {
     );
 };
 
-const StyledButton = styled.button`
+const StyledButton = styled.button<{ dark?: boolean }>`
     appearance: none;
     border: none;
-    background: transparent;
+    background: ${p => (p.dark ? p.theme.gray(1000) : p.theme.gray(0))};
 
     width: 100%;
     display: flex;
@@ -200,7 +239,7 @@ const StyledButton = styled.button`
 
     padding: 1.6rem 0.8rem;
 
-    color: ${p => p.theme.gray(1000)};
+    color: ${p => (p.dark ? p.theme.gray(0) : p.theme.gray(1000))};
     text-align: center;
     text-transform: uppercase;
     font-weight: 500;

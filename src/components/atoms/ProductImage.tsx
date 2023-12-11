@@ -7,7 +7,7 @@ export const ProductImage = styled.img<{ size: 'thumbnail' | 'tile' | 'popup' | 
             : p.size === 'popup'
               ? '48rem'
               : p.size === 'detail'
-                ? '65rem'
+                ? '60rem'
                 : p.size === 'thumbnail-big'
                   ? '20rem'
                   : '8rem'};
@@ -17,7 +17,7 @@ export const ProductImage = styled.img<{ size: 'thumbnail' | 'tile' | 'popup' | 
             : p.size === 'popup'
               ? '32rem'
               : p.size === 'detail'
-                ? '54rem'
+                ? '52rem'
                 : p.size === 'thumbnail-big'
                   ? '20rem'
                   : '8rem'};

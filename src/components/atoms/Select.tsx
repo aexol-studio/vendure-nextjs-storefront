@@ -1,28 +1,39 @@
 import styled from '@emotion/styled';
 import { useTranslation } from 'next-i18next';
 
-export const Select: React.FC<{
+export function Select<T extends string | number>({
+    options,
+    value,
+    setValue,
+}: {
     options?: Array<{
         label: string;
-        value: string;
+        value: T;
     }>;
-}> = ({ options }) => {
+    value?: T;
+    setValue: (v: T) => void;
+}) {
     const { t } = useTranslation('common');
     return (
         <Main>
-            <select placeholder={t('select-category')}>
+            <select
+                value={value}
+                placeholder={t('select-category')}
+                onChange={e => {
+                    setValue(e.target.value as T);
+                }}>
                 <option value="" disabled selected>
                     Select your option
                 </option>
                 {options?.map(o => (
-                    <option selected={false} key={o.value}>
+                    <option value={o.value} key={o.value}>
                         {o.label}
                     </option>
                 ))}
             </select>
         </Main>
     );
-};
+}
 
 const Main = styled.div`
     min-width: 20rem;

@@ -91,6 +91,15 @@ export const OrderForm: React.FC<OrderFormProps> = ({ availableCountries }) => {
 
     const onSubmit: SubmitHandler<Form> = async data => {
         const { emailAddress, firstName, lastName, ...rest } = data;
+        const { nextOrderStates } = await storefrontApiQuery({
+            nextOrderStates: true,
+        });
+
+        if (!nextOrderStates.includes('ArrangingPayment')) {
+            //TODO: Handle error
+            return;
+        }
+
         // Set the shipping address for the order
         const { setOrderShippingAddress } = await storefrontApiMutation({
             setOrderShippingAddress: [

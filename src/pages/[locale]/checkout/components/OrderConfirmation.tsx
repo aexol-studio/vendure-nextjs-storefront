@@ -13,7 +13,9 @@ import { Trans, useTranslation } from 'next-i18next';
 
 export const OrderConfirmation: React.FC<{ code: string; order?: OrderType }> = ({ code, order }) => {
     const { t } = useTranslation('checkout');
+
     const currencyCode = order?.currencyCode || CurrencyCode.USD;
+    const discounts = order?.discounts?.reduce((acc, discount) => acc - discount.amountWithTax, 0) ?? 0;
     return (
         <Stack column>
             <Stack style={{ paddingBlock: '2rem' }}>
@@ -41,13 +43,24 @@ export const OrderConfirmation: React.FC<{ code: string; order?: OrderType }> = 
                             <TP weight={600}>{priceFormatter(order?.subTotalWithTax || 0, currencyCode)}</TP>
                         </Stack>
                         <Stack justifyBetween>
+                            <TP>{t('orderSummary.discount')}</TP>
+                            <TP weight={600}>{priceFormatter(discounts, currencyCode)}</TP>
+                        </Stack>
+                        <Stack justifyBetween>
                             <TP>{t('orderSummary.shipping')}</TP>
                             <TP weight={600}> {priceFormatter(order?.shippingWithTax || 0, currencyCode)}</TP>
                         </Stack>
                         <Divider />
+                        {order?.discounts.map(d => (
+                            <Stack key={d.description} justifyBetween>
+                                <TP>{d.description}</TP>
+                                <TP weight={600}>{priceFormatter(d.amountWithTax, currencyCode)}</TP>
+                            </Stack>
+                        ))}
+                        <Divider />
                         <Stack justifyBetween>
                             <TP>{t('orderSummary.total')}</TP>
-                            <TP weight={600}>{priceFormatter(order?.totalWithTax || 0, currencyCode)}</TP>
+                            <TP weight={600}>{priceFormatter((order?.totalWithTax ?? 0) - discounts, currencyCode)}</TP>
                         </Stack>
                     </Stack>
                 </Stack>

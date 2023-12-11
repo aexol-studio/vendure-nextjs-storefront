@@ -6,6 +6,7 @@ import { CollectionTileType } from '@/src/graphql/selectors';
 import { Footer } from '@/src/layouts/Footer';
 import { Stack } from '@/src/components/atoms/Stack';
 import { useCart } from '@/src/state/cart';
+import { CategoryBar } from '@/src/layouts/CategoryBar';
 
 export const siteTitle = 'Next.js Sample Website';
 
@@ -19,7 +20,6 @@ const Container = styled.div`
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding-top: 8.6rem;
 `;
 const MainStack = styled(Stack)`
     min-height: 100vh;
@@ -31,9 +31,10 @@ export const Layout: React.FC<LayoutProps> = ({ pageTitle, children, categories 
         fetchActiveOrder();
     }, []);
     return (
-        <MainStack gap="4rem" column>
+        <MainStack column>
             <CustomHelmet pageTitle={pageTitle ? pageTitle : undefined} />
             <Nav categories={categories} />
+            <CategoryBar collections={categories} />
             <Container>{children}</Container>
             <Footer />
         </MainStack>

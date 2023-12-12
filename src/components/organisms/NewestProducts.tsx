@@ -14,7 +14,7 @@ interface NewesProductsProps {
 export const NewestProducts: React.FC<NewesProductsProps> = ({ products }) => {
     const { t } = useTranslation('common');
     return (
-        <Stack column gap="1rem">
+        <Stack column gap="1rem" style={{ marginBottom: '2rem' }}>
             <TH2>{t('newest-products')}</TH2>
             <StyledStack gap="2rem">
                 {products.map(p => (

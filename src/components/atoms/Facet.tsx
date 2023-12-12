@@ -1,7 +1,7 @@
 import styled from '@emotion/styled';
 
 export const Facet = styled.div`
-    padding: 0.4rem 1.8rem;
+    padding: 0.5rem 1.75rem;
     border: 1px solid ${p => p.theme.gray(500)};
     border-radius: ${p => p.theme.borderRadius};
     user-select: none;

@@ -132,6 +132,27 @@ export const ActiveAddressSelector = Selector('Address')({
 
 export type ActiveAddressType = FromSelector<typeof ActiveAddressSelector, 'Address', typeof scalars>;
 
+export const EditActiveAddressSelector = Selector('UpdateAddressInput')({
+    id: true,
+    fullName: true,
+    company: true,
+    streetLine1: true,
+    streetLine2: true,
+    city: true,
+    province: true,
+    postalCode: true,
+    countryCode: true,
+    phoneNumber: true,
+    defaultShippingAddress: true,
+    defaultBillingAddress: true,
+});
+
+export type EditActiveAddressType = FromSelector<
+    typeof EditActiveAddressSelector,
+    'UpdateAddressInput',
+    typeof scalars
+>;
+
 export const CurrentUserSelector = Selector('CurrentUser')({
     id: true,
     identifier: true,

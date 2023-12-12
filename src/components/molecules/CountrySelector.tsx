@@ -4,7 +4,7 @@ import { Stack } from '@/src/components/atoms/Stack';
 import { Label } from '@/src/components/atoms/Label';
 import { AvailableCountriesType } from '@/src/graphql/selectors';
 import styled from '@emotion/styled';
-import { FormError } from './FormError';
+import { FormError } from '@/src/components/atoms/FormError';
 
 type CountrySelectorType = SelectHTMLAttributes<HTMLSelectElement> & {
     label: string;

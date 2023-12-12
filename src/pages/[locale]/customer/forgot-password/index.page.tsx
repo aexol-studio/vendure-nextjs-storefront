@@ -7,7 +7,7 @@ import { Stack } from '@/src/components/atoms/Stack';
 import { Link } from '@/src/components/atoms/Link';
 import styled from '@emotion/styled';
 import { SubmitHandler, useForm } from 'react-hook-form';
-import { Input } from '@/src/components/atoms/Input';
+import { Input } from '@/src/components/molecules/Input';
 import { Button } from '@/src/components/molecules/Button';
 
 const ForgotPassword: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = props => {

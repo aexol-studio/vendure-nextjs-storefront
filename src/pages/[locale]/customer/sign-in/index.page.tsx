@@ -9,7 +9,7 @@ import { storefrontApiMutation } from '@/src/graphql/client';
 import { Link } from '@/src/components/atoms/Link';
 import { Stack } from '@/src/components/atoms/Stack';
 import styled from '@emotion/styled';
-import { Input } from '@/src/components/atoms/Input';
+import { Input } from '@/src/components/molecules/Input';
 import { Button } from '@/src/components/molecules/Button';
 import { Label } from '@/src/components/atoms/Label';
 import { ContentContainer } from '@/src/components/atoms/ContentContainer';

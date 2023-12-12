@@ -19,16 +19,17 @@ import {
     ActiveCustomerType,
 } from '@/src/graphql/selectors';
 
-import { Input } from '../../../../components/atoms/Input';
+import { Input } from '../../../../components/molecules/Input';
 import { DeliveryMethod } from './DeliveryMethod';
 
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
-import { CountrySelector } from './ui/CountrySelector';
 import { useTranslation } from 'next-i18next';
 import styled from '@emotion/styled';
 import { AnimatePresence } from 'framer-motion';
+import { AddressBox } from '../../customer/manage/components/AddressBox';
+import { CountrySelector } from '@/src/components/molecules/CountrySelector';
 
 type Form = CreateAddressType &
     CreateCustomerType & {
@@ -72,6 +73,7 @@ export const OrderForm: React.FC<OrderFormProps> = ({ availableCountries }) => {
         streetLine2: z.string().optional(),
         deliveryMethod: z.string().min(1, { message: t('deliveryMethod.errors.required') }),
     });
+
     const {
         register,
         handleSubmit,
@@ -124,10 +126,12 @@ export const OrderForm: React.FC<OrderFormProps> = ({ availableCountries }) => {
                 },
             ],
         });
+
         if (setOrderShippingAddress?.__typename === 'NoActiveOrderError') {
             //TODO: Handle error
         }
-        if (setOrderShippingAddress.__typename === 'Order' && setOrderShippingAddress?.state !== 'ArrangingPayment') {
+
+        if (setOrderShippingAddress.__typename === 'Order' && setOrderShippingAddress.state !== 'ArrangingPayment') {
             // Set the customer for the order if there is no customer (it gets automatically set if there is a customer on provided address)
             if (!activeCustomer) {
                 const { setCustomerForOrder } = await storefrontApiMutation({
@@ -192,8 +196,6 @@ export const OrderForm: React.FC<OrderFormProps> = ({ availableCountries }) => {
         }
     };
 
-    console.log(errors);
-
     return (
         <Stack column>
             <div ref={errorRef}>
@@ -209,7 +211,7 @@ export const OrderForm: React.FC<OrderFormProps> = ({ availableCountries }) => {
                     ) : null}
                 </AnimatePresence>
             </div>
-            {activeCustomer?.id ? (
+            {activeCustomer?.addresses?.length && activeCustomer.addresses.length > 0 ? (
                 <Form onSubmit={handleSubmit(onSubmit)}>
                     <Stack column>
                         <TH2 size="2rem" weight={500} style={{ marginBottom: '1.75rem' }}>
@@ -223,35 +225,7 @@ export const OrderForm: React.FC<OrderFormProps> = ({ availableCountries }) => {
                         </TP>
                         <Stack flexWrap gap="0.5rem" itemsCenter>
                             {activeCustomer.addresses?.map(address => (
-                                <CustomerAddress key={address.id} column>
-                                    <TP size="1.5rem" weight={600}>
-                                        {address.fullName}
-                                    </TP>
-                                    <TP size="1.5rem" weight={600}>
-                                        {address.company}
-                                    </TP>
-                                    <TP size="1.5rem" weight={600}>
-                                        {address.streetLine1}
-                                    </TP>
-                                    <TP size="1.5rem" weight={600}>
-                                        {address.streetLine2}
-                                    </TP>
-                                    <TP size="1.5rem" weight={600}>
-                                        {address.city}
-                                    </TP>
-                                    <TP size="1.5rem" weight={600}>
-                                        {address.province}
-                                    </TP>
-                                    <TP size="1.5rem" weight={600}>
-                                        {address.postalCode}
-                                    </TP>
-                                    <TP size="1.5rem" weight={600}>
-                                        {address.country.code}
-                                    </TP>
-                                    <TP size="1.5rem" weight={600}>
-                                        {address.phoneNumber}
-                                    </TP>
-                                </CustomerAddress>
+                                <AddressBox key={address.id} address={address} />
                             ))}
                         </Stack>
                     </Stack>
@@ -367,11 +341,4 @@ const ErrorBanner = styled(Stack)`
     background-color: ${p => `${p.theme.error}90`};
     border-radius: ${p => p.theme.borderRadius};
     border: 1px solid ${p => p.theme.error};
-`;
-
-const CustomerAddress = styled(Stack)`
-    width: 50%;
-    padding: 1.75rem;
-    background-color: ${p => p.theme.gray(50)};
-    border-radius: ${p => p.theme.borderRadius};
 `;

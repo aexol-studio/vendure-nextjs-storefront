@@ -4,7 +4,7 @@ import { SubmitHandler, useForm } from 'react-hook-form';
 import { TagIcon } from 'lucide-react';
 import styled from '@emotion/styled';
 import { Stack } from '../atoms/Stack';
-import { FormError } from '@/src/pages/[locale]/checkout/components/ui/FormError';
+import { FormError } from '@/src/components/atoms/FormError';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useTranslation } from 'next-i18next';

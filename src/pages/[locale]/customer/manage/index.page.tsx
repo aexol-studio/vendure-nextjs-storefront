@@ -1,33 +1,64 @@
 import { Layout } from '@/src/layouts';
 import { ContextModel, getStaticPaths, makeStaticProps } from '@/src/lib/getStatic';
 import { InferGetStaticPropsType } from 'next';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { getCollections } from '@/src/graphql/sharedQueries';
 import { CustomerNavigation } from './components/CustomerNavigation';
 import { Stack } from '@/src/components/atoms/Stack';
 import { SubmitHandler, useForm } from 'react-hook-form';
-import { storefrontApiMutation } from '@/src/graphql/client';
+import { storefrontApiMutation, storefrontApiQuery } from '@/src/graphql/client';
+import { Button } from '@/src/components/molecules/Button';
+import { ActiveCustomerSelector, ActiveCustomerType } from '@/src/graphql/selectors';
 
 type Form = {
-    firstName: string;
-    lastName: string;
-    phoneNumber: string;
+    firstName: ActiveCustomerType['firstName'];
+    lastName: ActiveCustomerType['lastName'];
+    phoneNumber: ActiveCustomerType['phoneNumber'];
 };
 
 const Account: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = props => {
-    const { register } = useForm<Form>();
+    const [activeCustomer, setActiveCustomer] = useState<ActiveCustomerType>();
+
+    useEffect(() => {
+        const fetchCustomer = async () => {
+            const { activeCustomer } = await storefrontApiQuery({
+                activeCustomer: ActiveCustomerSelector,
+            });
+            setActiveCustomer(activeCustomer);
+        };
+        fetchCustomer();
+    }, []);
+
+    console.log(activeCustomer);
+    const { register, handleSubmit } = useForm<Form>({
+        values: {
+            firstName: activeCustomer?.firstName || '',
+            lastName: activeCustomer?.lastName || '',
+            phoneNumber: activeCustomer?.phoneNumber,
+        },
+    });
+
     const onSubmit: SubmitHandler<Form> = async data => {
-        const {} = await storefrontApiMutation({
+        const { updateCustomer } = await storefrontApiMutation({
             updateCustomer: [
                 { input: { firstName: data.firstName, lastName: data.lastName, phoneNumber: data.phoneNumber } },
                 { __typename: true, id: true },
             ],
         });
+        console.log(updateCustomer);
     };
+
     return (
         <Layout categories={props.collections}>
             <CustomerNavigation />
-            <Stack></Stack>
+            <Stack>
+                <form onSubmit={handleSubmit(onSubmit)}>
+                    <input {...register('firstName')} />
+                    <input {...register('lastName')} />
+                    <input {...register('phoneNumber')} />
+                    <Button type="submit">Submit</Button>
+                </form>
+            </Stack>
         </Layout>
     );
 };

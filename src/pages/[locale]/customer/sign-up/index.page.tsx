@@ -7,6 +7,11 @@ import { SubmitHandler, useForm } from 'react-hook-form';
 import { RegisterCustomerInputType } from '@/src/graphql/selectors';
 import { storefrontApiMutation } from '@/src/graphql/client';
 import { Link } from '@/src/components/atoms/Link';
+import { Stack } from '@/src/components/atoms/Stack';
+import styled from '@emotion/styled';
+import { Input } from '@/src/components/atoms/Input';
+import { Button } from '@/src/components/molecules/Button';
+import { ContentContainer } from '@/src/components/atoms/ContentContainer';
 
 const SignIn: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = props => {
     const { register, handleSubmit } = useForm<RegisterCustomerInputType>({});
@@ -43,18 +48,27 @@ const SignIn: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = props =
 
     return (
         <Layout categories={props.collections}>
-            <div>
-                <form onSubmit={handleSubmit(onSubmit)}>
-                    <input type="text" {...register('emailAddress')} />
-                    <input type="password" {...register('password')} />
-                    <button type="submit">Sign Up</button>
-                </form>
-                <Link href="/customer/forgot-password">Forgot Password?</Link>
-                <Link href="/customer/sign-in">Login</Link>
-            </div>
+            <ContentContainer>
+                <Wrapper column itemsCenter gap="1.75rem">
+                    <Form onSubmit={handleSubmit(onSubmit)}>
+                        <Input label="Email Address" type="text" {...register('emailAddress')} />
+                        <Input label="Password" type="password" {...register('password')} />
+                        <Button type="submit">Sign Up</Button>
+                    </Form>
+                    <Link href="/customer/forgot-password">Forgot Password?</Link>
+                    <Link href="/customer/sign-in">Login</Link>
+                </Wrapper>
+            </ContentContainer>
         </Layout>
     );
 };
+
+const Form = styled.form`
+    display: flex;
+    flex-direction: column;
+`;
+
+const Wrapper = styled(Stack)``;
 
 const getStaticProps = async (context: ContextModel) => {
     const r = await makeStaticProps(['common', 'checkout'])(context);

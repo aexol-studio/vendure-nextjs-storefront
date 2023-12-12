@@ -3,11 +3,12 @@ import { ContextModel, getStaticPaths, makeStaticProps } from '@/src/lib/getStat
 import { InferGetStaticPropsType } from 'next';
 import React from 'react';
 import { getCollections } from '@/src/graphql/sharedQueries';
+import { CustomerNavigation } from '../components/CustomerNavigation';
 
 const History: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = props => {
     return (
         <Layout categories={props.collections}>
-            <div></div>
+            <CustomerNavigation />
         </Layout>
     );
 };

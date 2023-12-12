@@ -3,19 +3,31 @@ import { ContextModel, getStaticPaths, makeStaticProps } from '@/src/lib/getStat
 import { InferGetStaticPropsType } from 'next';
 import React from 'react';
 import { getCollections } from '@/src/graphql/sharedQueries';
-import { Button } from '@/src/components/molecules/Button';
+import { CustomerNavigation } from './components/CustomerNavigation';
+import { Stack } from '@/src/components/atoms/Stack';
+import { SubmitHandler, useForm } from 'react-hook-form';
 import { storefrontApiMutation } from '@/src/graphql/client';
 
+type Form = {
+    firstName: string;
+    lastName: string;
+    phoneNumber: string;
+};
+
 const Account: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = props => {
-    const onClick = async () => {
-        const { logout } = await storefrontApiMutation({
-            logout: { success: true },
+    const { register } = useForm<Form>();
+    const onSubmit: SubmitHandler<Form> = async data => {
+        const {} = await storefrontApiMutation({
+            updateCustomer: [
+                { input: { firstName: data.firstName, lastName: data.lastName, phoneNumber: data.phoneNumber } },
+                { __typename: true, id: true },
+            ],
         });
-        console.log(logout);
     };
     return (
         <Layout categories={props.collections}>
-            <Button onClick={onClick}>Logout</Button>
+            <CustomerNavigation />
+            <Stack></Stack>
         </Layout>
     );
 };

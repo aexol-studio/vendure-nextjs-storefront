@@ -19,7 +19,24 @@ export const Button = styled.button`
 export const FullWidthButton = styled(Button)`
     width: 100%;
 `;
+export const SecondaryButton = styled.button`
+    background-color: ${thv.button.front};
+    color: ${thv.button.back};
+    border: 0;
+    border-radius: ${p => p.theme.borderRadius};
+    padding: 1rem 3rem;
+    font-weight: 600;
+    outline: 0;
+    min-width: 12rem;
+    border: 1px solid ${thv.button.back};
+    :hover {
+        background: ${p => p.theme.gray(100)};
+    }
+`;
 
+export const FullWidthSecondaryButton = styled(SecondaryButton)`
+    width: 100%;
+`;
 export const IconButton = styled.button<{ isActive?: boolean }>`
     color: ${thv.button.icon.front};
     border: 0;

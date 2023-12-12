@@ -74,8 +74,10 @@ export const ProductDetailSelector = Selector('Product')({
         preview: true,
     },
     collections: {
+        id: true,
         name: true,
         slug: true,
+        featuredAsset: { preview: true },
     },
     variants: {
         id: true,
@@ -90,6 +92,17 @@ export const ProductDetailSelector = Selector('Product')({
 
     facetValues: ProductDetailsFacetSelector,
 });
+
+export const NewestProductSelector = Selector('Product')({
+    name: true,
+    slug: true,
+    featuredAsset: {
+        source: true,
+        preview: true,
+    },
+});
+
+export type NewestProductType = FromSelector<typeof NewestProductSelector, 'Product', typeof scalars>;
 
 export type ProductTileType = FromSelector<typeof ProductTileSelector, 'Product', typeof scalars>;
 

@@ -1,6 +1,10 @@
+import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 
-export const ProductImage = styled.img<{ size: 'thumbnail' | 'tile' | 'popup' | 'detail' | 'full' | 'thumbnail-big' }>`
+export const ProductImage = styled.img<{
+    size: 'thumbnail' | 'tile' | 'popup' | 'detail' | 'full' | 'thumbnail-big';
+    rounded?: boolean;
+}>`
     height: ${p =>
         p.size === 'tile'
             ? '36rem'
@@ -23,6 +27,11 @@ export const ProductImage = styled.img<{ size: 'thumbnail' | 'tile' | 'popup' | 
                   : '8rem'};
     object-fit: cover;
     flex: 0 0 auto;
+    ${({ rounded, theme }) =>
+        rounded &&
+        css`
+            border-radius: ${theme.borderRadius};
+        `}
 `;
 
 export const ProductImageGrid = styled.img`

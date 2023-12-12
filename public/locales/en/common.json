@@ -18,6 +18,10 @@
     "coupon-code":"Coupon code:",
     "empty-cart": "Your cart is empty",
     "remove": "Remove",
+    "add-to-cart":"Add to cart",
+    "buy-now":"Buy now",
+    "related-collections":"Related Collections", 
+    "newest-products":"Newest Products", 
     "shipping-protection": {
         "title": "Shipping Protection",
         "subtitle": "From Damage, Loss & Theft for {{value}}"

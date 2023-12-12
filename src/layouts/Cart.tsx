@@ -15,7 +15,7 @@ import { useTranslation } from 'next-i18next';
 import { priceFormatter } from '@/src/util/priceFomatter';
 import { DiscountForm } from '@/src/components/molecules/DiscountForm';
 import { CurrencyCode } from '../zeus';
-import { ShippingProtection } from '../components/molecules/Shipptection';
+import { ShippingProtection } from '../components/molecules/ShippingProtection';
 
 export const Cart = ({ activeOrder }: { activeOrder?: ActiveOrderType }) => {
     const { setItemQuantityInCart, removeFromCart, removeCouponCode } = useCart();

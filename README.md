@@ -19,6 +19,7 @@ Just remember you need to have the Vendure store running locally to use this sto
   - [Internationalization with i18next](#internationalization-with-i18next)
   - [Icons](#icons)
   - [Styles](#styles)
+  - [Theme](#theme)
   - [Useful Links](#useful-links)
   - [Who?](#who)
   - [Roadmap](#roadmap)
@@ -73,6 +74,40 @@ So you can use it as follows:
 <Stack column gap="2rem">
   {children}
 </Stack>
+```
+
+## Theme
+Theming is provided by emotion and some generic functions.
+
+You can use values from the theme with `thv` function or standard emotion way.
+
+`thv.button.icon.front` returns function that consumes the theme and returns the value. It is a small shortcut frm `${p => p.theme}`
+
+```tsx
+import { thv } from '@/src/theme';
+import styled from '@emotion/styled';
+
+export const IconButton = styled.button<{ isActive?: boolean }>`
+    color: ${thv.button.icon.front};
+    border: 0;
+    border-radius: 100%;
+    font-weight: 600;
+    outline: 0;
+    width: 2.4rem;
+    height: 2.4rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: ${p => p.theme.button.icon.back || 'transparent'};
+    svg {
+        width: 2rem;
+        height: 2rem;
+    }
+    :hover {
+        box-shadow: none;
+    }
+`;
+
 ```
 
 ## Useful Links

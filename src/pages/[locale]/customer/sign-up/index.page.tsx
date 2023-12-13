@@ -23,6 +23,7 @@ const SignIn: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = props =
             registerCustomerAccount: [
                 { input: { emailAddress, password } },
                 {
+                    __typename: true,
                     '...on MissingPasswordError': {
                         message: true,
                         errorCode: true,

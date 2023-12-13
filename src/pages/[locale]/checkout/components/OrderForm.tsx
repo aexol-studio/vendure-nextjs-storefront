@@ -286,15 +286,22 @@ export const OrderForm: React.FC<OrderFormProps> = ({ availableCountries }) => {
                             { input: { emailAddress, firstName, lastName, phoneNumber, password } },
                             {
                                 __typename: true,
-                                ...ActiveCustomerSelector,
-                                '...on MissingPasswordError': { message: true, errorCode: true },
-                                '...on NativeAuthStrategyError': { message: true, errorCode: true },
-                                '...on PasswordValidationError': {
+                                '...on MissingPasswordError': {
                                     message: true,
                                     errorCode: true,
+                                },
+                                '...on NativeAuthStrategyError': {
+                                    message: true,
+                                    errorCode: true,
+                                },
+                                '...on PasswordValidationError': {
+                                    errorCode: true,
+                                    message: true,
                                     validationErrorMessage: true,
                                 },
-                                '...on Success': { success: true },
+                                '...on Success': {
+                                    success: true,
+                                },
                             },
                         ],
                     });

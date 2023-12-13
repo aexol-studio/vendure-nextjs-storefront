@@ -9,11 +9,11 @@ import { storefrontApiMutation } from '@/src/graphql/client';
 import { Link } from '@/src/components/atoms/Link';
 import { Stack } from '@/src/components/atoms/Stack';
 import styled from '@emotion/styled';
-import { Input } from '@/src/components/molecules/Input';
+import { Input } from '@/src/components/forms/Input';
 import { Button } from '@/src/components/molecules/Button';
-import { Label } from '@/src/components/atoms/Label';
 import { ContentContainer } from '@/src/components/atoms/ContentContainer';
 import { usePush } from '@/src/lib/redirect';
+import { CheckBox } from '@/src/components/forms/CheckBox';
 
 const SignIn: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = props => {
     const { register, handleSubmit } = useForm<LoginCustomerInputType>({});
@@ -58,10 +58,7 @@ const SignIn: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = props =
                     <Form onSubmit={handleSubmit(onSubmit)}>
                         <Input label="Email Address" type="text" {...register('emailAddress')} />
                         <Input label="Password" type="password" {...register('password')} />
-                        <Stack itemsCenter gap="0.75rem">
-                            <Label htmlFor="rememberMe">Remember Me</Label>
-                            <input type="checkbox" {...register('rememberMe')} />
-                        </Stack>
+                        <CheckBox label="Remember Me" {...register('rememberMe')} />
                         <FormButton type="submit">Sign In</FormButton>
                     </Form>
                     <Link href="/customer/forgot-password">Forgot Password?</Link>

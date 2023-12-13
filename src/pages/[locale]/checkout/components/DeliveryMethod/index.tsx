@@ -6,7 +6,7 @@ import React from 'react';
 import { useTranslation } from 'next-i18next';
 import { priceFormatter } from '@/src/util/priceFomatter';
 import { CurrencyCode } from '@/src/zeus';
-import { FormError } from '@/src/components/atoms/FormError';
+import { FormError } from '@/src/components/forms/atoms/FormError';
 
 interface Props {
     selected?: string;
@@ -50,7 +50,7 @@ export const DeliveryMethod: React.FC<Props> = ({
 };
 
 const Wrapper = styled(Stack)`
-    margin: 0.8rem 0 3.2rem 0;
+    margin: 1.6rem 0 3.2rem 0;
 `;
 
 const Box = styled(Stack)<{ selected: boolean }>`

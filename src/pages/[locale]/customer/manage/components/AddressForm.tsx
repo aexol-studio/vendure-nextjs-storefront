@@ -1,15 +1,15 @@
 import { Stack } from '@/src/components/atoms/Stack';
 import { Button } from '@/src/components/molecules/Button';
-import { CountrySelector } from '@/src/components/molecules/CountrySelector';
+import { CountrySelect } from '@/src/components/forms/CountrySelect';
 
 import { CreateAddressType, ActiveAddressType, AvailableCountriesType } from '@/src/graphql/selectors';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { useTranslation } from 'next-i18next';
 import { z } from 'zod';
-import { Input } from './Input';
 import styled from '@emotion/styled';
 import { CreditCard, Truck } from 'lucide-react';
+import { Input } from '@/src/components/forms/Input';
 
 export const AddressForm: React.FC<{
     onSubmit: SubmitHandler<CreateAddressType>;
@@ -58,22 +58,23 @@ export const AddressForm: React.FC<{
     return (
         <Form onSubmit={handleSubmit(onSubmit)}>
             <Input {...register('fullName')} label={t('orderForm.fullName')} error={errors.fullName} />
-            <Input
-                type="tel"
-                label={t('orderForm.phone')}
-                {...register('phoneNumber', {
-                    onChange: e => (e.target.value = e.target.value.replace(/[^0-9]/g, '')),
-                })}
-                error={errors.phoneNumber}
-            />
-            <Input {...register('streetLine1')} label={t('orderForm.streetLine1')} error={errors.province} />
-            <Input {...register('streetLine2')} label={t('orderForm.streetLine2')} error={errors.postalCode} />
-            <Input {...register('city')} label={t('orderForm.city')} error={errors.city} />
-            <Input {...register('postalCode')} label={t('orderForm.postalCode')} error={errors.postalCode} />
-            <Input {...register('province')} label={t('orderForm.province')} error={errors.province} />
-            <Input {...register('company')} label={t('orderForm.company')} error={errors.company} />
+            <Stack itemsCenter gap="1.25rem">
+                <Input {...register('company')} label={t('orderForm.company')} error={errors.company} />
+                <Input
+                    type="tel"
+                    label={t('orderForm.phone')}
+                    {...register('phoneNumber', {
+                        onChange: e => (e.target.value = e.target.value.replace(/[^0-9]/g, '')),
+                    })}
+                    error={errors.phoneNumber}
+                />
+            </Stack>
+            <Stack itemsCenter gap="1.25rem">
+                <Input {...register('streetLine1')} label={t('orderForm.streetLine1')} error={errors.province} />
+                <Input {...register('streetLine2')} label={t('orderForm.streetLine2')} error={errors.postalCode} />
+            </Stack>
             {availableCountries && (
-                <CountrySelector
+                <CountrySelect
                     {...register('countryCode')}
                     label={t('orderForm.countryCode')}
                     //TODO: Verify what country we will use
@@ -82,6 +83,9 @@ export const AddressForm: React.FC<{
                     error={errors.countryCode}
                 />
             )}
+            <Input {...register('city')} label={t('orderForm.city')} error={errors.city} />
+            <Input {...register('postalCode')} label={t('orderForm.postalCode')} error={errors.postalCode} />
+            <Input {...register('province')} label={t('orderForm.province')} error={errors.province} />
             <CheckboxStack>
                 <DefaultBilling active={watch('defaultBillingAddress')} />
                 <Checkbox type="checkbox" {...register('defaultBillingAddress')} />

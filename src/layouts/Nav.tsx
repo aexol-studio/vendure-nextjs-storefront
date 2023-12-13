@@ -11,7 +11,7 @@ import { Cart } from '@/src/layouts/Cart';
 import { useCart } from '@/src/state/cart';
 import { useMemo, useState } from 'react';
 import { usePush } from '@/src/lib/redirect';
-import { User2 } from 'lucide-react';
+// import { User2 } from 'lucide-react';
 
 export const Nav: React.FC<{ categories: CollectionTileType[] }> = ({ categories }) => {
     const { t } = useTranslation('common');
@@ -57,9 +57,9 @@ export const Nav: React.FC<{ categories: CollectionTileType[] }> = ({ categories
                         />
                     </Stack>
                     <LanguageSwitcher />
-                    <Link href={cart?.customer ? '/customer/manage' : '/customer/sign-in'}>
+                    {/* <Link href={cart?.customer ? '/customer/manage' : '/customer/sign-in'}>
                         <User2 color="#000" />
-                    </Link>
+                    </Link> */}
                     <Cart activeOrder={cart} />
                 </Stack>
             </ContentContainer>

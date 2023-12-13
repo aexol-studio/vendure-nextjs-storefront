@@ -128,6 +128,9 @@ export const ActiveAddressSelector = Selector('Address')({
     phoneNumber: true,
     defaultShippingAddress: true,
     defaultBillingAddress: true,
+    customFields: {
+        NIP: true,
+    },
 });
 
 export type ActiveAddressType = FromSelector<typeof ActiveAddressSelector, 'Address', typeof scalars>;

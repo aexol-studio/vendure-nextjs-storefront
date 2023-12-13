@@ -7,17 +7,21 @@ import React from 'react';
 
 interface Props {
     address: ActiveAddressType;
+    selected?: boolean;
+    onSelect?: (id: string) => void;
     onEdit?: (id: string) => void;
     onDelete?: (id: string) => void;
 }
 
-export const AddressBox: React.FC<Props> = ({ address, onEdit, onDelete }) => {
+export const AddressBox: React.FC<Props> = ({ address, selected, onSelect, onEdit, onDelete }) => {
     return (
-        <CustomerAddress column>
-            <DefaultMethodsWrapper gap="1rem" justifyEnd>
-                <DefaultBilling active={address.defaultBillingAddress} />
-                <DefaultShipping active={address.defaultShippingAddress} />
-            </DefaultMethodsWrapper>
+        <CustomerAddress onClick={() => onSelect?.(address.id)} column selected={selected} canBeSelected={!!onSelect}>
+            {(onEdit || onDelete) && (
+                <DefaultMethodsWrapper gap="1rem" justifyEnd>
+                    <DefaultBilling active={address.defaultBillingAddress} />
+                    <DefaultShipping active={address.defaultShippingAddress} />
+                </DefaultMethodsWrapper>
+            )}
             <TP>{address.fullName}</TP>
             <TP>{address.company}</TP>
             <TP>{address.streetLine1}</TP>
@@ -80,11 +84,16 @@ const Edit = styled(Pen)`
     cursor: pointer;
 `;
 
-const CustomerAddress = styled(Stack)`
+const CustomerAddress = styled(Stack)<{ selected?: boolean; canBeSelected?: boolean }>`
     position: relative;
     width: fit-content;
     padding: 3rem 2.5rem;
     background-color: ${p => p.theme.gray(50)};
     border-radius: ${p => p.theme.borderRadius};
     box-shadow: 0 0 0.5rem ${p => p.theme.gray(200)};
+
+    outline: ${p => (p.selected ? `1px solid ${p.theme.accent(700)}` : `1px solid ${p.theme.gray(200)}`)};
+    transition: outline 0.2s ease-in-out;
+
+    cursor: ${p => (p.canBeSelected ? 'pointer' : 'default')};
 `;

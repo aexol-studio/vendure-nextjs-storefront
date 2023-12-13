@@ -5,22 +5,35 @@
         "confirmation": "Confirmation"
     },
     "orderForm": {
+        "createAccount": "Create an account?",
+        "password": "Password",
+        "confirmPassword": "Confirm Password",
+        "billingDifferentThanShipping": "Is shipping address different than billing address?",
+        "userNeedInvoice": "Do you need an invoice?",
+        "orderSummary": "Order Summary",
         "contactInfo": "Contact Information",
         "emailAddress": "Email Address",
         "firstName": "First Name",
         "lastName": "Last Name",
         "phone": "Phone",
         "shippingInfo": "Shipping Information",
+        "billingInfo": "Billing Information",
+        "NIP": "NIP",
         "fullName": "Full Name",
         "company": "Company",
+        "individual": "Individual",
         "streetLine1": "Address",
         "streetLine2": "Apartment, suite, etc.",
         "city": "City",
         "countryCode": "Country",
         "province": "State / Province",
         "postalCode": "Postal Code",
-        "continue-to-payment": "Continue to Payment",
+        "continueToPayment": "Continue to Payment",
         "errors": {
+            "root": {
+                "invalid": "An errors occurred while sending the form. Please correct the errors below",
+                "closeButton": "Close"
+            },
             "emailAddress": {
                 "required": "Email address is required",
                 "email": "Email address is invalid",

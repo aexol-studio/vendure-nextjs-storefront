@@ -7,16 +7,16 @@ import Link from 'next/link';
 
 interface ProductImageWithInfoProps {
     size: 'thumbnail' | 'tile' | 'popup' | 'detail' | 'full' | 'thumbnail-big';
-    rounded?: boolean;
+
     href: string;
     text: string;
     imageSrc?: string;
 }
 
-export const ProductImageWithInfo: React.FC<ProductImageWithInfoProps> = ({ href, text, rounded, size, imageSrc }) => {
+export const ProductImageWithInfo: React.FC<ProductImageWithInfoProps> = ({ href, text, size, imageSrc }) => {
     return (
         <StyledLink href={href}>
-            <ProductImage src={imageSrc} size={size} rounded={rounded} />
+            <ProductImage src={imageSrc} size={size} />
             <StyledTP upperCase size="2rem">
                 {text}
             </StyledTP>

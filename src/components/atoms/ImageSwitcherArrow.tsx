@@ -7,7 +7,7 @@ import { BaseRemUnit } from '../sharedStyles';
 interface ImageSwitcherArrowProps {
     size?: BaseRemUnit;
     right?: boolean;
-    disabled: boolean;
+    disabled?: boolean;
     handleClick: () => void;
 }
 
@@ -24,7 +24,7 @@ export const ImageSwitcherArrow: React.FC<ImageSwitcherArrowProps> = ({
     );
 };
 
-const ArrowWrapper = styled.div<{ right: boolean; disabled: boolean }>`
+const ArrowWrapper = styled.div<{ right?: boolean; disabled?: boolean }>`
     position: absolute;
     top: 50%;
     transform: translateY(-50%);

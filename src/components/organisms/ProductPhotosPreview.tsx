@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { Stack } from '@/src/components/atoms/Stack';
 import styled from '@emotion/styled';
 import { ProductImage } from '../atoms/ProductImage';
@@ -14,18 +14,6 @@ interface ProductPhotosPreview {
 export const ProductPhotosPreview: React.FC<ProductPhotosPreview> = ({ featuredAsset, images }) => {
     const [choosenImage, setChoosenImage] = useState<Asset>(featuredAsset ?? images?.[0]);
 
-    const isArrowDisabled = useCallback(
-        (forward?: boolean) => {
-            if (!choosenImage || !images) return true;
-
-            const choosenImageIndex = images.findIndex(image => choosenImage?.source === image?.source);
-
-            if (forward) return choosenImageIndex === images.length - 1;
-            return choosenImageIndex === 0;
-        },
-        [images, choosenImage],
-    );
-
     const handleArrowClick = (forward?: boolean) => {
         const choosenImageIndex = images?.findIndex(image => choosenImage?.source === image?.source);
 
@@ -37,7 +25,10 @@ export const ProductPhotosPreview: React.FC<ProductPhotosPreview> = ({ featuredA
         }
         setChoosenImage(images?.[choosenImageIndex - 1]);
     };
-
+    const choosenImageIndex = useMemo(
+        () => images?.findIndex(image => choosenImage?.source === image?.source),
+        [images, choosenImage],
+    );
     return (
         <Wrapper gap="3rem">
             <AssetBrowser column gap="1.75rem">
@@ -56,11 +47,11 @@ export const ProductPhotosPreview: React.FC<ProductPhotosPreview> = ({ featuredA
             </AssetBrowser>
             {choosenImage ? (
                 <ProductImageContainer>
-                    <ImageSwitcherArrow handleClick={() => handleArrowClick()} disabled={isArrowDisabled()} />
+                    <ImageSwitcherArrow handleClick={() => handleArrowClick()} disabled={choosenImageIndex === 0} />
                     <ProductImage size="detail" src={choosenImage.preview} />
                     <ImageSwitcherArrow
                         handleClick={() => handleArrowClick(true)}
-                        disabled={isArrowDisabled(true)}
+                        disabled={choosenImageIndex === (images?.length ?? 1) - 1}
                         right
                     />
                 </ProductImageContainer>

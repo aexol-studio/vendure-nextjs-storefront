@@ -4,6 +4,7 @@ import { Facet } from '@/src/components/atoms/Facet';
 import { Stack } from '@/src/components/atoms/Stack';
 import { TH1, TP, TPriceBig } from '@/src/components/atoms/TypoGraphy';
 import { Button, FullWidthButton, FullWidthSecondaryButton } from '@/src/components/molecules/Button';
+import { NotifyMeform } from '@/src/components/molecules/NotifyMeForm';
 import { NewestProducts } from '@/src/components/organisms/NewestProducts';
 import { ProductPhotosPreview } from '@/src/components/organisms/ProductPhotosPreview';
 import { RelatedProductCollections } from '@/src/components/organisms/RelatedProductCollections';
@@ -18,33 +19,39 @@ import { priceFormatter } from '@/src/util/priceFomatter';
 import { translateProductFacetsNames } from '@/src/util/translateFacetsNames';
 import { CurrencyCode, SortOrder } from '@/src/zeus';
 import styled from '@emotion/styled';
+import { Check, X } from 'lucide-react';
 import { InferGetStaticPropsType } from 'next';
 
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 const ProductPage: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = props => {
     const { addToCart } = useCart();
-    const { t } = useTranslation('common');
     const push = usePush();
+    const { t } = useTranslation('common');
+    const translatedStockLevel = t('stockLevel', { returnObjects: true });
 
     const language = props._nextI18Next?.initialLocale || 'en';
 
-    const sizes = props.product?.variants.map(v => {
+    const variants = props.product?.variants.map(v => {
         return {
             id: v.id,
             size: v.name.replace(props.product?.name || '', ''),
+            stockLevel: v.stockLevel,
         };
     });
 
-    const [size, setSize] = useState<{
+    const [variant, setVariant] = useState<{
         id: string;
         size: string;
+        stockLevel: string;
     }>({
         id: props.product?.variants[0].id || '',
         size: props.product?.variants[0].name.replace(props.product?.name || '', '') || '',
+        stockLevel: props.product?.variants[0].stockLevel || 'OUT_OF_STOCK',
     });
 
+    const isOutOfStock = useMemo(() => variant.stockLevel === 'OUT_OF_STOCK', [variant]);
     return (
         <Layout categories={props.collections}>
             <ContentContainer>
@@ -57,34 +64,51 @@ const ProductPage: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = pr
                                 <Facet key={id}>{name}</Facet>
                             ))}
                         </FasetContainer>
-                        {sizes && sizes?.length > 1 ? (
+                        {variants && variants?.length > 1 ? (
                             <StyledStack gap="0.5rem">
-                                {sizes.map(s => (
-                                    <SizeSelector key={s.id} onClick={() => setSize(s)} selected={s.id === size?.id}>
+                                {variants.map(s => (
+                                    <SizeSelector
+                                        key={s.id}
+                                        onClick={() => setVariant(s)}
+                                        selected={s.id === variant?.id}>
                                         {s.size}
                                     </SizeSelector>
                                 ))}
                             </StyledStack>
                         ) : null}
+                        <Stack justifyBetween itemsCenter>
+                            <Stack gap="1rem">
+                                <TPriceBig>
+                                    {priceFormatter(
+                                        props.product?.variants[0].priceWithTax || 0,
+                                        props.product?.variants[0].currencyCode || CurrencyCode.USD,
+                                    )}
+                                </TPriceBig>
+                                <TPriceBig>{props.product?.variants[0].currencyCode}</TPriceBig>
+                            </Stack>
+                        </Stack>
                         <Stack gap="1rem">
-                            <TPriceBig>
-                                {priceFormatter(
-                                    props.product?.variants[0].priceWithTax || 0,
-                                    props.product?.variants[0].currencyCode || CurrencyCode.USD,
-                                )}
-                            </TPriceBig>
-                            <TPriceBig>{props.product?.variants[0].currencyCode}</TPriceBig>
+                            <StockInfo outOfStock={isOutOfStock} itemsCenter gap="0.25rem">
+                                {isOutOfStock ? <X /> : <Check size="1.75rem" />}
+                                <TP>{translatedStockLevel[variant.stockLevel as keyof typeof translatedStockLevel]}</TP>
+                            </StockInfo>
+
+                            {isOutOfStock ? <NotifyMeform /> : null}
                         </Stack>
                         <TP>{props.product?.description}</TP>
                         <Stack gap="2.5rem" justifyBetween column>
                             <FullWidthSecondaryButton
-                                onClick={() => props.product?.id && size?.id && addToCart(size.id, 1)}>
+                                disabled={isOutOfStock}
+                                onClick={() => props.product?.id && variant?.id && addToCart(variant.id, 1)}>
                                 {t('add-to-cart')}
                             </FullWidthSecondaryButton>
                             <FullWidthButton
+                                disabled={isOutOfStock}
                                 onClick={() => {
-                                    if (props.product?.id && size?.id) addToCart(size.id, 1);
-                                    push('/checkout');
+                                    if (props.product?.id && variant?.id && !isOutOfStock) {
+                                        addToCart(variant.id, 1);
+                                        push('/checkout');
+                                    }
                                 }}>
                                 {t('buy-now')}
                             </FullWidthButton>
@@ -97,6 +121,15 @@ const ProductPage: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = pr
         </Layout>
     );
 };
+
+const StockInfo = styled(Stack)<{ outOfStock?: boolean }>`
+    white-space: nowrap;
+    color: ${p => (p.outOfStock ? p.theme.error : 'inherit')};
+    width: max-content;
+    @media (min-width: 1024px) {
+        width: 100%;
+    }
+`;
 
 const StyledStack = styled(Stack)`
     justify-content: center;

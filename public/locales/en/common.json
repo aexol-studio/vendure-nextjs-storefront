@@ -22,8 +22,12 @@
     "buy-now":"Buy now",
     "related-collections":"Related Collections", 
     "newest-products":"Newest Products", 
+    "stockLevel":{"OUT_OF_STOCK":"Out of stock", "IN_STOCK":"In stock"},
+    "commonError":"Something wen't wrong",
+    "send":"Send",
     "shipping-protection": {
         "title": "Shipping Protection",
         "subtitle": "From Damage, Loss & Theft for {{value}}"
-    }
+    },
+    "notifyMe":{"invalidEmail":"Please enter valid email","backendError":"Couldnt't add you to notify list","placeholder":"Notify me"}
 }

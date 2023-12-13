@@ -69,6 +69,7 @@ export const ProductDetailSelector = Selector('Product')({
     description: true,
     id: true,
     slug: true,
+
     assets: {
         source: true,
         preview: true,
@@ -84,6 +85,7 @@ export const ProductDetailSelector = Selector('Product')({
         name: true,
         currencyCode: true,
         priceWithTax: true,
+        stockLevel: true,
     },
     featuredAsset: {
         source: true,

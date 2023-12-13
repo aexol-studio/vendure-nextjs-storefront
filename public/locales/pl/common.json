@@ -1,5 +1,8 @@
 {
     "title":"Cześć",
     "add-to-cart":"Dodaj do koszyka",
-    "buy-now":"Kup teraz"
+    "buy-now":"Kup teraz",
+    "stockLevel":{"OUT_OF_STOCK":"Brak na stanie", "IN_STOCK":"W magazynie"},
+    "notifyMe":{"invalidEmail":"Proszę wpisać prawidłowy adres email","backendError":"Nie udało się dodać siędo notyfikacji","placeholder":"Powiadom mnie"},   
+    "send":"Wyślij"
 }

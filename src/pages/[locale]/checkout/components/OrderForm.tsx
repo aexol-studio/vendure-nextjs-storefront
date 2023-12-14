@@ -109,6 +109,17 @@ export const OrderForm: React.FC<OrderFormProps> = ({ availableCountries }) => {
             .optional(),
     });
 
+    const billingSchema = z.object({
+        fullName: z.string().min(1, { message: t('orderForm.errors.fullName.required') }),
+        streetLine1: z.string().min(1, { message: t('orderForm.errors.streetLine1.required') }),
+        streetLine2: z.string().optional(),
+        city: z.string().min(1, { message: t('orderForm.errors.city.required') }),
+        countryCode: z.string().length(2, { message: t('orderForm.errors.countryCode.required') }),
+        province: z.string().min(1, { message: t('orderForm.errors.province.required') }),
+        postalCode: z.string().min(1, { message: t('orderForm.errors.postalCode.required') }),
+        company: z.string().optional(),
+    });
+
     const defaultShippingAddress = activeCustomer?.addresses?.find(address => address.defaultShippingAddress);
     const defaultBillingAddress = activeCustomer?.addresses?.find(address => address.defaultBillingAddress);
 
@@ -151,7 +162,6 @@ export const OrderForm: React.FC<OrderFormProps> = ({ availableCountries }) => {
             : undefined,
         resolver: zodResolver(schema),
     });
-    console.log(errors);
 
     const onSubmit: SubmitHandler<Form> = async ({
         emailAddress,
@@ -168,6 +178,18 @@ export const OrderForm: React.FC<OrderFormProps> = ({ availableCountries }) => {
     }) => {
         try {
             //TODO: Invoke new zod resolver for billing
+            if (billingDifferentThanShipping) {
+                const result = await billingSchema.safeParseAsync(billing);
+                if (result.success === false) {
+                    Object.entries(result.error.flatten().fieldErrors).forEach(([key, value]) => {
+                        //TODO: Fix this
+                        //@ts-ignore
+                        setError(`billing.${key}`, { message: value });
+                    });
+                    return;
+                }
+            }
+
             if (deliveryMethod && cart?.shippingLines[0]?.shippingMethod.id !== deliveryMethod) {
                 await changeShippingMethod(deliveryMethod);
             }

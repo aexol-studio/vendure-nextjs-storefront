@@ -5,34 +5,73 @@
         "confirmation": "Confirmation"
     },
     "orderForm": {
+        "createAccount": "Create an account?",
+        "password": "Password",
+        "confirmPassword": "Confirm Password",
+        "billingDifferentThanShipping": "Is shipping address different than billing address?",
+        "userNeedInvoice": "Do you need an invoice?",
+        "orderSummary": "Order Summary",
         "contactInfo": "Contact Information",
         "emailAddress": "Email Address",
         "firstName": "First Name",
         "lastName": "Last Name",
         "phone": "Phone",
         "shippingInfo": "Shipping Information",
+        "billingInfo": "Billing Information",
+        "NIP": "NIP",
         "fullName": "Full Name",
         "company": "Company",
+        "individual": "Individual",
         "streetLine1": "Address",
         "streetLine2": "Apartment, suite, etc.",
         "city": "City",
         "countryCode": "Country",
         "province": "State / Province",
         "postalCode": "Postal Code",
-        "continue-to-payment": "Continue to Payment",
+        "continueToPayment": "Continue to Payment",
         "errors": {
-            "emailAddress": "First name is required",
-            "firstName": "Last name is required",
-            "lastName": "Email address is required",
-            "phone": "Postal code is required",
-            "fullName": "State is required",
-            "company": "Country is required",
-            "streetLine1": "Street address is required",
-            "streetLine2": "Please fill in all required fields",
-            "city": "City is required",
-            "countryCode": "Email address is invalid",
-            "province": "Please fill in all required fields",
-            "postalCode": "Phone is required"
+            "root": {
+                "invalid": "An errors occurred while sending the form. Please correct the errors below",
+                "closeButton": "Close"
+            },
+            "emailAddress": {
+                "required": "Email address is required",
+                "email": "Email address is invalid",
+                "emailAvailable": "Email address is not available."
+            },
+            "firstName": {
+                "required": "First name is required"
+            },
+            "lastName": {
+                "required": "Last name is required"
+            },
+            "phone": {
+                "required": "Phone is required"
+            },
+            "fullName": {
+                "required": "Full name is required"
+            },
+            "company": {
+                "required": "Company is required"
+            },
+            "streetLine1": {
+                "required": "Address is required"
+            },
+            "streetLine2": {
+                "required": "Apartment, suite, etc. is required"
+            },
+            "city": {
+                "required": "City is required"
+            },
+            "countryCode": {
+                "required": "Country is required"
+            },
+            "province": {
+                "required": "State / Province is required"
+            },
+            "postalCode": {
+                "required": "Postal code is required"
+            }
         }
     },
     "orderSummary": {
@@ -45,7 +84,10 @@
         "remove": "Remove"
     },
     "deliveryMethod": {
-        "title": "Delivery Method"
+        "title": "Delivery Method",
+        "errors": {
+            "required": "Delivery method is required"
+        }
     },
     "paymentMethod": {
         "title": "This is a dummy payment for demonstration purposes only",

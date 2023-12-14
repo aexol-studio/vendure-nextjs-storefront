@@ -20,6 +20,7 @@ type DetailTheme = {
         };
     };
     error: string;
+    success: string;
 };
 
 export type MainTheme = FunctionTheme & DetailTheme;
@@ -90,5 +91,6 @@ export const LightTheme = createTheme(300, t => ({
         icon: { front: t.gray(900) },
     },
     error: '#ff0000',
+    success: '#00ff00',
 }));
 export const thv = themeTransform(LightTheme);

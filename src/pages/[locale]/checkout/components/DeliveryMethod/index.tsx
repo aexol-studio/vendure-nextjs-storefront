@@ -6,44 +6,57 @@ import React from 'react';
 import { useTranslation } from 'next-i18next';
 import { priceFormatter } from '@/src/util/priceFomatter';
 import { CurrencyCode } from '@/src/zeus';
+import { FormError } from '@/src/components/forms/atoms/FormError';
 
 interface Props {
+    selected?: string;
     onChange: (id: string) => void;
+    error?: string;
     shippingMethods: ShippingMethodType[];
-    shippingLines?: ActiveOrderType['shippingLines'];
     currencyCode?: ActiveOrderType['currencyCode'];
 }
 
 export const DeliveryMethod: React.FC<Props> = ({
+    selected,
     onChange,
+    error,
     shippingMethods,
-    shippingLines,
     currencyCode = CurrencyCode.USD,
 }) => {
     const { t } = useTranslation('checkout');
     return (
         <Stack column>
             <TH2>{t('deliveryMethod.title')}</TH2>
-            <Stack gap="2rem" style={{ margin: '3.2rem 0' }}>
+            <FormError
+                style={{ margin: 0 }}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: error ? 1 : 0 }}
+                transition={{ duration: 0.2 }}>
+                {error}
+            </FormError>
+            <Wrapper gap="2rem">
                 {shippingMethods?.map(({ id, name, description, price }) => {
-                    const isSelected = !!shippingLines?.find(({ shippingMethod }) => shippingMethod.id === id);
                     return (
-                        <Box isSelected={isSelected} key={id} column onClick={() => onChange(id)}>
+                        <Box selected={selected === id} key={id} column onClick={() => onChange(id)}>
                             <TP>{name}</TP>
                             <StyledDescription dangerouslySetInnerHTML={{ __html: description }} />
                             <TP>{priceFormatter(price, currencyCode)}</TP>
                         </Box>
                     );
                 })}
-            </Stack>
+            </Wrapper>
         </Stack>
     );
 };
 
-const Box = styled(Stack)<{ isSelected: boolean }>`
+const Wrapper = styled(Stack)`
+    margin: 1.6rem 0 3.2rem 0;
+`;
+
+const Box = styled(Stack)<{ selected: boolean }>`
     cursor: pointer;
     padding: 2rem;
-    border: 1px solid ${p => (p.isSelected ? p.theme.gray(800) : p.theme.gray(200))};
+    border: 1px solid ${p => (p.selected ? p.theme.gray(800) : p.theme.gray(200))};
     border-radius: 8px;
 
     &:hover {

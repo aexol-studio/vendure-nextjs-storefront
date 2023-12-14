@@ -11,7 +11,7 @@
         "dev": "next dev",
         "build": "next build",
         "start": "next start",
-        "zeus": "zeus http://localhost:8080/shop-api ./src --td",
+        "zeus": "zeus http://localhost:3000/shop-api ./src --td",
         "toc": "i18next-resources-for-ts toc -i ./public/locales/en -o ./src/@types/resources.ts",
         "interface": "i18next-resources-for-ts interface -i ./public/locales/en -o ./src/@types/resources.d.ts",
         "lint": "next lint"

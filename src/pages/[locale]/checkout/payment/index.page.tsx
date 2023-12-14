@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Layout } from '@/src/layouts';
 import { InferGetStaticPropsType } from 'next';
 import { ContextModel, getStaticPaths, makeStaticProps } from '@/src/lib/getStatic';
@@ -6,14 +6,23 @@ import { OrderSummary } from '../components/OrderSummary';
 import { OrderPayment } from '../components/OrderPayment';
 import { getCollections } from '@/src/graphql/sharedQueries';
 import { Content, Main } from '../components/ui/Shared';
+import { useRouter } from 'next/router';
+import { useCart } from '@/src/state/cart';
 
-const CheckoutPage: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = props => {
+const PaymentPage: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = props => {
+    const { cart } = useCart();
+    const { push } = useRouter();
+
+    useEffect(() => {
+        if (!cart || cart.lines.length === 0) push('/');
+    }, [cart]);
+
     return (
         <Layout categories={props.collections}>
             <Content>
                 <Main>
                     <OrderPayment />
-                    <OrderSummary hideQuantity />
+                    <OrderSummary />
                 </Main>
             </Content>
         </Layout>
@@ -31,4 +40,4 @@ const getStaticProps = async (context: ContextModel) => {
 };
 
 export { getStaticPaths, getStaticProps };
-export default CheckoutPage;
+export default PaymentPage;

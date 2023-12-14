@@ -188,10 +188,10 @@ export const AllTypesProps: Record<string,any> = {
 		customFields:"JSON"
 	},
 	CreateAddressInput:{
-		customFields:"JSON"
+		customFields:"CreateAddressCustomFieldsInput"
 	},
 	UpdateAddressInput:{
-		customFields:"JSON"
+		customFields:"UpdateAddressCustomFieldsInput"
 	},
 	CurrencyCode: "enum" as const,
 	CustomerGroup:{
@@ -435,6 +435,12 @@ export const AllTypesProps: Record<string,any> = {
 		slug:"SortOrder",
 		description:"SortOrder"
 	},
+	CreateAddressCustomFieldsInput:{
+
+	},
+	UpdateAddressCustomFieldsInput:{
+
+	},
 	NativeAuthInput:{
 
 	}
@@ -458,8 +464,7 @@ export const ReturnTypes: Record<string,any> = {
 		orderByCode:"Order",
 		product:"Product",
 		products:"ProductList",
-		search:"SearchResponse",
-		getBanner:"AnnouncementBanner"
+		search:"SearchResponse"
 	},
 	Mutation:{
 		addItemToOrder:"UpdateOrderItemsResult",
@@ -506,7 +511,7 @@ export const ReturnTypes: Record<string,any> = {
 		phoneNumber:"String",
 		defaultShippingAddress:"Boolean",
 		defaultBillingAddress:"Boolean",
-		customFields:"JSON"
+		customFields:"AddressCustomFields"
 	},
 	Asset:{
 		id:"ID",
@@ -1130,7 +1135,7 @@ export const ReturnTypes: Record<string,any> = {
 		country:"String",
 		countryCode:"String",
 		phoneNumber:"String",
-		customFields:"JSON"
+		customFields:"AddressCustomFields"
 	},
 	OrderList:{
 		items:"Order",
@@ -1760,19 +1765,8 @@ export const ReturnTypes: Record<string,any> = {
 		"...on Order":"Order",
 		"...on NoActiveOrderError":"NoActiveOrderError"
 	},
-	Schedule:{
-		start:"String",
-		end:"String"
-	},
-	AnnouncementBannerEntry:{
-		text:"String",
-		link:"String",
-		color:"String"
-	},
-	AnnouncementBanner:{
-		enabled:"Boolean",
-		schedule:"Schedule",
-		entries:"AnnouncementBannerEntry"
+	AddressCustomFields:{
+		NIP:"String"
 	}
 }
 

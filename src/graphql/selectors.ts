@@ -153,9 +153,40 @@ export const ActiveAddressSelector = Selector('Address')({
     phoneNumber: true,
     defaultShippingAddress: true,
     defaultBillingAddress: true,
+    customFields: {
+        NIP: true,
+    },
 });
 
 export type ActiveAddressType = FromSelector<typeof ActiveAddressSelector, 'Address', typeof scalars>;
+
+export const EditActiveAddressSelector = Selector('UpdateAddressInput')({
+    id: true,
+    fullName: true,
+    company: true,
+    streetLine1: true,
+    streetLine2: true,
+    city: true,
+    province: true,
+    postalCode: true,
+    countryCode: true,
+    phoneNumber: true,
+    defaultShippingAddress: true,
+    defaultBillingAddress: true,
+});
+
+export type EditActiveAddressType = FromSelector<
+    typeof EditActiveAddressSelector,
+    'UpdateAddressInput',
+    typeof scalars
+>;
+
+export const CurrentUserSelector = Selector('CurrentUser')({
+    id: true,
+    identifier: true,
+});
+
+export type CurrentUserType = FromSelector<typeof CurrentUserSelector, 'CurrentUser', typeof scalars>;
 
 export const ActiveCustomerSelector = Selector('Customer')({
     id: true,
@@ -164,6 +195,7 @@ export const ActiveCustomerSelector = Selector('Customer')({
     emailAddress: true,
     phoneNumber: true,
     addresses: ActiveAddressSelector,
+    user: CurrentUserSelector,
 });
 
 export type ActiveCustomerType = FromSelector<typeof ActiveCustomerSelector, 'Customer', typeof scalars>;
@@ -187,6 +219,7 @@ export const ActiveOrderSelector = Selector('Order')({
         id: true,
         quantity: true,
         linePriceWithTax: true,
+        unitPriceWithTax: true,
         discountedLinePriceWithTax: true,
         featuredAsset: {
             id: true,
@@ -213,7 +246,7 @@ export const ActiveOrderSelector = Selector('Order')({
     couponCodes: true,
     currencyCode: true,
     code: true,
-    customer: ActiveCustomerSelector,
+    customer: { id: true },
 });
 
 export type ActiveOrderType = FromSelector<typeof ActiveOrderSelector, 'Order', typeof scalars>;
@@ -229,13 +262,15 @@ export const OrderSelector = Selector('Order')({
         amountWithTax: true,
     },
     lines: {
+        id: true,
         quantity: true,
         linePriceWithTax: true,
+        unitPriceWithTax: true,
+        discountedLinePriceWithTax: true,
         featuredAsset: {
             id: true,
             preview: true,
         },
-        discountedLinePriceWithTax: true,
         productVariant: {
             name: true,
             currencyCode: true,
@@ -293,3 +328,20 @@ export const CreateAddressSelector = Selector('CreateAddressInput')({
 });
 
 export type CreateAddressType = FromSelector<typeof CreateAddressSelector, 'CreateAddressInput', typeof scalars>;
+
+export const RegisterCustomerInputSelector = Selector('RegisterCustomerInput')({
+    emailAddress: true,
+    password: true,
+});
+
+export type RegisterCustomerInputType = FromSelector<
+    typeof RegisterCustomerInputSelector,
+    'RegisterCustomerInput',
+    typeof scalars
+>;
+
+export type LoginCustomerInputType = {
+    emailAddress: string;
+    password: string;
+    rememberMe: boolean;
+};

@@ -50,7 +50,7 @@ export const OrderConfirmation: React.FC<{ code: string; order?: OrderType }> = 
                             <TP>{t('orderSummary.shipping')}</TP>
                             <TP weight={600}> {priceFormatter(order?.shippingWithTax || 0, currencyCode)}</TP>
                         </Stack>
-                        <Divider />
+                        {order?.discounts && order?.discounts.length > 0 ? <Divider /> : null}
                         {order?.discounts.map(d => (
                             <Stack key={d.description} justifyBetween>
                                 <TP>{d.description}</TP>
@@ -64,7 +64,7 @@ export const OrderConfirmation: React.FC<{ code: string; order?: OrderType }> = 
                         </Stack>
                     </Stack>
                 </Stack>
-                <Divider style={{ marginBlock: '4rem' }} />
+                <Divider marginBlock="4rem" />
                 {order?.lines.map(line => {
                     const isDefaultVariant = line.productVariant.name.includes(line.productVariant.product.name);
                     const isPriceDiscounted = line.linePriceWithTax !== line.discountedLinePriceWithTax;
@@ -79,9 +79,9 @@ export const OrderConfirmation: React.FC<{ code: string; order?: OrderType }> = 
                                                 ? `${line.productVariant.product.name} ${line.productVariant.name}`
                                                 : line.productVariant.name}
                                         </TP>
-                                        <Stack gap="1rem">
-                                            <TP size="1.75rem">{t('orderSummary.quantity')} </TP>
-                                            <TP size="1.75rem" weight={600}>
+                                        <Stack gap="0.75rem">
+                                            <TP size="1.5rem">{t('orderSummary.quantity')} </TP>
+                                            <TP size="1.5rem" weight={500}>
                                                 {line.quantity}
                                             </TP>
                                         </Stack>

@@ -14,21 +14,29 @@ const ConfirmationPage: React.FC<InferGetStaticPropsType<typeof getStaticProps>>
     const code = query.code as string;
     const [order, setOrder] = useState<OrderType>();
     const router = useRouter();
+    const maxRetries = 3;
 
     useEffect(() => {
-        if (!code) {
-            router.push('/');
-        } else {
-            storefrontApiQuery({
-                orderByCode: [{ code }, OrderSelector],
-            })
-                .then(r => {
-                    if (r.orderByCode) {
-                        setOrder(r.orderByCode);
-                    } else router.push('/');
-                })
-                .catch(() => router.push('/'));
-        }
+        let retries = 0;
+
+        const fetchOrder = async () => {
+            try {
+                const r = await storefrontApiQuery({
+                    orderByCode: [{ code }, OrderSelector],
+                });
+                if (r.orderByCode) {
+                    setOrder(r.orderByCode);
+                } else throw new Error('Order not found');
+            } catch (error) {
+                retries++;
+                if (retries <= maxRetries) {
+                    setTimeout(fetchOrder, 1000);
+                } else router.push('/');
+            }
+        };
+
+        if (!code) router.push('/');
+        else fetchOrder();
     }, [code]);
 
     return code ? (

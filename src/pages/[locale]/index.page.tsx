@@ -7,17 +7,17 @@ import { storefrontApiQuery } from '@/src/graphql/client';
 import { ProductSearchSelector } from '@/src/graphql/selectors';
 import { ProductTile } from '@/src/components/molecules/ProductTile';
 import { ContentContainer } from '@/src/components/atoms/ContentContainer';
-import { TCategory } from '@/src/components/atoms/TypoGraphy';
 import { getCollections } from '@/src/graphql/sharedQueries';
 import { MainGrid } from '@/src/components/atoms/MainGrid';
 import { Hero } from '@/src/components/organisms/Hero';
 import { Stack } from '@/src/components/atoms/Stack';
+import { MainBar } from '@/src/components/organisms/MainBar';
 
 export const Index: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = props => {
     const { t } = useTranslation('homepage');
     return (
         <Layout categories={props.collections} pageTitle="HomePage">
-            <Stack column gap="4rem">
+            <Stack w100 column gap="4rem">
                 <Hero
                     cta={t('hero-cta')}
                     h1={t('hero-h1')}
@@ -28,7 +28,7 @@ export const Index: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = p
                 />
                 <ContentContainer>
                     <Stack gap="4rem" column>
-                        <TCategory>{t('most-wanted')}</TCategory>
+                        <MainBar title={t('most-wanted')} categories={props.collections} />
                         <MainGrid>
                             {props.products.map(p => {
                                 return <ProductTile collections={props.collections} product={p} key={p.slug} />;
@@ -46,7 +46,7 @@ const getStaticProps = async (ctx: ContextModel) => {
         search: [
             {
                 input: {
-                    take: 12,
+                    take: 24,
                     groupByProduct: true,
                 },
             },

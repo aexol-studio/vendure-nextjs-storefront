@@ -345,7 +345,7 @@ export const OrderForm: React.FC<OrderFormProps> = ({ availableCountries }) => {
     };
 
     return (
-        <Stack column>
+        <Stack column gap="1.5rem">
             <Stack ref={errorRef}>
                 <AnimatePresence>
                     {errors.root?.message && errors.root.message !== '' ? (
@@ -359,119 +359,133 @@ export const OrderForm: React.FC<OrderFormProps> = ({ availableCountries }) => {
                     ) : null}
                 </AnimatePresence>
             </Stack>
-
             <Form onSubmit={handleSubmit(onSubmit)}>
                 {/* Customer Part */}
-                <Stack column>
-                    <TH2 size="2rem" weight={500} style={{ marginBottom: '1.75rem' }}>
-                        {t('orderForm.contactInfo')}
-                    </TH2>
-                    <Input
-                        {...register('emailAddress')}
-                        label={t('orderForm.emailAddress')}
-                        error={errors.emailAddress}
-                    />
-                    <Stack gap="1.75rem">
-                        <Input label={t('orderForm.firstName')} {...register('firstName')} error={errors.firstName} />
-                        <Input label={t('orderForm.lastName')} {...register('lastName')} error={errors.lastName} />
-                    </Stack>
-                    <Input
-                        type="tel"
-                        label={t('orderForm.phone')}
-                        {...register('phoneNumber', {
-                            onChange: e => (e.target.value = e.target.value.replace(/[^0-9]/g, '')),
-                        })}
-                        error={errors.phoneNumber}
-                    />
-                </Stack>
-
-                {/* Shipping Part */}
-                <Stack column>
-                    <Options gap="1.75rem" itemsCenter>
-                        <Radio
-                            {...(register('as'),
-                            {
-                                onChange: e => {
-                                    setValue('as', e.target.value as 'company' | 'individual');
-                                    setValue('userNeedInvoice', false);
-                                    setValue('NIP', '');
-                                },
-                            })}
-                            checked={watch('as') === 'individual'}
-                            value="individual"
-                            label={t('orderForm.individual')}
-                            icon={<User size={20} />}
-                        />
-                        <Radio
-                            {...(register('as'),
-                            {
-                                onChange: e => {
-                                    setValue('as', e.target.value as 'company' | 'individual');
-                                    setValue('userNeedInvoice', false);
-                                    setValue('NIP', '');
-                                },
-                            })}
-                            checked={watch('as') === 'company'}
-                            value="company"
-                            label={t('orderForm.company')}
-                            icon={<Building2 size={20} />}
-                        />
-                    </Options>
-                    <TH2 size="2rem" weight={500} style={{ marginBottom: '1.75rem' }}>
-                        {t('orderForm.shippingInfo')}
-                    </TH2>
-                    <Input
-                        {...register('shipping.fullName')}
-                        label={t('orderForm.fullName')}
-                        error={errors.shipping?.fullName}
-                    />
-                    {watch('as') === 'company' && (
-                        <Input
-                            {...register('shipping.company')}
-                            label={t('orderForm.company')}
-                            error={errors.shipping?.company}
-                        />
-                    )}
-                    <Input
-                        {...register('shipping.streetLine1')}
-                        label={t('orderForm.streetLine1')}
-                        error={errors.shipping?.province}
-                    />
-                    <Input
-                        {...register('shipping.streetLine2')}
-                        label={t('orderForm.streetLine2')}
-                        error={errors.shipping?.postalCode}
-                    />
-                    <Stack gap="1.75rem">
-                        <Input
-                            {...register('shipping.city')}
-                            label={t('orderForm.city')}
-                            error={errors.shipping?.city}
-                        />
-                        {availableCountries && (
-                            <CountrySelect
-                                {...register('shipping.countryCode')}
-                                label={t('orderForm.countryCode')}
-                                defaultValue={countryCode}
-                                options={availableCountries}
-                                error={errors.shipping?.countryCode}
+                <Stack column gap="0.5rem">
+                    <Stack column gap="2rem">
+                        <TH2 size="2rem" weight={500}>
+                            {t('orderForm.contactInfo')}
+                        </TH2>
+                        <Stack column>
+                            <Input
+                                {...register('emailAddress')}
+                                label={t('orderForm.emailAddress')}
+                                error={errors.emailAddress}
                             />
-                        )}
+                            <Stack gap="1.75rem">
+                                <Input
+                                    label={t('orderForm.firstName')}
+                                    {...register('firstName')}
+                                    error={errors.firstName}
+                                />
+                                <Input
+                                    label={t('orderForm.lastName')}
+                                    {...register('lastName')}
+                                    error={errors.lastName}
+                                />
+                            </Stack>
+                            <Input
+                                type="tel"
+                                label={t('orderForm.phone')}
+                                {...register('phoneNumber', {
+                                    onChange: e => (e.target.value = e.target.value.replace(/[^0-9]/g, '')),
+                                })}
+                                error={errors.phoneNumber}
+                            />
+                        </Stack>
                     </Stack>
-                    <Stack gap="1.75rem">
-                        <Input
-                            {...register('shipping.province')}
-                            label={t('orderForm.province')}
-                            error={errors.shipping?.province}
-                        />
-                        <Input
-                            {...register('shipping.postalCode')}
-                            label={t('orderForm.postalCode')}
-                            error={errors.shipping?.postalCode}
-                        />
+
+                    {/* Shipping Part */}
+                    <Stack column>
+                        <Options gap="1.75rem" itemsCenter>
+                            <Radio
+                                {...(register('as'),
+                                {
+                                    onChange: e => {
+                                        setValue('as', e.target.value as 'company' | 'individual');
+                                        setValue('userNeedInvoice', false);
+                                        setValue('NIP', '');
+                                    },
+                                })}
+                                checked={watch('as') === 'individual'}
+                                value="individual"
+                                label={t('orderForm.individual')}
+                                icon={<User size={20} />}
+                            />
+                            <Radio
+                                {...(register('as'),
+                                {
+                                    onChange: e => {
+                                        setValue('as', e.target.value as 'company' | 'individual');
+                                        setValue('userNeedInvoice', false);
+                                        setValue('NIP', '');
+                                    },
+                                })}
+                                checked={watch('as') === 'company'}
+                                value="company"
+                                label={t('orderForm.company')}
+                                icon={<Building2 size={20} />}
+                            />
+                        </Options>
+                        <Stack column gap="2rem">
+                            <TH2 size="2rem" weight={500} style={{ marginBottom: '1.75rem' }}>
+                                {t('orderForm.shippingInfo')}
+                            </TH2>
+                            <Stack column>
+                                <Input
+                                    {...register('shipping.fullName')}
+                                    label={t('orderForm.fullName')}
+                                    error={errors.shipping?.fullName}
+                                />
+                                {watch('as') === 'company' && (
+                                    <Input
+                                        {...register('shipping.company')}
+                                        label={t('orderForm.company')}
+                                        error={errors.shipping?.company}
+                                    />
+                                )}
+                                <Input
+                                    {...register('shipping.streetLine1')}
+                                    label={t('orderForm.streetLine1')}
+                                    error={errors.shipping?.province}
+                                />
+                                <Input
+                                    {...register('shipping.streetLine2')}
+                                    label={t('orderForm.streetLine2')}
+                                    error={errors.shipping?.postalCode}
+                                />
+                                <Stack gap="1.75rem">
+                                    <Input
+                                        {...register('shipping.city')}
+                                        label={t('orderForm.city')}
+                                        error={errors.shipping?.city}
+                                    />
+                                    {availableCountries && (
+                                        <CountrySelect
+                                            {...register('shipping.countryCode')}
+                                            label={t('orderForm.countryCode')}
+                                            defaultValue={countryCode}
+                                            options={availableCountries}
+                                            error={errors.shipping?.countryCode}
+                                        />
+                                    )}
+                                </Stack>
+                                <Stack gap="1.75rem">
+                                    <Input
+                                        {...register('shipping.province')}
+                                        label={t('orderForm.province')}
+                                        error={errors.shipping?.province}
+                                    />
+                                    <Input
+                                        {...register('shipping.postalCode')}
+                                        label={t('orderForm.postalCode')}
+                                        error={errors.shipping?.postalCode}
+                                    />
+                                </Stack>
+                            </Stack>
+                        </Stack>
                     </Stack>
                 </Stack>
-
                 <Stack justifyBetween itemsCenter>
                     {watch('as') === 'company' && (
                         <CheckBox
@@ -612,7 +626,9 @@ export const OrderForm: React.FC<OrderFormProps> = ({ availableCountries }) => {
                 )}
 
                 {/* Submit */}
-                <Button type="submit">{t('orderForm.continueToPayment')}</Button>
+                <Stack w100 justifyEnd>
+                    <Button type="submit">{t('orderForm.continueToPayment')}</Button>
+                </Stack>
             </Form>
         </Stack>
     );

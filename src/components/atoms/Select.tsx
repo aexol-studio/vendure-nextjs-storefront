@@ -1,3 +1,4 @@
+import { thv } from '@/src/theme';
 import styled from '@emotion/styled';
 import { useTranslation } from 'next-i18next';
 
@@ -42,13 +43,16 @@ const Main = styled.div`
         /* safari */
         -webkit-appearance: none;
         /* other styles for aesthetics */
-        width: 100%;
-        font-size: 1.15rem;
-        padding: 0.675rem 6rem 0.675rem 1rem;
-        background-color: #fff;
-        border: 1px solid #caced1;
-        border-radius: 0.25rem;
-        color: #000;
+        background-color: ${thv.background.main};
+        border: 1px solid ${thv.text.main};
+        border-radius: ${p => p.theme.borderRadius};
+        color: ${thv.text.main};
         cursor: pointer;
+        font-size: 1.25rem;
+        max-width: 100%;
+        min-width: 30rem;
+        display: flex;
+        height: 4.8rem;
+        padding: 1.2rem 1.6rem;
     }
 `;

@@ -25,6 +25,7 @@
     "stockLevel":{"OUT_OF_STOCK":"Out of stock", "IN_STOCK":"In stock"},
     "commonError":"Something wen't wrong",
     "send":"Send",
+    "search-results":"Search results for:",
     "shipping-protection": {
         "title": "Shipping Protection",
         "subtitle": "From Damage, Loss & Theft for {{value}}"

@@ -4,13 +4,14 @@ import styled from '@emotion/styled';
 import { Stack } from '@/src/components/atoms/Stack';
 import { FormError, Label } from './atoms';
 
-const RadioWrapper = styled(Stack)`
+const RadioWrapper = styled(Stack)<{ active?: boolean }>`
     position: relative;
     width: fit-content;
     padding: 0.75rem 1.75rem;
     border-radius: ${p => p.theme.borderRadius};
-    border: 1px solid ${p => p.theme.gray(200)};
-    box-shadow: 0 0 0.5rem ${p => p.theme.gray(200)};
+    border: 1px solid;
+    color: ${p => (p.active ? p.theme.text.main : p.theme.text.inactive)};
+    transition: all 200ms;
 `;
 
 const StyledRadio = styled.input`
@@ -23,8 +24,8 @@ const StyledRadio = styled.input`
     cursor: pointer;
 `;
 
-const Icon = styled.div<{ active?: boolean }>`
-    color: ${p => (p.active ? p.theme.success : p.theme.gray(1000))};
+const Icon = styled.div`
+    color: currentColor;
 `;
 
 type InputType = InputHTMLAttributes<HTMLInputElement> & {
@@ -37,8 +38,8 @@ export const Radio = forwardRef((props: InputType, ref: React.ForwardedRef<HTMLI
     const { label, error, icon, ...rest } = props;
     return (
         <Stack column itemsCenter gap="0.25rem">
-            <RadioWrapper gap="0.75rem" itemsCenter>
-                <Icon active={rest.checked}>{icon}</Icon>
+            <RadioWrapper active={rest.checked} gap="0.75rem" itemsCenter>
+                <Icon>{icon}</Icon>
                 <StyledRadio ref={ref} {...rest} type="radio" />
                 <Label htmlFor={props.name}>{label}</Label>
             </RadioWrapper>

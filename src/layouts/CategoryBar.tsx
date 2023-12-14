@@ -26,5 +26,5 @@ const Cat = styled(Link)`
     color: ${p => p.theme.gray(800)};
 `;
 const Main = styled(Stack)`
-    padding: 2rem 0;
+    padding: 4rem 0;
 `;

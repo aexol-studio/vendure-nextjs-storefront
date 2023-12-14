@@ -1,7 +1,7 @@
 import { ContentContainer } from '@/src/components/atoms/ContentContainer';
 import { MainGrid } from '@/src/components/atoms/MainGrid';
 import { Stack } from '@/src/components/atoms/Stack';
-import { TH1, TP } from '@/src/components/atoms/TypoGraphy';
+import { TP } from '@/src/components/atoms/TypoGraphy';
 import { FacetFilterCheckbox } from '@/src/components/molecules/FacetFilter';
 import { ProductTile } from '@/src/components/molecules/ProductTile';
 import { storefrontApiQuery } from '@/src/graphql/client';
@@ -14,9 +14,10 @@ import { InferGetStaticPropsType } from 'next';
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'next-i18next';
 import { IconButton } from '@/src/components/molecules/Button';
-import { Filter, X } from 'lucide-react';
+import { X } from 'lucide-react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useRouter } from 'next/router';
+import { MainBar } from '@/src/components/organisms/MainBar';
 
 const SearchPage: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = props => {
     const { t } = useTranslation('common');
@@ -74,15 +75,7 @@ const SearchPage: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = pro
                     )}
                 </AnimatePresence>
                 <Stack gap="2rem" column>
-                    <Stack justifyBetween itemsCenter>
-                        <TH1>{'aaa'}</TH1>
-                        <Filters onClick={() => setFiltersOpen(true)}>
-                            <TP>{t('filters')}</TP>
-                            <IconButton title={t('filters')}>
-                                <Filter />
-                            </IconButton>
-                        </Filters>
-                    </Stack>
+                    <MainBar categories={props.collections} title={t('search-results') + ' ' + q} />
                     <MainGrid>
                         {products.map(p => {
                             return <ProductTile collections={props.collections} product={p} key={p.slug} />;
@@ -93,11 +86,6 @@ const SearchPage: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = pro
         </Layout>
     );
 };
-
-const Filters = styled(Stack)`
-    width: auto;
-    cursor: pointer;
-`;
 
 const Facets = styled(motion.div)`
     background: ${p => p.theme.grayAlpha(900, 0.5)};

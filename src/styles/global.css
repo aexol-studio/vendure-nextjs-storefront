@@ -1,5 +1,3 @@
-@import url('https://fonts.googleapis.com/css?family=Barlow:100,300,400,500,600,700,800,900&display=swap');
-
 *,
 *::after,
 *::before {
@@ -82,9 +80,7 @@ html {
 
 input,
 select {
-    font-family: 'Barlow', sans-serif;
     font-size: 1.6rem;
-
     /* turn off highlighting */
     -webkit-background-clip: text;
     -webkit-text-fill-color: none;
@@ -116,8 +112,4 @@ p {
 a {
     text-decoration: none;
     font-size: 1.6rem;
-}
-
-.custom-scrollbar {
-    
 }

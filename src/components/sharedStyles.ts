@@ -40,5 +40,6 @@ export interface BaseFlexParams {
     justifyEnd?: boolean;
     justifyBetween?: boolean;
     justifyCenter?: boolean;
+    w100?: boolean;
     gap?: BaseRemUnit;
 }

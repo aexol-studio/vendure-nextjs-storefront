@@ -13,7 +13,6 @@ const App = ({ Component, pageProps }: AppProps) => {
                 styles={`
             body{
                 font-family:${sans.style.fontFamily};
-                color:black;
             }
             `}
             />

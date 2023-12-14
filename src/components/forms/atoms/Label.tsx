@@ -1,7 +1,7 @@
 import styled from '@emotion/styled';
 
 export const Label = styled.label`
-    font-size: 1.4rem;
+    font-size: 1.25rem;
     line-height: 1.25rem;
-    font-weight: 500;
+    font-weight: 400;
 `;

@@ -3,6 +3,7 @@ import { Link } from '@/src/components/atoms/Link';
 import { Stack } from '@/src/components/atoms/Stack';
 import { TH1, TH2, TP } from '@/src/components/atoms/TypoGraphy';
 import { Button } from '@/src/components/molecules/Button';
+import { thv } from '@/src/theme';
 import styled from '@emotion/styled';
 
 export const Hero: React.FC<{
@@ -36,7 +37,7 @@ export const Hero: React.FC<{
 
 const Main = styled(Stack)`
     width: 100%;
-    background: ${p => p.theme.gray(50)};
+    background: ${thv.background.third};
     padding: 4rem 0;
 `;
 const HeroImage = styled.img`

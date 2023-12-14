@@ -1,4 +1,4 @@
-type Level = 0 | 50 | 100 | 200 | 300 | 400 | 500 | 600 | 700 | 800 | 900 | 1000;
+type Level = 0 | 25 | 50 | 100 | 200 | 300 | 400 | 500 | 600 | 700 | 800 | 900 | 1000;
 type FunctionTheme = {
     accent: (l: Level) => string;
     gray: (l: Level) => string;
@@ -7,6 +7,15 @@ type FunctionTheme = {
 };
 
 type DetailTheme = {
+    text: {
+        main: string;
+        inactive: string;
+    };
+    background: {
+        main: string;
+        secondary: string;
+        third: string;
+    };
     button: {
         back: string;
         front: string;
@@ -85,6 +94,15 @@ export const createTheme = (
 };
 
 export const LightTheme = createTheme(300, t => ({
+    background: {
+        main: t.gray(0),
+        secondary: t.gray(25),
+        third: t.gray(50),
+    },
+    text: {
+        main: t.gray(900),
+        inactive: t.gray(200),
+    },
     button: {
         back: t.gray(900),
         front: t.gray(0),

@@ -7,6 +7,7 @@ import { Footer } from '@/src/layouts/Footer';
 import { Stack } from '@/src/components/atoms/Stack';
 import { useCart } from '@/src/state/cart';
 import { CategoryBar } from '@/src/layouts/CategoryBar';
+import { thv } from '@/src/theme';
 
 export const siteTitle = 'Next.js Sample Website';
 
@@ -20,9 +21,12 @@ const Container = styled.div`
     display: flex;
     flex-direction: column;
     align-items: center;
+    width: 100%;
 `;
 const MainStack = styled(Stack)`
     min-height: 100vh;
+    width: 100%;
+    background: ${thv.background.main};
 `;
 
 export const Layout: React.FC<LayoutProps> = ({ pageTitle, children, categories }) => {
@@ -33,7 +37,7 @@ export const Layout: React.FC<LayoutProps> = ({ pageTitle, children, categories 
     return (
         <MainStack column>
             <CustomHelmet pageTitle={pageTitle ? pageTitle : undefined} />
-            <Nav categories={categories} />
+            <Nav />
             <CategoryBar collections={categories} />
             <Container>{children}</Container>
             <Footer />

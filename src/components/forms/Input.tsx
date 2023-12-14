@@ -5,7 +5,6 @@ import { Stack } from '@/src/components/atoms/Stack';
 import { FormError, Label } from './atoms';
 
 export const StyledInput = styled.input<{ error?: boolean }>`
-    margin-top: 4px;
     padding: 0.5rem 0.75rem;
     color: ${p => p.theme.gray(900)};
     border: 1px solid ${p => p.theme.gray(100)};

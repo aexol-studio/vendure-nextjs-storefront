@@ -901,6 +901,7 @@ requestUpdateCustomerEmailAddress?: [{	password: string | Variable<any, string>,
 updateCustomerEmailAddress?: [{	token: string | Variable<any, string>},ValueTypes["UpdateCustomerEmailAddressResult"]],
 requestPasswordReset?: [{	emailAddress: string | Variable<any, string>},ValueTypes["RequestPasswordResetResult"]],
 resetPassword?: [{	token: string | Variable<any, string>,	password: string | Variable<any, string>},ValueTypes["ResetPasswordResult"]],
+	createStripePaymentIntent?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
 	["Address"]: AliasType<{
@@ -2968,6 +2969,7 @@ requestUpdateCustomerEmailAddress?: [{	password: string,	newEmailAddress: string
 updateCustomerEmailAddress?: [{	token: string},ResolverInputTypes["UpdateCustomerEmailAddressResult"]],
 requestPasswordReset?: [{	emailAddress: string},ResolverInputTypes["RequestPasswordResetResult"]],
 resetPassword?: [{	token: string,	password: string},ResolverInputTypes["ResetPasswordResult"]],
+	createStripePaymentIntent?:boolean | `@${string}`,
 		__typename?: boolean | `@${string}`
 }>;
 	["Address"]: AliasType<{
@@ -5120,7 +5122,8 @@ that verification token to the Customer, which is then used to verify the change
 	/** Requests a password reset email to be sent */
 	requestPasswordReset?: ModelTypes["RequestPasswordResetResult"] | undefined,
 	/** Resets a Customer's password based on the provided token */
-	resetPassword: ModelTypes["ResetPasswordResult"]
+	resetPassword: ModelTypes["ResetPasswordResult"],
+	createStripePaymentIntent: string
 };
 	["Address"]: {
 		id: string,
@@ -6860,7 +6863,8 @@ that verification token to the Customer, which is then used to verify the change
 	/** Requests a password reset email to be sent */
 	requestPasswordReset?: GraphQLTypes["RequestPasswordResetResult"] | undefined,
 	/** Resets a Customer's password based on the provided token */
-	resetPassword: GraphQLTypes["ResetPasswordResult"]
+	resetPassword: GraphQLTypes["ResetPasswordResult"],
+	createStripePaymentIntent: string
 };
 	["Address"]: {
 	__typename: "Address",

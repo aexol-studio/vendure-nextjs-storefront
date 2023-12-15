@@ -494,7 +494,8 @@ export const ReturnTypes: Record<string,any> = {
 		requestUpdateCustomerEmailAddress:"RequestUpdateCustomerEmailAddressResult",
 		updateCustomerEmailAddress:"UpdateCustomerEmailAddressResult",
 		requestPasswordReset:"RequestPasswordResetResult",
-		resetPassword:"ResetPasswordResult"
+		resetPassword:"ResetPasswordResult",
+		createStripePaymentIntent:"String"
 	},
 	Address:{
 		id:"ID",

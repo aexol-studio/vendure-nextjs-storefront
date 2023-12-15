@@ -54,9 +54,6 @@ interface OrderFormProps {
 export const OrderForm: React.FC<OrderFormProps> = ({ availableCountries }) => {
     const { cart, changeShippingMethod } = useCart();
 
-    //TODO: Verify what country we will use
-    const countryCode = cart?.billingAddress?.country ?? 'US';
-
     const { t } = useTranslation('checkout');
     const push = usePush();
     const [activeCustomer, setActiveCustomer] = useState<ActiveCustomerType>();
@@ -123,6 +120,13 @@ export const OrderForm: React.FC<OrderFormProps> = ({ availableCountries }) => {
     const defaultShippingAddress = activeCustomer?.addresses?.find(address => address.defaultShippingAddress);
     const defaultBillingAddress = activeCustomer?.addresses?.find(address => address.defaultBillingAddress);
 
+    //TODO: Verify what country we will use
+    const countryCode =
+        defaultBillingAddress?.country.code ??
+        defaultShippingAddress?.country.code ??
+        availableCountries?.find(country => country.name === 'Poland')?.code ??
+        'PL';
+
     const {
         register,
         handleSubmit,
@@ -148,6 +152,9 @@ export const OrderForm: React.FC<OrderFormProps> = ({ availableCountries }) => {
                   phoneNumber: activeCustomer.phoneNumber,
                   NIP: defaultBillingAddress?.customFields?.NIP ?? '',
                   userNeedInvoice: defaultBillingAddress?.customFields?.NIP ? true : false,
+                  as: defaultBillingAddress?.company ? 'company' : 'individual',
+                  billingDifferentThanShipping:
+                      JSON.stringify(defaultBillingAddress) !== JSON.stringify(defaultShippingAddress),
                   shipping: {
                       ...defaultShippingAddress,
                       streetLine1: defaultShippingAddress?.streetLine1 ?? '',

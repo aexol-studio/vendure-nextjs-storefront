@@ -1,7 +1,7 @@
 import { Stack } from '@/src/components/atoms/Stack';
 import { Divider } from '@/src/components/atoms/Divider';
 import { TH2, TP } from '@/src/components/atoms/TypoGraphy';
-import React, { useMemo } from 'react';
+import React from 'react';
 import { CheckoutStatus } from '../CheckoutStatus';
 import { useCart } from '@/src/state/cart';
 import { Line } from './Line';
@@ -9,20 +9,16 @@ import { useRouter } from 'next/router';
 import { useTranslation } from 'next-i18next';
 import { priceFormatter } from '@/src/util/priceFomatter';
 import { CurrencyCode } from '@/src/zeus';
+import { DiscountForm } from '@/src/components/molecules/DiscountForm';
+import { X } from 'lucide-react';
+import styled from '@emotion/styled';
 
 export const OrderSummary: React.FC = () => {
     const { t } = useTranslation('checkout');
     const { asPath } = useRouter();
-    const { cart } = useCart();
+    const { cart, removeCouponCode } = useCart();
     const step = asPath.includes('payment') ? 'payment' : 'shipping';
     const currencyCode = cart?.currencyCode ?? CurrencyCode.USD;
-
-    const total = useMemo(() => {
-        if (cart?.totalWithTax && cart?.discounts.length > 0) {
-            const discounts = cart?.discounts?.reduce((acc, discount) => acc - discount.amountWithTax, 0) ?? 0;
-            return priceFormatter(cart?.totalWithTax - discounts, currencyCode);
-        } else return priceFormatter(cart?.totalWithTax || 0, currencyCode);
-    }, [cart]);
 
     return (
         <Stack style={{ width: '100%', position: 'sticky', top: '9.6rem', height: 'fit-content' }}>
@@ -42,20 +38,32 @@ export const OrderSummary: React.FC = () => {
                             <TP>{t('orderSummary.shipping')}</TP>
                             <TP>{priceFormatter(cart?.shippingWithTax ?? 0, currencyCode)}</TP>
                         </Stack>
-                        {cart?.discounts.map(d => (
-                            <Stack key={d.description} justifyBetween>
-                                <TP>{d.description}</TP>
-                                <TP>{priceFormatter(d.amountWithTax, currencyCode)}</TP>
+                        <Divider />
+                        <Stack column gap="2.5rem">
+                            {cart?.discounts.map(d => (
+                                <Stack key={d.description} justifyBetween>
+                                    <Stack itemsCenter gap="1.25rem">
+                                        <Remove onClick={() => removeCouponCode(d.description)}>
+                                            <X size={16} />
+                                        </Remove>
+                                        <TP>
+                                            {t('orderSummary.couponCode')} {d.description}
+                                        </TP>
+                                    </Stack>
+                                    <TP>{priceFormatter(d.amountWithTax, currencyCode)}</TP>
+                                </Stack>
+                            ))}
+                            <Stack style={{ maxWidth: '25.6rem' }}>
+                                <DiscountForm />
                             </Stack>
-                        ))}
+                        </Stack>
                         <Divider />
                         <Stack justifyBetween>
                             <TP size="1.75rem" weight={600}>
                                 {t('orderSummary.total')}
                             </TP>
                             <TP size="1.75rem" weight={600}>
-                                {/* {priceFormatter(cart?.totalWithTax ?? 0, currencyCode)} */}
-                                {total}
+                                {priceFormatter(cart?.totalWithTax ?? 0, currencyCode)}
                             </TP>
                         </Stack>
                     </Stack>
@@ -64,3 +72,15 @@ export const OrderSummary: React.FC = () => {
         </Stack>
     );
 };
+
+const Remove = styled.button`
+    appearance: none;
+    border: none;
+    background: transparent;
+
+    display: flex;
+    align-items: center;
+    width: fit-content;
+
+    gap: 0.4rem;
+`;

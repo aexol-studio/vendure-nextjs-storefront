@@ -81,7 +81,8 @@
         "shipping": "Shipping",
         "total": "Total",
         "quantity": "Quantity",
-        "remove": "Remove"
+        "remove": "Remove",
+        "couponCode": "Coupon Code:"
     },
     "deliveryMethod": {
         "title": "Delivery Method",

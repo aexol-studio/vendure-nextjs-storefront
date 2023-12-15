@@ -178,7 +178,7 @@ export const Cart = ({ activeOrder }: { activeOrder?: ActiveOrderType }) => {
                                                             <TP>{t('subtotal')}</TP>
                                                             <TP>
                                                                 {priceFormatter(
-                                                                    activeOrder.totalWithTax - discountsSum,
+                                                                    activeOrder.subTotalWithTax,
                                                                     currencyCode,
                                                                 )}
                                                             </TP>
@@ -190,10 +190,7 @@ export const Cart = ({ activeOrder }: { activeOrder?: ActiveOrderType }) => {
                                                         <Stack justifyBetween>
                                                             <TP>{t('total')}</TP>
                                                             <TP>
-                                                                {priceFormatter(
-                                                                    activeOrder.totalWithTax - discountsSum,
-                                                                    currencyCode,
-                                                                )}
+                                                                {priceFormatter(activeOrder.totalWithTax, currencyCode)}
                                                             </TP>
                                                         </Stack>
                                                     ) : null}

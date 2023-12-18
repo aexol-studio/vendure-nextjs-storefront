@@ -24,12 +24,12 @@ export const YMALCarousel: React.FC<YMALProps> = ({ YMALProducts, currencyCode }
             <TH2 size="2rem" weight={600}>
                 {t('orderSummary.YMAL.title')}
             </TH2>
-            <OverflowedStack w100 justifyBetween gap="3.5rem">
+            <OverflowedStack w100 justifyBetween>
                 {YMALProducts.map(product => {
                     const [selectedVariant, setSelectedVariant] = useState(product.variants[0]);
 
                     return (
-                        <Stack key={product.id} column gap="1.5rem" justifyBetween>
+                        <Slide key={product.id}>
                             <Stack column>
                                 <ImageWrapper>
                                     <img
@@ -72,7 +72,7 @@ export const YMALCarousel: React.FC<YMALProps> = ({ YMALProducts, currencyCode }
                             <Button onClick={() => addToCart(selectedVariant.id, 1)}>
                                 {t('orderSummary.YMAL.addToCart')}
                             </Button>
-                        </Stack>
+                        </Slide>
                     );
                 })}
             </OverflowedStack>
@@ -92,9 +92,31 @@ const ImageWrapper = styled.div`
     }
 `;
 
+const Slide = styled.div`
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1.5rem;
+    padding: 1.5rem;
+    border: 1px solid ${p => p.theme.gray(100)};
+    border-radius: 0.5rem;
+    box-shadow: 0 0 1rem rgba(0, 0, 0, 0.1);
+    transition: all 0.2s ease-in-out;
+
+    :hover {
+        border-color: ${p => p.theme.gray(400)};
+        box-shadow: 0 0 1rem rgba(0, 0, 0, 0.2);
+    }
+`;
+
 const OverflowedStack = styled(Stack)`
+    max-width: 65.5rem;
     overflow-x: scroll;
-    padding: 1rem 0.75rem;
+
+    gap: 1.5rem;
+    padding: 1rem 0.5rem;
     ::-webkit-scrollbar {
         height: 0.8rem;
         width: 0.8rem;

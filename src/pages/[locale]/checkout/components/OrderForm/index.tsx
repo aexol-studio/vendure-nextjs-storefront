@@ -31,6 +31,7 @@ import { Input } from '@/src/components/forms/Input';
 import { WhatAccountGives } from '../ui/WhatAccountGives';
 import { DeliveryMethod } from '../DeliveryMethod';
 import { useValidationSchema } from './useValidationSchema';
+import { FormError } from '@/src/components/forms/atoms';
 
 type Form = CreateCustomerType & {
     deliveryMethod?: string;
@@ -90,7 +91,6 @@ export const OrderForm: React.FC<OrderFormProps> = ({ availableCountries }) => {
         watch,
         formState: { errors },
     } = useForm<Form>({
-        mode: 'all',
         delayError: 100,
         defaultValues: {
             shippingDifferentThanBilling:
@@ -294,7 +294,7 @@ export const OrderForm: React.FC<OrderFormProps> = ({ availableCountries }) => {
     };
 
     return (
-        <Stack column>
+        <Stack w100 column>
             <BannerHolder ref={errorRef}>
                 <AnimatePresence>
                     {errors.root?.message && errors.root.message !== '' ? (
@@ -559,6 +559,7 @@ export const OrderForm: React.FC<OrderFormProps> = ({ availableCountries }) => {
                             onChange={async id => {
                                 await changeShippingMethod(id);
                                 setValue('deliveryMethod', id);
+                                clearErrors('deliveryMethod');
                             }}
                             shippingMethods={shippingMethods}
                             currencyCode={cart?.currencyCode}
@@ -572,7 +573,7 @@ export const OrderForm: React.FC<OrderFormProps> = ({ availableCountries }) => {
                     <Stack itemsStart column>
                         <CheckBox
                             {...register('regulations')}
-                            error={errors.regulations}
+                            // error={errors.regulations}
                             label={
                                 <Trans
                                     i18nKey="orderForm.regulations"
@@ -584,7 +585,7 @@ export const OrderForm: React.FC<OrderFormProps> = ({ availableCountries }) => {
                         />
                         <CheckBox
                             {...register('terms')}
-                            error={errors.terms}
+                            // error={errors.terms}
                             label={
                                 <Trans
                                     i18nKey="orderForm.terms"
@@ -596,6 +597,30 @@ export const OrderForm: React.FC<OrderFormProps> = ({ availableCountries }) => {
                         />
                     </Stack>
                     <Button type="submit">{t('orderForm.continueToPayment')}</Button>
+                </Stack>
+                <Stack column>
+                    <AnimatePresence>
+                        {errors.terms?.message && (
+                            <FormError
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 1 }}
+                                exit={{ opacity: 0 }}
+                                transition={{ duration: 0.2 }}>
+                                {errors.terms?.message}
+                            </FormError>
+                        )}
+                    </AnimatePresence>
+                    <AnimatePresence>
+                        {errors.regulations?.message && (
+                            <FormError
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 1 }}
+                                exit={{ opacity: 0 }}
+                                transition={{ duration: 0.2 }}>
+                                {errors.regulations?.message}
+                            </FormError>
+                        )}
+                    </AnimatePresence>
                 </Stack>
             </Form>
         </Stack>

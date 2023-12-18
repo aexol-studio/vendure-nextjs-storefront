@@ -1,9 +1,10 @@
 import { Button } from '@/src/components/molecules/Button';
+import { ActiveOrderType } from '@/src/graphql/selectors';
 import styled from '@emotion/styled';
 import { useStripe, useElements, PaymentElement } from '@stripe/react-stripe-js';
 import React, { FormEvent } from 'react';
 
-export const StripeForm = ({ orderCode }: { orderCode: string }) => {
+export const StripeForm = ({ activeOrder }: { activeOrder: ActiveOrderType }) => {
     const stripe = useStripe();
     const elements = useElements();
 
@@ -13,7 +14,7 @@ export const StripeForm = ({ orderCode }: { orderCode: string }) => {
 
         const result = await stripe.confirmPayment({
             elements,
-            confirmParams: { return_url: location.origin + `/checkout/confirmation?code=${orderCode}` },
+            confirmParams: { return_url: location.origin + `/checkout/confirmation?code=${activeOrder.code}` },
         });
 
         if (result.error) {
@@ -28,7 +29,18 @@ export const StripeForm = ({ orderCode }: { orderCode: string }) => {
 
     return (
         <StyledForm onSubmit={handleSubmit}>
-            <PaymentElement options={{ layout: { type: 'tabs' }, business: { name: 'Aexol' } }} />
+            <PaymentElement
+                options={{
+                    layout: { type: 'tabs' },
+                    business: { name: 'Aexol' },
+                    paymentMethodOrder: ['blik', 'p24'],
+                    defaultValues: {
+                        billingDetails: {
+                            email: activeOrder?.customer?.emailAddress,
+                        },
+                    },
+                }}
+            />
             <Button type="submit">Pay</Button>
         </StyledForm>
     );

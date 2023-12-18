@@ -28,7 +28,7 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({ isForm, YMALProducts
     const currencyCode = cart?.currencyCode ?? CurrencyCode.USD;
 
     return (
-        <SummaryContainer style={{ maxWidth: 'calc(50% - 10rem)' }}>
+        <SummaryContainer w100>
             <SummaryContent w100 column gap="2rem">
                 <CheckoutStatus step={step} />
                 <TH2 size="3rem" weight={500}>
@@ -95,9 +95,8 @@ const SummaryContainer = styled(Stack)`
     top: 9.5rem;
     height: fit-content;
 `;
-const SummaryContent = styled(Stack)`
-    padding: 1.5rem 1.25rem;
-`;
+
+const SummaryContent = styled(Stack)``;
 
 const Remove = styled.button`
     appearance: none;

@@ -4,7 +4,7 @@ import { Check } from 'lucide-react';
 import React, { forwardRef, InputHTMLAttributes, useState } from 'react';
 import { FieldError } from 'react-hook-form';
 import { Stack } from '../atoms/Stack';
-import { FormError, FormRequired, Label } from './atoms';
+import { FormError, FormErrorWrapper, FormRequired, Label } from './atoms';
 
 type InputType = InputHTMLAttributes<HTMLInputElement> & {
     label: string | React.ReactNode;
@@ -16,7 +16,7 @@ export const CheckBox = forwardRef((props: InputType, ref: React.ForwardedRef<HT
     const [state, setState] = useState<boolean>(!!value);
 
     return (
-        <Wrapper column gap="0.25rem">
+        <Wrapper column gap="0.125rem">
             <CheckboxStack itemsCenter gap="0.75rem">
                 <AnimatePresence>
                     <CheckboxIconHolder>
@@ -45,17 +45,21 @@ export const CheckBox = forwardRef((props: InputType, ref: React.ForwardedRef<HT
                     {props.required && <FormRequired>&nbsp;*</FormRequired>}
                 </Label>
             </CheckboxStack>
-            <AnimatePresence>
-                {error?.message && (
-                    <FormError
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        exit={{ opacity: 0 }}
-                        transition={{ duration: 0.2 }}>
-                        {error?.message}
-                    </FormError>
-                )}
-            </AnimatePresence>
+            {props.required && error ? (
+                <FormErrorWrapper>
+                    <AnimatePresence>
+                        {error.message && (
+                            <FormError
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 1 }}
+                                exit={{ opacity: 0 }}
+                                transition={{ duration: 0.2 }}>
+                                {error?.message}
+                            </FormError>
+                        )}
+                    </AnimatePresence>
+                </FormErrorWrapper>
+            ) : null}
         </Wrapper>
     );
 });

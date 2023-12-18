@@ -15,7 +15,7 @@ const CheckoutPage: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = p
     return (
         <Layout categories={props.collections}>
             <Content>
-                <Main>
+                <Main w100 justifyBetween>
                     <OrderForm availableCountries={availableCountries} />
                     <OrderSummary isForm YMALProducts={YMALProducts} />
                 </Main>

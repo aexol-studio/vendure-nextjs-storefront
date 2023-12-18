@@ -58,7 +58,7 @@ export const usePush = () => {
 
     return useCallback(
         (to?: string, as?: Url, options?: TransitionOptions) => {
-            router.push(`/${locale}${to}`, as, options);
+            router.push(`${locale}${to}`, as, options);
         },
         [lang],
     );

@@ -54,57 +54,64 @@ export const OrderPayment: React.FC<OrderPaymentProps> = () => {
 
     const onClick = async (method: string) => {
         // Add payment to order
-        const { addPaymentToOrder } = await storefrontApiMutation({
-            addPaymentToOrder: [
-                {
-                    input: {
-                        method,
-                        metadata: {
-                            // TODO: Try to add some metadata
-                            shouldDecline: true,
-                            shouldError: false,
-                            shouldErrorOnSettle: false,
+        try {
+            const { addPaymentToOrder } = await storefrontApiMutation({
+                addPaymentToOrder: [
+                    {
+                        input: {
+                            method,
+                            metadata: JSON.stringify({
+                                // TODO: Try to add some metadata
+                                shouldDecline: false,
+                                shouldCancel: false,
+                                shouldError: false,
+                                shouldErrorOnSettle: false,
+                            }),
                         },
                     },
-                },
-                {
-                    __typename: true,
-                    '...on Order': ActiveOrderSelector,
-                    '...on IneligiblePaymentMethodError': {
-                        message: true,
-                        errorCode: true,
-                        eligibilityCheckerMessage: true,
+                    {
+                        __typename: true,
+                        '...on Order': ActiveOrderSelector,
+                        '...on IneligiblePaymentMethodError': {
+                            message: true,
+                            errorCode: true,
+                            eligibilityCheckerMessage: true,
+                        },
+                        '...on NoActiveOrderError': {
+                            message: true,
+                            errorCode: true,
+                        },
+                        '...on OrderPaymentStateError': {
+                            message: true,
+                            errorCode: true,
+                        },
+                        '...on OrderStateTransitionError': {
+                            message: true,
+                            errorCode: true,
+                            fromState: true,
+                            toState: true,
+                            transitionError: true,
+                        },
+                        '...on PaymentDeclinedError': {
+                            errorCode: true,
+                            message: true,
+                            paymentErrorMessage: true,
+                        },
+                        '...on PaymentFailedError': {
+                            errorCode: true,
+                            message: true,
+                            paymentErrorMessage: true,
+                        },
                     },
-                    '...on NoActiveOrderError': {
-                        message: true,
-                        errorCode: true,
-                    },
-                    '...on OrderPaymentStateError': {
-                        message: true,
-                        errorCode: true,
-                    },
-                    '...on OrderStateTransitionError': {
-                        message: true,
-                        errorCode: true,
-                        fromState: true,
-                        toState: true,
-                        transitionError: true,
-                    },
-                    '...on PaymentDeclinedError': {
-                        errorCode: true,
-                        message: true,
-                        paymentErrorMessage: true,
-                    },
-                    '...on PaymentFailedError': {
-                        errorCode: true,
-                        message: true,
-                        paymentErrorMessage: true,
-                    },
-                },
-            ],
-        });
-        if (addPaymentToOrder.__typename === 'Order' && addPaymentToOrder.state === 'PaymentAuthorized') {
-            push(`/checkout/confirmation?code=${addPaymentToOrder.code}`);
+                ],
+            });
+            if (addPaymentToOrder.__typename === 'Order' && addPaymentToOrder.state === 'PaymentAuthorized') {
+                push(`/checkout/confirmation?code=${addPaymentToOrder.code}`);
+            } else {
+                console.log(addPaymentToOrder);
+            }
+        } catch (e) {
+            console.log(e);
         }
     };
 
@@ -114,7 +121,7 @@ export const OrderPayment: React.FC<OrderPaymentProps> = () => {
             {defaultMethod && <DefaultMethod defaultMethod={defaultMethod} onClick={onClick} />}
             {stripe && paymentIntent && (
                 <Elements stripe={stripe} options={{ clientSecret: paymentIntent }}>
-                    <StripeForm orderCode={activeOrder.code} />
+                    <StripeForm activeOrder={activeOrder} />
                 </Elements>
             )}
         </Stack>

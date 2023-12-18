@@ -233,6 +233,9 @@ export const ActiveOrderSelector = Selector('Order')({
             product: {
                 name: true,
             },
+            customFields: {
+                beforePrice: true,
+            },
         },
     },
     shippingLines: {
@@ -276,6 +279,9 @@ export const OrderSelector = Selector('Order')({
             currencyCode: true,
             product: {
                 name: true,
+            },
+            customFields: {
+                beforePrice: true,
             },
         },
     },
@@ -345,3 +351,37 @@ export type LoginCustomerInputType = {
     password: string;
     rememberMe: boolean;
 };
+
+export const YAMLProductsSelector = Selector('Product')({
+    id: true,
+    name: true,
+    slug: true,
+    featuredAsset: {
+        source: true,
+        preview: true,
+    },
+    collections: {
+        name: true,
+        slug: true,
+    },
+    variants: {
+        id: true,
+        name: true,
+        currencyCode: true,
+        priceWithTax: true,
+        stockLevel: true,
+        assets: {
+            source: true,
+            preview: true,
+        },
+        featuredAsset: {
+            source: true,
+            preview: true,
+        },
+        customFields: {
+            beforePrice: true,
+        },
+    },
+});
+
+export type YAMLProductsType = FromSelector<typeof YAMLProductsSelector, 'Product', typeof scalars>;

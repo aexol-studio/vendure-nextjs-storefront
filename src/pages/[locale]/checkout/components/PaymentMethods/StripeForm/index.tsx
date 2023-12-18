@@ -1,0 +1,46 @@
+import { Button } from '@/src/components/molecules/Button';
+import styled from '@emotion/styled';
+import { useStripe, useElements, PaymentElement } from '@stripe/react-stripe-js';
+import React, { FormEvent } from 'react';
+
+export const StripeForm = ({ orderCode }: { orderCode: string }) => {
+    const stripe = useStripe();
+    const elements = useElements();
+
+    const handleSubmit = async (event: FormEvent) => {
+        event.preventDefault();
+        if (!stripe || !elements) return;
+
+        const result = await stripe.confirmPayment({
+            elements,
+            confirmParams: { return_url: location.origin + `/checkout/confirmation?code=${orderCode}` },
+        });
+
+        if (result.error) {
+            // Show error to your customer (for example, payment details incomplete)
+            console.log(result.error.message);
+        } else {
+            // Your customer will be redirected to your `return_url`. For some payment
+            // methods like iDEAL, your customer will be redirected to an intermediate
+            // site first to authorize the payment, then redirected to the `return_url`.
+        }
+    };
+
+    return (
+        <StyledForm onSubmit={handleSubmit}>
+            <PaymentElement options={{ layout: { type: 'tabs' }, business: { name: 'Aexol' } }} />
+            <Button type="submit">Pay</Button>
+        </StyledForm>
+    );
+};
+
+const StyledForm = styled.form`
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+
+    width: 100%;
+    & > * {
+        width: 100%;
+    }
+`;

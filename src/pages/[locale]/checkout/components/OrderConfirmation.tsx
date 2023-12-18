@@ -17,13 +17,13 @@ export const OrderConfirmation: React.FC<{ code: string; order?: OrderType }> = 
     const currencyCode = order?.currencyCode || CurrencyCode.USD;
     const discounts = order?.discounts?.reduce((acc, discount) => acc - discount.amountWithTax, 0) ?? 0;
     return (
-        <Stack column>
+        <Stack column w100>
             <Stack style={{ paddingBlock: '2rem' }}>
                 <CheckoutStatus step={'confirmation'} />
             </Stack>
             <Stack column gap="4rem">
-                <Stack justifyBetween>
-                    <Stack column gap="4rem">
+                <Stack justifyBetween w100>
+                    <Stack w100 column gap="4rem">
                         <Stack itemsCenter gap="2rem">
                             <CheckCircle2 color="green" size={44} />
                             <TH2>{t('orderSummary.title')}</TH2>
@@ -37,7 +37,7 @@ export const OrderConfirmation: React.FC<{ code: string; order?: OrderType }> = 
                             />
                         </TP>
                     </Stack>
-                    <Stack column gap="1rem">
+                    <Stack w100 column gap="1rem">
                         <Stack justifyBetween>
                             <TP>{t('orderSummary.subtotal')}</TP>
                             <TP weight={600}>{priceFormatter(order?.subTotalWithTax || 0, currencyCode)}</TP>

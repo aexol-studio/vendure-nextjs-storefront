@@ -4,17 +4,32 @@ import { TP, TypoGraphy } from '@/src/components/atoms/TypoGraphy';
 import { ProductImage } from '@/src/components/atoms/ProductImage';
 import { ActiveOrderType, OrderType } from '@/src/graphql/selectors';
 import { Divider } from '@/src/components/atoms/Divider';
-import { priceFormatter } from '@/src/util/priceFomatter';
 import { CurrencyCode } from '@/src/zeus';
+import { useCart } from '@/src/state/cart';
+import styled from '@emotion/styled';
+import { Minus, Plus, Trash2 } from 'lucide-react';
+import { useTranslation } from 'next-i18next';
+import { Price } from '@/src/components/atoms/Price';
 
 export const Line: React.FC<{
     line: ActiveOrderType['lines'][number] | OrderType['lines'][number];
+    isForm?: boolean;
     currencyCode?: CurrencyCode;
-    hideQuantity?: boolean;
 }> = ({
-    line: { productVariant, quantity, featuredAsset, unitPriceWithTax, linePriceWithTax, discountedLinePriceWithTax },
+    isForm,
+    line: {
+        id,
+        productVariant,
+        quantity,
+        featuredAsset,
+        unitPriceWithTax,
+        linePriceWithTax,
+        discountedLinePriceWithTax,
+    },
     currencyCode = CurrencyCode.USD,
 }) => {
+    const { t } = useTranslation('checkout');
+    const { removeFromCart, setItemQuantityInCart } = useCart();
     const optionInName = productVariant.name.replace(productVariant.product.name, '') !== '';
     const isPriceDiscounted = linePriceWithTax !== discountedLinePriceWithTax;
     return (
@@ -29,27 +44,52 @@ export const Line: React.FC<{
                                     {productVariant.product.name}
                                 </TypoGraphy>
                                 {optionInName && (
-                                    <TypoGraphy size="1.25rem" weight={400}>
+                                    <TypoGraphy size="1.25rem" weight={400} style={{ textTransform: 'capitalize' }}>
                                         {productVariant.name.replace(productVariant.product.name, '')}
                                     </TypoGraphy>
                                 )}
-                                <TypoGraphy size="1.25rem" weight={400}>
-                                    {quantity} x {priceFormatter(unitPriceWithTax, currencyCode)}
+                                <TypoGraphy size="1rem" weight={600}>
+                                    {t('orderSummary.quantity')} {quantity}
                                 </TypoGraphy>
                             </Stack>
                         </Stack>
                     </Stack>
                 </Stack>
-                <Stack itemsStart justifyEnd gap="2rem">
-                    {isPriceDiscounted ? (
-                        <Stack justifyEnd gap="0.5rem">
-                            <TP size="1.25rem" style={{ textDecoration: 'line-through', lineHeight: '2.4rem' }}>
-                                {priceFormatter(linePriceWithTax, currencyCode)}
-                            </TP>
-                            <TP style={{ color: 'red' }}>{priceFormatter(discountedLinePriceWithTax, currencyCode)}</TP>
-                        </Stack>
-                    ) : (
-                        <TP>{priceFormatter(linePriceWithTax, currencyCode)}</TP>
+                <Stack column justifyBetween itemsEnd>
+                    <Stack gap="2rem">
+                        {isPriceDiscounted ? (
+                            <Price
+                                price={discountedLinePriceWithTax}
+                                beforePrice={productVariant.customFields?.beforePrice}
+                                currencyCode={currencyCode}
+                                quantity={quantity}
+                            />
+                        ) : (
+                            <Price
+                                price={unitPriceWithTax}
+                                beforePrice={productVariant.customFields?.beforePrice}
+                                currencyCode={currencyCode}
+                                quantity={quantity}
+                            />
+                        )}
+                    </Stack>
+                    {isForm && (
+                        <>
+                            <Stack gap="1rem" itemsCenter>
+                                {quantity > 1 && (
+                                    <Action onClick={() => setItemQuantityInCart(id, quantity - 1)}>
+                                        <Minus size={16} />
+                                    </Action>
+                                )}
+                                <Action onClick={() => setItemQuantityInCart(id, quantity + 1)}>
+                                    <Plus size={16} />
+                                </Action>
+                            </Stack>
+                            <Action onClick={() => removeFromCart(id)}>
+                                <TP size="1rem">{t('orderSummary.remove')}</TP>
+                                <Trash2 size={16} />
+                            </Action>
+                        </>
                     )}
                 </Stack>
             </Stack>
@@ -57,3 +97,15 @@ export const Line: React.FC<{
         </Stack>
     );
 };
+
+const Action = styled.button`
+    appearance: none;
+    border: none;
+    background: transparent;
+
+    display: flex;
+    align-items: center;
+    width: fit-content;
+
+    gap: 0.5rem;
+`;

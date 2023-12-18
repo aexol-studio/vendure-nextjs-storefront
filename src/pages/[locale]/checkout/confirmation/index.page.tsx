@@ -8,12 +8,13 @@ import { OrderSelector, OrderType } from '@/src/graphql/selectors';
 import { Layout } from '@/src/layouts';
 import { OrderConfirmation } from '../components/OrderConfirmation';
 import { Content } from '../components/ui/Shared';
+import { usePush } from '@/src/lib/redirect';
 
 const ConfirmationPage: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = props => {
     const { query } = useRouter();
     const code = query.code as string;
     const [order, setOrder] = useState<OrderType>();
-    const router = useRouter();
+    const push = usePush();
     const maxRetries = 3;
 
     useEffect(() => {
@@ -31,12 +32,13 @@ const ConfirmationPage: React.FC<InferGetStaticPropsType<typeof getStaticProps>>
                 retries++;
                 if (retries <= maxRetries) {
                     setTimeout(fetchOrder, 1000);
-                } else router.push('/');
+                } else {
+                    push('/');
+                }
             }
         };
 
-        if (!code) router.push('/');
-        else fetchOrder();
+        if (code) fetchOrder();
     }, [code]);
 
     return code ? (

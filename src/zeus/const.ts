@@ -288,7 +288,8 @@ export const AllTypesProps: Record<string,any> = {
 		price:"NumberOperators",
 		currencyCode:"StringOperators",
 		priceWithTax:"NumberOperators",
-		stockLevel:"StringOperators"
+		stockLevel:"StringOperators",
+		beforePrice:"NumberOperators"
 	},
 	ProductVariantSortParameter:{
 		id:"SortOrder",
@@ -299,7 +300,8 @@ export const AllTypesProps: Record<string,any> = {
 		name:"SortOrder",
 		price:"SortOrder",
 		priceWithTax:"SortOrder",
-		stockLevel:"SortOrder"
+		stockLevel:"SortOrder",
+		beforePrice:"SortOrder"
 	},
 	CustomerFilterParameter:{
 		id:"IDOperators",
@@ -1417,7 +1419,7 @@ export const ReturnTypes: Record<string,any> = {
 		options:"ProductOption",
 		facetValues:"FacetValue",
 		translations:"ProductVariantTranslation",
-		customFields:"JSON"
+		customFields:"ProductVariantCustomFields"
 	},
 	ProductVariantTranslation:{
 		id:"ID",
@@ -1768,6 +1770,9 @@ export const ReturnTypes: Record<string,any> = {
 	},
 	AddressCustomFields:{
 		NIP:"String"
+	},
+	ProductVariantCustomFields:{
+		beforePrice:"Float"
 	}
 }
 

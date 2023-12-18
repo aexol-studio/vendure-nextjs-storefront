@@ -5,10 +5,11 @@
         "confirmation": "Confirmation"
     },
     "orderForm": {
+        "whatAccountGives": "Account gives you access to your order history and status. It also allows you to make changes to your personal data and addresses.",
         "createAccount": "Create an account?",
         "password": "Password",
         "confirmPassword": "Confirm Password",
-        "billingDifferentThanShipping": "Is shipping address different than billing address?",
+        "shippingDifferentThanBilling": "Is shipping address different than billing address?",
         "userNeedInvoice": "Do you need an invoice?",
         "orderSummary": "Order Summary",
         "contactInfo": "Contact Information",
@@ -29,6 +30,8 @@
         "province": "State / Province",
         "postalCode": "Postal Code",
         "continueToPayment": "Continue to Payment",
+        "regulations": "I accept the <1>regulations</1>.",
+        "terms": "I accept the <1>terms and conditions</1>.",
         "errors": {
             "root": {
                 "invalid": "An errors occurred while sending the form. Please correct the errors below",
@@ -71,6 +74,22 @@
             },
             "postalCode": {
                 "required": "Postal code is required"
+            },
+            "terms": {
+                "required": "Terms and conditions are required"
+            },
+            "regulations": {
+                "required": "Regulations are required"
+            },
+            "NIP": {
+                "required": "NIP is required"
+            },
+            "password": {
+                "required": "Password is required"
+            },
+            "confirmPassword": {
+                "required": "Confirm password is required",
+                "notMatch": "Passwords do not match"
             }
         }
     },
@@ -82,10 +101,15 @@
         "total": "Total",
         "quantity": "Quantity",
         "remove": "Remove",
-        "couponCode": "Coupon Code:"
+        "couponCode": "Coupon Code:",
+        "YMAL": {
+            "title": "You may also like",
+            "addToCart": "Add to cart"
+        }
     },
     "deliveryMethod": {
         "title": "Delivery Method",
+        "required": "*(One of delivery method is required)",
         "errors": {
             "required": "Delivery method is required"
         }

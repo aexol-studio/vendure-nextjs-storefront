@@ -1772,7 +1772,7 @@ export const ReturnTypes: Record<string,any> = {
 		NIP:"String"
 	},
 	ProductVariantCustomFields:{
-		beforePrice:"Float"
+		beforePrice:"Int"
 	}
 }
 

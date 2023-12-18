@@ -46,7 +46,7 @@ export const YMALCarousel: React.FC<YMALProps> = ({ YMALProducts, currencyCode }
                                     </TP>
                                     <Price
                                         price={selectedVariant.priceWithTax}
-                                        beforePrice={selectedVariant.customFields?.beforePrice}
+                                        // beforePrice={selectedVariant.customFields?.beforePrice}
                                         currencyCode={currencyCode}
                                     />
                                     {product.variants.length > 1 ? (

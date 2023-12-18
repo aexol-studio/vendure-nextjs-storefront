@@ -96,8 +96,8 @@ export const OrderForm: React.FC<OrderFormProps> = ({ availableCountries }) => {
             shippingDifferentThanBilling:
                 JSON.stringify(defaultBillingAddress) !== JSON.stringify(defaultShippingAddress),
             shipping: { countryCode },
-            NIP: defaultBillingAddress?.customFields?.NIP ?? '',
-            userNeedInvoice: defaultBillingAddress?.customFields?.NIP ? true : false,
+            // NIP: defaultBillingAddress?.customFields?.NIP ?? '',
+            // userNeedInvoice: defaultBillingAddress?.customFields?.NIP ? true : false,
         },
         values: activeCustomer
             ? {
@@ -105,8 +105,8 @@ export const OrderForm: React.FC<OrderFormProps> = ({ availableCountries }) => {
                   firstName: activeCustomer.firstName,
                   lastName: activeCustomer.lastName,
                   phoneNumber: activeCustomer.phoneNumber,
-                  NIP: defaultBillingAddress?.customFields?.NIP ?? '',
-                  userNeedInvoice: defaultBillingAddress?.customFields?.NIP ? true : false,
+                  //   NIP: defaultBillingAddress?.customFields?.NIP ?? '',
+                  //   userNeedInvoice: defaultBillingAddress?.customFields?.NIP ? true : false,
                   shippingDifferentThanBilling:
                       JSON.stringify(defaultBillingAddress) !== JSON.stringify(defaultShippingAddress),
                   shipping: {

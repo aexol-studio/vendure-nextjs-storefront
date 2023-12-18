@@ -153,9 +153,6 @@ export const ActiveAddressSelector = Selector('Address')({
     phoneNumber: true,
     defaultShippingAddress: true,
     defaultBillingAddress: true,
-    customFields: {
-        NIP: true,
-    },
 });
 
 export type ActiveAddressType = FromSelector<typeof ActiveAddressSelector, 'Address', typeof scalars>;
@@ -233,9 +230,6 @@ export const ActiveOrderSelector = Selector('Order')({
             product: {
                 name: true,
             },
-            customFields: {
-                beforePrice: true,
-            },
         },
     },
     shippingLines: {
@@ -279,9 +273,6 @@ export const OrderSelector = Selector('Order')({
             currencyCode: true,
             product: {
                 name: true,
-            },
-            customFields: {
-                beforePrice: true,
             },
         },
     },
@@ -377,9 +368,6 @@ export const YAMLProductsSelector = Selector('Product')({
         featuredAsset: {
             source: true,
             preview: true,
-        },
-        customFields: {
-            beforePrice: true,
         },
     },
 });

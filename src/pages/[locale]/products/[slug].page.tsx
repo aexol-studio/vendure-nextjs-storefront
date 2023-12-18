@@ -23,7 +23,7 @@ import { Check, X } from 'lucide-react';
 import { InferGetStaticPropsType } from 'next';
 
 import React, { useMemo, useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from 'next-i18next';
 
 const ProductPage: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = props => {
     const { addToCart } = useCart();

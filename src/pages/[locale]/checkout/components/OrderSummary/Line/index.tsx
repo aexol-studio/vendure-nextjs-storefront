@@ -60,14 +60,14 @@ export const Line: React.FC<{
                         {isPriceDiscounted ? (
                             <Price
                                 price={discountedLinePriceWithTax}
-                                beforePrice={productVariant.customFields?.beforePrice}
+                                // beforePrice={productVariant.customFields?.beforePrice}
                                 currencyCode={currencyCode}
                                 quantity={quantity}
                             />
                         ) : (
                             <Price
                                 price={unitPriceWithTax}
-                                beforePrice={productVariant.customFields?.beforePrice}
+                                // beforePrice={productVariant.customFields?.beforePrice}
                                 currencyCode={currencyCode}
                                 quantity={quantity}
                             />

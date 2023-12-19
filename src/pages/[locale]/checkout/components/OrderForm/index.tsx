@@ -17,6 +17,7 @@ import {
     ActiveCustomerSelector,
     ShippingMethodsSelector,
     ActiveCustomerType,
+    ActiveOrderType,
 } from '@/src/graphql/selectors';
 
 import { useForm, SubmitHandler } from 'react-hook-form';
@@ -25,21 +26,21 @@ import styled from '@emotion/styled';
 import { AnimatePresence, motion } from 'framer-motion';
 import { CountrySelect } from '@/src/components/forms/CountrySelect';
 import { CheckBox } from '@/src/components/forms/CheckBox';
-import Link from 'next/link';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Input } from '@/src/components/forms/Input';
 import { WhatAccountGives } from '../ui/WhatAccountGives';
 import { DeliveryMethod } from '../DeliveryMethod';
 import { useValidationSchema } from './useValidationSchema';
 import { FormError } from '@/src/components/forms/atoms';
+import { Link } from '@/src/components/atoms/Link';
 
 type Form = CreateCustomerType & {
     deliveryMethod?: string;
     shippingDifferentThanBilling?: boolean;
     shipping: CreateAddressType;
     billing: CreateAddressType;
-    userNeedInvoice?: boolean;
-    NIP?: string;
+    // userNeedInvoice?: boolean;
+    // NIP?: string;
     createAccount?: boolean;
     password?: string;
     confirmPassword?: string;
@@ -48,11 +49,12 @@ type Form = CreateCustomerType & {
 };
 
 interface OrderFormProps {
+    activeOrder?: ActiveOrderType;
     availableCountries?: AvailableCountriesType[];
 }
 
-export const OrderForm: React.FC<OrderFormProps> = ({ availableCountries }) => {
-    const { cart, changeShippingMethod } = useCart();
+export const OrderForm: React.FC<OrderFormProps> = ({ activeOrder, availableCountries }) => {
+    const { changeShippingMethod } = useCart();
 
     const { t } = useTranslation('checkout');
     const push = usePush();
@@ -89,18 +91,20 @@ export const OrderForm: React.FC<OrderFormProps> = ({ availableCountries }) => {
         setError,
         clearErrors,
         watch,
+        setFocus,
         formState: { errors },
     } = useForm<Form>({
         delayError: 100,
         defaultValues: {
             shippingDifferentThanBilling:
                 JSON.stringify(defaultBillingAddress) !== JSON.stringify(defaultShippingAddress),
-            shipping: { countryCode },
+            billing: { countryCode },
             // NIP: defaultBillingAddress?.customFields?.NIP ?? '',
             // userNeedInvoice: defaultBillingAddress?.customFields?.NIP ? true : false,
         },
         values: activeCustomer
             ? {
+                  createAccount: false,
                   emailAddress: activeCustomer.emailAddress,
                   firstName: activeCustomer.firstName,
                   lastName: activeCustomer.lastName,
@@ -123,7 +127,6 @@ export const OrderForm: React.FC<OrderFormProps> = ({ availableCountries }) => {
             : undefined,
         resolver: zodResolver(schema),
     });
-    console.log(errors);
 
     const onSubmit: SubmitHandler<Form> = async ({
         emailAddress,
@@ -133,13 +136,13 @@ export const OrderForm: React.FC<OrderFormProps> = ({ availableCountries }) => {
         billing,
         shipping,
         phoneNumber,
-        NIP,
+        // NIP,
         shippingDifferentThanBilling,
         createAccount,
         password,
     }) => {
         try {
-            if (deliveryMethod && cart?.shippingLines[0]?.shippingMethod.id !== deliveryMethod) {
+            if (deliveryMethod && activeOrder?.shippingLines[0]?.shippingMethod.id !== deliveryMethod) {
                 await changeShippingMethod(deliveryMethod);
             }
 
@@ -155,7 +158,12 @@ export const OrderForm: React.FC<OrderFormProps> = ({ availableCountries }) => {
             // Set the billing address for the order
             const { setOrderBillingAddress } = await storefrontApiMutation({
                 setOrderBillingAddress: [
-                    { input: { ...billing, customFields: { NIP } } },
+                    {
+                        input: {
+                            ...billing,
+                            // customFields: { NIP }
+                        },
+                    },
                     {
                         __typename: true,
                         '...on Order': ActiveOrderSelector,
@@ -219,9 +227,7 @@ export const OrderForm: React.FC<OrderFormProps> = ({ availableCountries }) => {
                     if (setCustomerForOrder?.__typename === 'EmailAddressConflictError') {
                         //Some user have account with this email address but is not logged in
                         setError('emailAddress', { message: t('orderForm.errors.emailAddress.emailAvailable') });
-                        if (errors.emailAddress?.ref?.focus) {
-                            errors.emailAddress.ref.focus();
-                        }
+                        setFocus('emailAddress');
                         return;
                     }
                     if (setCustomerForOrder?.__typename === 'GuestCheckoutError') {
@@ -293,7 +299,18 @@ export const OrderForm: React.FC<OrderFormProps> = ({ availableCountries }) => {
         }
     };
 
-    return (
+    return activeOrder?.totalQuantity === 0 ? (
+        <Stack w100 column>
+            <Stack column gap="2rem">
+                <TH2 size="2rem" weight={500}>
+                    {t('orderForm.emptyCart')}
+                </TH2>
+                <EmptyCartDescription>
+                    <Trans i18nKey="orderForm.emptyCartDescription" t={t} components={{ 1: <Link href="/"></Link> }} />
+                </EmptyCartDescription>
+            </Stack>
+        </Stack>
+    ) : (
         <Stack w100 column>
             <BannerHolder ref={errorRef}>
                 <AnimatePresence>
@@ -410,7 +427,7 @@ export const OrderForm: React.FC<OrderFormProps> = ({ availableCountries }) => {
                 </Stack>
 
                 <Stack justifyBetween itemsCenter>
-                    <CheckBox
+                    {/* <CheckBox
                         {...register('userNeedInvoice', {
                             onChange: e => {
                                 setValue('userNeedInvoice', e.target.checked);
@@ -418,15 +435,16 @@ export const OrderForm: React.FC<OrderFormProps> = ({ availableCountries }) => {
                             },
                         })}
                         label={t('orderForm.userNeedInvoice')}
-                    />
+                    /> */}
                     <CheckBox
                         {...register('shippingDifferentThanBilling')}
+                        checked={watch('shippingDifferentThanBilling')}
                         label={t('orderForm.shippingDifferentThanBilling')}
                     />
                 </Stack>
 
                 {/* NIP */}
-                <AnimatePresence>
+                {/* <AnimatePresence>
                     {watch('userNeedInvoice') && (
                         <FVInputWrapper
                             initial={{ opacity: 0 }}
@@ -442,7 +460,7 @@ export const OrderForm: React.FC<OrderFormProps> = ({ availableCountries }) => {
                             />
                         </FVInputWrapper>
                     )}
-                </AnimatePresence>
+                </AnimatePresence> */}
 
                 {/* Billing Part */}
                 <AnimatePresence>
@@ -562,7 +580,7 @@ export const OrderForm: React.FC<OrderFormProps> = ({ availableCountries }) => {
                                 clearErrors('deliveryMethod');
                             }}
                             shippingMethods={shippingMethods}
-                            currencyCode={cart?.currencyCode}
+                            currencyCode={activeOrder?.currencyCode}
                             required
                         />
                     </DeliveryMethodWrapper>
@@ -627,6 +645,17 @@ export const OrderForm: React.FC<OrderFormProps> = ({ availableCountries }) => {
     );
 };
 
+const EmptyCartDescription = styled(Stack)`
+    font-size: 1.75rem;
+
+    & > a {
+        font-weight: 500;
+        font-size: 1.75rem;
+        color: ${p => p.theme.accent(800)};
+        text-decoration: underline;
+    }
+`;
+
 const DeliveryMethodWrapper = styled(Stack)`
     margin: 2.4rem 0;
 `;
@@ -647,10 +676,10 @@ const ShippingWrapper = styled(motion.div)`
     margin-top: 1.75rem;
 `;
 
-const FVInputWrapper = styled(motion.div)`
-    margin-top: 1.75rem;
-    position: relative;
-`;
+// const FVInputWrapper = styled(motion.div)`
+//     margin-top: 1.75rem;
+//     position: relative;
+// `;
 
 const Form = styled.form`
     margin-top: 1.6rem;

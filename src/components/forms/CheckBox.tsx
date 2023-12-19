@@ -12,15 +12,14 @@ type InputType = InputHTMLAttributes<HTMLInputElement> & {
 };
 
 export const CheckBox = forwardRef((props: InputType, ref: React.ForwardedRef<HTMLInputElement>) => {
-    const { label, error, onChange, value, ...rest } = props;
-    const [state, setState] = useState<boolean>(!!value);
-
+    const { label, error, onChange, ...rest } = props;
+    const [state, setState] = useState<boolean>(!!props.value);
     return (
         <Wrapper column gap="0.125rem">
             <CheckboxStack itemsCenter gap="0.75rem">
                 <AnimatePresence>
                     <CheckboxIconHolder>
-                        {state && (
+                        {(props.checked || state) && (
                             <CheckboxAnimation
                                 initial={{ opacity: 0 }}
                                 animate={{ opacity: 1 }}

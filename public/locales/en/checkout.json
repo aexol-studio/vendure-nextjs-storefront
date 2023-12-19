@@ -5,6 +5,8 @@
         "confirmation": "Confirmation"
     },
     "orderForm": {
+        "emptyCart": "Your cart is empty",
+        "emptyCartDescription": "You have no items in your shopping cart. Click <1>here</1> to continue shopping.",
         "whatAccountGives": "Account gives you access to your order history and status. It also allows you to make changes to your personal data and addresses.",
         "createAccount": "Create an account?",
         "password": "Password",

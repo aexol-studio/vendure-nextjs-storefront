@@ -6,7 +6,7 @@ import { LanguageSwitcher } from '@/src/components';
 import { Link } from '@/src/components/atoms/Link';
 import { Cart } from '@/src/layouts/Cart';
 import { useCart } from '@/src/state/cart';
-// import { User2 } from 'lucide-react';
+import { User2 } from 'lucide-react';
 
 export const Nav: React.FC = () => {
     const { cart } = useCart();
@@ -20,10 +20,12 @@ export const Nav: React.FC = () => {
                         </Link>
                     </Stack>
                     <LanguageSwitcher />
-                    {/* <Link href={cart?.customer ? '/customer/manage' : '/customer/sign-in'}>
-                        <User2 color="#000" />
-                    </Link> */}
-                    <Cart activeOrder={cart} />
+                    <Stack>
+                        <Link href={cart?.customer ? '/customer/manage' : '/customer/sign-in'}>
+                            <User2 color={cart?.customer ? 'green' : 'black'} />
+                        </Link>
+                        <Cart activeOrder={cart} />
+                    </Stack>
                 </Stack>
             </ContentContainer>
         </Main>

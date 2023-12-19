@@ -3,27 +3,21 @@ import { makeServerSideProps } from '@/src/lib/getStatic';
 import { GetServerSidePropsContext, InferGetServerSidePropsType } from 'next';
 import React from 'react';
 import { getCollections } from '@/src/graphql/sharedQueries';
-import { CustomerNavigation } from '../components/CustomerNavigation';
 import { SSRQuery } from '@/src/graphql/client';
 import { ActiveCustomerSelector, ActiveOrderSelector } from '@/src/graphql/selectors';
-import { Stack } from '@/src/components/atoms/Stack';
 import { ContentContainer } from '@/src/components/atoms/ContentContainer';
+import { Stack } from '@/src/components/atoms/Stack';
+import { CustomerNavigation } from '../components/CustomerNavigation';
 import { Link } from '@/src/components/atoms/Link';
-import { TP } from '@/src/components/atoms/TypoGraphy';
 
-const History: React.FC<InferGetServerSidePropsType<typeof getServerSideProps>> = props => {
+const Order: React.FC<InferGetServerSidePropsType<typeof getServerSideProps>> = props => {
     return (
         <Layout categories={props.collections}>
             <ContentContainer>
                 <Stack itemsStart gap="1.75rem">
                     <CustomerNavigation />
-                    <Stack column>
-                        {props.activeCustomer?.orders.items?.map(order => (
-                            <Stack key={order.id}>
-                                <TP>Quantity: {order.totalQuantity}</TP>
-                                <Link href={`/customer/manage/orders/${order.id}`}>{order.code}</Link>
-                            </Stack>
-                        ))}
+                    <Stack>
+                        <Link href="/customer/manage/orders">Back to orders</Link>
                     </Stack>
                 </Stack>
             </ContentContainer>
@@ -35,20 +29,23 @@ const getServerSideProps = async (context: GetServerSidePropsContext) => {
     const r = await makeServerSideProps(['common', 'checkout'])(context);
     const collections = await getCollections();
     const destination = context.params?.locale === 'en' ? '/' : `/${context.params?.locale}`;
+    const id = context.params?.id as string;
 
     try {
         const { activeCustomer } = await SSRQuery(context)({
-            activeCustomer: {
-                ...ActiveCustomerSelector,
-                orders: [{ options: { take: 20 } }, { items: ActiveOrderSelector }],
-            },
+            activeCustomer: ActiveCustomerSelector,
         });
         if (!activeCustomer) throw new Error('No active customer');
+
+        const { order } = await SSRQuery(context)({
+            order: [{ id }, ActiveOrderSelector],
+        });
 
         const returnedStuff = {
             ...r.props,
             collections,
             activeCustomer,
+            order,
         };
 
         return { props: returnedStuff };
@@ -58,4 +55,4 @@ const getServerSideProps = async (context: GetServerSidePropsContext) => {
 };
 
 export { getServerSideProps };
-export default History;
+export default Order;

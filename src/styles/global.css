@@ -56,25 +56,25 @@ html {
 
 @media (min-width: 1700px) {
     html {
-        font-size: 70%;
+        font-size: 65%;
     }
 }
 
 @media (min-width: 2000px) {
     html {
-        font-size: 90%;
+        font-size: 67.5%;
     }
 }
 
 @media (min-width: 2500px) {
     html {
-        font-size: 72.5%;
+        font-size: 70%;
     }
 }
 
 @media (min-width: 3800px) {
     html {
-        font-size: 150%;
+        font-size: 72.5%;
     }
 }
 

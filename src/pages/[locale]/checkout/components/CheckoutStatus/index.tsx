@@ -29,6 +29,7 @@ export const CheckoutStatus: React.FC<{ step: 'shipping' | 'payment' | 'confirma
 
 const Container = styled(Stack)`
     user-select: none;
+    padding: 0 2.5rem;
 `;
 
 const Circle = styled.span<{ active: boolean }>`

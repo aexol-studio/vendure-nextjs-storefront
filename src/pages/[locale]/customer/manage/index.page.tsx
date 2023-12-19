@@ -1,82 +1,50 @@
 import { Layout } from '@/src/layouts';
-import { ContextModel, getStaticPaths, makeStaticProps } from '@/src/lib/getStatic';
-import { InferGetStaticPropsType } from 'next';
-import React, { useEffect, useState } from 'react';
+import { makeServerSideProps } from '@/src/lib/getStatic';
+import { GetServerSidePropsContext, InferGetServerSidePropsType } from 'next';
+import React from 'react';
 import { getCollections } from '@/src/graphql/sharedQueries';
 import { CustomerNavigation } from './components/CustomerNavigation';
 import { Stack } from '@/src/components/atoms/Stack';
-import { SubmitHandler, useForm } from 'react-hook-form';
-import { storefrontApiMutation, storefrontApiQuery } from '@/src/graphql/client';
-import { Button } from '@/src/components/molecules/Button';
-import { ActiveCustomerSelector, ActiveCustomerType } from '@/src/graphql/selectors';
+import { SSRQuery } from '@/src/graphql/client';
+import { ActiveCustomerSelector } from '@/src/graphql/selectors';
+import { CustomerForm } from './components/CustomerForm';
+import { ContentContainer } from '@/src/components/atoms/ContentContainer';
 
-type Form = {
-    firstName: ActiveCustomerType['firstName'];
-    lastName: ActiveCustomerType['lastName'];
-    phoneNumber: ActiveCustomerType['phoneNumber'];
-};
-
-const Account: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = props => {
-    const [activeCustomer, setActiveCustomer] = useState<ActiveCustomerType>();
-
-    useEffect(() => {
-        const fetchCustomer = async () => {
-            const { activeCustomer } = await storefrontApiQuery({
-                activeCustomer: ActiveCustomerSelector,
-            });
-            setActiveCustomer(activeCustomer);
-        };
-        fetchCustomer();
-    }, []);
-
-    console.log(activeCustomer);
-    const { register, handleSubmit } = useForm<Form>({
-        values: {
-            firstName: activeCustomer?.firstName || '',
-            lastName: activeCustomer?.lastName || '',
-            phoneNumber: activeCustomer?.phoneNumber,
-        },
-    });
-
-    const onSubmit: SubmitHandler<Form> = async data => {
-        const { updateCustomer } = await storefrontApiMutation({
-            updateCustomer: [
-                { input: { firstName: data.firstName, lastName: data.lastName, phoneNumber: data.phoneNumber } },
-                { __typename: true, id: true },
-            ],
-        });
-        console.log(updateCustomer);
-    };
-
+const Account: React.FC<InferGetServerSidePropsType<typeof getServerSideProps>> = props => {
     return (
         <Layout categories={props.collections}>
-            <CustomerNavigation />
-            <Stack>
-                <form onSubmit={handleSubmit(onSubmit)}>
-                    <input {...register('firstName')} />
-                    <input {...register('lastName')} />
-                    <input {...register('phoneNumber')} />
-                    <Button type="submit">Submit</Button>
-                </form>
-            </Stack>
+            <ContentContainer>
+                <Stack itemsStart gap="1.75rem">
+                    <CustomerNavigation />
+                    <CustomerForm initialCustomer={props.activeCustomer} />
+                </Stack>
+            </ContentContainer>
         </Layout>
     );
 };
 
-const getStaticProps = async (context: ContextModel) => {
-    const r = await makeStaticProps(['common', 'checkout'])(context);
+const getServerSideProps = async (context: GetServerSidePropsContext) => {
+    const r = await makeServerSideProps(['common', 'checkout'])(context);
     const collections = await getCollections();
+    const destination = context.params?.locale === 'en' ? '/' : `/${context.params?.locale}`;
 
-    const returnedStuff = {
-        ...r.props,
-        collections,
-    };
+    try {
+        const { activeCustomer } = await SSRQuery(context)({
+            activeCustomer: ActiveCustomerSelector,
+        });
+        if (!activeCustomer) throw new Error('No active customer');
 
-    return {
-        props: returnedStuff,
-        revalidate: 10,
-    };
+        const returnedStuff = {
+            ...r.props,
+            collections,
+            activeCustomer,
+        };
+
+        return { props: returnedStuff };
+    } catch (error) {
+        return { redirect: { destination, permanent: false } };
+    }
 };
 
-export { getStaticPaths, getStaticProps };
+export { getServerSideProps };
 export default Account;

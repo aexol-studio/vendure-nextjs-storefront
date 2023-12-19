@@ -103,19 +103,27 @@ const Addresses: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = prop
                 )}
             </AnimatePresence>
             <ContentContainer>
-                <CustomerNavigation />
-                <Stack flexWrap>
-                    <FormWrapper>
-                        <AddressForm onSubmit={onSubmitCreate} availableCountries={props.availableCountries} />
-                    </FormWrapper>
-                    {activeCustomer?.addresses?.map(address => (
-                        <AddressBox key={address.id} address={address} onEdit={onEdit} onDelete={onDelete} />
-                    ))}
+                <Stack w100 itemsStart gap="1.75rem">
+                    <CustomerNavigation />
+                    <Stack w100 justifyBetween>
+                        <FormWrapper>
+                            <AddressForm onSubmit={onSubmitCreate} availableCountries={props.availableCountries} />
+                        </FormWrapper>
+                        <Wrap flexWrap itemsStart justifyBetween w100>
+                            {activeCustomer?.addresses?.map(address => (
+                                <AddressBox key={address.id} address={address} onEdit={onEdit} onDelete={onDelete} />
+                            ))}
+                        </Wrap>
+                    </Stack>
                 </Stack>
             </ContentContainer>
         </Layout>
     );
 };
+
+const Wrap = styled(Stack)`
+    padding: 0 7.5rem;
+`;
 
 const FormWrapper = styled(Stack)`
     width: fit-content;

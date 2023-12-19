@@ -20,8 +20,12 @@ export const useValidationSchema = () => {
         //TODO: Add password validation
 
         shippingDifferentThanBilling: z.boolean(),
-        userNeedInvoice: z.boolean(),
-        createAccount: z.boolean().default(false),
+        // userNeedInvoice: z.boolean(),
+        createAccount: z.boolean().default(false).optional(),
+
+        // NIP: z.string().min(1, { message: t('orderForm.errors.NIP.required') }),
+        // password: z.string().min(8, { message: t('orderForm.errors.password.required') }),
+        // confirmPassword: z.string().min(8, { message: t('orderForm.errors.confirmPassword.required') }),
     });
 
     const billingObject = z.object({
@@ -52,20 +56,20 @@ export const useValidationSchema = () => {
     });
     const shippingSchema = z.object({
         shippingDifferentThanBilling: z.literal(true),
-        shipping: shippingObject,
         billing: billingObject,
+        shipping: shippingObject,
     });
 
     const defaultSchema = z.discriminatedUnion('shippingDifferentThanBilling', [billingSchema, shippingSchema]);
-    const NIPSchema = z.discriminatedUnion('userNeedInvoice', [
-        z.object({
-            userNeedInvoice: z.literal(true),
-            NIP: z.string().min(1, { message: t('orderForm.errors.NIP.required') }),
-        }),
-        z.object({
-            userNeedInvoice: z.literal(false),
-        }),
-    ]);
+    // const NIPSchema = z.discriminatedUnion('userNeedInvoice', [
+    //     z.object({
+    //         userNeedInvoice: z.literal(true),
+    //         NIP: z.string().min(1, { message: t('orderForm.errors.NIP.required') }),
+    //     }),
+    //     z.object({
+    //         userNeedInvoice: z.literal(false),
+    //     }),
+    // ]);
     const passwordSchema = z.discriminatedUnion('createAccount', [
         z.object({
             createAccount: z.literal(true),
@@ -78,8 +82,8 @@ export const useValidationSchema = () => {
     ]);
 
     const mainIntersection = z.intersection(defaultSchema, userObject);
-    const userAccountIntersection = z.intersection(passwordSchema, mainIntersection);
-    const schema = z.intersection(NIPSchema, userAccountIntersection);
+    const schema = z.intersection(passwordSchema, mainIntersection);
+    // const schema = z.intersection(NIPSchema, userAccountIntersection);
 
     return schema;
 };

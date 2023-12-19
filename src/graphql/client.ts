@@ -1,4 +1,5 @@
 import { GraphQLError, GraphQLResponse, Thunder, ZeusScalars, chainOptions, fetchOptions } from '@/src/zeus';
+import { GetServerSidePropsContext } from 'next';
 
 let token: string | null = typeof window !== 'undefined' ? window.localStorage.getItem('token') : null;
 
@@ -72,6 +73,36 @@ export const storefrontApiMutation = VendureChain(VENDURE_HOST, {
 })('mutation', {
     scalars,
 });
+
+export const SSRQuery = (context: GetServerSidePropsContext) => {
+    const authCookies = {
+        session: context.req.cookies['session'],
+        'session.sig': context.req.cookies['session.sig'],
+    };
+    return VendureChain(VENDURE_HOST, {
+        headers: {
+            Cookie: `session=${authCookies['session']}; session.sig=${authCookies['session.sig']}`,
+            'Content-Type': 'application/json',
+        },
+    })('query', {
+        scalars,
+    });
+};
+
+export const SSRMutation = (context: GetServerSidePropsContext) => {
+    const authCookies = {
+        session: context.req.cookies['session'],
+        'session.sig': context.req.cookies['session.sig'],
+    };
+    return VendureChain(VENDURE_HOST, {
+        headers: {
+            Cookie: `session=${authCookies['session']}; session.sig=${authCookies['session.sig']}`,
+            'Content-Type': 'application/json',
+        },
+    })('mutation', {
+        scalars,
+    });
+};
 
 const handleFetchResponse = (response: Response): Promise<GraphQLResponse> => {
     if (!response.ok) {

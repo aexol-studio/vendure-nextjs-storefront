@@ -1,23 +1,25 @@
 import { Layout } from '@/src/layouts';
-import { makeStaticProps } from '@/src/lib/getStatic';
+import { makeServerSideProps } from '@/src/lib/getStatic';
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
 import React from 'react';
 import { OrderSummary } from './components/OrderSummary';
 import { OrderForm } from './components/OrderForm';
-import { getCollections, getYMALProducts } from '@/src/graphql/sharedQueries';
+import { getYMALProducts } from '@/src/graphql/sharedQueries';
 import { Content, Main } from './components/ui/Shared';
-import { VendureChain, storefrontApiQuery } from '@/src/graphql/client';
-import { ActiveOrderSelector, AvailableCountriesSelector } from '@/src/graphql/selectors';
+import { SSRQuery, storefrontApiQuery } from '@/src/graphql/client';
+import { AvailableCountriesSelector } from '@/src/graphql/selectors';
+import { useCart } from '@/src/state/cart';
 
 const CheckoutPage: React.FC<InferGetServerSidePropsType<typeof getServerSideProps>> = props => {
+    const { cart } = useCart();
     const { availableCountries, YMALProducts } = props;
 
     return (
-        <Layout categories={props.collections}>
+        <Layout categories={[]}>
             <Content>
                 <Main w100 justifyBetween>
-                    <OrderForm availableCountries={availableCountries} />
-                    <OrderSummary isForm YMALProducts={YMALProducts} />
+                    <OrderForm activeOrder={cart} availableCountries={availableCountries} />
+                    <OrderSummary activeOrder={cart} isForm YMALProducts={YMALProducts} />
                 </Main>
             </Content>
         </Layout>
@@ -25,40 +27,27 @@ const CheckoutPage: React.FC<InferGetServerSidePropsType<typeof getServerSidePro
 };
 
 const getServerSideProps: GetServerSideProps = async context => {
-    const authCookies = {
-        session: context.req.cookies['session'],
-        'session.sig': context.req.cookies['session.sig'],
-    };
-
-    try {
-        const { activeOrder } = await VendureChain(`${process.env.NEXT_PUBLIC_VENDURE_HOST}/shop-api`, {
-            method: 'POST',
-            credentials: 'include',
-            headers: {
-                Cookie: `session=${authCookies.session}; session.sig=${authCookies['session.sig']}`,
-                'Content-Type': 'application/json',
-            },
-        })('query')({
-            activeOrder: ActiveOrderSelector,
-        });
-        console.log('activeOrder', activeOrder);
-    } catch (e) {
-        console.log('error', e);
-    }
-
-    const r = await makeStaticProps(['common', 'checkout'])({
-        params: { locale: (context.params?.locale as string) || 'en' },
-    });
-    const collections = await getCollections();
+    const r = await makeServerSideProps(['common', 'checkout'])(context);
+    const paymentRedirect =
+        r.props._nextI18Next?.initialLocale === 'en'
+            ? '/checkout/payment'
+            : `/${r.props._nextI18Next?.initialLocale}/checkout/payment`;
 
     const { availableCountries } = await storefrontApiQuery({
         availableCountries: AvailableCountriesSelector,
     });
     const YMALProducts = await getYMALProducts();
 
+    const { activeOrder } = await SSRQuery(context)({
+        activeOrder: { state: true },
+    });
+
+    if (activeOrder?.state === 'ArrangingPayment') {
+        return { redirect: { destination: paymentRedirect, permanent: false } };
+    }
+
     const returnedStuff = {
         ...r.props,
-        collections,
         availableCountries,
         YMALProducts,
     };

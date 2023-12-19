@@ -14,7 +14,7 @@ export const StripeForm = ({ activeOrder }: { activeOrder: ActiveOrderType }) =>
 
         const result = await stripe.confirmPayment({
             elements,
-            confirmParams: { return_url: location.origin + `/checkout/confirmation?code=${activeOrder.code}` },
+            confirmParams: { return_url: location.origin + `/checkout/confirmation/${activeOrder.code}` },
         });
 
         if (result.error) {

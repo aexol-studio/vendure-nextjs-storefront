@@ -1,20 +1,39 @@
 import { Layout } from '@/src/layouts';
-import { ContextModel, getStaticPaths, makeStaticProps } from '@/src/lib/getStatic';
-import { InferGetStaticPropsType } from 'next';
-import React, { useEffect } from 'react';
+import { makeServerSideProps } from '@/src/lib/getStatic';
+import { GetServerSidePropsContext, InferGetServerSidePropsType } from 'next';
+import React from 'react';
 import { getCollections } from '@/src/graphql/sharedQueries';
-import { useRouter } from 'next/router';
 import { storefrontApiMutation } from '@/src/graphql/client';
+import { Link } from '@/src/components/atoms/Link';
 
-const Verify: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = props => {
-    const { query } = useRouter();
-    const token = query.token as string;
+const Verify: React.FC<InferGetServerSidePropsType<typeof getServerSideProps>> = props => {
+    return (
+        <Layout categories={props.collections}>
+            {props.status.success ? (
+                <div>
+                    <Link href="/customer/sign-in">Login</Link>
+                </div>
+            ) : (
+                <div>
+                    <Link href="/">Home</Link>
+                </div>
+            )}
+        </Layout>
+    );
+};
 
-    useEffect(() => {
-        storefrontApiMutation({
+const getServerSideProps = async (context: GetServerSidePropsContext) => {
+    const r = await makeServerSideProps(['common', 'checkout'])(context);
+    const collections = await getCollections();
+    const token = context.query.token as string;
+    const homePage = context.params?.locale === 'en' ? '/' : `/${context.params?.locale}`;
+
+    try {
+        const { verifyCustomerAccount } = await storefrontApiMutation({
             verifyCustomerAccount: [
                 { token },
                 {
+                    __typename: true,
                     '...on CurrentUser': {
                         id: true,
                     },
@@ -45,30 +64,16 @@ const Verify: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = props =
                     },
                 },
             ],
-        }).then(r => console.log(r));
-    }, [token]);
+        });
 
-    return (
-        <Layout categories={props.collections}>
-            <div></div>
-        </Layout>
-    );
+        let success = false;
+        if (verifyCustomerAccount.__typename === 'CurrentUser') success = true;
+
+        return { props: { ...r.props, collections, status: { success } } };
+    } catch (e) {
+        return { redirect: { destination: homePage, permanent: false } };
+    }
 };
 
-const getStaticProps = async (context: ContextModel) => {
-    const r = await makeStaticProps(['common', 'checkout'])(context);
-    const collections = await getCollections();
-
-    const returnedStuff = {
-        ...r.props,
-        collections,
-    };
-
-    return {
-        props: returnedStuff,
-        revalidate: 10,
-    };
-};
-
-export { getStaticPaths, getStaticProps };
+export { getServerSideProps };
 export default Verify;

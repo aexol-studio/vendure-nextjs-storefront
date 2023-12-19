@@ -32,7 +32,7 @@ interface PriceProps {
 export const Price: React.FC<PriceProps> = ({ price, beforePrice, currencyCode, quantity = 1 }) => {
     return (
         <Stack>
-            <TP style={{ color: beforePrice ? 'red' : 'black' }}>{priceFormatter(price, currencyCode)}</TP>
+            <TP style={{ color: beforePrice ? 'red' : 'black' }}>{priceFormatter(quantity * price, currencyCode)}</TP>
             {beforePrice && (
                 <TP style={{ textDecoration: 'line-through', marginLeft: '0.5rem' }}>
                     {priceFormatter(quantity * beforePrice, currencyCode)}

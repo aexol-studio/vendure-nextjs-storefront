@@ -12,20 +12,21 @@ import { CurrencyCode } from '@/src/zeus';
 import { DiscountForm } from '@/src/components/molecules/DiscountForm';
 import { X } from 'lucide-react';
 import styled from '@emotion/styled';
-import { YAMLProductsType } from '@/src/graphql/selectors';
+import { ActiveOrderType, YAMLProductsType } from '@/src/graphql/selectors';
 import { YMALCarousel } from './YMAL';
 
 interface OrderSummaryProps {
+    activeOrder?: ActiveOrderType;
     isForm?: boolean;
     YMALProducts?: YAMLProductsType[];
 }
 
-export const OrderSummary: React.FC<OrderSummaryProps> = ({ isForm, YMALProducts }) => {
+export const OrderSummary: React.FC<OrderSummaryProps> = ({ activeOrder, isForm, YMALProducts }) => {
     const { t } = useTranslation('checkout');
     const { asPath } = useRouter();
-    const { cart, removeCouponCode } = useCart();
+    const { removeCouponCode } = useCart();
     const step = asPath.includes('payment') ? 'payment' : 'shipping';
-    const currencyCode = cart?.currencyCode ?? CurrencyCode.USD;
+    const currencyCode = activeOrder?.currencyCode ?? CurrencyCode.USD;
 
     return (
         <SummaryContainer w100>
@@ -35,23 +36,23 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({ isForm, YMALProducts
                     {t('orderSummary.title')}
                 </TH2>
                 <Stack column>
-                    {cart?.lines.map(line => (
+                    {activeOrder?.lines.map(line => (
                         <Line currencyCode={currencyCode} isForm={isForm} key={line.id} line={line} />
                     ))}
                     <Stack column gap="2.5rem">
                         <Stack justifyBetween>
                             <TP>{t('orderSummary.subtotal')}</TP>
-                            <TP>{priceFormatter(cart?.subTotalWithTax ?? 0, currencyCode)}</TP>
+                            <TP>{priceFormatter(activeOrder?.subTotalWithTax ?? 0, currencyCode)}</TP>
                         </Stack>
                         <Stack justifyBetween>
                             <TP>{t('orderSummary.shipping')}</TP>
-                            <TP>{priceFormatter(cart?.shippingWithTax ?? 0, currencyCode)}</TP>
+                            <TP>{priceFormatter(activeOrder?.shippingWithTax ?? 0, currencyCode)}</TP>
                         </Stack>
                         {isForm && (
                             <Fragment>
                                 <Divider />
                                 <Stack column gap="2.5rem">
-                                    {cart?.discounts.map(d => (
+                                    {activeOrder?.discounts.map(d => (
                                         <Stack key={d.description} justifyBetween>
                                             <Stack itemsCenter gap="1.25rem">
                                                 <Remove onClick={() => removeCouponCode(d.description)}>
@@ -76,7 +77,7 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({ isForm, YMALProducts
                                 {t('orderSummary.total')}
                             </TP>
                             <TP size="1.75rem" weight={600}>
-                                {priceFormatter(cart?.totalWithTax ?? 0, currencyCode)}
+                                {priceFormatter(activeOrder?.totalWithTax ?? 0, currencyCode)}
                             </TP>
                         </Stack>
                     </Stack>

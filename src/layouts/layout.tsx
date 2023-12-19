@@ -38,7 +38,7 @@ export const Layout: React.FC<LayoutProps> = ({ pageTitle, children, categories 
         <MainStack column>
             <CustomHelmet pageTitle={pageTitle ? pageTitle : undefined} />
             <Nav />
-            <CategoryBar collections={categories} />
+            {categories?.length > 0 ? <CategoryBar collections={categories} /> : null}
             <Container>{children}</Container>
             <Footer />
         </MainStack>

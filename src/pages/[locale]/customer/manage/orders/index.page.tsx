@@ -1,7 +1,7 @@
 import { Layout } from '@/src/layouts';
 import { makeServerSideProps } from '@/src/lib/getStatic';
 import { GetServerSidePropsContext, InferGetServerSidePropsType } from 'next';
-import React, { ChangeEvent, useEffect, useState } from 'react';
+import React, { ChangeEvent, useEffect, useRef, useState } from 'react';
 import { getCollections } from '@/src/graphql/sharedQueries';
 import { CustomerNavigation } from '../components/CustomerNavigation';
 import { SSRQuery, storefrontApiQuery } from '@/src/graphql/client';
@@ -13,9 +13,10 @@ import { TP } from '@/src/components/atoms/TypoGraphy';
 import { SortOrder } from '@/src/zeus';
 import styled from '@emotion/styled';
 import { ProductImage } from '@/src/components/atoms/ProductImage';
-import { priceFormatter } from '@/src/util/priceFomatter';
 import { Button } from '@/src/components/molecules/Button';
 import { Input } from '@/src/components/forms/Input';
+import { Price } from '@/src/components/atoms/Price';
+import { OrderState } from '@/src/components/molecules/OrderState';
 
 const GET_MORE = 4;
 
@@ -24,6 +25,7 @@ const History: React.FC<InferGetServerSidePropsType<typeof getServerSideProps>> 
     const [loading, setLoading] = useState(false);
     const [page, setPage] = useState(1);
 
+    const scrollableRef = useRef<HTMLDivElement>(null);
     const [activeOrders, setActiveOrders] = useState(props.activeCustomer?.orders.items);
 
     const lookForOrder = async (contains: string) => {
@@ -50,7 +52,11 @@ const History: React.FC<InferGetServerSidePropsType<typeof getServerSideProps>> 
     };
 
     useEffect(() => {
-        if (query === '') return;
+        if (query === '') {
+            setActiveOrders(props.activeCustomer?.orders.items);
+            setLoading(false);
+            return;
+        }
         setLoading(true);
         const timer = setTimeout(() => {
             lookForOrder(query);
@@ -64,14 +70,23 @@ const History: React.FC<InferGetServerSidePropsType<typeof getServerSideProps>> 
                 ...ActiveCustomerSelector,
                 orders: [
                     { options: { take: GET_MORE, skip: activeOrders?.length, sort: { createdAt: SortOrder.DESC } } },
-                    { items: ActiveOrderSelector },
+                    { items: ActiveOrderSelector, totalItems: true },
                 ],
             },
         });
+
         if (!activeCustomer) return;
+        if (activeCustomer.orders.totalItems <= activeOrders?.length + GET_MORE) {
+            //TODO: show no more orders
+            return;
+        }
+
         setActiveOrders([...(activeOrders || []), ...activeCustomer.orders.items]);
-        setPage(p => p + 1);
+        setPage(page + 1);
+        await new Promise(resolve => setTimeout(resolve, 200));
+        scrollableRef.current?.scrollTo({ top: scrollableRef.current?.scrollHeight, behavior: 'smooth' });
     };
+    console.log('activeOrders', activeOrders);
 
     return (
         <Layout categories={props.collections}>
@@ -80,51 +95,38 @@ const History: React.FC<InferGetServerSidePropsType<typeof getServerSideProps>> 
                     <CustomerNavigation />
                     <Stack column w100>
                         <Input label="Search order" placeholder="Look for order by code" onChange={onSearch} />
-                        <Wrap w100>
+                        <Wrap flexWrap w100 ref={scrollableRef}>
                             {loading ? (
                                 <TP>Loading...</TP>
                             ) : (
-                                activeOrders?.map(order => (
-                                    <ClickableStack w100 key={order.id}>
-                                        <AbsoluteLink href={`/customer/manage/orders/${order.id}`} />
-                                        <ContentStack itemsCenter>
-                                            {order.lines.length >= 4 ? (
-                                                <ImageGrid>
-                                                    {order.lines
-                                                        .slice(0, 4)
-                                                        ?.map(line => (
-                                                            <ProductImage
-                                                                size="thumbnail"
-                                                                key={line.productVariant?.featuredAsset?.id}
-                                                                src={line.productVariant?.featuredAsset?.preview}
-                                                                alt={line.productVariant.product.name}
-                                                            />
-                                                        ))}
-                                                </ImageGrid>
-                                            ) : (
+                                activeOrders?.map(order => {
+                                    return (
+                                        <ClickableStack w100 key={order.id}>
+                                            <AbsoluteLink href={`/customer/manage/orders/${order.code}`} />
+                                            <ContentStack w100 justifyBetween itemsStart>
                                                 <ProductImage
                                                     size="thumbnail"
                                                     src={order.lines[0].featuredAsset?.preview}
                                                     alt={order.lines[0].productVariant.product.name}
                                                 />
-                                            )}
-
-                                            <TP>
-                                                {order.state}
-                                                &nbsp;
-                                                {new Date(order.updatedAt).toISOString().split('T')[0]}
-                                            </TP>
-                                            <TP>State {order.state}</TP>
-                                            <TP>Total quantity: {order.totalQuantity}</TP>
-                                            <TP>
-                                                Total price: {priceFormatter(order.totalWithTax, order.currencyCode)}
-                                            </TP>
-                                        </ContentStack>
-                                    </ClickableStack>
-                                ))
+                                                <OrderState state={order.state} />
+                                                <TP>{new Date(order.updatedAt).toISOString().split('T')[0]}</TP>
+                                                <Stack column>
+                                                    <TP>Total quantity: {order.totalQuantity}</TP>
+                                                    <Price
+                                                        currencyCode={order.currencyCode}
+                                                        price={order.totalWithTax}
+                                                    />
+                                                </Stack>
+                                            </ContentStack>
+                                        </ClickableStack>
+                                    );
+                                })
                             )}
                         </Wrap>
-                        <Button onClick={onLoadMore}>Load more</Button>
+                        <ButtonWrap w100>
+                            <StyledButton onClick={onLoadMore}>Load more</StyledButton>
+                        </ButtonWrap>
                     </Stack>
                 </Stack>
             </ContentContainer>
@@ -132,27 +134,31 @@ const History: React.FC<InferGetServerSidePropsType<typeof getServerSideProps>> 
     );
 };
 
-const ImageGrid = styled(Stack)`
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    grid-template-rows: repeat(2, 1fr);
+const ButtonWrap = styled(Stack)`
+    padding: 1.75rem;
+`;
+
+const StyledButton = styled(Button)`
+    width: 100%;
 `;
 
 const Wrap = styled(Stack)`
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    grid-gap: 1.75rem;
+    position: relative;
 
+    max-height: 60vh;
     overflow-y: auto;
-    max-height: 600px;
+    padding: 1.75rem;
 `;
 
 const ContentStack = styled(Stack)`
     padding: 1.75rem;
-    border: 1px solid ${({ theme }) => theme.gray(300)};
+    box-shadow: 0 0 0.75rem ${p => p.theme.gray(200)};
 `;
 
 const ClickableStack = styled(Stack)`
+    width: 50%;
+    height: 20rem;
+    padding: 1rem;
     position: relative;
 `;
 
@@ -173,7 +179,10 @@ const getServerSideProps = async (context: GetServerSidePropsContext) => {
         const { activeCustomer } = await SSRQuery(context)({
             activeCustomer: {
                 ...ActiveCustomerSelector,
-                orders: [{ options: { take: 4, sort: { createdAt: SortOrder.DESC } } }, { items: ActiveOrderSelector }],
+                orders: [
+                    { options: { take: 4, sort: { createdAt: SortOrder.DESC }, filter: { active: { eq: false } } } },
+                    { items: ActiveOrderSelector },
+                ],
             },
         });
         if (!activeCustomer) throw new Error('No active customer');

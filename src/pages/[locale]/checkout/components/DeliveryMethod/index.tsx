@@ -29,7 +29,9 @@ export const DeliveryMethod: React.FC<Props> = ({
     return (
         <Stack w100 column>
             <Stack column gap="0.125rem" itemsStart>
-                <TH2>{t('deliveryMethod.title')}</TH2>
+                <TH2 size="2rem" weight={500}>
+                    {t('deliveryMethod.title')}
+                </TH2>
                 {required && (
                     <Required weight={600} size="1rem">
                         {t('deliveryMethod.required')}

@@ -31,5 +31,20 @@
         "title": "Shipping Protection",
         "subtitle": "From Damage, Loss & Theft for {{value}}"
     },
+    "orderStates": {
+        "Created": "Created",
+        "Draft": "Draft",
+        "AddingItems": "Adding Items",
+        "Cancelled": "Cancelled",
+        "ArrangingPayment": "Arranging Payment",
+        "PaymentAuthorized": "Payment Authorized",
+        "PaymentSettled": "Payment Settled",
+        "PartiallyShipped": "Partially Shipped",
+        "Shipped": "Shipped",
+        "PartiallyDelivered": "Partially Delivered",
+        "Delivered": "Delivered",
+        "Modifying": "Modifying",
+        "ArrangingAdditionalPayment": "Arranging Additional Payment"
+    },
     "notifyMe":{"invalidEmail":"Please enter valid email","backendError":"Couldnt't add you to notify list","placeholder":"Notify me"}
 }

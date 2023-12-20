@@ -48,7 +48,9 @@ const SignIn: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = props =
             ],
         });
 
-        if (login.__typename === 'CurrentUser') push('/customer/manage');
+        if (login.__typename === 'CurrentUser') {
+            push('/customer/manage');
+        }
 
         console.log(login);
     };
@@ -56,20 +58,31 @@ const SignIn: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = props =
     return (
         <Layout categories={props.collections}>
             <ContentContainer>
-                <Stack column itemsCenter gap="1.75rem">
-                    <Form onSubmit={handleSubmit(onSubmit)}>
-                        <Input label={t('email')} type="text" {...register('emailAddress')} />
-                        <Input label={t('password')} type="password" {...register('password')} />
-                        <CheckBox label={t('rememberMe')} {...register('rememberMe')} />
-                        <FormButton type="submit">{t('signIn')}</FormButton>
-                    </Form>
-                    <Link href="/customer/forgot-password">{t('forgotPassword')}</Link>
-                    <Link href="/customer/sign-up">{t('signUp')}</Link>
+                <Stack w100 justifyCenter itemsCenter>
+                    <FormWrapper column itemsCenter gap="1.75rem">
+                        <Form onSubmit={handleSubmit(onSubmit)}>
+                            <Input label={t('email')} type="text" {...register('emailAddress')} />
+                            <Input label={t('password')} type="password" {...register('password')} />
+                            <CheckBox label={t('rememberMe')} {...register('rememberMe')} />
+                            <FormButton type="submit">{t('signIn')}</FormButton>
+                        </Form>
+                        <Stack column itemsCenter gap="0.5rem">
+                            <Link href="/customer/forgot-password">{t('forgotPassword')}</Link>
+                            <Link href="/customer/sign-up">{t('signUp')}</Link>
+                        </Stack>
+                    </FormWrapper>
                 </Stack>
             </ContentContainer>
         </Layout>
     );
 };
+
+const FormWrapper = styled(Stack)`
+    padding: 3.75rem 2.5rem;
+    border: 1px solid ${({ theme }) => theme.gray(300)};
+    border-radius: ${({ theme }) => theme.borderRadius};
+    box-shadow: 0 0 0.5rem ${({ theme }) => theme.gray(300)};
+`;
 
 const Form = styled.form`
     display: flex;

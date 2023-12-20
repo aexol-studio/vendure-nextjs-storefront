@@ -6,9 +6,10 @@ import { getCollections } from '@/src/graphql/sharedQueries';
 import { CustomerNavigation } from './components/CustomerNavigation';
 import { Stack } from '@/src/components/atoms/Stack';
 import { SSRQuery } from '@/src/graphql/client';
-import { ActiveCustomerSelector } from '@/src/graphql/selectors';
+import { ActiveCustomerSelector, ActiveOrderSelector } from '@/src/graphql/selectors';
 import { CustomerForm } from './components/CustomerForm';
 import { ContentContainer } from '@/src/components/atoms/ContentContainer';
+import { SortOrder } from '@/src/zeus';
 
 const Account: React.FC<InferGetServerSidePropsType<typeof getServerSideProps>> = props => {
     return (
@@ -24,13 +25,19 @@ const Account: React.FC<InferGetServerSidePropsType<typeof getServerSideProps>> 
 };
 
 const getServerSideProps = async (context: GetServerSidePropsContext) => {
-    const r = await makeServerSideProps(['common', 'checkout'])(context);
+    const r = await makeServerSideProps(['common', 'customer'])(context);
     const collections = await getCollections();
     const destination = context.params?.locale === 'en' ? '/' : `/${context.params?.locale}`;
 
     try {
         const { activeCustomer } = await SSRQuery(context)({
-            activeCustomer: ActiveCustomerSelector,
+            activeCustomer: {
+                ...ActiveCustomerSelector,
+                orders: [
+                    { options: { take: 1, sort: { updatedAt: SortOrder.DESC }, filter: { active: { eq: false } } } },
+                    { items: ActiveOrderSelector },
+                ],
+            },
         });
         if (!activeCustomer) throw new Error('No active customer');
 

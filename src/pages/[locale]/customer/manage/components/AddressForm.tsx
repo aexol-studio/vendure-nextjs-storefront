@@ -18,20 +18,22 @@ export const AddressForm: React.FC<{
     country?: string;
     onModalClose?: () => void;
 }> = ({ addressToEdit, onSubmit, availableCountries, country, onModalClose }) => {
-    const { t } = useTranslation('checkout');
+    const { t } = useTranslation('customer');
+
     const schema = z.object({
-        countryCode: z.string().length(2, { message: t('orderForm.errors.countryCode.required') }),
-        streetLine1: z.string().min(1, { message: t('orderForm.errors.streetLine1.required') }),
+        countryCode: z.string().length(2, { message: t('addressForm.errors.countryCode.required') }),
+        streetLine1: z.string().min(1, { message: t('addressForm.errors.streetLine1.required') }),
         streetLine2: z.string().optional(),
-        city: z.string().min(1, { message: t('orderForm.errors.city.required') }),
+        city: z.string().min(1, { message: t('addressForm.errors.city.required') }),
         company: z.string().optional(),
-        fullName: z.string().min(1, { message: t('orderForm.errors.fullName.required') }),
-        phoneNumber: z.string().min(1, { message: t('orderForm.errors.phone.required') }),
-        postalCode: z.string().min(1, { message: t('orderForm.errors.postalCode.required') }),
-        province: z.string().min(1, { message: t('orderForm.errors.province.required') }),
+        fullName: z.string().min(1, { message: t('addressForm.errors.fullName.required') }),
+        phoneNumber: z.string().min(1, { message: t('addressForm.errors.phone.required') }),
+        postalCode: z.string().min(1, { message: t('addressForm.errors.postalCode.required') }),
+        province: z.string().min(1, { message: t('addressForm.errors.province.required') }),
         defaultBillingAddress: z.boolean().optional(),
         defaultShippingAddress: z.boolean().optional(),
     });
+
     const {
         register,
         handleSubmit,
@@ -57,48 +59,62 @@ export const AddressForm: React.FC<{
     });
     return (
         <Form onSubmit={handleSubmit(onSubmit)}>
-            <Input {...register('fullName')} label={t('orderForm.fullName')} error={errors.fullName} />
-            <Stack itemsCenter gap="1.25rem">
-                <Input {...register('company')} label={t('orderForm.company')} error={errors.company} />
-                <Input
-                    type="tel"
-                    label={t('orderForm.phone')}
-                    {...register('phoneNumber', {
-                        onChange: e => (e.target.value = e.target.value.replace(/[^0-9]/g, '')),
-                    })}
-                    error={errors.phoneNumber}
-                />
+            <Stack column>
+                <Input {...register('fullName')} label={t('addressForm.fullName')} error={errors.fullName} />
+                <Stack itemsCenter gap="1.25rem">
+                    <Input {...register('company')} label={t('addressForm.company')} error={errors.company} />
+                    <Input
+                        type="tel"
+                        label={t('addressForm.phone')}
+                        {...register('phoneNumber', {
+                            onChange: e => (e.target.value = e.target.value.replace(/[^0-9]/g, '')),
+                        })}
+                        error={errors.phoneNumber}
+                    />
+                </Stack>
+                <Stack itemsCenter gap="1.25rem">
+                    <Input {...register('streetLine1')} label={t('addressForm.streetLine1')} error={errors.province} />
+                    <Input
+                        {...register('streetLine2')}
+                        label={t('addressForm.streetLine2')}
+                        error={errors.postalCode}
+                    />
+                </Stack>
+                {availableCountries && (
+                    <CountrySelect
+                        {...register('countryCode')}
+                        label={t('addressForm.countryCode')}
+                        //TODO: Verify what country we will use
+                        defaultValue={country ?? 'US'}
+                        options={availableCountries}
+                        error={errors.countryCode}
+                    />
+                )}
+                <Input {...register('city')} label={t('addressForm.city')} error={errors.city} />
+                <Input {...register('postalCode')} label={t('addressForm.postalCode')} error={errors.postalCode} />
+                <Input {...register('province')} label={t('addressForm.province')} error={errors.province} />
             </Stack>
-            <Stack itemsCenter gap="1.25rem">
-                <Input {...register('streetLine1')} label={t('orderForm.streetLine1')} error={errors.province} />
-                <Input {...register('streetLine2')} label={t('orderForm.streetLine2')} error={errors.postalCode} />
-            </Stack>
-            {availableCountries && (
-                <CountrySelect
-                    {...register('countryCode')}
-                    label={t('orderForm.countryCode')}
-                    //TODO: Verify what country we will use
-                    defaultValue={country ?? 'US'}
-                    options={availableCountries}
-                    error={errors.countryCode}
-                />
-            )}
-            <Input {...register('city')} label={t('orderForm.city')} error={errors.city} />
-            <Input {...register('postalCode')} label={t('orderForm.postalCode')} error={errors.postalCode} />
-            <Input {...register('province')} label={t('orderForm.province')} error={errors.province} />
-            <CheckboxStack>
-                <DefaultBilling active={watch('defaultBillingAddress')} />
-                <Checkbox type="checkbox" {...register('defaultBillingAddress')} />
-                <label htmlFor="defaultBillingAddress">Default billing address</label>
-            </CheckboxStack>
-            <CheckboxStack>
-                <DefaultShipping active={watch('defaultShippingAddress')} />
-                <Checkbox type="checkbox" {...register('defaultShippingAddress')} />
-                <label htmlFor="defaultShippingAddress">Default shipping address</label>
-            </CheckboxStack>
-            <Stack itemsCenter justifyBetween>
-                {onModalClose && <Button onClick={onModalClose}>Close</Button>}
-                <Button type="submit">{addressToEdit ? 'Edit address' : 'Add address'}</Button>
+            <Stack column gap="1.25rem">
+                <Stack itemsCenter gap="2rem">
+                    <CheckboxStack itemsCenter gap="0.75rem">
+                        <DefaultBilling active={watch('defaultBillingAddress')} />
+                        <Checkbox type="checkbox" {...register('defaultBillingAddress')} />
+                        <label htmlFor="defaultBillingAddress">{t('addressForm.defaultBillingAddress')}</label>
+                    </CheckboxStack>
+                    <CheckboxStack itemsCenter gap="0.75rem">
+                        <DefaultShipping active={watch('defaultShippingAddress')} />
+                        <Checkbox type="checkbox" {...register('defaultShippingAddress')} />
+                        <label htmlFor="defaultShippingAddress">{t('addressForm.defaultShippingAddress')}</label>
+                    </CheckboxStack>
+                </Stack>
+                <Stack itemsCenter justifyBetween>
+                    {onModalClose && (
+                        <Button onClick={onModalClose} type="button">
+                            {t('addressForm.cancel')}
+                        </Button>
+                    )}
+                    <Button type="submit">{addressToEdit ? t('addressForm.update') : t('addressForm.add')}</Button>
+                </Stack>
             </Stack>
         </Form>
     );

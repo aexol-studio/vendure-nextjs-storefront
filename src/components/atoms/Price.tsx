@@ -2,42 +2,34 @@ import { Stack } from '@/src/components/atoms/Stack';
 import { TP } from '@/src/components/atoms/TypoGraphy';
 import { priceFormatter } from '@/src/util/priceFomatter';
 import { CurrencyCode } from '@/src/zeus';
+import styled from '@emotion/styled';
 
 interface PriceProps {
     price: number;
-    beforePrice?: number | null;
-    discountPrice?: number | null;
-
     currencyCode: CurrencyCode;
+    discountPrice?: number | null;
     quantity?: number;
 }
 
-//TODO: Get care of the styling (tax price, before price, etc... include taxes or not)
-// interface PriceProps {
-//     price: {
-//         withTax: number;
-//         withoutTax: number;
-//     };
-//     beforePrice?: number | null; // if needed can be tax can be calculated (it comes from customFields)
-//     discountPrice?: {
-//         withTax: number;
-//         withoutTax: number;
-//     } | null;
-//
-//     display: "withTax" | "withoutTax" | "both";
-//     currencyCode: CurrencyCode;
-//     quantity?: number;
-// }
-
-export const Price: React.FC<PriceProps> = ({ price, beforePrice, currencyCode, quantity = 1 }) => {
+export const Price: React.FC<PriceProps> = ({ price, discountPrice, currencyCode, quantity = 1 }) => {
+    const differentPrices = !!(discountPrice && price * quantity !== discountPrice * quantity);
     return (
-        <Stack>
-            <TP style={{ color: beforePrice ? 'red' : 'black' }}>{priceFormatter(quantity * price, currencyCode)}</TP>
-            {beforePrice && (
-                <TP style={{ textDecoration: 'line-through', marginLeft: '0.5rem' }}>
-                    {priceFormatter(quantity * beforePrice, currencyCode)}
-                </TP>
+        <Stack gap="0.75rem">
+            <StyledPrice discount={differentPrices}>{priceFormatter(price * quantity, currencyCode)}</StyledPrice>
+            {differentPrices && (
+                <StyledDiscountPrice>{priceFormatter(discountPrice * quantity, currencyCode)}</StyledDiscountPrice>
             )}
         </Stack>
     );
 };
+
+const StyledPrice = styled(TP)<{ discount?: boolean }>`
+    color: ${p => p.theme.text.main};
+    text-decoration: none;
+`;
+
+const StyledDiscountPrice = styled(TP)`
+    //TODO: Add color to theme
+    color: red;
+    text-decoration: line-through;
+`;

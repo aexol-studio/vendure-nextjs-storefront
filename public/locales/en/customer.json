@@ -9,5 +9,67 @@
     "confirmPassword": "Confirm password",
     "forgotPassword": "Forgot password?",
     "email": "Email address",
-    "newPassword": "Generate new password"
+    "newPassword": "Generate new password",
+    "accountPage": {
+        "title": "My Account",
+        "lastOrder": "Last Order",
+        "viewOrder": "View Order",
+        "detailsForm": {
+            "title": "Account Details",
+            "changeDetails": "Change Details"
+        },
+        "passwordForm": {
+            "title": "Change Password",
+            "confirmPassword": "Confirm Password"
+        }
+    },
+    "addressForm": {
+        "phone": "Phone",
+        "fullName": "Full Name",
+        "company": "Company",
+        "streetLine1": "Address",
+        "streetLine2": "Apartment, suite, etc.",
+        "city": "City",
+        "countryCode": "Country",
+        "province": "State / Province",
+        "postalCode": "Postal Code",
+        "defaultShippingAddress": "Default Shipping Address",
+        "defaultBillingAddress": "Default Billing Address",
+        "cancel": "Cancel",
+        "update": "Update Address",
+        "add": "Add Address",
+        "errors": {
+            "root": {
+                "invalid": "An errors occurred while sending the form. Please correct the errors below",
+                "closeButton": "Close"
+            },
+            "phone": {
+                "required": "Phone is required"
+            },
+            "fullName": {
+                "required": "Full name is required"
+            },
+            "company": {
+                "required": "Company is required"
+            },
+            "streetLine1": {
+                "required": "Address is required"
+            },
+            "streetLine2": {
+                "required": "Apartment, suite, etc. is required"
+            },
+            "city": {
+                "required": "City is required"
+            },
+            "countryCode": {
+                "required": "Country is required"
+            },
+            "province": {
+                "required": "State / Province is required"
+            },
+            "postalCode": {
+                "required": "Postal code is required"
+            }
+        }
+    }
 }

@@ -1,6 +1,21 @@
 import { scalars } from '@/src/graphql/client';
 import { FromSelector, Selector } from '@/src/zeus';
 
+export type OrderStateType =
+    | 'Created'
+    | 'Draft'
+    | 'AddingItems'
+    | 'Cancelled'
+    | 'ArrangingPayment'
+    | 'PaymentAuthorized'
+    | 'PaymentSettled'
+    | 'PartiallyShipped'
+    | 'Shipped'
+    | 'PartiallyDelivered'
+    | 'Delivered'
+    | 'Modifying'
+    | 'ArrangingAdditionalPayment';
+
 export const ProductTileSelector = Selector('Product')({
     id: true,
     name: true,
@@ -143,8 +158,7 @@ export const AvailableCountriesSelector = Selector('Country')({
 });
 export type AvailableCountriesType = FromSelector<typeof AvailableCountriesSelector, 'Country', typeof scalars>;
 
-export const ActiveAddressSelector = Selector('Address')({
-    id: true,
+export const OrderAddressSelector = Selector('OrderAddress')({
     fullName: true,
     company: true,
     streetLine1: true,
@@ -152,8 +166,15 @@ export const ActiveAddressSelector = Selector('Address')({
     city: true,
     province: true,
     postalCode: true,
-    country: AvailableCountriesSelector,
     phoneNumber: true,
+});
+
+export type OrderAddressType = FromSelector<typeof OrderAddressSelector, 'OrderAddress', typeof scalars>;
+
+export const ActiveAddressSelector = Selector('Address')({
+    ...OrderAddressSelector,
+    id: true,
+    country: AvailableCountriesSelector,
     defaultShippingAddress: true,
     defaultBillingAddress: true,
 });
@@ -213,10 +234,6 @@ export const ActiveOrderSelector = Selector('Order')({
         amountWithTax: true,
     },
     active: true,
-    billingAddress: {
-        city: true,
-        country: true,
-    },
     lines: {
         id: true,
         quantity: true,
@@ -234,7 +251,7 @@ export const ActiveOrderSelector = Selector('Order')({
             price: true,
             featuredAsset: {
                 id: true,
-                preview: true,
+                source: true,
             },
             product: {
                 name: true,
@@ -244,6 +261,7 @@ export const ActiveOrderSelector = Selector('Order')({
     shippingLines: {
         shippingMethod: {
             id: true,
+            name: true,
             description: true,
         },
         priceWithTax: true,
@@ -252,7 +270,7 @@ export const ActiveOrderSelector = Selector('Order')({
     couponCodes: true,
     currencyCode: true,
     code: true,
-    customer: { id: true, emailAddress: true },
+    customer: { id: true, emailAddress: true, firstName: true, lastName: true, phoneNumber: true },
 });
 
 export type ActiveOrderType = FromSelector<typeof ActiveOrderSelector, 'Order', typeof scalars>;
@@ -280,10 +298,21 @@ export const OrderSelector = Selector('Order')({
         productVariant: {
             name: true,
             currencyCode: true,
+            featuredAsset: {
+                id: true,
+                source: true,
+            },
             product: {
                 name: true,
             },
         },
+    },
+    shippingLines: {
+        shippingMethod: {
+            id: true,
+            description: true,
+        },
+        priceWithTax: true,
     },
 });
 export type OrderType = FromSelector<typeof OrderSelector, 'Order', typeof scalars>;

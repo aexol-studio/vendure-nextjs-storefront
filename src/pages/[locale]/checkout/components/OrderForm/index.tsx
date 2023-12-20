@@ -32,6 +32,7 @@ import { useValidationSchema } from './useValidationSchema';
 import { FormError } from '@/src/components/forms/atoms';
 import { Link } from '@/src/components/atoms/Link';
 import { useCheckout } from '@/src/state/checkout';
+import { MoveLeft } from 'lucide-react';
 
 type Form = CreateCustomerType & {
     deliveryMethod?: string;
@@ -327,9 +328,14 @@ export const OrderForm: React.FC<OrderFormProps> = ({ availableCountries }) => {
                 {/* Customer Part */}
                 <Stack column gap="0.5rem">
                     <Stack column gap="2rem">
-                        <TH2 size="2rem" weight={500}>
-                            {t('orderForm.contactInfo')}
-                        </TH2>
+                        <Stack gap="0.75rem" itemsCenter>
+                            <BackButton href="/">
+                                <MoveLeft size={24} />
+                            </BackButton>
+                            <TH2 size="2rem" weight={500}>
+                                {t('orderForm.contactInfo')}
+                            </TH2>
+                        </Stack>
                         <Stack w100 column>
                             <Input
                                 {...register('emailAddress')}
@@ -643,6 +649,21 @@ export const OrderForm: React.FC<OrderFormProps> = ({ availableCountries }) => {
         </Stack>
     );
 };
+
+const BackButton = styled(Link)`
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 3.2rem;
+    height: 3.2rem;
+
+    color: ${({ theme }) => theme.gray(1000)};
+`;
 
 const EmptyCartDescription = styled(Stack)`
     font-size: 1.75rem;

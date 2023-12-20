@@ -50,7 +50,7 @@ export const StyledSelect = styled.select<{ error?: boolean }>`
     margin-top: 0.25rem;
     padding: 0.5rem 0.75rem;
     color: ${p => p.theme.gray(900)};
-    border: 1px solid ${p => p.theme.gray(100)};
+    border: 1px solid ${p => p.theme.gray(600)};
     :focus {
         border-color: ${p => p.theme.gray(400)};
     }

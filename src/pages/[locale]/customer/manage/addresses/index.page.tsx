@@ -1,7 +1,7 @@
 import { Layout } from '@/src/layouts';
 import { ContextModel, getStaticPaths, makeStaticProps } from '@/src/lib/getStatic';
 import { InferGetStaticPropsType } from 'next';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { getCollections } from '@/src/graphql/sharedQueries';
 import { CustomerNavigation } from '../components/CustomerNavigation';
 import { storefrontApiMutation, storefrontApiQuery } from '@/src/graphql/client';
@@ -24,6 +24,19 @@ const Addresses: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = prop
     const [addressToEdit, setAddressToEdit] = useState<ActiveAddressType>();
     const [activeCustomer, setActiveCustomer] = useState<ActiveCustomerType>();
     const [refresh, setRefresh] = useState(false);
+
+    const ref = useRef<HTMLDivElement>(null);
+    useEffect(() => {
+        const handleClickOutside = (e: MouseEvent) => {
+            if (ref.current && !ref.current.contains(e.target as Node)) {
+                onModalClose();
+            }
+        };
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, []);
 
     useEffect(() => {
         const fetchCustomer = async () => {
@@ -91,7 +104,7 @@ const Addresses: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = prop
             <AnimatePresence>
                 {addressToEdit && (
                     <Modal initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
-                        <ModalContent itemsCenter column>
+                        <ModalContent ref={ref} itemsCenter column>
                             <AddressForm
                                 onSubmit={onSubmitEdit}
                                 availableCountries={props.availableCountries}
@@ -109,7 +122,7 @@ const Addresses: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = prop
                         <FormWrapper>
                             <AddressForm onSubmit={onSubmitCreate} availableCountries={props.availableCountries} />
                         </FormWrapper>
-                        <Wrap flexWrap itemsStart justifyBetween w100>
+                        <Wrap flexWrap justifyEnd gap="2.5rem">
                             {activeCustomer?.addresses?.map(address => (
                                 <AddressBox key={address.id} address={address} onEdit={onEdit} onDelete={onDelete} />
                             ))}
@@ -122,7 +135,9 @@ const Addresses: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = prop
 };
 
 const Wrap = styled(Stack)`
-    padding: 0 7.5rem;
+    overflow-y: auto;
+    max-height: 80vh;
+    padding: 1.75rem 0.5rem;
 `;
 
 const FormWrapper = styled(Stack)`

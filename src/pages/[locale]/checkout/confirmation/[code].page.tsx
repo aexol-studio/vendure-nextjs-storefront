@@ -63,7 +63,7 @@ const getServerSideProps: GetServerSideProps = async context => {
             orderByCode: [{ code }, OrderSelector],
         });
 
-        if (!orderByCode) throw new Error('Order not found');
+        if (!orderByCode) throw new Error(`Order not ready yet ${code}`);
 
         return { props: { ...r.props, collections, code, order: orderByCode } };
     } catch (e) {

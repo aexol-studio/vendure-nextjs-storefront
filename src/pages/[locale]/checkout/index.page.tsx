@@ -8,22 +8,13 @@ import { getYMALProducts } from '@/src/graphql/sharedQueries';
 import { Content, Main } from './components/ui/Shared';
 import { SSRQuery, storefrontApiQuery } from '@/src/graphql/client';
 import { ActiveOrderSelector, AvailableCountriesSelector } from '@/src/graphql/selectors';
-import styled from '@emotion/styled';
-import { Stack } from '@/src/components/atoms/Stack';
-import { MoveLeft } from 'lucide-react';
-import { Link } from '@/src/components/atoms/Link';
 
 const CheckoutPage: React.FC<InferGetServerSidePropsType<typeof getServerSideProps>> = props => {
-    const { availableCountries, YMALProducts, activeOrder: initialActiveOrder } = props;
+    const { availableCountries, YMALProducts, initialActiveOrder } = props;
 
     return (
         <CheckoutLayout initialActiveOrder={initialActiveOrder}>
             <Content>
-                <BackButtonWrapper>
-                    <BackButton href="/">
-                        <MoveLeft size={24} />
-                    </BackButton>
-                </BackButtonWrapper>
                 <Main w100 justifyBetween>
                     <OrderForm availableCountries={availableCountries} />
                     <OrderSummary isForm YMALProducts={YMALProducts} />
@@ -32,26 +23,6 @@ const CheckoutPage: React.FC<InferGetServerSidePropsType<typeof getServerSidePro
         </CheckoutLayout>
     );
 };
-
-const BackButtonWrapper = styled(Stack)`
-    position: absolute;
-    top: 1.5rem;
-    left: -1.5rem;
-`;
-const BackButton = styled(Link)`
-    background-color: transparent;
-    border: none;
-    cursor: pointer;
-    padding: 0;
-    margin: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 3.2rem;
-    height: 3.2rem;
-
-    color: ${({ theme }) => theme.gray(1000)};
-`;
 
 const getServerSideProps: GetServerSideProps = async context => {
     const r = await makeServerSideProps(['common', 'checkout'])(context);
@@ -73,7 +44,7 @@ const getServerSideProps: GetServerSideProps = async context => {
         return { redirect: { destination: paymentRedirect, permanent: false } };
     }
 
-    const returnedStuff = { ...r.props, availableCountries, activeOrder, YMALProducts };
+    const returnedStuff = { ...r.props, availableCountries, initialActiveOrder: activeOrder, YMALProducts };
     return { props: returnedStuff };
 };
 

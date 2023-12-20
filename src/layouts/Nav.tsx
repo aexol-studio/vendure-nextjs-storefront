@@ -23,9 +23,9 @@ export const Nav: React.FC = () => {
                     </Stack>
                     <LanguageSwitcher />
                     <Stack>
-                        <Link href={cart?.customer ? '/customer/manage' : '/customer/sign-in'}>
-                            <User2 color={cart?.customer ? 'green' : 'black'} />
-                        </Link>
+                        <StyledLink href={cart?.customer ? '/customer/manage' : '/customer/sign-in'}>
+                            <User2 />
+                        </StyledLink>
                         {/* <Cart activeOrder={cart} /> */}
                         <CartDrawer activeOrder={cart} />
                     </Stack>
@@ -34,6 +34,10 @@ export const Nav: React.FC = () => {
         </Main>
     );
 };
+const StyledLink = styled(Link)`
+    color: ${p => p.theme.gray(900)};
+`;
+
 const Main = styled(Stack)`
     width: 100%;
     padding: 2rem;

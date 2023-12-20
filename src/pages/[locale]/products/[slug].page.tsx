@@ -4,12 +4,17 @@ import { Facet } from '@/src/components/atoms/Facet';
 import { Stack } from '@/src/components/atoms/Stack';
 import { TH1, TP, TPriceBig } from '@/src/components/atoms/TypoGraphy';
 import { Button, FullWidthButton, FullWidthSecondaryButton } from '@/src/components/molecules/Button';
-import { NotifyMeform } from '@/src/components/molecules/NotifyMeForm';
+import { NotifyMeForm } from '@/src/components/molecules/NotifyMeForm';
 import { NewestProducts } from '@/src/components/organisms/NewestProducts';
 import { ProductPhotosPreview } from '@/src/components/organisms/ProductPhotosPreview';
 import { RelatedProductCollections } from '@/src/components/organisms/RelatedProductCollections';
 import { storefrontApiQuery } from '@/src/graphql/client';
-import { NewestProductSelector, ProductDetailSelector, ProductSlugSelector } from '@/src/graphql/selectors';
+import {
+    NewestProductSelector,
+    ProductDetailSelector,
+    ProductDetailType,
+    ProductSlugSelector,
+} from '@/src/graphql/selectors';
 import { getCollections } from '@/src/graphql/sharedQueries';
 import { Layout } from '@/src/layouts';
 import { ContextModel, localizeGetStaticPaths, makeStaticProps } from '@/src/lib/getStatic';
@@ -22,36 +27,41 @@ import styled from '@emotion/styled';
 import { Check, X } from 'lucide-react';
 import { InferGetStaticPropsType } from 'next';
 
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'next-i18next';
+
+type Variant = ProductDetailType['variants'][number];
 
 const ProductPage: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = props => {
     const { addToCart } = useCart();
     const push = usePush();
     const { t } = useTranslation('common');
+    const [variant, setVariant] = useState<Variant>();
+
     const translatedStockLevel = t('stockLevel', { returnObjects: true });
-
     const language = props._nextI18Next?.initialLocale || 'en';
+    const variants = props.product?.variants.map(v => ({
+        ...v,
+        size: v.name.replace(props.product?.name || '', ''),
+    }));
 
-    const variants = props.product?.variants.map(v => {
-        return {
-            id: v.id,
-            size: v.name.replace(props.product?.name || '', ''),
-            stockLevel: v.stockLevel,
-        };
-    });
+    const handleVariant = (variant?: Variant) => {
+        if (!variant) return;
+        window.history.pushState({}, '', `?variant=${variant.id}`);
+        setVariant(variant);
+    };
 
-    const [variant, setVariant] = useState<{
-        id: string;
-        size: string;
-        stockLevel: string;
-    }>({
-        id: props.product?.variants[0].id || '',
-        size: props.product?.variants[0].name.replace(props.product?.name || '', '') || '',
-        stockLevel: props.product?.variants[0].stockLevel || 'OUT_OF_STOCK',
-    });
+    useEffect(() => {
+        if (typeof window !== 'undefined') {
+            const urlParams = new URLSearchParams(window.location.search);
+            const variantId = urlParams.get('variant');
+            if (variantId) {
+                const variant = variants?.find(v => v.id === variantId);
+                if (variant) handleVariant(variant);
+            } else handleVariant(props.product?.variants[0]);
+        }
+    }, []);
 
-    const isOutOfStock = useMemo(() => variant.stockLevel === 'OUT_OF_STOCK', [variant]);
     return (
         <Layout categories={props.collections}>
             <ContentContainer>
@@ -59,17 +69,17 @@ const ProductPage: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = pr
                     <ProductPhotosPreview featuredAsset={props.product?.featuredAsset} images={props.product?.assets} />
                     <StyledStack column gap="2.5rem">
                         <TH1>{props.product?.name}</TH1>
-                        <FasetContainer gap="1rem">
+                        <FacetContainer gap="1rem">
                             {translateProductFacetsNames(language, props.product?.facetValues).map(({ id, name }) => (
                                 <Facet key={id}>{name}</Facet>
                             ))}
-                        </FasetContainer>
+                        </FacetContainer>
                         {variants && variants?.length > 1 ? (
                             <StyledStack gap="0.5rem">
                                 {variants.map(s => (
                                     <SizeSelector
                                         key={s.id}
-                                        onClick={() => setVariant(s)}
+                                        onClick={() => handleVariant(s)}
                                         selected={s.id === variant?.id}>
                                         {s.size}
                                     </SizeSelector>
@@ -80,32 +90,34 @@ const ProductPage: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = pr
                             <Stack gap="1rem">
                                 <TPriceBig>
                                     {priceFormatter(
-                                        props.product?.variants[0].priceWithTax || 0,
-                                        props.product?.variants[0].currencyCode || CurrencyCode.USD,
+                                        variant?.priceWithTax || 0,
+                                        variant?.currencyCode || CurrencyCode.USD,
                                     )}
                                 </TPriceBig>
                                 <TPriceBig>{props.product?.variants[0].currencyCode}</TPriceBig>
                             </Stack>
                         </Stack>
                         <Stack gap="1rem">
-                            <StockInfo outOfStock={isOutOfStock} itemsCenter gap="0.25rem">
-                                {isOutOfStock ? <X /> : <Check size="1.75rem" />}
-                                <TP>{translatedStockLevel[variant.stockLevel as keyof typeof translatedStockLevel]}</TP>
+                            <StockInfo outOfStock={variant?.stockLevel === 'outOfStock'} itemsCenter gap="0.25rem">
+                                {variant?.stockLevel === 'outOfStock' ? <X /> : <Check size="1.75rem" />}
+                                <TP>
+                                    {translatedStockLevel[variant?.stockLevel as keyof typeof translatedStockLevel]}
+                                </TP>
                             </StockInfo>
 
-                            {isOutOfStock ? <NotifyMeform /> : null}
+                            {variant?.stockLevel === 'outOfStock' ? <NotifyMeForm /> : null}
                         </Stack>
                         <TP>{props.product?.description}</TP>
-                        <Stack gap="2.5rem" justifyBetween column>
+                        <Stack w100 gap="2.5rem" justifyBetween column>
                             <FullWidthSecondaryButton
-                                disabled={isOutOfStock}
-                                onClick={() => props.product?.id && variant?.id && addToCart(variant.id, 1)}>
+                                disabled={variant?.stockLevel === 'outOfStock'}
+                                onClick={() => variant?.id && addToCart(variant.id, 1)}>
                                 {t('add-to-cart')}
                             </FullWidthSecondaryButton>
                             <FullWidthButton
-                                disabled={isOutOfStock}
+                                disabled={variant?.stockLevel === 'outOfStock'}
                                 onClick={() => {
-                                    if (props.product?.id && variant?.id && !isOutOfStock) {
+                                    if (variant?.id && variant?.stockLevel !== 'outOfStock') {
                                         addToCart(variant.id, 1);
                                         push('/checkout');
                                     }
@@ -140,7 +152,7 @@ const StyledStack = styled(Stack)`
     }
 `;
 
-const FasetContainer = styled(Stack)`
+const FacetContainer = styled(Stack)`
     flex-wrap: wrap;
     justify-content: center;
     @media (min-width: 1024px) {
@@ -192,6 +204,7 @@ export const getStaticProps = async (context: ContextModel<{ slug?: string }>) =
     const newestProducts = await storefrontApiQuery({
         products: [{ options: { take: 10, sort: { createdAt: SortOrder.DESC } } }, { items: NewestProductSelector }],
     });
+
     const response =
         typeof slug === 'string'
             ? await storefrontApiQuery({

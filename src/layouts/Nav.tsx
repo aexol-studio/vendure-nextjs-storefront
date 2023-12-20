@@ -4,9 +4,11 @@ import { Stack } from '@/src/components/atoms/Stack';
 import styled from '@emotion/styled';
 import { LanguageSwitcher } from '@/src/components';
 import { Link } from '@/src/components/atoms/Link';
-import { Cart } from '@/src/layouts/Cart';
 import { useCart } from '@/src/state/cart';
 import { User2 } from 'lucide-react';
+
+// import { Cart } from '@/src/layouts/Cart';
+import { CartDrawer } from '@/src/layouts/CartDrawer';
 
 export const Nav: React.FC = () => {
     const { cart } = useCart();
@@ -24,7 +26,8 @@ export const Nav: React.FC = () => {
                         <Link href={cart?.customer ? '/customer/manage' : '/customer/sign-in'}>
                             <User2 color={cart?.customer ? 'green' : 'black'} />
                         </Link>
-                        <Cart activeOrder={cart} />
+                        {/* <Cart activeOrder={cart} /> */}
+                        <CartDrawer activeOrder={cart} />
                     </Stack>
                 </Stack>
             </ContentContainer>

@@ -3,11 +3,10 @@ import { Stack } from '@/src/components/atoms/Stack';
 import { TH2, TP } from '@/src/components/atoms/TypoGraphy';
 import { Button } from '@/src/components/molecules/Button';
 import { YAMLProductsType } from '@/src/graphql/selectors';
-import { useCart } from '@/src/state/cart';
+import { useCheckout } from '@/src/state/checkout';
 import { CurrencyCode } from '@/src/zeus';
 import styled from '@emotion/styled';
 import { useTranslation } from 'next-i18next';
-
 import React, { useState } from 'react';
 
 interface YMALProps {
@@ -16,8 +15,8 @@ interface YMALProps {
 }
 
 export const YMALCarousel: React.FC<YMALProps> = ({ YMALProducts, currencyCode }) => {
+    const { addToCheckout } = useCheckout();
     const { t } = useTranslation('checkout');
-    const { addToCart } = useCart();
     // JUST SHOWCASE
     return (
         <YMALWrapper w100 column gap="1.25rem">
@@ -69,7 +68,7 @@ export const YMALCarousel: React.FC<YMALProps> = ({ YMALProducts, currencyCode }
                                     ) : null}
                                 </Stack>
                             </Stack>
-                            <Button onClick={() => addToCart(selectedVariant.id, 1)}>
+                            <Button onClick={() => addToCheckout(selectedVariant.id, 1)}>
                                 {t('orderSummary.YMAL.addToCart')}
                             </Button>
                         </Slide>

@@ -3,6 +3,7 @@ import { Stack } from '@/src/components/atoms/Stack';
 import styled from '@emotion/styled';
 
 export const Content = styled(ContentContainer)`
+    position: relative;
     margin-block: 4rem;
 `;
 

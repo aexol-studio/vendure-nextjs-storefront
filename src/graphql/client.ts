@@ -11,6 +11,10 @@ export const scalars = ZeusScalars({
         encode: (e: unknown) => JSON.stringify(e),
         decode: (e: unknown) => JSON.parse(e as string),
     },
+    DateTime: {
+        decode: (e: unknown) => new Date(e as string).toISOString(),
+        encode: (e: unknown) => (e as Date).toISOString(),
+    },
 });
 
 //use 'http://localhost:3000/shop-api/' in local .env file for localhost development and provide env to use on prod/dev envs

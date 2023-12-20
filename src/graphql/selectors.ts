@@ -86,6 +86,7 @@ export const ProductDetailSelector = Selector('Product')({
         currencyCode: true,
         priceWithTax: true,
         stockLevel: true,
+        options: { name: true },
     },
     featuredAsset: {
         source: true,
@@ -94,6 +95,8 @@ export const ProductDetailSelector = Selector('Product')({
 
     facetValues: ProductDetailsFacetSelector,
 });
+
+export type ProductDetailType = FromSelector<typeof ProductDetailSelector, 'Product', typeof scalars>;
 
 export const NewestProductSelector = Selector('Product')({
     name: true,
@@ -199,6 +202,8 @@ export type ActiveCustomerType = FromSelector<typeof ActiveCustomerSelector, 'Cu
 
 export const ActiveOrderSelector = Selector('Order')({
     id: true,
+    createdAt: true,
+    updatedAt: true,
     totalQuantity: true,
     shippingWithTax: true,
     totalWithTax: true,
@@ -227,6 +232,10 @@ export const ActiveOrderSelector = Selector('Order')({
             id: true,
             sku: true,
             price: true,
+            featuredAsset: {
+                id: true,
+                preview: true,
+            },
             product: {
                 name: true,
             },

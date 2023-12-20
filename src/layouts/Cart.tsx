@@ -17,7 +17,7 @@ import { DiscountForm } from '@/src/components/molecules/DiscountForm';
 import { CurrencyCode } from '../zeus';
 
 export const Cart = ({ activeOrder }: { activeOrder?: ActiveOrderType }) => {
-    const { setItemQuantityInCart, removeFromCart, removeCouponCode } = useCart();
+    const { setItemQuantityInCart, removeFromCart, removeCouponCode, applyCouponCode } = useCart();
     const { t } = useTranslation('common');
     const [isOpen, setOpen] = useState(false);
 
@@ -184,7 +184,7 @@ export const Cart = ({ activeOrder }: { activeOrder?: ActiveOrderType }) => {
                                                             </TP>
                                                         </Stack>
                                                     ) : null}
-                                                    <DiscountForm />
+                                                    <DiscountForm applyCouponCode={applyCouponCode} />
                                                     <Divider />
                                                     {activeOrder?.totalWithTax ? (
                                                         <Stack justifyBetween>

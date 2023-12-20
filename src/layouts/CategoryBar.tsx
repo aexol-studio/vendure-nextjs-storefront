@@ -24,7 +24,10 @@ const Cat = styled(Link)`
     font-weight: 600;
     font-size: 1.25rem;
     color: ${p => p.theme.gray(800)};
+
+    white-space: nowrap;
 `;
 const Main = styled(Stack)`
     padding: 4rem 0;
+    overflow-x: auto;
 `;

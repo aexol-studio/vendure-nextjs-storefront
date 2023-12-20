@@ -14,8 +14,10 @@ import { Button } from '@/src/components/molecules/Button';
 import { ContentContainer } from '@/src/components/atoms/ContentContainer';
 import { usePush } from '@/src/lib/redirect';
 import { CheckBox } from '@/src/components/forms/CheckBox';
+import { useTranslation } from 'next-i18next';
 
 const SignIn: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = props => {
+    const { t } = useTranslation('customer');
     const { register, handleSubmit } = useForm<LoginCustomerInputType>({});
     const push = usePush();
     const onSubmit: SubmitHandler<LoginCustomerInputType> = async data => {
@@ -56,13 +58,13 @@ const SignIn: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = props =
             <ContentContainer>
                 <Stack column itemsCenter gap="1.75rem">
                     <Form onSubmit={handleSubmit(onSubmit)}>
-                        <Input label="Email Address" type="text" {...register('emailAddress')} />
-                        <Input label="Password" type="password" {...register('password')} />
-                        <CheckBox label="Remember Me" {...register('rememberMe')} />
-                        <FormButton type="submit">Sign In</FormButton>
+                        <Input label={t('email')} type="text" {...register('emailAddress')} />
+                        <Input label={t('password')} type="password" {...register('password')} />
+                        <CheckBox label={t('rememberMe')} {...register('rememberMe')} />
+                        <FormButton type="submit">{t('signIn')}</FormButton>
                     </Form>
-                    <Link href="/customer/forgot-password">Forgot Password?</Link>
-                    <Link href="/customer/sign-up">Create Account</Link>
+                    <Link href="/customer/forgot-password">{t('forgotPassword')}</Link>
+                    <Link href="/customer/sign-up">{t('signUp')}</Link>
                 </Stack>
             </ContentContainer>
         </Layout>
@@ -79,7 +81,7 @@ const FormButton = styled(Button)`
 `;
 
 const getStaticProps = async (context: ContextModel) => {
-    const r = await makeStaticProps(['common', 'checkout'])(context);
+    const r = await makeStaticProps(['common', 'customer'])(context);
     const collections = await getCollections();
 
     const returnedStuff = {

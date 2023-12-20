@@ -3,7 +3,6 @@ import { Divider } from '@/src/components/atoms/Divider';
 import { TH2, TP } from '@/src/components/atoms/TypoGraphy';
 import React, { Fragment } from 'react';
 import { CheckoutStatus } from '../CheckoutStatus';
-import { useCart } from '@/src/state/cart';
 import { Line } from './Line';
 import { useRouter } from 'next/router';
 import { useTranslation } from 'next-i18next';
@@ -12,19 +11,20 @@ import { CurrencyCode } from '@/src/zeus';
 import { DiscountForm } from '@/src/components/molecules/DiscountForm';
 import { X } from 'lucide-react';
 import styled from '@emotion/styled';
-import { ActiveOrderType, YAMLProductsType } from '@/src/graphql/selectors';
+import { YAMLProductsType } from '@/src/graphql/selectors';
 import { YMALCarousel } from './YMAL';
+import { useCheckout } from '@/src/state/checkout';
 
 interface OrderSummaryProps {
-    activeOrder?: ActiveOrderType;
     isForm?: boolean;
     YMALProducts?: YAMLProductsType[];
 }
 
-export const OrderSummary: React.FC<OrderSummaryProps> = ({ activeOrder, isForm, YMALProducts }) => {
+export const OrderSummary: React.FC<OrderSummaryProps> = ({ isForm, YMALProducts }) => {
+    const { activeOrder, applyCouponCode, removeCouponCode } = useCheckout();
+
     const { t } = useTranslation('checkout');
     const { asPath } = useRouter();
-    const { removeCouponCode } = useCart();
     const step = asPath.includes('payment') ? 'payment' : 'shipping';
     const currencyCode = activeOrder?.currencyCode ?? CurrencyCode.USD;
 
@@ -66,7 +66,7 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({ activeOrder, isForm,
                                         </Stack>
                                     ))}
                                     <Stack style={{ maxWidth: '25.6rem' }}>
-                                        <DiscountForm />
+                                        <DiscountForm applyCouponCode={applyCouponCode} />
                                     </Stack>
                                 </Stack>
                             </Fragment>

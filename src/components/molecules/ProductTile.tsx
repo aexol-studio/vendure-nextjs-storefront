@@ -17,6 +17,7 @@ export const ProductTile: React.FC<{
                   product.priceWithTax.max,
                   product.currencyCode,
               )}`;
+
     return (
         <Main column gap="2rem">
             <Link href={`/products/${product.slug}/`}>

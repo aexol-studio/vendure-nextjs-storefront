@@ -1,0 +1,13 @@
+{
+    "home": "Home",
+    "signIn": "Sign in",
+    "signUp": "Sign up",
+    "signOut": "Sign out",
+    "username": "Username",
+    "password": "Password",
+    "rememberMe": "Remember me",
+    "confirmPassword": "Confirm password",
+    "forgotPassword": "Forgot password?",
+    "email": "Email address",
+    "newPassword": "Generate new password"
+}

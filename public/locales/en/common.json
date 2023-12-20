@@ -26,6 +26,7 @@
     "commonError":"Something wen't wrong",
     "send":"Send",
     "search-results":"Search results for:",
+    "cart-empty":"Your cart is empty",
     "shipping-protection": {
         "title": "Shipping Protection",
         "subtitle": "From Damage, Loss & Theft for {{value}}"

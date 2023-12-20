@@ -4,7 +4,6 @@ import { TH2, TP } from '@/src/components/atoms/TypoGraphy';
 import { Stack } from '@/src/components/atoms/Stack';
 import { Button } from '@/src/components/molecules/Button';
 
-import { useCart } from '@/src/state/cart';
 import { usePush } from '@/src/lib/redirect';
 
 import { storefrontApiMutation, storefrontApiQuery } from '@/src/graphql/client';
@@ -17,7 +16,6 @@ import {
     ActiveCustomerSelector,
     ShippingMethodsSelector,
     ActiveCustomerType,
-    ActiveOrderType,
 } from '@/src/graphql/selectors';
 
 import { useForm, SubmitHandler } from 'react-hook-form';
@@ -33,6 +31,7 @@ import { DeliveryMethod } from '../DeliveryMethod';
 import { useValidationSchema } from './useValidationSchema';
 import { FormError } from '@/src/components/forms/atoms';
 import { Link } from '@/src/components/atoms/Link';
+import { useCheckout } from '@/src/state/checkout';
 
 type Form = CreateCustomerType & {
     deliveryMethod?: string;
@@ -49,12 +48,11 @@ type Form = CreateCustomerType & {
 };
 
 interface OrderFormProps {
-    activeOrder?: ActiveOrderType;
     availableCountries?: AvailableCountriesType[];
 }
 
-export const OrderForm: React.FC<OrderFormProps> = ({ activeOrder, availableCountries }) => {
-    const { changeShippingMethod } = useCart();
+export const OrderForm: React.FC<OrderFormProps> = ({ availableCountries }) => {
+    const { activeOrder, changeShippingMethod } = useCheckout();
 
     const { t } = useTranslation('checkout');
     const push = usePush();
@@ -338,6 +336,7 @@ export const OrderForm: React.FC<OrderFormProps> = ({ activeOrder, availableCoun
                                 label={t('orderForm.emailAddress')}
                                 error={errors.emailAddress}
                                 required
+                                disabled={activeCustomer?.id ? true : false}
                             />
                             <Stack w100 gap="1.75rem">
                                 <Input
@@ -383,13 +382,13 @@ export const OrderForm: React.FC<OrderFormProps> = ({ activeOrder, availableCoun
                         <Input
                             {...register('billing.streetLine1')}
                             label={t('orderForm.streetLine1')}
-                            error={errors.billing?.province}
+                            error={errors.billing?.streetLine1}
                             required
                         />
                         <Input
                             {...register('billing.streetLine2')}
                             label={t('orderForm.streetLine2')}
-                            error={errors.billing?.postalCode}
+                            error={errors.billing?.streetLine2}
                         />
                         <Stack gap="1.75rem">
                             <Input

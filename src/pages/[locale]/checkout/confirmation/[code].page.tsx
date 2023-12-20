@@ -7,6 +7,7 @@ import { OrderConfirmation } from '../components/OrderConfirmation';
 import { Content } from '../components/ui/Shared';
 import { makeServerSideProps } from '@/src/lib/getStatic';
 import { usePush } from '@/src/lib/redirect';
+import { getCollections } from '@/src/graphql/sharedQueries';
 
 const ConfirmationPage: React.FC<InferGetServerSidePropsType<typeof getServerSideProps>> = props => {
     const [order, setOrder] = useState<OrderType>(props.order);
@@ -36,7 +37,7 @@ const ConfirmationPage: React.FC<InferGetServerSidePropsType<typeof getServerSid
     }, []);
 
     return (
-        <Layout categories={[]}>
+        <Layout categories={props.collections}>
             {order ? (
                 <Content>
                     <OrderConfirmation code={props.code} order={order} />
@@ -53,6 +54,7 @@ const ConfirmationPage: React.FC<InferGetServerSidePropsType<typeof getServerSid
 const getServerSideProps: GetServerSideProps = async context => {
     const r = await makeServerSideProps(['common', 'checkout'])(context);
 
+    const collections = await getCollections();
     const code = context.params?.code as string;
     if (!code) return { props: { ...r.props } };
 
@@ -63,9 +65,9 @@ const getServerSideProps: GetServerSideProps = async context => {
 
         if (!orderByCode) throw new Error('Order not found');
 
-        return { props: { ...r.props, code, order: orderByCode } };
+        return { props: { ...r.props, collections, code, order: orderByCode } };
     } catch (e) {
-        return { props: { ...r.props, code, order: null } };
+        return { props: { ...r.props, collections, code, order: null } };
     }
 };
 

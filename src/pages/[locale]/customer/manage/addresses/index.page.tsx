@@ -152,7 +152,7 @@ const Modal = styled(motion.div)`
 `;
 
 const getStaticProps = async (context: ContextModel) => {
-    const r = await makeStaticProps(['common', 'checkout'])(context);
+    const r = await makeStaticProps(['common', 'customer'])(context);
     const collections = await getCollections();
 
     const { availableCountries } = await storefrontApiQuery({

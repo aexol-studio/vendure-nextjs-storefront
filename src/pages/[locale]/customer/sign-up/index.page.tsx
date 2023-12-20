@@ -12,11 +12,15 @@ import styled from '@emotion/styled';
 import { Input } from '@/src/components/forms/Input';
 import { Button } from '@/src/components/molecules/Button';
 import { ContentContainer } from '@/src/components/atoms/ContentContainer';
+import { useTranslation } from 'next-i18next';
+
+type FormValues = RegisterCustomerInputType & { confirmPassword: string };
 
 const SignIn: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = props => {
-    const { register, handleSubmit } = useForm<RegisterCustomerInputType>({});
+    const { t } = useTranslation('customer');
+    const { register, handleSubmit } = useForm<FormValues>({});
 
-    const onSubmit: SubmitHandler<RegisterCustomerInputType> = async data => {
+    const onSubmit: SubmitHandler<FormValues> = async data => {
         const { emailAddress, password } = data;
 
         const { registerCustomerAccount } = await storefrontApiMutation({
@@ -52,12 +56,13 @@ const SignIn: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = props =
             <ContentContainer>
                 <Wrapper column itemsCenter gap="1.75rem">
                     <Form onSubmit={handleSubmit(onSubmit)}>
-                        <Input label="Email Address" type="text" {...register('emailAddress')} />
-                        <Input label="Password" type="password" {...register('password')} />
-                        <Button type="submit">Sign Up</Button>
+                        <Input label={t('email')} type="text" {...register('emailAddress')} />
+                        <Input label={t('password')} type="password" {...register('password')} />
+                        <Input label={t('confirmPassword')} type="password" {...register('confirmPassword')} />
+                        <Button type="submit">{t('signUp')}</Button>
                     </Form>
-                    <Link href="/customer/forgot-password">Forgot Password?</Link>
-                    <Link href="/customer/sign-in">Login</Link>
+                    <Link href="/customer/forgot-password">{t('forgotPassword')}</Link>
+                    <Link href="/customer/sign-in">{t('signIn')}</Link>
                 </Wrapper>
             </ContentContainer>
         </Layout>
@@ -72,7 +77,7 @@ const Form = styled.form`
 const Wrapper = styled(Stack)``;
 
 const getStaticProps = async (context: ContextModel) => {
-    const r = await makeStaticProps(['common', 'checkout'])(context);
+    const r = await makeStaticProps(['common', 'customer'])(context);
     const collections = await getCollections();
 
     const returnedStuff = {

@@ -6,17 +6,6 @@ import { FormRequired, FormError, FormErrorWrapper, Label } from './atoms';
 import { AnimatePresence } from 'framer-motion';
 import { Eye } from 'lucide-react';
 
-export const StyledInput = styled.input<{ error?: boolean }>`
-    margin-top: 0.6rem;
-    padding: 0.5rem 0.75rem;
-    color: ${p => p.theme.gray(900)};
-    border: 1px solid ${p => p.theme.gray(100)};
-    :focus {
-        border-color: ${p => p.theme.gray(400)};
-    }
-    outline: none;
-`;
-
 type InputType = InputHTMLAttributes<HTMLInputElement> & {
     label: string;
     error?: FieldError;
@@ -78,6 +67,21 @@ const EyeWrapper = styled.div<{ active: boolean }>`
         color: ${p => (p.active ? p.theme.gray(800) : p.theme.gray(200))};
         transition: color 0.2s ease-in-out;
     }
+`;
+
+export const StyledInput = styled.input<{ error?: boolean }>`
+    margin-top: 0.6rem;
+    padding: 0.5rem 0.75rem;
+    color: ${p => p.theme.gray(900)};
+    border: 1px solid ${p => p.theme.gray(100)};
+    outline: none;
+    border-color: ${p => p.theme.gray(600)};
+
+    :focus {
+        border-color: ${p => p.theme.gray(400)};
+    }
+
+    ${p => p.error && `border-color: ${p.theme.error} !important;`}
 `;
 
 Input.displayName = 'Input';

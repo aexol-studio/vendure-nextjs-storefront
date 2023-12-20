@@ -16,8 +16,16 @@ const Order: React.FC<InferGetServerSidePropsType<typeof getServerSideProps>> = 
             <ContentContainer>
                 <Stack itemsStart gap="1.75rem">
                     <CustomerNavigation />
-                    <Stack>
+                    <Stack column>
                         <Link href="/customer/manage/orders">Back to orders</Link>
+                        <Stack column>
+                            {props.order?.lines?.map(line => (
+                                <Stack key={line.id}>
+                                    <p>{line.productVariant.name}&nbsp;</p>
+                                    <p>{line.quantity}</p>
+                                </Stack>
+                            ))}
+                        </Stack>
                     </Stack>
                 </Stack>
             </ContentContainer>
@@ -26,7 +34,7 @@ const Order: React.FC<InferGetServerSidePropsType<typeof getServerSideProps>> = 
 };
 
 const getServerSideProps = async (context: GetServerSidePropsContext) => {
-    const r = await makeServerSideProps(['common', 'checkout'])(context);
+    const r = await makeServerSideProps(['common', 'customer'])(context);
     const collections = await getCollections();
     const destination = context.params?.locale === 'en' ? '/' : `/${context.params?.locale}`;
     const id = context.params?.id as string;

@@ -5,17 +5,19 @@ import { ProductImage } from '@/src/components/atoms/ProductImage';
 import { ActiveOrderType, OrderType } from '@/src/graphql/selectors';
 import { Divider } from '@/src/components/atoms/Divider';
 import { CurrencyCode } from '@/src/zeus';
-import { useCart } from '@/src/state/cart';
 import styled from '@emotion/styled';
 import { Minus, Plus, Trash2 } from 'lucide-react';
 import { useTranslation } from 'next-i18next';
 import { Price } from '@/src/components/atoms/Price';
+import { useCheckout } from '@/src/state/checkout';
 
-export const Line: React.FC<{
+interface LineProps {
     line: ActiveOrderType['lines'][number] | OrderType['lines'][number];
     isForm?: boolean;
     currencyCode?: CurrencyCode;
-}> = ({
+}
+
+export const Line: React.FC<LineProps> = ({
     isForm,
     line: {
         id,
@@ -28,8 +30,8 @@ export const Line: React.FC<{
     },
     currencyCode = CurrencyCode.USD,
 }) => {
+    const { removeFromCheckout, changeQuantity } = useCheckout();
     const { t } = useTranslation('checkout');
-    const { removeFromCart, setItemQuantityInCart } = useCart();
     const optionInName = productVariant.name.replace(productVariant.product.name, '') !== '';
     const isPriceDiscounted = linePriceWithTax !== discountedLinePriceWithTax;
     return (
@@ -77,15 +79,15 @@ export const Line: React.FC<{
                         <>
                             <Stack gap="1rem" itemsCenter>
                                 {quantity > 1 && (
-                                    <Action onClick={() => setItemQuantityInCart(id, quantity - 1)}>
+                                    <Action onClick={() => changeQuantity(id, quantity - 1)}>
                                         <Minus size={16} />
                                     </Action>
                                 )}
-                                <Action onClick={() => setItemQuantityInCart(id, quantity + 1)}>
+                                <Action onClick={() => changeQuantity(id, quantity + 1)}>
                                     <Plus size={16} />
                                 </Action>
                             </Stack>
-                            <Action onClick={() => removeFromCart(id)}>
+                            <Action onClick={() => removeFromCheckout(id)}>
                                 <TP size="1rem">{t('orderSummary.remove')}</TP>
                                 <Trash2 size={16} />
                             </Action>

@@ -10,7 +10,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useTranslation } from 'next-i18next';
 import { Button } from './Button';
 
-export const NotifyMeform = () => {
+export const NotifyMeForm = () => {
     const { t } = useTranslation('common');
     const schema = z.object({ email: z.string().email(t('notifyMe.invalidEmail')) });
     //get own mutation to add customer to notify list

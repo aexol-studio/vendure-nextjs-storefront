@@ -5,17 +5,19 @@ import React from 'react';
 import { getCollections } from '@/src/graphql/sharedQueries';
 import { storefrontApiMutation } from '@/src/graphql/client';
 import { Link } from '@/src/components/atoms/Link';
+import { useTranslation } from 'next-i18next';
 
 const Verify: React.FC<InferGetServerSidePropsType<typeof getServerSideProps>> = props => {
+    const { t } = useTranslation('customer');
     return (
         <Layout categories={props.collections}>
             {props.status.success ? (
                 <div>
-                    <Link href="/customer/sign-in">Login</Link>
+                    <Link href="/customer/sign-in">{t('signIn')}</Link>
                 </div>
             ) : (
                 <div>
-                    <Link href="/">Home</Link>
+                    <Link href="/">{t('home')}</Link>
                 </div>
             )}
         </Layout>
@@ -23,7 +25,7 @@ const Verify: React.FC<InferGetServerSidePropsType<typeof getServerSideProps>> =
 };
 
 const getServerSideProps = async (context: GetServerSidePropsContext) => {
-    const r = await makeServerSideProps(['common', 'checkout'])(context);
+    const r = await makeServerSideProps(['common', 'customer'])(context);
     const collections = await getCollections();
     const token = context.query.token as string;
     const homePage = context.params?.locale === 'en' ? '/' : `/${context.params?.locale}`;

@@ -9,8 +9,10 @@ import styled from '@emotion/styled';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { Input } from '@/src/components/forms/Input';
 import { Button } from '@/src/components/molecules/Button';
+import { useTranslation } from 'next-i18next';
 
 const ForgotPassword: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = props => {
+    const { t } = useTranslation('customer');
     const { register, handleSubmit } = useForm<{
         emailAddress: string;
     }>({});
@@ -25,10 +27,10 @@ const ForgotPassword: React.FC<InferGetStaticPropsType<typeof getStaticProps>> =
             <Stack column itemsCenter>
                 <Form onSubmit={handleSubmit(onSubmit)}>
                     <Input label="Email Address" type="text" {...register('emailAddress')} />
-                    <Button type="submit">Generate new password</Button>
+                    <Button type="submit">{t('newPassword')}</Button>
                 </Form>
-                <Link href="/customer/sign-in">Login</Link>
-                <Link href="/customer/sign-up">Register</Link>
+                <Link href="/customer/sign-in">{t('signIn')}</Link>
+                <Link href="/customer/sign-up">{t('signUp')}</Link>
             </Stack>
         </Layout>
     );
@@ -40,7 +42,7 @@ const Form = styled.form`
 `;
 
 const getStaticProps = async (context: ContextModel) => {
-    const r = await makeStaticProps(['common', 'checkout'])(context);
+    const r = await makeStaticProps(['common', 'customer'])(context);
     const collections = await getCollections();
 
     const returnedStuff = {

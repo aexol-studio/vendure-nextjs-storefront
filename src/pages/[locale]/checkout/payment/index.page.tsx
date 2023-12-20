@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
 import { makeServerSideProps } from '@/src/lib/getStatic';
 import { OrderSummary } from '../components/OrderSummary';
@@ -6,11 +6,15 @@ import { OrderPayment } from '../components/OrderPayment';
 import { Content, Main } from '../components/ui/Shared';
 import { ActiveOrderSelector, AvailablePaymentMethodsSelector } from '@/src/graphql/selectors';
 import { SSRMutation, SSRQuery } from '@/src/graphql/client';
-import { Layout } from '@/src/layouts';
+import { CheckoutLayout } from '@/src/layouts';
 
 const PaymentPage: React.FC<InferGetServerSidePropsType<typeof getServerSideProps>> = props => {
+    useEffect(() => {
+        window.onpopstate = () => window.history.forward();
+    }, []);
+
     return (
-        <Layout categories={[]}>
+        <CheckoutLayout initialActiveOrder={props.activeOrder}>
             <Content>
                 <Main>
                     <OrderPayment
@@ -18,10 +22,10 @@ const PaymentPage: React.FC<InferGetServerSidePropsType<typeof getServerSideProp
                         availablePaymentMethods={props.eligiblePaymentMethods}
                         stripeData={props.stripeData}
                     />
-                    <OrderSummary activeOrder={props.activeOrder} />
+                    <OrderSummary />
                 </Main>
             </Content>
-        </Layout>
+        </CheckoutLayout>
     );
 };
 

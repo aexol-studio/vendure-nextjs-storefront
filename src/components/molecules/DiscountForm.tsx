@@ -1,4 +1,3 @@
-import { useCart } from '@/src/state/cart';
 import React from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { TagIcon } from 'lucide-react';
@@ -9,10 +8,9 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useTranslation } from 'next-i18next';
 import { FormError } from '@/src/components/forms/atoms';
 
-export const DiscountForm = () => {
+export const DiscountForm = ({ applyCouponCode }: { applyCouponCode: (code: string) => Promise<boolean> }) => {
     const { t } = useTranslation('common');
     const schema = z.object({ code: z.string().min(1, 'Please enter a code') });
-    const { applyCouponCode } = useCart();
     const {
         handleSubmit,
         register,
@@ -80,7 +78,7 @@ const Form = styled.form`
     width: 100%;
     position: relative;
 
-    padding: 1.6rem;
+    padding: 1rem;
 
     display: flex;
     align-items: center;

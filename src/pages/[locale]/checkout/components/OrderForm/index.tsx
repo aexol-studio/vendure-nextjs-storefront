@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 
-import { TH2, TP } from '@/src/components/atoms/TypoGraphy';
+import { TH2 } from '@/src/components/atoms/TypoGraphy';
 import { Stack } from '@/src/components/atoms/Stack';
 import { Button } from '@/src/components/molecules/Button';
 
@@ -33,6 +33,7 @@ import { FormError } from '@/src/components/forms/atoms';
 import { Link } from '@/src/components/atoms/Link';
 import { useCheckout } from '@/src/state/checkout';
 import { MoveLeft } from 'lucide-react';
+import { ErrorBanner } from '@/src/components/forms/ErrorBanner';
 
 type Form = CreateCustomerType & {
     deliveryMethod?: string;
@@ -56,6 +57,7 @@ export const OrderForm: React.FC<OrderFormProps> = ({ availableCountries }) => {
     const { activeOrder, changeShippingMethod } = useCheckout();
 
     const { t } = useTranslation('checkout');
+    const { t: tErrors } = useTranslation('common');
     const push = usePush();
     const schema = useValidationSchema();
 
@@ -128,7 +130,7 @@ export const OrderForm: React.FC<OrderFormProps> = ({ availableCountries }) => {
             : undefined,
         resolver: zodResolver(schema),
     });
-
+    console.log(errors);
     const onSubmit: SubmitHandler<Form> = async ({
         emailAddress,
         firstName,
@@ -162,6 +164,8 @@ export const OrderForm: React.FC<OrderFormProps> = ({ availableCountries }) => {
                     {
                         input: {
                             ...billing,
+                            defaultBillingAddress: false,
+                            defaultShippingAddress: false,
                             // customFields: { NIP }
                         },
                     },
@@ -173,12 +177,17 @@ export const OrderForm: React.FC<OrderFormProps> = ({ availableCountries }) => {
                 ],
             });
 
+            if (setOrderBillingAddress?.__typename !== 'Order') {
+                setError('root', { message: tErrors(`errors.backend.${setOrderBillingAddress.errorCode}`) });
+                return;
+            }
+
             // Set the shipping address for the order
             if (shippingDifferentThanBilling) {
                 // Set the shipping address for the order if it is different than billing
                 const { setOrderShippingAddress } = await storefrontApiMutation({
                     setOrderShippingAddress: [
-                        { input: { ...shipping } },
+                        { input: { ...shipping, defaultBillingAddress: false, defaultShippingAddress: false } },
                         {
                             __typename: true,
                             '...on Order': ActiveOrderSelector,
@@ -186,12 +195,16 @@ export const OrderForm: React.FC<OrderFormProps> = ({ availableCountries }) => {
                         },
                     ],
                 });
-                console.log(setOrderShippingAddress);
+
+                if (setOrderShippingAddress?.__typename === 'NoActiveOrderError') {
+                    setError('root', { message: tErrors(`errors.backend.NO_ACTIVE_ORDER_ERROR`) });
+                    return;
+                }
             } else {
                 // Set the billing address for the order if it is the same as shipping
                 const { setOrderShippingAddress } = await storefrontApiMutation({
                     setOrderShippingAddress: [
-                        { input: { ...billing } },
+                        { input: { ...billing, defaultBillingAddress: false, defaultShippingAddress: false } },
                         {
                             __typename: true,
                             '...on Order': ActiveOrderSelector,
@@ -199,104 +212,101 @@ export const OrderForm: React.FC<OrderFormProps> = ({ availableCountries }) => {
                         },
                     ],
                 });
-                console.log(setOrderShippingAddress);
-            }
 
-            if (setOrderBillingAddress?.__typename === 'NoActiveOrderError') {
-                //TODO: Handle error
-            }
-
-            if (setOrderBillingAddress.__typename === 'Order' && setOrderBillingAddress.state !== 'ArrangingPayment') {
-                // Set the customer for the order if there is no customer (it gets automatically set if there is a customer on provided address)
-                if (!activeCustomer) {
-                    const { setCustomerForOrder } = await storefrontApiMutation({
-                        setCustomerForOrder: [
-                            { input: { emailAddress, firstName, lastName, phoneNumber } },
-                            {
-                                __typename: true,
-                                '...on Order': ActiveOrderSelector,
-                                '...on AlreadyLoggedInError': { message: true, errorCode: true },
-                                '...on EmailAddressConflictError': { message: true, errorCode: true },
-                                '...on GuestCheckoutError': { message: true, errorCode: true },
-                                '...on NoActiveOrderError': { message: true, errorCode: true },
-                            },
-                        ],
-                    });
-                    if (setCustomerForOrder?.__typename === 'AlreadyLoggedInError') {
-                        //SHOULD NOT HAPPEN *if (!activeCustomer)*
-                    }
-                    if (setCustomerForOrder?.__typename === 'EmailAddressConflictError') {
-                        //Some user have account with this email address but is not logged in
-                        setError('emailAddress', { message: t('orderForm.errors.emailAddress.emailAvailable') });
-                        setFocus('emailAddress');
-                        return;
-                    }
-                    if (setCustomerForOrder?.__typename === 'GuestCheckoutError') {
-                        //TODO: Handle error
-                    }
-                    if (setCustomerForOrder?.__typename === 'NoActiveOrderError') {
-                        //TODO: Handle error
-                    }
+                if (setOrderShippingAddress?.__typename === 'NoActiveOrderError') {
+                    setError('root', { message: tErrors(`errors.backend.NO_ACTIVE_ORDER_ERROR`) });
+                    return;
                 }
+            }
 
-                // Set the order state to ArrangingPayment
-                const { transitionOrderToState } = await storefrontApiMutation({
-                    transitionOrderToState: [
-                        { state: 'ArrangingPayment' },
+            if (!activeCustomer) {
+                const { setCustomerForOrder } = await storefrontApiMutation({
+                    setCustomerForOrder: [
+                        { input: { emailAddress, firstName, lastName, phoneNumber } },
                         {
                             __typename: true,
                             '...on Order': ActiveOrderSelector,
-                            '...on OrderStateTransitionError': {
-                                errorCode: true,
-                                message: true,
-                                fromState: true,
-                                toState: true,
-                                transitionError: true,
-                            },
+                            '...on AlreadyLoggedInError': { message: true, errorCode: true },
+                            '...on EmailAddressConflictError': { message: true, errorCode: true },
+                            '...on GuestCheckoutError': { message: true, errorCode: true },
+                            '...on NoActiveOrderError': { message: true, errorCode: true },
                         },
                     ],
                 });
 
-                // After all create account if needed and password is provided
-                if (!activeCustomer && createAccount && password) {
-                    await storefrontApiMutation({
-                        registerCustomerAccount: [
-                            { input: { emailAddress, firstName, lastName, phoneNumber, password } },
-                            {
-                                __typename: true,
-                                '...on MissingPasswordError': {
-                                    message: true,
-                                    errorCode: true,
-                                },
-                                '...on NativeAuthStrategyError': {
-                                    message: true,
-                                    errorCode: true,
-                                },
-                                '...on PasswordValidationError': {
-                                    errorCode: true,
-                                    message: true,
-                                    validationErrorMessage: true,
-                                },
-                                '...on Success': {
-                                    success: true,
-                                },
-                            },
-                        ],
-                    });
+                if (setCustomerForOrder?.__typename !== 'Order') {
+                    if (setCustomerForOrder.__typename === 'EmailAddressConflictError') {
+                        setError('emailAddress', {
+                            message: tErrors(`errors.backend.${setCustomerForOrder.errorCode}`),
+                        });
+                        setFocus('emailAddress');
+                    } else {
+                        setError('root', { message: tErrors(`errors.backend.${setCustomerForOrder.errorCode}`) });
+                    }
+                    return;
                 }
-
-                if (transitionOrderToState?.__typename === 'OrderStateTransitionError') {
-                    //TODO: Handle error
-                } else if (transitionOrderToState?.__typename === 'Order') {
-                    // Redirect to payment page
-                    push('/checkout/payment');
-                }
-            } else {
-                //TODO: Handle error
-                console.log('Error setting shipping address');
             }
+
+            // Set the order state to ArrangingPayment
+            const { transitionOrderToState } = await storefrontApiMutation({
+                transitionOrderToState: [
+                    { state: 'ArrangingPayment' },
+                    {
+                        __typename: true,
+                        '...on Order': ActiveOrderSelector,
+                        '...on OrderStateTransitionError': {
+                            errorCode: true,
+                            message: true,
+                            fromState: true,
+                            toState: true,
+                            transitionError: true,
+                        },
+                    },
+                ],
+            });
+
+            // After all create account if needed and password is provided
+            if (!activeCustomer && createAccount && password) {
+                await storefrontApiMutation({
+                    registerCustomerAccount: [
+                        { input: { emailAddress, firstName, lastName, phoneNumber, password } },
+                        {
+                            __typename: true,
+                            '...on MissingPasswordError': {
+                                message: true,
+                                errorCode: true,
+                            },
+                            '...on NativeAuthStrategyError': {
+                                message: true,
+                                errorCode: true,
+                            },
+                            '...on PasswordValidationError': {
+                                errorCode: true,
+                                message: true,
+                                validationErrorMessage: true,
+                            },
+                            '...on Success': {
+                                success: true,
+                            },
+                        },
+                    ],
+                });
+            }
+
+            if (!transitionOrderToState) {
+                setError('root', { message: tErrors(`errors.backend.UNKNOWN_ERROR`) });
+                return;
+            }
+
+            if (transitionOrderToState?.__typename !== 'Order') {
+                setError('root', { message: tErrors(`errors.backend.${transitionOrderToState.errorCode}`) });
+                return;
+            }
+            // Redirect to payment page
+            push('/checkout/payment');
         } catch (error) {
             console.log(error);
+            setError('root', { message: tErrors(`errors.backend.UNKNOWN_ERROR`) });
         }
     };
 
@@ -313,19 +323,7 @@ export const OrderForm: React.FC<OrderFormProps> = ({ availableCountries }) => {
         </Stack>
     ) : (
         <Stack w100 column>
-            <BannerHolder ref={errorRef}>
-                <AnimatePresence>
-                    {errors.root?.message && errors.root.message !== '' ? (
-                        <ErrorBanner column gap="2rem">
-                            <TP size="1.75rem" weight={600}>
-                                {t('orderForm.errors.root.invalid')}
-                            </TP>
-                            <TP>{errors.root?.message}</TP>
-                            <Button onClick={() => clearErrors()}>{t('orderForm.errors.root.closeButton')}</Button>
-                        </ErrorBanner>
-                    ) : null}
-                </AnimatePresence>
-            </BannerHolder>
+            <ErrorBanner ref={errorRef} clearErrors={clearErrors} error={errors?.root} />
             <Form onSubmit={handleSubmit(onSubmit)} noValidate>
                 {/* Customer Part */}
                 <Stack column gap="0.5rem">
@@ -562,9 +560,7 @@ export const OrderForm: React.FC<OrderFormProps> = ({ availableCountries }) => {
                                     required
                                 />
                                 <Input
-                                    {...register('confirmPassword', {
-                                        validate: value => value === watch('password'),
-                                    })}
+                                    {...register('confirmPassword')}
                                     type="password"
                                     label={t('orderForm.confirmPassword')}
                                     error={errors.confirmPassword}
@@ -621,7 +617,7 @@ export const OrderForm: React.FC<OrderFormProps> = ({ availableCountries }) => {
                             required
                         />
                     </Stack>
-                    <Button type="submit">{t('orderForm.continueToPayment')}</Button>
+                    <ButtonDesktop type="submit">{t('orderForm.continueToPayment')}</ButtonDesktop>
                 </Stack>
                 <Stack column>
                     <AnimatePresence>
@@ -647,10 +643,26 @@ export const OrderForm: React.FC<OrderFormProps> = ({ availableCountries }) => {
                         )}
                     </AnimatePresence>
                 </Stack>
+                <Stack w100 justifyEnd>
+                    <ButtonMobile type="submit">{t('orderForm.continueToPayment')}</ButtonMobile>
+                </Stack>
             </Form>
         </Stack>
     );
 };
+
+const ButtonDesktop = styled(Button)`
+    @media (max-width: ${({ theme }) => theme.breakpoints.lg}) {
+        display: none;
+    }
+`;
+const ButtonMobile = styled(Button)`
+    margin-top: 1.75rem;
+    padding: 1.75rem 2rem;
+    @media (min-width: ${({ theme }) => theme.breakpoints.lg}) {
+        display: none;
+    }
+`;
 
 const BackButton = styled(Link)`
     background-color: transparent;
@@ -671,7 +683,7 @@ const BackButton = styled(Link)`
     }
 `;
 
-const EmptyCartDescription = styled(Stack)`
+const EmptyCartDescription = styled.div`
     font-size: 1.75rem;
 
     & > a {
@@ -709,15 +721,4 @@ const ShippingWrapper = styled(motion.div)`
 
 const Form = styled.form`
     margin-top: 1.6rem;
-`;
-
-const BannerHolder = styled(Stack)``;
-
-const ErrorBanner = styled(Stack)`
-    margin-bottom: 1.75rem;
-    padding: 1.75rem;
-
-    background-color: ${p => `${p.theme.error}90`};
-    border-radius: ${p => p.theme.borderRadius};
-    border: 1px solid ${p => p.theme.error};
 `;

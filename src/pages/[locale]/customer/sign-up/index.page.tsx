@@ -15,67 +15,114 @@ import { useTranslation } from 'next-i18next';
 import { Form, FormWrapper } from '../components/FormWrapper';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { TP } from '@/src/components/atoms/TypoGraphy';
 
 type FormValues = RegisterCustomerInputType & { confirmPassword: string };
 
 const SignIn: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = props => {
     const { t } = useTranslation('customer');
+    const { t: tErrors } = useTranslation('common');
 
-    const schema = z.object({
-        emailAddress: z.string().email('Please enter a valid email address'),
-        password: z.string().min(8, 'Password must be at least 8 characters long'),
-        confirmPassword: z.string().min(8, 'Password must be at least 8 characters long'),
-    });
+    const schema = z
+        .object({
+            emailAddress: z.string().email(tErrors('errors.email.invalid')).min(1, tErrors('errors.email.required')),
+            password: z
+                .string()
+                .min(8, tErrors('errors.password.minLength'))
+                .max(25, tErrors('errors.password.maxLength')),
+            confirmPassword: z
+                .string()
+                .min(8, tErrors('errors.password.minLength'))
+                .max(25, tErrors('errors.password.maxLength')),
+        })
+        .refine(data => data.password === data.confirmPassword, {
+            message: tErrors('errors.confirmPassword.mustMatch'),
+            path: ['confirmPassword'],
+        });
 
-    const { register, handleSubmit } = useForm<FormValues>({
+    const {
+        formState: { errors },
+        register,
+        handleSubmit,
+        setError,
+    } = useForm<FormValues>({
         resolver: zodResolver(schema),
     });
+    console.log(errors);
 
     const onSubmit: SubmitHandler<FormValues> = async data => {
         const { emailAddress, password } = data;
 
-        const { registerCustomerAccount } = await storefrontApiMutation({
-            registerCustomerAccount: [
-                { input: { emailAddress, password } },
-                {
-                    __typename: true,
-                    '...on MissingPasswordError': {
-                        message: true,
-                        errorCode: true,
+        try {
+            const { registerCustomerAccount } = await storefrontApiMutation({
+                registerCustomerAccount: [
+                    { input: { emailAddress, password } },
+                    {
+                        __typename: true,
+                        '...on MissingPasswordError': {
+                            message: true,
+                            errorCode: true,
+                        },
+                        '...on NativeAuthStrategyError': {
+                            message: true,
+                            errorCode: true,
+                        },
+                        '...on PasswordValidationError': {
+                            errorCode: true,
+                            message: true,
+                            validationErrorMessage: true,
+                        },
+                        '...on Success': {
+                            success: true,
+                        },
                     },
-                    '...on NativeAuthStrategyError': {
-                        message: true,
-                        errorCode: true,
-                    },
-                    '...on PasswordValidationError': {
-                        errorCode: true,
-                        message: true,
-                        validationErrorMessage: true,
-                    },
-                    '...on Success': {
-                        success: true,
-                    },
-                },
-            ],
-        });
+                ],
+            });
 
-        console.log(registerCustomerAccount);
+            if (registerCustomerAccount.__typename === 'Success') {
+                console.log('success');
+                return;
+            }
+
+            console.log(registerCustomerAccount);
+            setError('root', { message: tErrors(`errors.backend.${registerCustomerAccount.errorCode}`) });
+        } catch {
+            setError('root', { message: tErrors('errors.backend.UNKNOWN_ERROR') });
+        }
     };
 
     return (
         <Layout categories={props.collections}>
             <ContentContainer>
                 <Stack w100 justifyCenter itemsCenter>
-                    <FormWrapper column itemsCenter gap="1.75rem">
-                        <Form onSubmit={handleSubmit(onSubmit)}>
-                            <Input label={t('email')} type="text" {...register('emailAddress')} />
-                            <Input label={t('password')} type="password" {...register('password')} />
-                            <Input label={t('confirmPassword')} type="password" {...register('confirmPassword')} />
-                            <Button type="submit">{t('signUp')}</Button>
-                        </Form>
-                        <Stack column itemsCenter gap="0.5rem">
-                            <Link href="/customer/forgot-password">{t('forgotPassword')}</Link>
-                            <Link href="/customer/sign-in">{t('signIn')}</Link>
+                    <FormWrapper column itemsCenter gap="3.5rem">
+                        <TP weight={600}>{t('signUpTitle')}</TP>
+                        <Stack column itemsCenter gap="1.75rem">
+                            <Form onSubmit={handleSubmit(onSubmit)}>
+                                <Input
+                                    error={errors.emailAddress}
+                                    label={t('email')}
+                                    type="text"
+                                    {...register('emailAddress')}
+                                />
+                                <Input
+                                    error={errors.password}
+                                    label={t('password')}
+                                    type="password"
+                                    {...register('password')}
+                                />
+                                <Input
+                                    error={errors.confirmPassword}
+                                    label={t('confirmPassword')}
+                                    type="password"
+                                    {...register('confirmPassword')}
+                                />
+                                <Button type="submit">{t('signUp')}</Button>
+                            </Form>
+                            <Stack column itemsCenter gap="0.5rem">
+                                <Link href="/customer/forgot-password">{t('forgotPassword')}</Link>
+                                <Link href="/customer/sign-in">{t('signIn')}</Link>
+                            </Stack>
                         </Stack>
                     </FormWrapper>
                 </Stack>

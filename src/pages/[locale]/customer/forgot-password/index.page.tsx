@@ -14,6 +14,7 @@ import { storefrontApiMutation } from '@/src/graphql/client';
 import { Form, FormWrapper } from '../components/FormWrapper';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { TP } from '@/src/components/atoms/TypoGraphy';
 
 type FormValues = {
     emailAddress: string;
@@ -21,47 +22,76 @@ type FormValues = {
 
 const ForgotPassword: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = props => {
     const { t } = useTranslation('customer');
+    const { t: tErrors } = useTranslation('common');
 
     const schema = z.object({
-        emailAddress: z.string().email('Please enter a valid email address'),
+        emailAddress: z.string().email(tErrors('errors.email.invalid')).min(1, tErrors('errors.email.required')),
     });
 
-    const { register, handleSubmit } = useForm<FormValues>({
+    const {
+        register,
+        handleSubmit,
+        setError,
+        formState: { errors },
+    } = useForm<FormValues>({
         resolver: zodResolver(schema),
     });
 
     const onSubmit: SubmitHandler<{ emailAddress: string }> = async data => {
         const { emailAddress } = data;
-        const { requestPasswordReset } = await storefrontApiMutation({
-            requestPasswordReset: [
-                { emailAddress },
-                {
-                    __typename: true,
-                    '...on Success': {
-                        success: true,
+        try {
+            const { requestPasswordReset } = await storefrontApiMutation({
+                requestPasswordReset: [
+                    { emailAddress },
+                    {
+                        __typename: true,
+                        '...on Success': {
+                            success: true,
+                        },
+                        '...on NativeAuthStrategyError': {
+                            errorCode: true,
+                            message: true,
+                        },
                     },
-                    '...on NativeAuthStrategyError': {
-                        errorCode: true,
-                        message: true,
-                    },
-                },
-            ],
-        });
-        console.log(requestPasswordReset);
+                ],
+            });
+
+            if (!requestPasswordReset) {
+                setError('root', { message: tErrors(`errors.backend.UNKNOWN_ERROR`) });
+                return;
+            }
+
+            if (requestPasswordReset?.__typename === 'Success') {
+                console.log('success');
+                return;
+            }
+
+            setError('root', { message: tErrors(`errors.backend.${requestPasswordReset.errorCode}`) });
+        } catch {
+            setError('root', { message: tErrors(`errors.backend.UNKNOWN_ERROR`) });
+        }
     };
 
     return (
         <Layout categories={props.collections}>
             <ContentContainer>
                 <Stack w100 justifyCenter itemsCenter>
-                    <FormWrapper column itemsCenter gap="1.75rem">
-                        <Form onSubmit={handleSubmit(onSubmit)}>
-                            <Input label={t('email')} type="text" {...register('emailAddress')} />
-                            <Button type="submit">{t('newPassword')}</Button>
-                        </Form>
-                        <Stack column itemsCenter gap="0.5rem">
-                            <Link href="/customer/sign-in">{t('signIn')}</Link>
-                            <Link href="/customer/sign-up">{t('signUp')}</Link>
+                    <FormWrapper column itemsCenter gap="3.5rem">
+                        <TP weight={600}>{t('forgotPasswordTitle')}</TP>
+                        <Stack column itemsCenter gap="1.75rem">
+                            <Form onSubmit={handleSubmit(onSubmit)}>
+                                <Input
+                                    error={errors.emailAddress}
+                                    label={t('email')}
+                                    type="text"
+                                    {...register('emailAddress')}
+                                />
+                                <Button type="submit">{t('newPassword')}</Button>
+                            </Form>
+                            <Stack column itemsCenter gap="0.5rem">
+                                <Link href="/customer/sign-in">{t('signIn')}</Link>
+                                <Link href="/customer/sign-up">{t('signUp')}</Link>
+                            </Stack>
                         </Stack>
                     </FormWrapper>
                 </Stack>

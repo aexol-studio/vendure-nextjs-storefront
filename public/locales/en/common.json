@@ -46,5 +46,52 @@
         "Modifying": "Modifying",
         "ArrangingAdditionalPayment": "Additional Payment"
     },
-    "notifyMe":{"invalidEmail":"Please enter valid email","backendError":"Couldnt't add you to notify list","placeholder":"Notify me"}
+    "notifyMe":{"invalidEmail":"Please enter valid email","backendError":"Couldnt't add you to notify list","placeholder":"Notify me"},
+    "errors": {
+        "backend": {
+            "UNKNOWN_ERROR": "Unknown error",
+            "NATIVE_AUTH_STRATEGY_ERROR": "Native auth strategy error",
+            "INVALID_CREDENTIALS_ERROR": "Invalid credentials",
+            "ORDER_STATE_TRANSITION_ERROR": "Order state transition error",
+            "EMAIL_ADDRESS_CONFLICT_ERROR": "Email address conflict error",
+            "GUEST_CHECKOUT_ERROR": "Guest checkout error",
+            "ORDER_LIMIT_ERROR": "Order limit error",
+            "NEGATIVE_QUANTITY_ERROR": "Negative quantity error",
+            "INSUFFICIENT_STOCK_ERROR": "Insufficient stock error",
+            "COUPON_CODE_INVALID_ERROR": "Coupon code invalid error",
+            "COUPON_CODE_EXPIRED_ERROR": "Coupon code expired error",
+            "COUPON_CODE_LIMIT_ERROR": "Coupon code limit error",
+            "ORDER_MODIFICATION_ERROR": "Order modification error",
+            "INELIGIBLE_SHIPPING_METHOD_ERROR": "Ineligible shipping method error",
+            "NO_ACTIVE_ORDER_ERROR": "No active order error",
+            "ORDER_PAYMENT_STATE_ERROR": "Order payment state error",
+            "INELIGIBLE_PAYMENT_METHOD_ERROR": "Ineligible payment method error",
+            "PAYMENT_FAILED_ERROR": "Payment failed error",
+            "PAYMENT_DECLINED_ERROR": "Payment declined error",
+            "ALREADY_LOGGED_IN_ERROR": "Already logged in error",
+            "MISSING_PASSWORD_ERROR": "Missing password error",
+            "PASSWORD_VALIDATION_ERROR": "Password validation error",
+            "PASSWORD_ALREADY_SET_ERROR": "Password already set error",
+            "VERIFICATION_TOKEN_INVALID_ERROR": "Verification token invalid error",
+            "VERIFICATION_TOKEN_EXPIRED_ERROR": "Verification token expired error",
+            "IDENTIFIER_CHANGE_TOKEN_INVALID_ERROR": "Identifier change token invalid error",
+            "IDENTIFIER_CHANGE_TOKEN_EXPIRED_ERROR": "Identifier change token expired error",
+            "PASSWORD_RESET_TOKEN_INVALID_ERROR": "Password reset token invalid error",
+            "PASSWORD_RESET_TOKEN_EXPIRED_ERROR": "Password reset token expired error",
+            "NOT_VERIFIED_ERROR": "Not verified error"
+        },
+        "email": {
+            "required": "Email is required",
+            "invalid": "Email is invalid"
+        },
+        "password": {
+            "required": "Password is required",
+            "minLength": "Password must be at least 8 characters long",
+            "maxLength": "Password cannot be more than 25 characters long"
+        },
+        "confirmPassword": {
+            "required": "Confirm password is required",
+            "mustMatch": "Passwords must match"
+        }
+    }
 }

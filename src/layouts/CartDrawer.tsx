@@ -1,5 +1,5 @@
 import { motion, AnimatePresence } from 'framer-motion';
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef } from 'react';
 import styled from '@emotion/styled';
 import { TH2, TP } from '@/src/components/atoms/TypoGraphy';
 import { Stack } from '@/src/components/atoms/Stack';
@@ -15,11 +15,8 @@ import { DiscountForm } from '@/src/components/molecules/DiscountForm';
 import { CurrencyCode } from '../zeus';
 
 export const CartDrawer = ({ activeOrder }: { activeOrder?: ActiveOrderType }) => {
-    const { setItemQuantityInCart, removeFromCart, removeCouponCode, applyCouponCode } = useCart();
+    const { isOpen, open, close, setItemQuantityInCart, removeFromCart, removeCouponCode, applyCouponCode } = useCart();
     const { t } = useTranslation('common');
-    const [isOpen, setOpen] = useState(false);
-    const open = () => setOpen(true);
-    const close = () => setOpen(false);
 
     const currencyCode = activeOrder?.currencyCode || CurrencyCode.USD;
     const discountsSum = useMemo(() => {
@@ -44,7 +41,7 @@ export const CartDrawer = ({ activeOrder }: { activeOrder?: ActiveOrderType }) =
         <>
             <IconButton onClick={open}>
                 <ShoppingCartIcon size={'2.4rem'} />
-                <TP>{activeOrder?.totalQuantity}</TP>
+                <TP>{activeOrder?.lines.length}</TP>
             </IconButton>
             <AnimatePresence initial={false}>
                 {isOpen && (

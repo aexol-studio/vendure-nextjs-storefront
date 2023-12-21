@@ -88,7 +88,7 @@ export const Line: React.FC<LineProps> = ({
                                 </Action>
                             </Stack>
                             <Action onClick={() => removeFromCheckout(id)}>
-                                <TP size="1rem">{t('orderSummary.remove')}</TP>
+                                <TP size="1.25rem">{t('orderSummary.remove')}</TP>
                                 <Trash2 size={16} />
                             </Action>
                         </>

@@ -44,6 +44,10 @@ const getServerSideProps: GetServerSideProps = async context => {
         return { redirect: { destination: paymentRedirect, permanent: false } };
     }
 
+    if (!activeOrder || activeOrder.lines.length === 0) {
+        return { redirect: { destination: '/', permanent: false } };
+    }
+
     const returnedStuff = { ...r.props, availableCountries, initialActiveOrder: activeOrder, YMALProducts };
     return { props: returnedStuff };
 };

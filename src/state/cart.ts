@@ -56,7 +56,8 @@ const useCartContainer = createContainer(() => {
         });
     };
 
-    const addToCart = (id: string, q: number) => {
+    const addToCart = (id: string, q: number, o?: boolean) => {
+        if (o) open();
         setActiveOrder(c => {
             return c && { ...c, totalQuantity: c.totalQuantity + 1 };
         });
@@ -183,6 +184,9 @@ const useCartContainer = createContainer(() => {
             return;
         }
     };
+    const [isOpen, setOpen] = useState(false);
+    const open = () => setOpen(true);
+    const close = () => setOpen(false);
 
     return {
         activeOrder,
@@ -195,6 +199,10 @@ const useCartContainer = createContainer(() => {
 
         applyCouponCode,
         removeCouponCode,
+
+        isOpen,
+        open,
+        close,
     };
 });
 

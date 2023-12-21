@@ -47,7 +47,7 @@ const ProductPage: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = pr
 
     const handleVariant = (variant?: Variant) => {
         if (!variant) return;
-        window.history.pushState({}, '', `?variant=${variant.id}`);
+        push(`/products/${props.slug}?variant=${variant.id}`);
         setVariant(variant);
     };
 
@@ -104,27 +104,35 @@ const ProductPage: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = pr
                                     {translatedStockLevel[variant?.stockLevel as keyof typeof translatedStockLevel]}
                                 </TP>
                             </StockInfo>
-
-                            {variant?.stockLevel === 'outOfStock' ? <NotifyMeForm /> : null}
                         </Stack>
                         <TP>{props.product?.description}</TP>
-                        <Stack w100 gap="2.5rem" justifyBetween column>
-                            <FullWidthSecondaryButton
-                                disabled={variant?.stockLevel === 'outOfStock'}
-                                onClick={() => variant?.id && addToCart(variant.id, 1)}>
-                                {t('add-to-cart')}
-                            </FullWidthSecondaryButton>
-                            <FullWidthButton
-                                disabled={variant?.stockLevel === 'outOfStock'}
-                                onClick={() => {
-                                    if (variant?.id && variant?.stockLevel !== 'outOfStock') {
-                                        addToCart(variant.id, 1);
-                                        push('/checkout');
-                                    }
-                                }}>
-                                {t('buy-now')}
-                            </FullWidthButton>
-                        </Stack>
+                        {variant?.stockLevel === 'outOfStock' ? (
+                            <NotifyMeForm />
+                        ) : (
+                            <Stack w100 gap="2.5rem" justifyBetween column>
+                                <FullWidthSecondaryButton
+                                    onClick={async () => {
+                                        if (variant?.id) {
+                                            //TODO: remove this timeout
+                                            await new Promise(resolve => setTimeout(resolve, 420));
+                                            addToCart(variant.id, 1, true);
+                                        }
+                                    }}>
+                                    {t('add-to-cart')}
+                                </FullWidthSecondaryButton>
+                                <FullWidthButton
+                                    onClick={async () => {
+                                        if (variant?.id) {
+                                            addToCart(variant.id, 1);
+                                            //TODO: remove this timeout
+                                            await new Promise(resolve => setTimeout(resolve, 1000));
+                                            push('/checkout');
+                                        }
+                                    }}>
+                                    {t('buy-now')}
+                                </FullWidthButton>
+                            </Stack>
+                        )}
                     </StyledStack>
                 </Main>
                 <RelatedProductCollections collections={props.product?.collections} />

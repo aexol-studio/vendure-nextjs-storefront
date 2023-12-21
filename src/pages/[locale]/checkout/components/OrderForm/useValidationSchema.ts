@@ -70,16 +70,21 @@ export const useValidationSchema = () => {
     //         userNeedInvoice: z.literal(false),
     //     }),
     // ]);
-    const passwordSchema = z.discriminatedUnion('createAccount', [
-        z.object({
-            createAccount: z.literal(true),
-            password: z.string().min(8, { message: t('orderForm.errors.password.required') }),
-            confirmPassword: z.string().min(8, { message: t('orderForm.errors.confirmPassword.required') }),
-        }),
-        z.object({
-            createAccount: z.literal(false),
-        }),
-    ]);
+    const passwordSchema = z
+        .discriminatedUnion('createAccount', [
+            z.object({
+                createAccount: z.literal(true),
+                password: z.string().min(8, { message: t('orderForm.errors.password.required') }),
+                confirmPassword: z.string().min(8, { message: t('orderForm.errors.confirmPassword.required') }),
+            }),
+            z.object({
+                createAccount: z.literal(false),
+            }),
+        ])
+        .refine(value => (value.createAccount ? value.password === value.confirmPassword : true), {
+            message: t('orderForm.errors.confirmPassword.notMatch'),
+            path: ['confirmPassword'],
+        });
 
     const mainIntersection = z.intersection(defaultSchema, userObject);
     const schema = z.intersection(passwordSchema, mainIntersection);

@@ -1,3 +1,4 @@
+import React from 'react';
 import '../styles/global.css';
 import 'react-toastify/dist/ReactToastify.css';
 import { AppProps } from 'next/app';
@@ -15,18 +16,15 @@ const checkoutPaths = ['/checkout', '/checkout/payment'];
 
 const App = ({ Component, pageProps }: AppProps) => {
     const router = useRouter();
-    const isCheckout = checkoutPaths.some(path => router.asPath === path);
+    const isCheckout = checkoutPaths.some(path => router.pathname === path);
+    const Wrapper = isCheckout ? React.Fragment : CartProvider;
 
     return (
         <ThemeProvider theme={LightTheme}>
             <Global styles={`body { font-family:${sans.style.fontFamily}; }`} />
-            {isCheckout ? (
+            <Wrapper>
                 <Component {...pageProps} />
-            ) : (
-                <CartProvider>
-                    <Component {...pageProps} />
-                </CartProvider>
-            )}
+            </Wrapper>
             <ToastContainer />
         </ThemeProvider>
     );

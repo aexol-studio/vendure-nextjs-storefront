@@ -41,8 +41,7 @@
             },
             "emailAddress": {
                 "required": "Email address is required",
-                "email": "Email address is invalid",
-                "emailAvailable": "Email address is not available."
+                "email": "Email address is invalid"
             },
             "firstName": {
                 "required": "First name is required"

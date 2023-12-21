@@ -19,7 +19,11 @@ export const CheckoutStatus: React.FC<{ step: 'shipping' | 'payment' | 'confirma
                                 <TP>{t(`steps.${name}`)}</TP>
                             </Stack>
                         </Stack>
-                        {index !== steps.length - 1 && <MoveRight size={40} />}
+                        {index !== steps.length - 1 && (
+                            <MoveRightContainer justifyCenter itemsCenter>
+                                <MoveRight size={'4rem'} />
+                            </MoveRightContainer>
+                        )}
                     </Fragment>
                 );
             })}
@@ -30,14 +34,23 @@ export const CheckoutStatus: React.FC<{ step: 'shipping' | 'payment' | 'confirma
 const Container = styled(Stack)`
     user-select: none;
     padding: 0 2.5rem;
+
+    @media (max-width: ${p => p.theme.breakpoints.sm}) {
+        padding: 0rem;
+    }
+`;
+
+const MoveRightContainer = styled(Stack)`
+    min-width: 4rem;
+    min-height: 4rem;
 `;
 
 const Circle = styled.span<{ active: boolean }>`
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 30px;
-    height: 30px;
+    width: 24px;
+    height: 24px;
     border-radius: 100%;
     background: ${props => props.theme.gray(1000)};
     opacity: ${props => (props.active ? 1 : 0.5)};

@@ -9,5 +9,5 @@ export const getCollections = () =>
 
 export const getYMALProducts = () =>
     storefrontApiQuery({
-        products: [{ options: { take: 4, sort: { createdAt: SortOrder.DESC } } }, { items: YAMLProductsSelector }],
+        products: [{ options: { take: 8, sort: { createdAt: SortOrder.DESC } } }, { items: YAMLProductsSelector }],
     }).then(d => d.products.items);

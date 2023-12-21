@@ -4,112 +4,119 @@ import { GetServerSidePropsContext, InferGetServerSidePropsType } from 'next';
 import React from 'react';
 import { getCollections } from '@/src/graphql/sharedQueries';
 import { SSRQuery } from '@/src/graphql/client';
-import {
-    ActiveCustomerSelector,
-    ActiveOrderSelector,
-    OrderAddressSelector,
-    OrderAddressType,
-} from '@/src/graphql/selectors';
+import { ActiveCustomerSelector, ActiveOrderSelector, OrderAddressSelector } from '@/src/graphql/selectors';
 import { ContentContainer } from '@/src/components/atoms/ContentContainer';
 import { Stack } from '@/src/components/atoms/Stack';
 import { CustomerNavigation } from '../components/CustomerNavigation';
 import { Link } from '@/src/components/atoms/Link';
-import styled from '@emotion/styled';
-import { ProductImage } from '@/src/components/atoms/ProductImage';
 import { TP } from '@/src/components/atoms/TypoGraphy';
 import { Price } from '@/src/components/atoms/Price';
-import { OrderState } from '@/src/components/molecules/OrderState';
+import { useTranslation } from 'next-i18next';
+import { CustomerOrderStates } from './components/CustomerOrderStates';
+import { OrderPaymentState } from './components/OrderPaymentState';
+import { OrderAddress } from './components/OrderAddress';
+import { MoveLeft } from 'lucide-react';
+import styled from '@emotion/styled';
+import { OrderLine } from './components/OrderLine';
+import { Divider } from '@/src/components/atoms/Divider';
 
 const Order: React.FC<InferGetServerSidePropsType<typeof getServerSideProps>> = props => {
+    const { t } = useTranslation('customer');
     const order = props.activeCustomer?.orders.items?.[0];
     const currencyCode = order?.currencyCode;
+
+    //TODO: Now we will display only one method of payment
+    const paymentMethod = order?.payments?.[0];
+    //TODO: Now we will display only one method of shipping
+    const shippingMethod = order?.shippingLines?.[0];
 
     return (
         <Layout categories={props.collections}>
             <ContentContainer>
                 <Stack itemsStart gap="1.75rem">
                     <CustomerNavigation />
-                    <Stack column w100>
-                        <Stack itemsStart justifyBetween>
-                            <Stack column>
-                                <TP size="2rem" weight={500}>
-                                    Order code: {order?.code}
-                                </TP>
-                                <Link href="/customer/manage/orders">Go to orders</Link>
+                    <Stack column w100 gap="3.5rem">
+                        <Stack column gap="1.5rem">
+                            <StyledLink href="/customer/manage/orders">
+                                <MoveLeft size={20} />
+                                {t('orderPage.backToOrders')}
+                            </StyledLink>
+                            <Stack itemsStart justifyBetween>
+                                <Stack column gap="0.25rem">
+                                    <TP size="2rem" weight={500}>
+                                        {t('orderPage.orderCode')}
+                                    </TP>
+                                    <TP>#{order?.code}</TP>
+                                </Stack>
+                                <OrderPaymentState payment={paymentMethod} />
                             </Stack>
-                            <OrderState size="medium" state={order?.state} />
+                            <CustomerOrderStates state={order?.state} />
                         </Stack>
-                        <Content w100 column gap="2rem">
-                            {order?.lines?.map(line => {
-                                const optionInName =
-                                    line.productVariant.name.replace(line.productVariant.product.name, '') !== '';
-                                return (
-                                    <Stack gap="2rem" w100 key={line.id}>
-                                        <ProductImage
-                                            size="thumbnail"
-                                            src={
-                                                line.productVariant.featuredAsset?.source ?? line.featuredAsset?.preview
-                                            }
-                                        />
-                                        <Stack column>
-                                            <TP size="1.5rem" weight={500} style={{ whiteSpace: 'nowrap' }}>
-                                                {line.productVariant.product.name}
-                                            </TP>
-                                            {optionInName && (
-                                                <TP size="1.25rem" weight={400} style={{ textTransform: 'capitalize' }}>
-                                                    {line.productVariant.name.replace(
-                                                        line.productVariant.product.name,
-                                                        '',
-                                                    )}
-                                                </TP>
-                                            )}
-                                            <Price
-                                                currencyCode={currencyCode}
-                                                price={line.linePriceWithTax}
-                                                discountPrice={line.discountedLinePriceWithTax}
-                                            />
-                                            <TP>{line.quantity}</TP>
+                        <Stack w100>
+                            <Stack w100 column gap="1.75rem">
+                                <Stack column>
+                                    <TP size="1.5rem" weight={500}>
+                                        {t('orderPage.customerDetails')}
+                                    </TP>
+                                    <Stack column>
+                                        <TP>
+                                            {order.customer?.firstName} {order.customer?.lastName}
+                                        </TP>
+                                        <TP>{order.customer?.emailAddress}</TP>
+                                        <TP>{order.customer?.phoneNumber}</TP>
+                                    </Stack>
+                                </Stack>
+                                <Stack w100 gap="2.5rem">
+                                    <Stack column gap="0.5rem">
+                                        <TP size="1.5rem" weight={500}>
+                                            {t('orderPage.shippingAddress')}
+                                        </TP>
+                                        <OrderAddress address={order?.shippingAddress} />
+                                    </Stack>
+                                    <Stack column gap="0.5rem">
+                                        <TP size="1.5rem" weight={500}>
+                                            {t('orderPage.billingAddress')}
+                                        </TP>
+                                        <OrderAddress address={order?.billingAddress} />
+                                    </Stack>
+                                </Stack>
+                                <Stack column>
+                                    <TP size="1.5rem" weight={500}>
+                                        {t('orderPage.shippingMethod')}
+                                    </TP>
+                                    <Price currencyCode={currencyCode} price={shippingMethod?.priceWithTax} />
+                                    <TP>{shippingMethod?.shippingMethod.name}</TP>
+                                </Stack>
+                            </Stack>
+                            <Stack column w100>
+                                <Stack w100 column>
+                                    {order?.lines?.map(line => (
+                                        <OrderLine key={line.id} currencyCode={currencyCode} line={line} />
+                                    ))}
+                                </Stack>
+                                <StyledDivider />
+                                {order.discounts.length > 0 ? (
+                                    <Stack column>
+                                        <TP size="1.5rem" weight={500}>
+                                            {t('orderPage.discounts')}
+                                        </TP>
+                                        <Stack>
+                                            {order.discounts.map((d, idx) => (
+                                                <Stack key={idx} gap="0.75rem">
+                                                    <TP size="1.5rem">{d.description}</TP>
+                                                    <Price currencyCode={currencyCode} price={d.amountWithTax} />
+                                                </Stack>
+                                            ))}
                                         </Stack>
                                     </Stack>
-                                );
-                            })}
-                        </Content>
-                        <Stack>
-                            {order?.shippingLines.map((shippingLine, idx) => (
-                                <Stack column key={idx}>
+                                ) : null}
+                                <Stack column>
                                     <TP size="1.5rem" weight={500}>
-                                        {shippingLine.shippingMethod.name}
+                                        {t('orderPage.totalPrice')}
                                     </TP>
-                                    <Price currencyCode={currencyCode} price={shippingLine.priceWithTax} />
+                                    <Price currencyCode={currencyCode} price={order?.totalWithTax} />
                                 </Stack>
-                            ))}
-                        </Stack>
-                        <Stack gap="2.5rem">
-                            <Stack column gap="2.5rem">
-                                <Address address={order?.shippingAddress} />
-                                <Address address={order?.billingAddress} />
                             </Stack>
-                            <Stack column>
-                                <TP>{order.customer?.emailAddress}</TP>
-                                <Stack>
-                                    <TP>
-                                        {order.customer?.firstName} {order.customer?.lastName}
-                                    </TP>
-                                </Stack>
-                                <TP>{order.customer?.phoneNumber}</TP>
-                            </Stack>
-                        </Stack>
-                        <Price currencyCode={currencyCode} price={order?.totalWithTax} />
-
-                        <Stack>
-                            {order.discounts.map((d, idx) => {
-                                return (
-                                    <Stack key={idx}>
-                                        <TP>{d.description}</TP>
-                                        <Price currencyCode={currencyCode} price={d.amountWithTax} />
-                                    </Stack>
-                                );
-                            })}
                         </Stack>
                     </Stack>
                 </Stack>
@@ -118,25 +125,16 @@ const Order: React.FC<InferGetServerSidePropsType<typeof getServerSideProps>> = 
     );
 };
 
-const Address: React.FC<{ address?: OrderAddressType }> = ({ address }) => {
-    if (!address) return null;
-    return (
-        <Stack column>
-            <TP size="1.5rem" weight={500}>
-                {address.fullName}
-            </TP>
-            <TP>{address.streetLine1}</TP>
-            <TP>{address.streetLine2}</TP>
-            <TP>
-                {address.city} {address.postalCode}
-            </TP>
-        </Stack>
-    );
-};
+const StyledDivider = styled(Divider)`
+    width: 100%;
+    margin: 1.75rem 0;
+`;
 
-const Content = styled(Stack)`
-    background-color: ${({ theme }) => theme.background.third};
-    padding: 1.75rem;
+const StyledLink = styled(Link)`
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: ${p => p.theme.text.main};
 `;
 
 const getServerSideProps = async (context: GetServerSidePropsContext) => {

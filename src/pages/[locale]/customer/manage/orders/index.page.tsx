@@ -17,10 +17,13 @@ import { Button } from '@/src/components/molecules/Button';
 import { Input } from '@/src/components/forms/Input';
 import { Price } from '@/src/components/atoms/Price';
 import { OrderState } from '@/src/components/molecules/OrderState';
+import { useTranslation } from 'next-i18next';
+import { dateFormatter } from '@/src/util/dateFormatter';
 
 const GET_MORE = 4;
 
 const History: React.FC<InferGetServerSidePropsType<typeof getServerSideProps>> = props => {
+    const { t } = useTranslation('customer');
     const [query, setQuery] = useState('');
     const [loading, setLoading] = useState(false);
     const [page, setPage] = useState(1);
@@ -86,47 +89,78 @@ const History: React.FC<InferGetServerSidePropsType<typeof getServerSideProps>> 
         await new Promise(resolve => setTimeout(resolve, 200));
         scrollableRef.current?.scrollTo({ top: scrollableRef.current?.scrollHeight, behavior: 'smooth' });
     };
-    console.log('activeOrders', activeOrders);
 
     return (
         <Layout categories={props.collections}>
             <ContentContainer>
                 <Stack w100 itemsStart gap="1.75rem">
                     <CustomerNavigation />
-                    <Stack column w100>
-                        <Input label="Search order" placeholder="Look for order by code" onChange={onSearch} />
-                        <Wrap flexWrap w100 ref={scrollableRef}>
-                            {loading ? (
-                                <TP>Loading...</TP>
-                            ) : (
-                                activeOrders?.map(order => {
-                                    return (
-                                        <ClickableStack w100 key={order.id}>
-                                            <AbsoluteLink href={`/customer/manage/orders/${order.code}`} />
-                                            <ContentStack w100 justifyBetween itemsStart>
-                                                <ProductImage
-                                                    size="thumbnail"
-                                                    src={order.lines[0].featuredAsset?.preview}
-                                                    alt={order.lines[0].productVariant.product.name}
-                                                />
-                                                <OrderState state={order.state} />
-                                                <TP>{new Date(order.updatedAt).toISOString().split('T')[0]}</TP>
-                                                <Stack column>
-                                                    <TP>Total quantity: {order.totalQuantity}</TP>
-                                                    <Price
-                                                        currencyCode={order.currencyCode}
-                                                        price={order.totalWithTax}
-                                                    />
-                                                </Stack>
-                                            </ContentStack>
-                                        </ClickableStack>
-                                    );
-                                })
-                            )}
-                        </Wrap>
-                        <ButtonWrap w100>
-                            <StyledButton onClick={onLoadMore}>Load more</StyledButton>
-                        </ButtonWrap>
+                    <Stack column w100 gap="1rem">
+                        <TP size="2.5rem" weight={600}>
+                            {t('ordersPage.title')}
+                        </TP>
+                        <Main column w100>
+                            <Input label="Search order" placeholder="Look for order by code" onChange={onSearch} />
+                            <Wrap flexWrap w100 ref={scrollableRef}>
+                                {loading ? (
+                                    <TP>{t('ordersPage.loading')}</TP>
+                                ) : (
+                                    activeOrders?.map(order => {
+                                        return (
+                                            <ClickableStack w100 key={order.id}>
+                                                <AbsoluteLink href={`/customer/manage/orders/${order.code}`} />
+                                                <ContentStack w100 itemsStart gap="1.75rem">
+                                                    <Stack justifyBetween w100>
+                                                        <Stack column w100 gap="0.75rem">
+                                                            <Stack gap="1.75rem" itemsStart>
+                                                                <ProductImage
+                                                                    size="thumbnail"
+                                                                    src={order.lines[0].featuredAsset?.preview}
+                                                                    alt={order.lines[0].productVariant.product.name}
+                                                                />
+                                                                <Stack w100 column>
+                                                                    <TP size="1.5rem" weight={500}>
+                                                                        {t('ordersPage.orderDate')}:&nbsp;
+                                                                    </TP>
+                                                                    <TP>{dateFormatter(order.createdAt)}</TP>
+                                                                </Stack>
+                                                            </Stack>
+                                                            <Stack column w100>
+                                                                <Stack w100 itemsCenter>
+                                                                    <TP size="1.5rem" weight={500}>
+                                                                        {t('ordersPage.totalQuantity')}:&nbsp;
+                                                                    </TP>
+                                                                    <TP>{order.totalQuantity}</TP>
+                                                                </Stack>
+                                                                <Stack w100 itemsCenter>
+                                                                    <TP size="1.5rem" weight={500}>
+                                                                        {t('ordersPage.totalItems')}:&nbsp;
+                                                                    </TP>
+                                                                    <TP>{order.lines.length}</TP>
+                                                                </Stack>
+                                                                <Stack w100 itemsCenter>
+                                                                    <TP size="1.5rem" weight={500}>
+                                                                        {t('ordersPage.totalPrice')}:&nbsp;
+                                                                    </TP>
+                                                                    <Price
+                                                                        currencyCode={order.currencyCode}
+                                                                        price={order.totalWithTax}
+                                                                    />
+                                                                </Stack>
+                                                            </Stack>
+                                                        </Stack>
+                                                    </Stack>
+                                                    <OrderState state={order.state} column />
+                                                </ContentStack>
+                                            </ClickableStack>
+                                        );
+                                    })
+                                )}
+                            </Wrap>
+                            <ButtonWrap w100>
+                                <StyledButton onClick={onLoadMore}>{t('ordersPage.loadMore')}</StyledButton>
+                            </ButtonWrap>
+                        </Main>
                     </Stack>
                 </Stack>
             </ContentContainer>
@@ -134,8 +168,12 @@ const History: React.FC<InferGetServerSidePropsType<typeof getServerSideProps>> 
     );
 };
 
-const ButtonWrap = styled(Stack)`
+const Main = styled(Stack)`
     padding: 1.75rem;
+`;
+
+const ButtonWrap = styled(Stack)`
+    padding: 1rem;
 `;
 
 const StyledButton = styled(Button)`
@@ -147,7 +185,24 @@ const Wrap = styled(Stack)`
 
     max-height: 60vh;
     overflow-y: auto;
-    padding: 1.75rem;
+
+    ::-webkit-scrollbar {
+        height: 0.8rem;
+        width: 0.8rem;
+    }
+
+    ::-webkit-scrollbar-track {
+        background: transparent;
+    }
+
+    ::-webkit-scrollbar-thumb {
+        background: ${p => p.theme.gray(200)};
+        border-radius: 1rem;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+        background: ${p => p.theme.gray(400)};
+    }
 `;
 
 const ContentStack = styled(Stack)`

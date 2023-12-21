@@ -43,8 +43,8 @@ export const CartDrawer = ({ activeOrder }: { activeOrder?: ActiveOrderType }) =
     return (
         <>
             <IconButton onClick={open}>
-                <ShoppingCartIcon />
-                <span>{activeOrder?.totalQuantity}</span>
+                <ShoppingCartIcon size={'2.4rem'} />
+                <TP>{activeOrder?.totalQuantity}</TP>
             </IconButton>
             <AnimatePresence initial={false}>
                 {isOpen && (
@@ -216,7 +216,7 @@ export const CartDrawer = ({ activeOrder }: { activeOrder?: ActiveOrderType }) =
 
 const CartComponentMain = styled(motion.div)`
     width: 100%;
-    max-width: 60rem;
+    max-width: 55rem;
     height: 100vh;
 
     z-index: 1;

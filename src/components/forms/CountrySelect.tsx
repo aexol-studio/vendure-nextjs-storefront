@@ -15,7 +15,7 @@ type CountrySelectType = SelectHTMLAttributes<HTMLSelectElement> & {
 export const CountrySelect = forwardRef((props: CountrySelectType, ref: React.ForwardedRef<HTMLSelectElement>) => {
     const { label, error, options, required, ...rest } = props;
     return (
-        <Stack column gap="0.25rem">
+        <Stack w100 column gap="0.25rem">
             <Label htmlFor={props.name}>
                 {label}
                 {required && <FormRequired>&nbsp;*</FormRequired>}
@@ -47,6 +47,7 @@ export const CountrySelect = forwardRef((props: CountrySelectType, ref: React.Fo
 CountrySelect.displayName = 'CountrySelect';
 
 export const StyledSelect = styled.select<{ error?: boolean }>`
+    width: 100%;
     margin-top: 0.25rem;
     padding: 0.5rem 0.75rem;
     color: ${p => p.theme.gray(900)};

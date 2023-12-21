@@ -17,12 +17,12 @@ export const OrderConfirmation: React.FC<{ code: string; order?: OrderType }> = 
     const currencyCode = order?.currencyCode || CurrencyCode.USD;
     const discounts = order?.discounts?.reduce((acc, discount) => acc - discount.amountWithTax, 0) ?? 0;
     return (
-        <Stack column w100>
+        <Stack column w100 gap="2.5rem">
             <Stack style={{ paddingBlock: '2rem' }}>
                 <CheckoutStatus step={'confirmation'} />
             </Stack>
             <Stack column gap="4rem">
-                <Stack justifyBetween w100>
+                <Stack justifyBetween w100 gap="2rem">
                     <Stack w100 column gap="4rem">
                         <Stack itemsCenter gap="2rem">
                             <CheckCircle2 color="green" size={44} />

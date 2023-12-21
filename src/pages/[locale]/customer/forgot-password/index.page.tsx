@@ -5,19 +5,30 @@ import React from 'react';
 import { getCollections } from '@/src/graphql/sharedQueries';
 import { Stack } from '@/src/components/atoms/Stack';
 import { Link } from '@/src/components/atoms/Link';
-import styled from '@emotion/styled';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { Input } from '@/src/components/forms/Input';
 import { Button } from '@/src/components/molecules/Button';
 import { useTranslation } from 'next-i18next';
 import { ContentContainer } from '@/src/components/atoms/ContentContainer';
 import { storefrontApiMutation } from '@/src/graphql/client';
+import { Form, FormWrapper } from '../components/FormWrapper';
+import { z } from 'zod';
+import { zodResolver } from '@hookform/resolvers/zod';
+
+type FormValues = {
+    emailAddress: string;
+};
 
 const ForgotPassword: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = props => {
     const { t } = useTranslation('customer');
-    const { register, handleSubmit } = useForm<{
-        emailAddress: string;
-    }>({});
+
+    const schema = z.object({
+        emailAddress: z.string().email('Please enter a valid email address'),
+    });
+
+    const { register, handleSubmit } = useForm<FormValues>({
+        resolver: zodResolver(schema),
+    });
 
     const onSubmit: SubmitHandler<{ emailAddress: string }> = async data => {
         const { emailAddress } = data;
@@ -45,7 +56,7 @@ const ForgotPassword: React.FC<InferGetStaticPropsType<typeof getStaticProps>> =
                 <Stack w100 justifyCenter itemsCenter>
                     <FormWrapper column itemsCenter gap="1.75rem">
                         <Form onSubmit={handleSubmit(onSubmit)}>
-                            <Input label="Email Address" type="text" {...register('emailAddress')} />
+                            <Input label={t('email')} type="text" {...register('emailAddress')} />
                             <Button type="submit">{t('newPassword')}</Button>
                         </Form>
                         <Stack column itemsCenter gap="0.5rem">
@@ -58,18 +69,6 @@ const ForgotPassword: React.FC<InferGetStaticPropsType<typeof getStaticProps>> =
         </Layout>
     );
 };
-
-const FormWrapper = styled(Stack)`
-    padding: 3.75rem 2.5rem;
-    border: 1px solid ${({ theme }) => theme.gray(300)};
-    border-radius: ${({ theme }) => theme.borderRadius};
-    box-shadow: 0 0 0.5rem ${({ theme }) => theme.gray(300)};
-`;
-
-const Form = styled.form`
-    display: flex;
-    flex-direction: column;
-`;
 
 const getStaticProps = async (context: ContextModel) => {
     const r = await makeStaticProps(['common', 'customer'])(context);

@@ -8,17 +8,28 @@ import { RegisterCustomerInputType } from '@/src/graphql/selectors';
 import { storefrontApiMutation } from '@/src/graphql/client';
 import { Link } from '@/src/components/atoms/Link';
 import { Stack } from '@/src/components/atoms/Stack';
-import styled from '@emotion/styled';
 import { Input } from '@/src/components/forms/Input';
 import { Button } from '@/src/components/molecules/Button';
 import { ContentContainer } from '@/src/components/atoms/ContentContainer';
 import { useTranslation } from 'next-i18next';
+import { Form, FormWrapper } from '../components/FormWrapper';
+import { z } from 'zod';
+import { zodResolver } from '@hookform/resolvers/zod';
 
 type FormValues = RegisterCustomerInputType & { confirmPassword: string };
 
 const SignIn: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = props => {
     const { t } = useTranslation('customer');
-    const { register, handleSubmit } = useForm<FormValues>({});
+
+    const schema = z.object({
+        emailAddress: z.string().email('Please enter a valid email address'),
+        password: z.string().min(8, 'Password must be at least 8 characters long'),
+        confirmPassword: z.string().min(8, 'Password must be at least 8 characters long'),
+    });
+
+    const { register, handleSubmit } = useForm<FormValues>({
+        resolver: zodResolver(schema),
+    });
 
     const onSubmit: SubmitHandler<FormValues> = async data => {
         const { emailAddress, password } = data;
@@ -72,18 +83,6 @@ const SignIn: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = props =
         </Layout>
     );
 };
-
-const FormWrapper = styled(Stack)`
-    padding: 3.75rem 2.5rem;
-    border: 1px solid ${({ theme }) => theme.gray(300)};
-    border-radius: ${({ theme }) => theme.borderRadius};
-    box-shadow: 0 0 0.5rem ${({ theme }) => theme.gray(300)};
-`;
-
-const Form = styled.form`
-    display: flex;
-    flex-direction: column;
-`;
 
 const getStaticProps = async (context: ContextModel) => {
     const r = await makeStaticProps(['common', 'customer'])(context);

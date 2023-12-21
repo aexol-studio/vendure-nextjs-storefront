@@ -221,6 +221,16 @@ export const ActiveCustomerSelector = Selector('Customer')({
 
 export type ActiveCustomerType = FromSelector<typeof ActiveCustomerSelector, 'Customer', typeof scalars>;
 
+export const paymentSelector = Selector('Payment')({
+    id: true,
+    method: true,
+    amount: true,
+    state: true,
+    errorMessage: true,
+});
+
+export type PaymentType = FromSelector<typeof paymentSelector, 'Payment', typeof scalars>;
+
 export const ActiveOrderSelector = Selector('Order')({
     id: true,
     createdAt: true,
@@ -270,6 +280,7 @@ export const ActiveOrderSelector = Selector('Order')({
     couponCodes: true,
     currencyCode: true,
     code: true,
+    payments: paymentSelector,
     customer: { id: true, emailAddress: true, firstName: true, lastName: true, phoneNumber: true },
 });
 

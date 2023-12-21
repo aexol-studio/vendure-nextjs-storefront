@@ -44,7 +44,7 @@
         "PartiallyDelivered": "Partially Delivered",
         "Delivered": "Delivered",
         "Modifying": "Modifying",
-        "ArrangingAdditionalPayment": "Arranging Additional Payment"
+        "ArrangingAdditionalPayment": "Additional Payment"
     },
     "notifyMe":{"invalidEmail":"Please enter valid email","backendError":"Couldnt't add you to notify list","placeholder":"Notify me"}
 }

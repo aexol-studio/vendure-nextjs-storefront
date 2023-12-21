@@ -9,16 +9,33 @@ import { SubmitHandler, useForm } from 'react-hook-form';
 import { storefrontApiMutation } from '@/src/graphql/client';
 import { Input } from '@/src/components/forms/Input';
 import { Button } from '@/src/components/molecules/Button';
-import styled from '@emotion/styled';
 import { Stack } from '@/src/components/atoms/Stack';
 import { usePush } from '@/src/lib/redirect';
+import { Form, FormWrapper } from '../components/FormWrapper';
+import { useTranslation } from 'next-i18next';
+import { z } from 'zod';
+import { zodResolver } from '@hookform/resolvers/zod';
 
 type FormValues = { password: string; confirmPassword: string };
 
 const ResetPassword: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = props => {
     const { query } = useRouter();
     const token = query?.token;
-    const { register, handleSubmit } = useForm<FormValues>({});
+    const { t } = useTranslation('customer');
+
+    const schema = z
+        .object({
+            password: z.string().min(8, 'Password must be at least 8 characters long'),
+            confirmPassword: z.string().min(8, 'Password must be at least 8 characters long'),
+        })
+        .refine(data => data.password === data.confirmPassword, {
+            message: 'Passwords must match',
+            path: ['confirmPassword'],
+        });
+
+    const { register, handleSubmit } = useForm<FormValues>({
+        resolver: zodResolver(schema),
+    });
     const push = usePush();
 
     const onSubmit: SubmitHandler<FormValues> = async data => {
@@ -65,9 +82,9 @@ const ResetPassword: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = 
                 <Stack w100 justifyCenter itemsCenter>
                     <FormWrapper column itemsCenter gap="1.75rem">
                         <Form onSubmit={handleSubmit(onSubmit)}>
-                            <Input label="New password" type="password" {...register('password')} />
-                            <Input label="Confirm new password" type="password" {...register('confirmPassword')} />
-                            <Button type="submit">Submit</Button>
+                            <Input label={t('newPassword')} type="password" {...register('password')} />
+                            <Input label={t('confirmNewPassword')} type="password" {...register('confirmPassword')} />
+                            <Button type="submit">{t('resetPassword')}</Button>
                         </Form>
                     </FormWrapper>
                 </Stack>
@@ -75,18 +92,6 @@ const ResetPassword: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = 
         </Layout>
     );
 };
-
-const FormWrapper = styled(Stack)`
-    padding: 3.75rem 2.5rem;
-    border: 1px solid ${({ theme }) => theme.gray(300)};
-    border-radius: ${({ theme }) => theme.borderRadius};
-    box-shadow: 0 0 0.5rem ${({ theme }) => theme.gray(300)};
-`;
-
-const Form = styled.form`
-    display: flex;
-    flex-direction: column;
-`;
 
 const getStaticProps = async (context: ContextModel) => {
     const r = await makeStaticProps(['common', 'customer'])(context);

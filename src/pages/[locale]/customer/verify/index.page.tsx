@@ -12,13 +12,9 @@ const Verify: React.FC<InferGetServerSidePropsType<typeof getServerSideProps>> =
     return (
         <Layout categories={props.collections}>
             {props.status.success ? (
-                <div>
-                    <Link href="/customer/sign-in">{t('signIn')}</Link>
-                </div>
+                <Link href="/customer/sign-in">{t('signIn')}</Link>
             ) : (
-                <div>
-                    <Link href="/">{t('home')}</Link>
-                </div>
+                <Link href="/">{t('home')}</Link>
             )}
         </Layout>
     );

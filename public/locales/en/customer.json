@@ -9,21 +9,61 @@
     "confirmPassword": "Confirm password",
     "forgotPassword": "Forgot password?",
     "email": "Email address",
-    "newPassword": "Generate new password",
+    "newPassword": "New password",
+    "confirmNewPassword": "Confirm new password",
+    "resetPassword": "Reset password",
+    "navigation": {
+        "manageAccount": "Manage account",
+        "manageAddresses": "Manage addresses",
+        "manageOrders": "Manage orders",
+        "logout": "Logout"
+    },
     "accountPage": {
         "title": "My Account",
-        "lastOrder": "Last Order",
-        "viewOrder": "View Order",
+        "lastOrder": {
+            "title": "Last Order",
+            "noOrders": "You have no orders yet",
+            "viewOrder": "View Order",
+            "totalQuantity": "Total Quantity",
+            "totalPrice": "Total Price",
+            "orderNumber": "Order Number",
+            "orderDate": "Order Date"
+        },
         "detailsForm": {
             "title": "Account Details",
-            "changeDetails": "Change Details"
+            "changeDetails": "Change Details",
+            "addressEmail": "Address email",
+            "firstName": "First name",
+            "lastName": "Last name",
+            "phoneNumber": "Phone number"
         },
         "passwordForm": {
             "title": "Change Password",
             "confirmPassword": "Confirm Password"
         }
     },
+    "orderPage": {
+        "backToOrders": "Go to My Orders",
+        "orderCode": "Order Code",
+        "customerDetails": "Customer Details",
+        "shippingAddress": "Shipping Address",
+        "billingAddress": "Billing Address",
+        "shippingMethod": "Shipping Method",
+        "discounts": "Discounts",
+        "totalPrice": "Total Price",
+        "quantity": "Quantity"
+    },
+    "ordersPage": {
+        "title": "My Orders",
+        "loading": "Loading orders...",
+        "orderDate": "Order Date",
+        "totalQuantity": "Total Quantity",
+        "totalItems": "Total Items",
+        "totalPrice": "Total Price",
+        "loadMore": "Load More"
+    },
     "addressForm": {
+        "title": "My Addresses",
         "phone": "Phone",
         "fullName": "Full Name",
         "company": "Company",
@@ -38,6 +78,8 @@
         "cancel": "Cancel",
         "update": "Update Address",
         "add": "Add Address",
+        "edit": "Edit Address",
+        "delete": "Delete Address",
         "errors": {
             "root": {
                 "invalid": "An errors occurred while sending the form. Please correct the errors below",

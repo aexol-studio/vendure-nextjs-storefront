@@ -26,9 +26,11 @@ export const Input = forwardRef((props: InputType, ref: React.ForwardedRef<HTMLI
                 <StyledInput {...rest} ref={ref} error={!!error?.message} type={localType} />
                 {isPassword && (
                     <EyeWrapper
+                        justifyCenter
+                        itemsCenter
                         active={localType !== 'password'}
                         onClick={() => setLocalType(localType === 'password' ? 'text' : 'password')}>
-                        <Eye size={18} />
+                        <Eye size={'1.8rem'} />
                     </EyeWrapper>
                 )}
             </InputWrapper>
@@ -53,13 +55,13 @@ const InputWrapper = styled(Stack)`
     position: relative;
 `;
 
-const EyeWrapper = styled.div<{ active: boolean }>`
+const EyeWrapper = styled(Stack)<{ active: boolean }>`
     position: absolute;
     top: 50%;
     right: 0.75rem;
 
-    height: 18px;
-    width: 18px;
+    height: 1.8rem;
+    width: 1.8rem;
 
     cursor: pointer;
 

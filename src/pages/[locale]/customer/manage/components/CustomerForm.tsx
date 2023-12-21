@@ -13,6 +13,7 @@ import styled from '@emotion/styled';
 import React, { useState } from 'react';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { useTranslation } from 'next-i18next';
+import { dateFormatter } from '@/src/util/dateFormatter';
 
 type CustomerDataForm = {
     addressEmail: ActiveCustomerType['emailAddress'];
@@ -61,9 +62,9 @@ export const CustomerForm: React.FC<Props> = ({ initialCustomer }) => {
         },
     });
 
-    const onCustomerDataChange: SubmitHandler<CustomerDataForm> = async data => {
+    const onCustomerDataChange: SubmitHandler<CustomerDataForm> = async input => {
         const { updateCustomer } = await storefrontApiMutation({
-            updateCustomer: [{ input: data }, ActiveCustomerSelector],
+            updateCustomer: [{ input }, ActiveCustomerSelector],
         });
         setActiveCustomer(p => ({ ...p, ...updateCustomer }));
     };
@@ -79,6 +80,7 @@ export const CustomerForm: React.FC<Props> = ({ initialCustomer }) => {
             newPasswordConfirmation: '',
         },
     });
+
     const onPasswordChange: SubmitHandler<PasswordForm> = async data => {
         const { updateCustomerPassword } = await storefrontApiMutation({
             updateCustomerPassword: [
@@ -116,8 +118,8 @@ export const CustomerForm: React.FC<Props> = ({ initialCustomer }) => {
 
     return (
         <Stack w100 gap="3.5rem" column>
-            <Stack w100 itemsCenter column gap="1.5rem">
-                <TP size="1.75rem" weight={600}>
+            <Stack w100 column gap="1.5rem">
+                <TP size="2.5rem" weight={600}>
                     {t('accountPage.title')}
                 </TP>
                 <Stack gap="0.5rem">
@@ -130,45 +132,72 @@ export const CustomerForm: React.FC<Props> = ({ initialCustomer }) => {
                 </Stack>
             </Stack>
             {view === 'details' ? (
-                <Stack w100 gap="2.5rem">
+                <Stack w100 gap="3.5rem">
                     <Form onSubmit={handleCustomerDataChange(onCustomerDataChange)}>
                         <Stack column itemsCenter>
-                            <Input label="Address email" {...rCustomer('addressEmail')} disabled />
+                            <Input
+                                {...rCustomer('addressEmail')}
+                                label={t('accountPage.detailsForm.addressEmail')}
+                                disabled
+                            />
                             <Stack gap="1.25rem">
-                                <Input label="First name" {...rCustomer('firstName')} />
-                                <Input label="Last name" {...rCustomer('lastName')} />
+                                <Input label={t('accountPage.detailsForm.firstName')} {...rCustomer('firstName')} />
+                                <Input label={t('accountPage.detailsForm.lastName')} {...rCustomer('lastName')} />
                             </Stack>
-                            <Input label="Phone number" {...rCustomer('phoneNumber')} />
+                            <Input label={t('accountPage.detailsForm.phoneNumber')} {...rCustomer('phoneNumber')} />
                         </Stack>
                         <Button type="submit">{t('accountPage.detailsForm.changeDetails')}</Button>
                     </Form>
                     {order ? (
-                        <LastOrderWrap w100 column gap="1.25rem">
+                        <LastOrderWrap w100 justifyBetween column gap="1.25rem">
                             <TP size="1.75rem" weight={600}>
-                                {t('accountPage.lastOrder')}
+                                {t('accountPage.lastOrder.title')}
                             </TP>
                             <Stack gap="1.5rem">
                                 <ProductImage size="thumbnail-big" src={order?.lines[0]?.featuredAsset?.preview} />
-                                <Stack column>
-                                    <TP>{new Date(order?.updatedAt).toISOString().split('T')[0]}</TP>
+                                <Stack column gap="0.5rem">
                                     <Stack column>
-                                        <TP>Total quantity: {order?.totalQuantity}</TP>
+                                        <TP size="1.5rem" weight={500}>
+                                            {t('accountPage.lastOrder.orderNumber')}:&nbsp;
+                                        </TP>
+                                        <TP>{order.code}</TP>
+                                    </Stack>
+                                    <OrderState state={order.state} />
+                                    <Stack>
+                                        <TP size="1.5rem" weight={500}>
+                                            {t('accountPage.lastOrder.orderDate')}:&nbsp;
+                                        </TP>
+                                        <TP>{dateFormatter(order.createdAt, 'date')}</TP>
+                                    </Stack>
+                                    <Stack>
+                                        <TP size="1.5rem" weight={500}>
+                                            {t('accountPage.lastOrder.totalQuantity')}:&nbsp;
+                                        </TP>
+                                        <TP>{order?.totalQuantity}</TP>
+                                    </Stack>
+                                    <Stack>
+                                        <TP size="1.5rem" weight={500}>
+                                            {t('accountPage.lastOrder.totalPrice')}:&nbsp;
+                                        </TP>
                                         <Price currencyCode={order?.currencyCode} price={order?.totalWithTax} />
-                                        <OrderState state={order.state} />
                                     </Stack>
                                 </Stack>
                             </Stack>
                             <StyledLink href={`/customer/manage/orders/${order?.code}`}>
-                                {t('accountPage.viewOrder')}
+                                {t('accountPage.lastOrder.viewOrder')}
                             </StyledLink>
                         </LastOrderWrap>
                     ) : (
-                        <Stack></Stack>
+                        <Stack>
+                            <TP size="1.75rem" weight={600}>
+                                {t('accountPage.lastOrder.noOrders')}
+                            </TP>
+                        </Stack>
                     )}
                 </Stack>
             ) : null}
             {view === 'password' ? (
-                <Stack w100 justifyCenter>
+                <Stack w100>
                     <Form onSubmit={handlePasswordChange(onPasswordChange)}>
                         <Stack column itemsCenter>
                             <Input label="Old password" type="password" {...rPassword('oldPassword')} />
@@ -193,15 +222,12 @@ const StyledButton = styled(Button)<{ active?: boolean }>`
     background: ${p => p.active && p.theme.gray(700)};
 `;
 
-const LastOrderWrap = styled(Stack)`
-    padding: 1.75rem;
-`;
+const LastOrderWrap = styled(Stack)``;
 
 const StyledLink = styled(Link)`
     padding: 1rem 3rem;
     background: ${p => p.theme.button.back};
-
-    color: ${p => p.theme.gray(0)};
+    color: ${p => p.theme.button.front};
     text-align: center;
     font-weight: 600;
     font-size: 1.2rem;

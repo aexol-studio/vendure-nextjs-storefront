@@ -12,13 +12,13 @@ import {
     CreateAddressType,
     AvailableCountriesSelector,
 } from '@/src/graphql/selectors';
-import { AddressBox } from '../components/AddressBox';
+import { AddressBox } from './components/AddressBox';
 import { Stack } from '@/src/components/atoms/Stack';
 import styled from '@emotion/styled';
 import { ContentContainer } from '@/src/components/atoms/ContentContainer';
 import { AnimatePresence, motion } from 'framer-motion';
 import { SubmitHandler } from 'react-hook-form';
-import { AddressForm } from '../components/AddressForm';
+import { AddressForm } from './components/AddressForm';
 
 const Addresses: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = props => {
     const [addressToEdit, setAddressToEdit] = useState<ActiveAddressType>();
@@ -61,6 +61,14 @@ const Addresses: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = prop
             ...data,
             id: addressToEdit?.id,
         };
+
+        const isSame = Object.keys(input).every(key => {
+            if (key === 'id') return true;
+            if (key === 'countryCode') return true;
+            return input[key as keyof CreateAddressType] === addressToEdit[key as keyof ActiveAddressType];
+        });
+        if (isSame) return;
+
         try {
             const { updateCustomerAddress } = await storefrontApiMutation({
                 updateCustomerAddress: [{ input }, { __typename: true, id: true }],
@@ -118,26 +126,48 @@ const Addresses: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = prop
             <ContentContainer>
                 <Stack w100 itemsStart gap="1.75rem">
                     <CustomerNavigation />
-                    <Stack w100 justifyBetween>
+                    <Wrapper w100>
                         <FormWrapper>
                             <AddressForm onSubmit={onSubmitCreate} availableCountries={props.availableCountries} />
                         </FormWrapper>
-                        <Wrap flexWrap justifyEnd gap="2.5rem">
+                        <Wrap column itemsCenter gap="2.5rem">
                             {activeCustomer?.addresses?.map(address => (
                                 <AddressBox key={address.id} address={address} onEdit={onEdit} onDelete={onDelete} />
                             ))}
                         </Wrap>
-                    </Stack>
+                    </Wrapper>
                 </Stack>
             </ContentContainer>
         </Layout>
     );
 };
 
+const Wrapper = styled(Stack)`
+    justify-content: space-evenly;
+`;
+
 const Wrap = styled(Stack)`
     overflow-y: auto;
     max-height: 80vh;
     padding: 1.75rem 0.5rem;
+
+    ::-webkit-scrollbar {
+        height: 0.8rem;
+        width: 0.8rem;
+    }
+
+    ::-webkit-scrollbar-track {
+        background: transparent;
+    }
+
+    ::-webkit-scrollbar-thumb {
+        background: ${p => p.theme.gray(200)};
+        border-radius: 1rem;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+        background: ${p => p.theme.gray(400)};
+    }
 `;
 
 const FormWrapper = styled(Stack)`

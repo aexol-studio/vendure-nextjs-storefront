@@ -24,7 +24,7 @@ export const Nav: React.FC = () => {
                     <LanguageSwitcher />
                     <Stack>
                         <StyledLink href={cart?.customer ? '/customer/manage' : '/customer/sign-in'}>
-                            <User2 />
+                            <User2 size="2.4rem" />
                         </StyledLink>
                         {/* <Cart activeOrder={cart} /> */}
                         <CartDrawer activeOrder={cart} />

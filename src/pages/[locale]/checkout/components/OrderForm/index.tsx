@@ -95,8 +95,9 @@ export const OrderForm: React.FC<OrderFormProps> = ({ availableCountries }) => {
     } = useForm<Form>({
         delayError: 100,
         defaultValues: {
-            shippingDifferentThanBilling:
-                JSON.stringify(defaultBillingAddress) !== JSON.stringify(defaultShippingAddress),
+            shippingDifferentThanBilling: defaultShippingAddress
+                ? JSON.stringify(defaultBillingAddress) !== JSON.stringify(defaultShippingAddress)
+                : false,
             billing: { countryCode },
             // NIP: defaultBillingAddress?.customFields?.NIP ?? '',
             // userNeedInvoice: defaultBillingAddress?.customFields?.NIP ? true : false,
@@ -110,8 +111,9 @@ export const OrderForm: React.FC<OrderFormProps> = ({ availableCountries }) => {
                   phoneNumber: activeCustomer.phoneNumber,
                   //   NIP: defaultBillingAddress?.customFields?.NIP ?? '',
                   //   userNeedInvoice: defaultBillingAddress?.customFields?.NIP ? true : false,
-                  shippingDifferentThanBilling:
-                      JSON.stringify(defaultBillingAddress) !== JSON.stringify(defaultShippingAddress),
+                  shippingDifferentThanBilling: defaultShippingAddress
+                      ? JSON.stringify(defaultBillingAddress) !== JSON.stringify(defaultShippingAddress)
+                      : false,
                   shipping: {
                       ...defaultShippingAddress,
                       streetLine1: defaultShippingAddress?.streetLine1 ?? '',
@@ -663,6 +665,10 @@ const BackButton = styled(Link)`
     height: 3.2rem;
 
     color: ${({ theme }) => theme.gray(1000)};
+
+    @media (max-width: ${({ theme }) => theme.breakpoints.lg}) {
+        display: none;
+    }
 `;
 
 const EmptyCartDescription = styled(Stack)`

@@ -111,7 +111,6 @@ const Slide = styled.div`
 `;
 
 const OverflowedStack = styled(Stack)`
-    max-width: 65.5rem;
     overflow-x: scroll;
 
     gap: 1.5rem;

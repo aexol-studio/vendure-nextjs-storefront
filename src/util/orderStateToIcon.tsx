@@ -41,7 +41,17 @@ export const orderStateToIcon = (_state: string, size: number = 20) => {
             return <PenSquare size={size} />;
         case 'ArrangingAdditionalPayment':
             return <CreditCard size={size} />;
-        default:
+        default: {
+            if (_state.includes('Payment')) {
+                return <CreditCard size={size} />;
+            }
+            if (_state.includes('Shipped')) {
+                return <Truck size={size} />;
+            }
+            if (_state.includes('Delivered')) {
+                return <Home size={size} />;
+            }
             return <HelpCircle size={size} />;
+        }
     }
 };

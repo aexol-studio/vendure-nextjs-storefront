@@ -12,46 +12,46 @@ interface ProductPhotosPreview {
 }
 
 export const ProductPhotosPreview: React.FC<ProductPhotosPreview> = ({ featuredAsset, images }) => {
-    const [choosenImage, setChoosenImage] = useState<Asset>(featuredAsset ?? images?.[0]);
+    const [chosenImage, setChosenImage] = useState<Asset>(featuredAsset ?? images?.[0]);
 
     const handleArrowClick = (forward?: boolean) => {
-        const choosenImageIndex = images?.findIndex(image => choosenImage?.source === image?.source);
+        const chosenImageIndex = images?.findIndex(image => chosenImage?.source === image?.source);
 
-        if (typeof choosenImageIndex === 'undefined') return;
+        if (typeof chosenImageIndex === 'undefined') return;
 
         if (forward) {
-            setChoosenImage(images?.[choosenImageIndex + 1]);
+            setChosenImage(images?.[chosenImageIndex + 1]);
             return;
         }
-        setChoosenImage(images?.[choosenImageIndex - 1]);
+        setChosenImage(images?.[chosenImageIndex - 1]);
     };
-    const choosenImageIndex = useMemo(
-        () => images?.findIndex(image => choosenImage?.source === image?.source),
-        [images, choosenImage],
+    const chosenImageIndex = useMemo(
+        () => images?.findIndex(image => chosenImage?.source === image?.source),
+        [images, chosenImage],
     );
     return (
         <Wrapper gap="3rem">
             <AssetBrowser column gap="1.75rem">
                 {images?.map(a => {
-                    const isSelected = choosenImage?.source === a?.source;
+                    const isSelected = chosenImage?.source === a?.source;
                     return (
                         <StyledProductImage
                             key={a?.preview}
                             size="thumbnail"
                             src={a?.preview}
-                            onClick={() => setChoosenImage(a)}
+                            onClick={() => setChosenImage(a)}
                             isSelected={isSelected}
                         />
                     );
                 })}
             </AssetBrowser>
-            {choosenImage ? (
+            {chosenImage ? (
                 <ProductImageContainer>
-                    <ImageSwitcherArrow handleClick={() => handleArrowClick()} disabled={choosenImageIndex === 0} />
-                    <ProductImage size="detail" src={choosenImage.preview} />
+                    <ImageSwitcherArrow handleClick={() => handleArrowClick()} disabled={chosenImageIndex === 0} />
+                    <ProductImage size="detail" src={chosenImage.preview} />
                     <ImageSwitcherArrow
                         handleClick={() => handleArrowClick(true)}
-                        disabled={choosenImageIndex === (images?.length ?? 1) - 1}
+                        disabled={chosenImageIndex === (images?.length ?? 1) - 1}
                         right
                     />
                 </ProductImageContainer>

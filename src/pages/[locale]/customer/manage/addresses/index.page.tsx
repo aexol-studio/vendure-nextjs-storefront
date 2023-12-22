@@ -1,7 +1,7 @@
 import { Layout } from '@/src/layouts';
 import { ContextModel, getStaticPaths, makeStaticProps } from '@/src/lib/getStatic';
 import { InferGetStaticPropsType } from 'next';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { getCollections } from '@/src/graphql/sharedQueries';
 import { CustomerNavigation } from '../components/CustomerNavigation';
 import { storefrontApiMutation, storefrontApiQuery } from '@/src/graphql/client';
@@ -12,18 +12,31 @@ import {
     CreateAddressType,
     AvailableCountriesSelector,
 } from '@/src/graphql/selectors';
-import { AddressBox } from '../components/AddressBox';
+import { AddressBox } from './components/AddressBox';
 import { Stack } from '@/src/components/atoms/Stack';
 import styled from '@emotion/styled';
 import { ContentContainer } from '@/src/components/atoms/ContentContainer';
 import { AnimatePresence, motion } from 'framer-motion';
 import { SubmitHandler } from 'react-hook-form';
-import { AddressForm } from '../components/AddressForm';
+import { AddressForm } from './components/AddressForm';
 
 const Addresses: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = props => {
     const [addressToEdit, setAddressToEdit] = useState<ActiveAddressType>();
     const [activeCustomer, setActiveCustomer] = useState<ActiveCustomerType>();
     const [refresh, setRefresh] = useState(false);
+
+    const ref = useRef<HTMLDivElement>(null);
+    useEffect(() => {
+        const handleClickOutside = (e: MouseEvent) => {
+            if (ref.current && !ref.current.contains(e.target as Node)) {
+                onModalClose();
+            }
+        };
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, []);
 
     useEffect(() => {
         const fetchCustomer = async () => {
@@ -48,6 +61,14 @@ const Addresses: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = prop
             ...data,
             id: addressToEdit?.id,
         };
+
+        const isSame = Object.keys(input).every(key => {
+            if (key === 'id') return true;
+            if (key === 'countryCode') return true;
+            return input[key as keyof CreateAddressType] === addressToEdit[key as keyof ActiveAddressType];
+        });
+        if (isSame) return;
+
         try {
             const { updateCustomerAddress } = await storefrontApiMutation({
                 updateCustomerAddress: [{ input }, { __typename: true, id: true }],
@@ -91,7 +112,7 @@ const Addresses: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = prop
             <AnimatePresence>
                 {addressToEdit && (
                     <Modal initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
-                        <ModalContent itemsCenter column>
+                        <ModalContent ref={ref} itemsCenter column>
                             <AddressForm
                                 onSubmit={onSubmitEdit}
                                 availableCountries={props.availableCountries}
@@ -103,19 +124,51 @@ const Addresses: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = prop
                 )}
             </AnimatePresence>
             <ContentContainer>
-                <CustomerNavigation />
-                <Stack flexWrap>
-                    <FormWrapper>
-                        <AddressForm onSubmit={onSubmitCreate} availableCountries={props.availableCountries} />
-                    </FormWrapper>
-                    {activeCustomer?.addresses?.map(address => (
-                        <AddressBox key={address.id} address={address} onEdit={onEdit} onDelete={onDelete} />
-                    ))}
+                <Stack w100 itemsStart gap="1.75rem">
+                    <CustomerNavigation />
+                    <Wrapper w100>
+                        <FormWrapper>
+                            <AddressForm onSubmit={onSubmitCreate} availableCountries={props.availableCountries} />
+                        </FormWrapper>
+                        <Wrap column itemsCenter gap="2.5rem">
+                            {activeCustomer?.addresses?.map(address => (
+                                <AddressBox key={address.id} address={address} onEdit={onEdit} onDelete={onDelete} />
+                            ))}
+                        </Wrap>
+                    </Wrapper>
                 </Stack>
             </ContentContainer>
         </Layout>
     );
 };
+
+const Wrapper = styled(Stack)`
+    justify-content: space-evenly;
+`;
+
+const Wrap = styled(Stack)`
+    overflow-y: auto;
+    max-height: 80vh;
+    padding: 1.75rem 0.5rem;
+
+    ::-webkit-scrollbar {
+        height: 0.8rem;
+        width: 0.8rem;
+    }
+
+    ::-webkit-scrollbar-track {
+        background: transparent;
+    }
+
+    ::-webkit-scrollbar-thumb {
+        background: ${p => p.theme.gray(200)};
+        border-radius: 1rem;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+        background: ${p => p.theme.gray(400)};
+    }
+`;
 
 const FormWrapper = styled(Stack)`
     width: fit-content;
@@ -144,7 +197,7 @@ const Modal = styled(motion.div)`
 `;
 
 const getStaticProps = async (context: ContextModel) => {
-    const r = await makeStaticProps(['common', 'checkout'])(context);
+    const r = await makeStaticProps(['common', 'customer'])(context);
     const collections = await getCollections();
 
     const { availableCountries } = await storefrontApiQuery({

@@ -4,29 +4,28 @@ import { Check } from 'lucide-react';
 import React, { forwardRef, InputHTMLAttributes, useState } from 'react';
 import { FieldError } from 'react-hook-form';
 import { Stack } from '../atoms/Stack';
-import { FormError, Label } from './atoms';
+import { FormError, FormErrorWrapper, FormRequired, Label } from './atoms';
 
 type InputType = InputHTMLAttributes<HTMLInputElement> & {
-    label: string;
+    label: string | React.ReactNode;
     error?: FieldError;
 };
 
 export const CheckBox = forwardRef((props: InputType, ref: React.ForwardedRef<HTMLInputElement>) => {
-    const { label, error, onChange, value, ...rest } = props;
-    const [state, setState] = useState<boolean>(!!value);
-
+    const { label, error, onChange, ...rest } = props;
+    const [state, setState] = useState<boolean>(!!props.value);
     return (
-        <Wrapper>
+        <Wrapper column gap="0.125rem">
             <CheckboxStack itemsCenter gap="0.75rem">
                 <AnimatePresence>
                     <CheckboxIconHolder>
-                        {state && (
+                        {(props.checked || state) && (
                             <CheckboxAnimation
                                 initial={{ opacity: 0 }}
                                 animate={{ opacity: 1 }}
                                 exit={{ opacity: 0 }}
                                 transition={{ duration: 0.2 }}>
-                                <CheckboxIcon />
+                                <CheckboxIcon size="1.6rem" />
                             </CheckboxAnimation>
                         )}
                     </CheckboxIconHolder>
@@ -40,18 +39,26 @@ export const CheckBox = forwardRef((props: InputType, ref: React.ForwardedRef<HT
                         onChange && onChange(e);
                     }}
                 />
-                <Label htmlFor={props.name}>{label}</Label>
+                <Label htmlFor={props.name} style={{ zIndex: typeof label === 'string' ? 'auto' : '2' }}>
+                    {label}
+                    {props.required && <FormRequired>&nbsp;*</FormRequired>}
+                </Label>
             </CheckboxStack>
-            {error?.message && (
-                <AnimatePresence>
-                    <FormError
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: error ? 1 : 0 }}
-                        transition={{ duration: 0.2 }}>
-                        {error?.message}
-                    </FormError>
-                </AnimatePresence>
-            )}
+            {props.required && error ? (
+                <FormErrorWrapper>
+                    <AnimatePresence>
+                        {error.message && (
+                            <FormError
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 1 }}
+                                exit={{ opacity: 0 }}
+                                transition={{ duration: 0.2 }}>
+                                {error?.message}
+                            </FormError>
+                        )}
+                    </AnimatePresence>
+                </FormErrorWrapper>
+            ) : null}
         </Wrapper>
     );
 });
@@ -82,8 +89,8 @@ const CheckboxIcon = styled(Check)`
 
 const CheckboxIconHolder = styled.div`
     position: relative;
-    min-width: 16px;
-    min-height: 16px;
+    min-width: 1.6rem;
+    min-height: 1.6rem;
     border-radius: 2px;
     border: 1px solid ${p => p.theme.gray(200)};
 `;

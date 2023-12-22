@@ -3,9 +3,13 @@ import { Stack } from '@/src/components/atoms/Stack';
 import styled from '@emotion/styled';
 
 export const Content = styled(ContentContainer)`
+    position: relative;
     margin-block: 4rem;
 `;
 
 export const Main = styled(Stack)`
     gap: 5rem;
+    @media (max-width: ${({ theme }) => theme.breakpoints.lg}) {
+        flex-direction: column-reverse;
+    }
 `;

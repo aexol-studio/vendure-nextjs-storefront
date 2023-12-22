@@ -3,7 +3,7 @@ import React from 'react';
 import { Stack } from '../atoms/Stack';
 
 import { ProductImageWithInfo } from '../molecules/ProductImageWithInfo';
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from 'next-i18next';
 import { TH2 } from '../atoms/TypoGraphy';
 import styled from '@emotion/styled';
 

@@ -4,7 +4,7 @@ import { Stack } from '../atoms/Stack';
 import { TH2 } from '../atoms/TypoGraphy';
 import styled from '@emotion/styled';
 
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from 'next-i18next';
 import { ProductImageWithInfo } from '../molecules/ProductImageWithInfo';
 
 interface NewesProductsProps {

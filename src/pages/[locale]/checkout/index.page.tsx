@@ -1,48 +1,58 @@
-import { Layout } from '@/src/layouts';
-import { ContextModel, getStaticPaths, makeStaticProps } from '@/src/lib/getStatic';
-import { InferGetStaticPropsType } from 'next';
+import { CheckoutLayout } from '@/src/layouts';
+import { makeServerSideProps } from '@/src/lib/getStatic';
+import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
 import React from 'react';
 import { OrderSummary } from './components/OrderSummary';
 import { OrderForm } from './components/OrderForm';
-import { getCollections } from '@/src/graphql/sharedQueries';
+import { getYMALProducts } from '@/src/graphql/sharedQueries';
 import { Content, Main } from './components/ui/Shared';
-import { storefrontApiQuery } from '@/src/graphql/client';
-import { AvailableCountriesSelector } from '@/src/graphql/selectors';
+import { SSRQuery, storefrontApiQuery } from '@/src/graphql/client';
+import { ActiveOrderSelector, AvailableCountriesSelector } from '@/src/graphql/selectors';
 
-const CheckoutPage: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = props => {
-    const { availableCountries } = props;
+const CheckoutPage: React.FC<InferGetServerSidePropsType<typeof getServerSideProps>> = props => {
+    const { availableCountries, YMALProducts, initialActiveOrder } = props;
 
     return (
-        <Layout categories={props.collections}>
+        <CheckoutLayout initialActiveOrder={initialActiveOrder}>
             <Content>
-                <Main>
+                <Main w100 justifyBetween>
                     <OrderForm availableCountries={availableCountries} />
-                    <OrderSummary />
+                    <OrderSummary isForm YMALProducts={YMALProducts} />
                 </Main>
             </Content>
-        </Layout>
+        </CheckoutLayout>
     );
 };
 
-const getStaticProps = async (context: ContextModel) => {
-    const r = await makeStaticProps(['common', 'checkout'])(context);
-    const collections = await getCollections();
+const getServerSideProps: GetServerSideProps = async context => {
+    const r = await makeServerSideProps(['common', 'checkout'])(context);
+    const homePageRedirect =
+        r.props._nextI18Next?.initialLocale === 'en' ? '/' : `/${r.props._nextI18Next?.initialLocale}`;
+    const paymentRedirect =
+        r.props._nextI18Next?.initialLocale === 'en'
+            ? '/checkout/payment'
+            : `/${r.props._nextI18Next?.initialLocale}/checkout/payment`;
 
     const { availableCountries } = await storefrontApiQuery({
         availableCountries: AvailableCountriesSelector,
     });
+    const YMALProducts = await getYMALProducts();
 
-    const returnedStuff = {
-        ...r.props,
-        collections,
-        availableCountries,
-    };
+    const { activeOrder } = await SSRQuery(context)({
+        activeOrder: ActiveOrderSelector,
+    });
 
-    return {
-        props: returnedStuff,
-        revalidate: 10,
-    };
+    if (activeOrder?.state === 'ArrangingPayment') {
+        return { redirect: { destination: paymentRedirect, permanent: false } };
+    }
+
+    if (!activeOrder || activeOrder.lines.length === 0) {
+        return { redirect: { destination: homePageRedirect, permanent: false } };
+    }
+
+    const returnedStuff = { ...r.props, availableCountries, initialActiveOrder: activeOrder, YMALProducts };
+    return { props: returnedStuff };
 };
 
-export { getStaticPaths, getStaticProps };
+export { getServerSideProps };
 export default CheckoutPage;

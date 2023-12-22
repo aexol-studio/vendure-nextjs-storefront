@@ -1,94 +1,110 @@
-import { TP } from '@/src/components/atoms/TypoGraphy';
-import { storefrontApiMutation, storefrontApiQuery } from '@/src/graphql/client';
-import {
-    ActiveOrderSelector,
-    AvailablePaymentMethodsSelector,
-    AvailablePaymentMethodsType,
-} from '@/src/graphql/selectors';
+import { storefrontApiMutation } from '@/src/graphql/client';
+import { ActiveOrderSelector, ActiveOrderType, AvailablePaymentMethodsType } from '@/src/graphql/selectors';
 import { usePush } from '@/src/lib/redirect';
 import React, { useEffect, useState } from 'react';
-import { useTranslation } from 'next-i18next';
 import { Stack } from '@/src/components/atoms/Stack';
-import { PaymentMethods } from './PaymentMethods';
+import { DefaultMethod } from './PaymentMethods/DefaultMethod';
+import { Elements } from '@stripe/react-stripe-js';
+import { loadStripe, Stripe } from '@stripe/stripe-js';
+import { StripeForm } from './PaymentMethods/StripeForm';
 
-interface OrderPaymentProps {}
+const STRIPE_PUBLIC_KEY = process.env.NEXT_PUBLIC_STRIPE_KEY;
 
-export const OrderPayment: React.FC<OrderPaymentProps> = () => {
-    const { t } = useTranslation('checkout');
+interface OrderPaymentProps {
+    activeOrder: ActiveOrderType;
+    availablePaymentMethods?: AvailablePaymentMethodsType[];
+    stripeData?: {
+        paymentIntent: string;
+    };
+}
+
+export const OrderPayment: React.FC<OrderPaymentProps> = ({ activeOrder, availablePaymentMethods, stripeData }) => {
     const push = usePush();
-    const [availablePaymentMethods, setAvailablePaymentMethods] = useState<AvailablePaymentMethodsType[]>();
+    //For stripe
+    const [stripe, setStripe] = useState<Stripe | null>(null);
 
     useEffect(() => {
-        storefrontApiQuery({
-            eligiblePaymentMethods: AvailablePaymentMethodsSelector,
-        }).then(response => {
-            if (response?.eligiblePaymentMethods) {
-                setAvailablePaymentMethods(response.eligiblePaymentMethods);
+        const initStripe = async () => {
+            if (STRIPE_PUBLIC_KEY) {
+                const stripePromise = await loadStripe(STRIPE_PUBLIC_KEY);
+                if (stripePromise) setStripe(stripePromise);
             }
-        });
+        };
+        if (stripeData?.paymentIntent) initStripe();
     }, []);
 
     const onClick = async (method: string) => {
         // Add payment to order
-        const { addPaymentToOrder } = await storefrontApiMutation({
-            addPaymentToOrder: [
-                {
-                    input: {
-                        method,
-                        metadata: {
-                            // TODO: Try to add some metadata
-                            // shouldDecline: true,
-                            // shouldError: false,
-                            // shouldErrorOnSettle: true,
+        try {
+            const { addPaymentToOrder } = await storefrontApiMutation({
+                addPaymentToOrder: [
+                    {
+                        input: {
+                            method,
+                            metadata: JSON.stringify({
+                                // TODO: Try to add some metadata
+                                shouldDecline: false,
+                                shouldCancel: false,
+                                shouldError: false,
+                                shouldErrorOnSettle: false,
+                            }),
                         },
                     },
-                },
-                {
-                    __typename: true,
-                    '...on Order': ActiveOrderSelector,
-                    '...on IneligiblePaymentMethodError': {
-                        message: true,
-                        errorCode: true,
-                        eligibilityCheckerMessage: true,
+                    {
+                        __typename: true,
+                        '...on Order': ActiveOrderSelector,
+                        '...on IneligiblePaymentMethodError': {
+                            message: true,
+                            errorCode: true,
+                            eligibilityCheckerMessage: true,
+                        },
+                        '...on NoActiveOrderError': {
+                            message: true,
+                            errorCode: true,
+                        },
+                        '...on OrderPaymentStateError': {
+                            message: true,
+                            errorCode: true,
+                        },
+                        '...on OrderStateTransitionError': {
+                            message: true,
+                            errorCode: true,
+                            fromState: true,
+                            toState: true,
+                            transitionError: true,
+                        },
+                        '...on PaymentDeclinedError': {
+                            errorCode: true,
+                            message: true,
+                            paymentErrorMessage: true,
+                        },
+                        '...on PaymentFailedError': {
+                            errorCode: true,
+                            message: true,
+                            paymentErrorMessage: true,
+                        },
                     },
-                    '...on NoActiveOrderError': {
-                        message: true,
-                        errorCode: true,
-                    },
-                    '...on OrderPaymentStateError': {
-                        message: true,
-                        errorCode: true,
-                    },
-                    '...on OrderStateTransitionError': {
-                        message: true,
-                        errorCode: true,
-                        fromState: true,
-                        toState: true,
-                        transitionError: true,
-                    },
-                    '...on PaymentDeclinedError': {
-                        errorCode: true,
-                        message: true,
-                        paymentErrorMessage: true,
-                    },
-                    '...on PaymentFailedError': {
-                        errorCode: true,
-                        message: true,
-                        paymentErrorMessage: true,
-                    },
-                },
-            ],
-        });
-        if (addPaymentToOrder.__typename === 'Order' && addPaymentToOrder.state === 'PaymentAuthorized') {
-            push(`/checkout/confirmation?code=${addPaymentToOrder.code}`);
+                ],
+            });
+            if (addPaymentToOrder.__typename === 'Order' && addPaymentToOrder.state === 'PaymentAuthorized') {
+                push(`/checkout/confirmation/${addPaymentToOrder.code}`);
+            } else {
+                console.log(addPaymentToOrder);
+            }
+        } catch (e) {
+            console.log(e);
         }
     };
-    return (
-        <Stack>
-            <Stack column itemsCenter gap="1.25rem">
-                <TP>{t('paymentMethod.title')}</TP>
-                <PaymentMethods availablePaymentMethods={availablePaymentMethods} onClick={onClick} />
-            </Stack>
+
+    const defaultMethod = availablePaymentMethods?.find(m => m.code === 'standard-payment');
+    return activeOrder ? (
+        <Stack w100 column itemsCenter gap="3.5rem">
+            {defaultMethod && <DefaultMethod defaultMethod={defaultMethod} onClick={onClick} />}
+            {stripe && stripeData?.paymentIntent && (
+                <Elements stripe={stripe} options={{ clientSecret: stripeData.paymentIntent }}>
+                    <StripeForm activeOrder={activeOrder} />
+                </Elements>
+            )}
         </Stack>
-    );
+    ) : null;
 };

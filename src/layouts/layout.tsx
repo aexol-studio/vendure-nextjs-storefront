@@ -2,12 +2,13 @@ import React, { useEffect } from 'react';
 import styled from '@emotion/styled';
 import { CustomHelmet } from '@/src/components';
 import { Nav } from '@/src/layouts/Nav';
-import { CollectionTileType } from '@/src/graphql/selectors';
+import { ActiveOrderType, CollectionTileType } from '@/src/graphql/selectors';
 import { Footer } from '@/src/layouts/Footer';
 import { Stack } from '@/src/components/atoms/Stack';
 import { useCart } from '@/src/state/cart';
 import { CategoryBar } from '@/src/layouts/CategoryBar';
 import { thv } from '@/src/theme';
+import { CheckoutProvider } from '../state/checkout';
 
 export const siteTitle = 'Next.js Sample Website';
 
@@ -15,6 +16,12 @@ interface LayoutProps {
     pageTitle?: string;
     children: React.ReactNode;
     categories: CollectionTileType[];
+}
+
+interface CheckoutLayoutProps {
+    initialActiveOrder: ActiveOrderType;
+    pageTitle?: string;
+    children: React.ReactNode;
 }
 
 const Container = styled.div`
@@ -34,13 +41,25 @@ export const Layout: React.FC<LayoutProps> = ({ pageTitle, children, categories 
     useEffect(() => {
         fetchActiveOrder();
     }, []);
+
     return (
         <MainStack column>
             <CustomHelmet pageTitle={pageTitle ? pageTitle : undefined} />
             <Nav />
-            <CategoryBar collections={categories} />
+            {categories?.length > 0 ? <CategoryBar collections={categories} /> : null}
             <Container>{children}</Container>
             <Footer />
         </MainStack>
+    );
+};
+
+export const CheckoutLayout: React.FC<CheckoutLayoutProps> = ({ pageTitle, children, initialActiveOrder }) => {
+    return (
+        <CheckoutProvider initialState={{ initialActiveOrder }}>
+            <MainStack column>
+                <CustomHelmet pageTitle={pageTitle ? pageTitle : undefined} />
+                <Container>{children}</Container>
+            </MainStack>
+        </CheckoutProvider>
     );
 };

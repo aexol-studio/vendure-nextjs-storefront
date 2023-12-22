@@ -17,7 +17,7 @@ import { DiscountForm } from '@/src/components/molecules/DiscountForm';
 import { CurrencyCode } from '../zeus';
 
 export const Cart = ({ activeOrder }: { activeOrder?: ActiveOrderType }) => {
-    const { setItemQuantityInCart, removeFromCart, removeCouponCode } = useCart();
+    const { setItemQuantityInCart, removeFromCart, removeCouponCode, applyCouponCode } = useCart();
     const { t } = useTranslation('common');
     const [isOpen, setOpen] = useState(false);
 
@@ -178,22 +178,19 @@ export const Cart = ({ activeOrder }: { activeOrder?: ActiveOrderType }) => {
                                                             <TP>{t('subtotal')}</TP>
                                                             <TP>
                                                                 {priceFormatter(
-                                                                    activeOrder.totalWithTax - discountsSum,
+                                                                    activeOrder.subTotalWithTax,
                                                                     currencyCode,
                                                                 )}
                                                             </TP>
                                                         </Stack>
                                                     ) : null}
-                                                    <DiscountForm />
+                                                    <DiscountForm applyCouponCode={applyCouponCode} />
                                                     <Divider />
                                                     {activeOrder?.totalWithTax ? (
                                                         <Stack justifyBetween>
                                                             <TP>{t('total')}</TP>
                                                             <TP>
-                                                                {priceFormatter(
-                                                                    activeOrder.totalWithTax - discountsSum,
-                                                                    currencyCode,
-                                                                )}
+                                                                {priceFormatter(activeOrder.totalWithTax, currencyCode)}
                                                             </TP>
                                                         </Stack>
                                                     ) : null}

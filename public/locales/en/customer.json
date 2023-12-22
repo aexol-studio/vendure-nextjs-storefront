@@ -1,0 +1,123 @@
+{
+    "home": "Home",
+    "signIn": "Sign in",
+    "signInTitle": "Sign in to your account", 
+    "signUp": "Sign up",
+    "signUpTitle": "Create a new account",
+    "signOut": "Sign out",
+    "resetPasswordTitle": "Reset your password",
+    "username": "Username",
+    "password": "Password",
+    "rememberMe": "Remember me",
+    "confirmPassword": "Confirm password",
+    "forgotPassword": "Forgot password?",
+    "forgotPasswordTitle": "Reset your password",
+    "email": "Email address",
+    "newPassword": "New password",
+    "confirmNewPassword": "Confirm new password",
+    "resetPassword": "Reset password",
+    "navigation": {
+        "manageAccount": "Manage account",
+        "manageAddresses": "Manage addresses",
+        "manageOrders": "Manage orders",
+        "logout": "Logout"
+    },
+    "accountPage": {
+        "title": "My Account",
+        "lastOrder": {
+            "title": "Last Order",
+            "noOrders": "You have no orders yet",
+            "viewOrder": "View Order",
+            "totalQuantity": "Total Quantity",
+            "totalProducts": "Total Products",
+            "totalPrice": "Total Price",
+            "orderNumber": "Order Number",
+            "orderDate": "Order Date"
+        },
+        "detailsForm": {
+            "title": "Account Details",
+            "changeDetails": "Change Details",
+            "addressEmail": "Address email",
+            "firstName": "First name",
+            "lastName": "Last name",
+            "phoneNumber": "Phone number"
+        },
+        "passwordForm": {
+            "title": "Change Password",
+            "confirmPassword": "Confirm Password"
+        }
+    },
+    "orderPage": {
+        "backToOrders": "Go to My Orders",
+        "orderCode": "Order Code",
+        "customerDetails": "Customer Details",
+        "shippingAddress": "Shipping Address",
+        "billingAddress": "Billing Address",
+        "shippingMethod": "Shipping Method",
+        "discounts": "Discounts",
+        "totalPrice": "Total Price",
+        "quantity": "Quantity"
+    },
+    "ordersPage": {
+        "title": "My Orders",
+        "loading": "Loading orders...",
+        "orderDate": "Order Date",
+        "orderCode": "Order Code",
+        "totalQuantity": "Total Quantity",
+        "totalItems": "Total Items",
+        "totalPrice": "Total Price",
+        "loadMore": "Load More"
+    },
+    "addressForm": {
+        "title": "My Addresses",
+        "phone": "Phone",
+        "fullName": "Full Name",
+        "company": "Company",
+        "streetLine1": "Address",
+        "streetLine2": "Apartment, suite, etc.",
+        "city": "City",
+        "countryCode": "Country",
+        "province": "State / Province",
+        "postalCode": "Postal Code",
+        "defaultShippingAddress": "Default Shipping Address",
+        "defaultBillingAddress": "Default Billing Address",
+        "cancel": "Cancel",
+        "update": "Update Address",
+        "add": "Add Address",
+        "edit": "Edit Address",
+        "delete": "Delete Address",
+        "errors": {
+            "root": {
+                "invalid": "An errors occurred while sending the form. Please correct the errors below",
+                "closeButton": "Close"
+            },
+            "phone": {
+                "required": "Phone is required"
+            },
+            "fullName": {
+                "required": "Full name is required"
+            },
+            "company": {
+                "required": "Company is required"
+            },
+            "streetLine1": {
+                "required": "Address is required"
+            },
+            "streetLine2": {
+                "required": "Apartment, suite, etc. is required"
+            },
+            "city": {
+                "required": "City is required"
+            },
+            "countryCode": {
+                "required": "Country is required"
+            },
+            "province": {
+                "required": "State / Province is required"
+            },
+            "postalCode": {
+                "required": "Postal code is required"
+            }
+        }
+    }
+}

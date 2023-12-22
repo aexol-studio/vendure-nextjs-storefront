@@ -2,8 +2,9 @@ import { Stack } from '@/src/components/atoms/Stack';
 import { TP } from '@/src/components/atoms/TypoGraphy';
 import { ActiveAddressType } from '@/src/graphql/selectors';
 import styled from '@emotion/styled';
-import { CreditCard, Pen, Truck } from 'lucide-react';
+import { CreditCard, Pen, Trash2, Truck } from 'lucide-react';
 import React from 'react';
+import { useTranslation } from 'next-i18next';
 
 interface Props {
     address: ActiveAddressType;
@@ -14,6 +15,7 @@ interface Props {
 }
 
 export const AddressBox: React.FC<Props> = ({ address, selected, onSelect, onEdit, onDelete }) => {
+    const { t } = useTranslation('customer');
     return (
         <CustomerAddress onClick={() => onSelect?.(address.id)} column selected={selected} canBeSelected={!!onSelect}>
             {(onEdit || onDelete) && (
@@ -35,14 +37,14 @@ export const AddressBox: React.FC<Props> = ({ address, selected, onSelect, onEdi
                 <Wrapper itemsCenter gap="2.5rem">
                     {onEdit && (
                         <Option onClick={() => onEdit(address.id)}>
-                            <TP>Edit</TP>
+                            <TP>{t('addressForm.edit')}</TP>
                             <Edit size={16} />
                         </Option>
                     )}
                     {onDelete && (
                         <Option onClick={() => onDelete(address.id)}>
-                            <TP>Delete</TP>
-                            <Edit size={16} />
+                            <TP>{t('addressForm.delete')}</TP>
+                            <Delete size={16} />
                         </Option>
                     )}
                 </Wrapper>
@@ -80,13 +82,16 @@ const Option = styled.button`
     background-color: ${p => p.theme.gray(100)};
 `;
 
+const Delete = styled(Trash2)`
+    cursor: pointer;
+`;
+
 const Edit = styled(Pen)`
     cursor: pointer;
 `;
 
 const CustomerAddress = styled(Stack)<{ selected?: boolean; canBeSelected?: boolean }>`
     position: relative;
-    width: fit-content;
     padding: 3rem 2.5rem;
     background-color: ${p => p.theme.gray(50)};
     border-radius: ${p => p.theme.borderRadius};

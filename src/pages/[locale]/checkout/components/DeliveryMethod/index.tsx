@@ -14,6 +14,7 @@ interface Props {
     error?: string;
     shippingMethods: ShippingMethodType[];
     currencyCode?: ActiveOrderType['currencyCode'];
+    required?: boolean;
 }
 
 export const DeliveryMethod: React.FC<Props> = ({
@@ -22,35 +23,46 @@ export const DeliveryMethod: React.FC<Props> = ({
     error,
     shippingMethods,
     currencyCode = CurrencyCode.USD,
+    required,
 }) => {
     const { t } = useTranslation('checkout');
     return (
-        <Stack column>
-            <TH2>{t('deliveryMethod.title')}</TH2>
-            <FormError
-                style={{ margin: 0 }}
-                initial={{ opacity: 0 }}
-                animate={{ opacity: error ? 1 : 0 }}
-                transition={{ duration: 0.2 }}>
-                {error}
-            </FormError>
-            <Wrapper gap="2rem">
-                {shippingMethods?.map(({ id, name, description, price }) => {
-                    return (
-                        <Box selected={selected === id} key={id} column onClick={() => onChange(id)}>
+        <Stack w100 column>
+            <Stack column gap="0.125rem" itemsStart>
+                <TH2 size="2rem" weight={500}>
+                    {t('deliveryMethod.title')}
+                </TH2>
+                {required && (
+                    <Required weight={600} size="1rem">
+                        {t('deliveryMethod.required')}
+                    </Required>
+                )}
+            </Stack>
+
+            <Stack column>
+                <Wrapper gap="2rem">
+                    {shippingMethods?.map(({ id, name, description, price }) => (
+                        <Box w100 selected={selected === id} key={id} column onClick={() => onChange(id)}>
                             <TP>{name}</TP>
                             <StyledDescription dangerouslySetInnerHTML={{ __html: description }} />
                             <TP>{priceFormatter(price, currencyCode)}</TP>
                         </Box>
-                    );
-                })}
-            </Wrapper>
+                    ))}
+                </Wrapper>{' '}
+                <FormError
+                    style={{ margin: 0 }}
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: error ? 1 : 0 }}
+                    transition={{ duration: 0.2 }}>
+                    {error}
+                </FormError>
+            </Stack>
         </Stack>
     );
 };
 
 const Wrapper = styled(Stack)`
-    margin: 1.6rem 0 3.2rem 0;
+    margin: 1.6rem 0;
 `;
 
 const Box = styled(Stack)<{ selected: boolean }>`
@@ -69,4 +81,8 @@ const StyledDescription = styled.div`
     & > p {
         font-size: 1rem;
     }
+`;
+
+const Required = styled(TP)`
+    color: red;
 `;

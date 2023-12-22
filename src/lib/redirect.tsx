@@ -54,9 +54,11 @@ interface TransitionOptions {
 export const usePush = () => {
     const router = useRouter();
     const lang = languageDetector.detect();
+    const locale = lang === 'en' ? '' : '/' + lang;
+
     return useCallback(
         (to?: string, as?: Url, options?: TransitionOptions) => {
-            router.push(`/${lang}${to}`, as, options);
+            router.push(`${locale}${to}`, as, options);
         },
         [lang],
     );

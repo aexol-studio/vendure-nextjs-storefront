@@ -1,43 +1,69 @@
 import React, { useEffect } from 'react';
-import { Layout } from '@/src/layouts';
-import { InferGetStaticPropsType } from 'next';
-import { ContextModel, getStaticPaths, makeStaticProps } from '@/src/lib/getStatic';
+import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
+import { makeServerSideProps } from '@/src/lib/getStatic';
 import { OrderSummary } from '../components/OrderSummary';
 import { OrderPayment } from '../components/OrderPayment';
-import { getCollections } from '@/src/graphql/sharedQueries';
 import { Content, Main } from '../components/ui/Shared';
-import { useRouter } from 'next/router';
-import { useCart } from '@/src/state/cart';
+import { ActiveOrderSelector, AvailablePaymentMethodsSelector } from '@/src/graphql/selectors';
+import { SSRMutation, SSRQuery } from '@/src/graphql/client';
+import { CheckoutLayout } from '@/src/layouts';
 
-const PaymentPage: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = props => {
-    const { cart } = useCart();
-    const { push } = useRouter();
-
+const PaymentPage: React.FC<InferGetServerSidePropsType<typeof getServerSideProps>> = props => {
     useEffect(() => {
-        if (!cart || cart.lines.length === 0) push('/');
-    }, [cart]);
+        window.onpopstate = () => window.history.forward();
+    }, []);
 
     return (
-        <Layout categories={props.collections}>
+        <CheckoutLayout initialActiveOrder={props.activeOrder}>
             <Content>
                 <Main>
-                    <OrderPayment />
+                    <OrderPayment
+                        activeOrder={props.activeOrder}
+                        availablePaymentMethods={props.eligiblePaymentMethods}
+                        stripeData={props.stripeData}
+                    />
                     <OrderSummary />
                 </Main>
             </Content>
-        </Layout>
+        </CheckoutLayout>
     );
 };
 
-const getStaticProps = async (context: ContextModel) => {
-    const r = await makeStaticProps(['common', 'checkout'])(context);
-    const collections = await getCollections();
+const getServerSideProps: GetServerSideProps = async context => {
+    const r = await makeServerSideProps(['common', 'checkout'])(context);
+    const destination = r.props._nextI18Next?.initialLocale === 'en' ? '/' : `/${r.props._nextI18Next?.initialLocale}`;
 
-    return {
-        props: { ...r.props, collections },
-        revalidate: 10,
-    };
+    try {
+        const [{ activeOrder }, { eligiblePaymentMethods }] = await Promise.all([
+            SSRQuery(context)({ activeOrder: ActiveOrderSelector }),
+            SSRQuery(context)({ eligiblePaymentMethods: AvailablePaymentMethodsSelector }),
+        ]);
+
+        //If no active order, redirect to homepage
+        if (!activeOrder) throw new Error('No active order');
+        //If stripe is available, create a payment intent
+        let paymentIntent = null;
+        if (eligiblePaymentMethods.find(method => method?.code === 'stripe')) {
+            const { createStripePaymentIntent } = await SSRMutation(context)({
+                createStripePaymentIntent: true,
+            });
+            paymentIntent = createStripePaymentIntent;
+        }
+
+        const returnedStuff = {
+            ...r.props,
+            activeOrder,
+            eligiblePaymentMethods,
+            stripeData: { paymentIntent },
+        };
+
+        return { props: returnedStuff };
+    } catch (e) {
+        console.log('e', e);
+        //If error, redirect to homepage
+        return { redirect: { destination, permanent: false } };
+    }
 };
 
-export { getStaticPaths, getStaticProps };
+export { getServerSideProps };
 export default PaymentPage;

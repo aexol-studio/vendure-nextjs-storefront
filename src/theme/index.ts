@@ -30,6 +30,14 @@ type DetailTheme = {
     };
     error: string;
     success: string;
+    breakpoints: {
+        ssm: string;
+        sm: string;
+        md: string;
+        lg: string;
+        xl: string;
+        '2xl': string;
+    };
 };
 
 export type MainTheme = FunctionTheme & DetailTheme;
@@ -110,5 +118,13 @@ export const LightTheme = createTheme(300, t => ({
     },
     error: '#ff0000',
     success: '#00ff00',
+    breakpoints: {
+        ssm: '576px',
+        sm: '640px',
+        md: '768px',
+        lg: '1024px',
+        xl: '1280px',
+        '2xl': '1536px',
+    },
 }));
 export const thv = themeTransform(LightTheme);

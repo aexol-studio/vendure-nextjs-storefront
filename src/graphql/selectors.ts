@@ -1,6 +1,21 @@
 import { scalars } from '@/src/graphql/client';
 import { FromSelector, Selector } from '@/src/zeus';
 
+export type OrderStateType =
+    | 'Created'
+    | 'Draft'
+    | 'AddingItems'
+    | 'Cancelled'
+    | 'ArrangingPayment'
+    | 'PaymentAuthorized'
+    | 'PaymentSettled'
+    | 'PartiallyShipped'
+    | 'Shipped'
+    | 'PartiallyDelivered'
+    | 'Delivered'
+    | 'Modifying'
+    | 'ArrangingAdditionalPayment';
+
 export const ProductTileSelector = Selector('Product')({
     id: true,
     name: true,
@@ -69,7 +84,12 @@ export const ProductDetailSelector = Selector('Product')({
     description: true,
     id: true,
     slug: true,
-
+    optionGroups: {
+        id: true,
+        name: true,
+        code: true,
+        options: { name: true, code: true },
+    },
     assets: {
         source: true,
         preview: true,
@@ -86,6 +106,11 @@ export const ProductDetailSelector = Selector('Product')({
         currencyCode: true,
         priceWithTax: true,
         stockLevel: true,
+        options: {
+            groupId: true,
+            code: true,
+            name: true,
+        },
     },
     featuredAsset: {
         source: true,
@@ -94,6 +119,8 @@ export const ProductDetailSelector = Selector('Product')({
 
     facetValues: ProductDetailsFacetSelector,
 });
+
+export type ProductDetailType = FromSelector<typeof ProductDetailSelector, 'Product', typeof scalars>;
 
 export const NewestProductSelector = Selector('Product')({
     name: true,
@@ -140,8 +167,7 @@ export const AvailableCountriesSelector = Selector('Country')({
 });
 export type AvailableCountriesType = FromSelector<typeof AvailableCountriesSelector, 'Country', typeof scalars>;
 
-export const ActiveAddressSelector = Selector('Address')({
-    id: true,
+export const OrderAddressSelector = Selector('OrderAddress')({
     fullName: true,
     company: true,
     streetLine1: true,
@@ -149,13 +175,17 @@ export const ActiveAddressSelector = Selector('Address')({
     city: true,
     province: true,
     postalCode: true,
-    country: AvailableCountriesSelector,
     phoneNumber: true,
+});
+
+export type OrderAddressType = FromSelector<typeof OrderAddressSelector, 'OrderAddress', typeof scalars>;
+
+export const ActiveAddressSelector = Selector('Address')({
+    ...OrderAddressSelector,
+    id: true,
+    country: AvailableCountriesSelector,
     defaultShippingAddress: true,
     defaultBillingAddress: true,
-    customFields: {
-        NIP: true,
-    },
 });
 
 export type ActiveAddressType = FromSelector<typeof ActiveAddressSelector, 'Address', typeof scalars>;
@@ -200,21 +230,35 @@ export const ActiveCustomerSelector = Selector('Customer')({
 
 export type ActiveCustomerType = FromSelector<typeof ActiveCustomerSelector, 'Customer', typeof scalars>;
 
+export const paymentSelector = Selector('Payment')({
+    id: true,
+    method: true,
+    amount: true,
+    state: true,
+    errorMessage: true,
+});
+
+export type PaymentType = FromSelector<typeof paymentSelector, 'Payment', typeof scalars>;
+
+export const discountsSelector = Selector('Discount')({
+    type: true,
+    description: true,
+    amountWithTax: true,
+    adjustmentSource: true,
+});
+
+export type DiscountsType = FromSelector<typeof discountsSelector, 'Discount', typeof scalars>;
+
 export const ActiveOrderSelector = Selector('Order')({
     id: true,
+    createdAt: true,
+    updatedAt: true,
     totalQuantity: true,
     shippingWithTax: true,
     totalWithTax: true,
     subTotalWithTax: true,
-    discounts: {
-        description: true,
-        amountWithTax: true,
-    },
+    discounts: discountsSelector,
     active: true,
-    billingAddress: {
-        city: true,
-        country: true,
-    },
     lines: {
         id: true,
         quantity: true,
@@ -230,6 +274,10 @@ export const ActiveOrderSelector = Selector('Order')({
             id: true,
             sku: true,
             price: true,
+            featuredAsset: {
+                id: true,
+                source: true,
+            },
             product: {
                 name: true,
             },
@@ -238,6 +286,7 @@ export const ActiveOrderSelector = Selector('Order')({
     shippingLines: {
         shippingMethod: {
             id: true,
+            name: true,
             description: true,
         },
         priceWithTax: true,
@@ -246,7 +295,8 @@ export const ActiveOrderSelector = Selector('Order')({
     couponCodes: true,
     currencyCode: true,
     code: true,
-    customer: { id: true },
+    payments: paymentSelector,
+    customer: { id: true, emailAddress: true, firstName: true, lastName: true, phoneNumber: true },
 });
 
 export type ActiveOrderType = FromSelector<typeof ActiveOrderSelector, 'Order', typeof scalars>;
@@ -257,10 +307,7 @@ export const OrderSelector = Selector('Order')({
     shippingWithTax: true,
     currencyCode: true,
     totalWithTax: true,
-    discounts: {
-        description: true,
-        amountWithTax: true,
-    },
+    discounts: discountsSelector,
     lines: {
         id: true,
         quantity: true,
@@ -274,10 +321,21 @@ export const OrderSelector = Selector('Order')({
         productVariant: {
             name: true,
             currencyCode: true,
+            featuredAsset: {
+                id: true,
+                source: true,
+            },
             product: {
                 name: true,
             },
         },
+    },
+    shippingLines: {
+        shippingMethod: {
+            id: true,
+            description: true,
+        },
+        priceWithTax: true,
     },
 });
 export type OrderType = FromSelector<typeof OrderSelector, 'Order', typeof scalars>;
@@ -345,3 +403,34 @@ export type LoginCustomerInputType = {
     password: string;
     rememberMe: boolean;
 };
+
+export const YAMLProductsSelector = Selector('Product')({
+    id: true,
+    name: true,
+    slug: true,
+    featuredAsset: {
+        source: true,
+        preview: true,
+    },
+    collections: {
+        name: true,
+        slug: true,
+    },
+    variants: {
+        id: true,
+        name: true,
+        currencyCode: true,
+        priceWithTax: true,
+        stockLevel: true,
+        assets: {
+            source: true,
+            preview: true,
+        },
+        featuredAsset: {
+            source: true,
+            preview: true,
+        },
+    },
+});
+
+export type YAMLProductsType = FromSelector<typeof YAMLProductsSelector, 'Product', typeof scalars>;

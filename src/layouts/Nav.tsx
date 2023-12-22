@@ -4,9 +4,11 @@ import { Stack } from '@/src/components/atoms/Stack';
 import styled from '@emotion/styled';
 import { LanguageSwitcher } from '@/src/components';
 import { Link } from '@/src/components/atoms/Link';
-import { Cart } from '@/src/layouts/Cart';
 import { useCart } from '@/src/state/cart';
-// import { User2 } from 'lucide-react';
+import { User2 } from 'lucide-react';
+
+// import { Cart } from '@/src/layouts/Cart';
+import { CartDrawer } from '@/src/layouts/CartDrawer';
 
 export const Nav: React.FC = () => {
     const { cart } = useCart();
@@ -20,15 +22,22 @@ export const Nav: React.FC = () => {
                         </Link>
                     </Stack>
                     <LanguageSwitcher />
-                    {/* <Link href={cart?.customer ? '/customer/manage' : '/customer/sign-in'}>
-                        <User2 color="#000" />
-                    </Link> */}
-                    <Cart activeOrder={cart} />
+                    <Stack>
+                        <StyledLink href={cart?.customer ? '/customer/manage' : '/customer/sign-in'}>
+                            <User2 size="2.4rem" />
+                        </StyledLink>
+                        {/* <Cart activeOrder={cart} /> */}
+                        <CartDrawer activeOrder={cart} />
+                    </Stack>
                 </Stack>
             </ContentContainer>
         </Main>
     );
 };
+const StyledLink = styled(Link)`
+    color: ${p => p.theme.gray(900)};
+`;
+
 const Main = styled(Stack)`
     width: 100%;
     padding: 2rem;

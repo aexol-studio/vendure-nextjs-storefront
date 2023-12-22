@@ -10,6 +10,7 @@ import { priceFormatter } from '@/src/util/priceFomatter';
 import { CurrencyCode } from '@/src/zeus';
 import { OrderType } from '@/src/graphql/selectors';
 import { Trans, useTranslation } from 'next-i18next';
+import { Discounts } from '@/src/components/molecules/Discounts';
 
 export const OrderConfirmation: React.FC<{ code: string; order?: OrderType }> = ({ code, order }) => {
     const { t } = useTranslation('checkout');
@@ -51,12 +52,7 @@ export const OrderConfirmation: React.FC<{ code: string; order?: OrderType }> = 
                             <TP weight={600}> {priceFormatter(order?.shippingWithTax || 0, currencyCode)}</TP>
                         </Stack>
                         {order?.discounts && order?.discounts.length > 0 ? <Divider /> : null}
-                        {order?.discounts.map(d => (
-                            <Stack key={d.description} justifyBetween>
-                                <TP>{d.description}</TP>
-                                <TP weight={600}>{priceFormatter(d.amountWithTax, currencyCode)}</TP>
-                            </Stack>
-                        ))}
+                        <Discounts withLabel discounts={order?.discounts} currencyCode={currencyCode} />
                         <Divider />
                         <Stack justifyBetween>
                             <TP>{t('orderSummary.total')}</TP>

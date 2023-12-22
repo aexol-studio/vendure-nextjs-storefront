@@ -25,7 +25,7 @@ export const CheckBox = forwardRef((props: InputType, ref: React.ForwardedRef<HT
                                 animate={{ opacity: 1 }}
                                 exit={{ opacity: 0 }}
                                 transition={{ duration: 0.2 }}>
-                                <CheckboxIcon />
+                                <CheckboxIcon size="1.6rem" />
                             </CheckboxAnimation>
                         )}
                     </CheckboxIconHolder>
@@ -89,8 +89,8 @@ const CheckboxIcon = styled(Check)`
 
 const CheckboxIconHolder = styled.div`
     position: relative;
-    min-width: 16px;
-    min-height: 16px;
+    min-width: 1.6rem;
+    min-height: 1.6rem;
     border-radius: 2px;
     border: 1px solid ${p => p.theme.gray(200)};
 `;

@@ -113,9 +113,7 @@ const ProductPage: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = pr
                                 <FullWidthSecondaryButton
                                     onClick={async () => {
                                         if (variant?.id) {
-                                            //TODO: remove this timeout
-                                            await new Promise(resolve => setTimeout(resolve, 420));
-                                            addToCart(variant.id, 1, true);
+                                            await addToCart(variant.id, 1, true);
                                         }
                                     }}>
                                     {t('add-to-cart')}
@@ -123,9 +121,7 @@ const ProductPage: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = pr
                                 <FullWidthButton
                                     onClick={async () => {
                                         if (variant?.id) {
-                                            addToCart(variant.id, 1);
-                                            //TODO: remove this timeout
-                                            await new Promise(resolve => setTimeout(resolve, 1000));
+                                            await addToCart(variant.id, 1);
                                             push('/checkout');
                                         }
                                     }}>
@@ -212,7 +208,6 @@ export const getStaticProps = async (context: ContextModel<{ slug?: string }>) =
     const newestProducts = await storefrontApiQuery({
         products: [{ options: { take: 10, sort: { createdAt: SortOrder.DESC } } }, { items: NewestProductSelector }],
     });
-
     const response =
         typeof slug === 'string'
             ? await storefrontApiQuery({

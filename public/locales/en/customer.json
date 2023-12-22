@@ -29,6 +29,7 @@
             "noOrders": "You have no orders yet",
             "viewOrder": "View Order",
             "totalQuantity": "Total Quantity",
+            "totalProducts": "Total Products",
             "totalPrice": "Total Price",
             "orderNumber": "Order Number",
             "orderDate": "Order Date"
@@ -61,6 +62,7 @@
         "title": "My Orders",
         "loading": "Loading orders...",
         "orderDate": "Order Date",
+        "orderCode": "Order Code",
         "totalQuantity": "Total Quantity",
         "totalItems": "Total Items",
         "totalPrice": "Total Price",

@@ -9,11 +9,11 @@ import { useTranslation } from 'next-i18next';
 import { priceFormatter } from '@/src/util/priceFomatter';
 import { CurrencyCode } from '@/src/zeus';
 import { DiscountForm } from '@/src/components/molecules/DiscountForm';
-import { X } from 'lucide-react';
 import styled from '@emotion/styled';
 import { YAMLProductsType } from '@/src/graphql/selectors';
 import { YMALCarousel } from './YMAL';
 import { useCheckout } from '@/src/state/checkout';
+import { Discounts } from '@/src/components/molecules/Discounts';
 
 interface OrderSummaryProps {
     isForm?: boolean;
@@ -52,19 +52,11 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({ isForm, YMALProducts
                             <Fragment>
                                 <Divider />
                                 <Stack column gap="2.5rem">
-                                    {activeOrder?.discounts.map(d => (
-                                        <Stack key={d.description} justifyBetween>
-                                            <Stack itemsCenter gap="1.25rem">
-                                                <Remove onClick={() => removeCouponCode(d.description)}>
-                                                    <X size={16} />
-                                                </Remove>
-                                                <TP>
-                                                    {t('orderSummary.couponCode')} {d.description}
-                                                </TP>
-                                            </Stack>
-                                            <TP>{priceFormatter(d.amountWithTax, currencyCode)}</TP>
-                                        </Stack>
-                                    ))}
+                                    <Discounts
+                                        discounts={activeOrder?.discounts}
+                                        currencyCode={currencyCode}
+                                        removeCouponCode={removeCouponCode}
+                                    />
                                     <Stack style={{ maxWidth: '25.6rem' }}>
                                         <DiscountForm applyCouponCode={applyCouponCode} />
                                     </Stack>
@@ -105,15 +97,3 @@ const SummaryContainer = styled(Stack)`
 `;
 
 const SummaryContent = styled(Stack)``;
-
-const Remove = styled.button`
-    appearance: none;
-    border: none;
-    background: transparent;
-
-    display: flex;
-    align-items: center;
-    width: fit-content;
-
-    gap: 0.4rem;
-`;

@@ -2,8 +2,8 @@ import { InputHTMLAttributes, forwardRef, useState } from 'react';
 import { FieldError } from 'react-hook-form';
 import styled from '@emotion/styled';
 import { Stack } from '@/src/components/atoms/Stack';
-import { FormRequired, FormError, FormErrorWrapper, Label } from './atoms';
-import { AnimatePresence } from 'framer-motion';
+import { FormRequired, FormErrorWrapper, Label } from './atoms';
+import { AnimatePresence, motion } from 'framer-motion';
 import { Eye } from 'lucide-react';
 
 type InputType = InputHTMLAttributes<HTMLInputElement> & {
@@ -50,6 +50,13 @@ export const Input = forwardRef((props: InputType, ref: React.ForwardedRef<HTMLI
         </Stack>
     );
 });
+
+export const FormError = styled(motion.span)`
+    color: ${p => p.theme.error};
+    font-size: 1.2rem;
+    font-weight: 500;
+    margin: 0.4rem 0 0.8rem 0;
+`;
 
 const InputWrapper = styled(Stack)`
     position: relative;

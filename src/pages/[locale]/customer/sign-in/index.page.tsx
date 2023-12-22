@@ -14,10 +14,11 @@ import { ContentContainer } from '@/src/components/atoms/ContentContainer';
 import { usePush } from '@/src/lib/redirect';
 import { CheckBox } from '@/src/components/forms/CheckBox';
 import { useTranslation } from 'next-i18next';
-import { Form, FormWrapper } from '../components/FormWrapper';
+import { AbsoluteError, Form, FormContent, FormWrapper } from '../components/FormWrapper';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { TP } from '@/src/components/atoms/TypoGraphy';
+import { ErrorBanner } from '@/src/components/forms/ErrorBanner';
 
 const SignIn: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = props => {
     const { t } = useTranslation('customer');
@@ -80,10 +81,16 @@ const SignIn: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = props =
     return (
         <Layout categories={props.collections}>
             <ContentContainer>
-                <Stack w100 justifyCenter itemsCenter>
+                <Stack column gap="3.5rem" w100 justifyCenter itemsCenter style={{ minHeight: 'calc(100vh - 6rem)' }}>
                     <FormWrapper column itemsCenter gap="3.5rem">
+                        <AbsoluteError w100>
+                            <ErrorBanner
+                                error={errors.root}
+                                clearErrors={() => setError('root', { message: undefined })}
+                            />
+                        </AbsoluteError>
                         <TP weight={600}>{t('signInTitle')}</TP>
-                        <Stack column itemsCenter gap="1.75rem">
+                        <FormContent w100 column itemsCenter gap="1.75rem">
                             <Form onSubmit={handleSubmit(onSubmit)}>
                                 <Input
                                     error={errors.emailAddress}
@@ -104,7 +111,7 @@ const SignIn: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = props =
                                 <Link href="/customer/forgot-password">{t('forgotPassword')}</Link>
                                 <Link href="/customer/sign-up">{t('signUp')}</Link>
                             </Stack>
-                        </Stack>
+                        </FormContent>
                     </FormWrapper>
                 </Stack>
             </ContentContainer>

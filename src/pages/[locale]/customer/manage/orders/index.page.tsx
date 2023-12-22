@@ -118,11 +118,19 @@ const History: React.FC<InferGetServerSidePropsType<typeof getServerSideProps>> 
                                                                     src={order.lines[0].featuredAsset?.preview}
                                                                     alt={order.lines[0].productVariant.product.name}
                                                                 />
-                                                                <Stack w100 column>
-                                                                    <TP size="1.5rem" weight={500}>
-                                                                        {t('ordersPage.orderDate')}:&nbsp;
-                                                                    </TP>
-                                                                    <TP>{dateFormatter(order.createdAt)}</TP>
+                                                                <Stack column>
+                                                                    <Stack w100 column>
+                                                                        <TP size="1.5rem" weight={500}>
+                                                                            {t('ordersPage.orderDate')}:&nbsp;
+                                                                        </TP>
+                                                                        <TP>{dateFormatter(order.createdAt)}</TP>
+                                                                    </Stack>
+                                                                    <Stack w100 column>
+                                                                        <TP size="1.5rem" weight={500}>
+                                                                            {t('ordersPage.orderCode')}:&nbsp;
+                                                                        </TP>
+                                                                        <TP>{order.code}</TP>
+                                                                    </Stack>
                                                                 </Stack>
                                                             </Stack>
                                                             <Stack column w100>
@@ -157,9 +165,11 @@ const History: React.FC<InferGetServerSidePropsType<typeof getServerSideProps>> 
                                     })
                                 )}
                             </Wrap>
-                            <ButtonWrap w100>
-                                <StyledButton onClick={onLoadMore}>{t('ordersPage.loadMore')}</StyledButton>
-                            </ButtonWrap>
+                            {props.activeCustomer?.orders.totalItems > activeOrders?.length && (
+                                <ButtonWrap w100>
+                                    <StyledButton onClick={onLoadMore}>{t('ordersPage.loadMore')}</StyledButton>
+                                </ButtonWrap>
+                            )}
                         </Main>
                     </Stack>
                 </Stack>
@@ -228,7 +238,7 @@ const AbsoluteLink = styled(Link)`
 const getServerSideProps = async (context: GetServerSidePropsContext) => {
     const r = await makeServerSideProps(['common', 'customer'])(context);
     const collections = await getCollections();
-    const destination = context.params?.locale === 'en' ? '/' : `/${context.params?.locale}`;
+    const destination = r.props._nextI18Next?.initialLocale === 'en' ? '/' : `/${r.props._nextI18Next?.initialLocale}`;
 
     try {
         const { activeCustomer } = await SSRQuery(context)({
@@ -236,7 +246,7 @@ const getServerSideProps = async (context: GetServerSidePropsContext) => {
                 ...ActiveCustomerSelector,
                 orders: [
                     { options: { take: 4, sort: { createdAt: SortOrder.DESC }, filter: { active: { eq: false } } } },
-                    { items: ActiveOrderSelector },
+                    { items: ActiveOrderSelector, totalItems: true },
                 ],
             },
         });

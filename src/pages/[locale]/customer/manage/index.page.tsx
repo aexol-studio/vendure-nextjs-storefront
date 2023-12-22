@@ -27,7 +27,7 @@ const Account: React.FC<InferGetServerSidePropsType<typeof getServerSideProps>> 
 const getServerSideProps = async (context: GetServerSidePropsContext) => {
     const r = await makeServerSideProps(['common', 'customer'])(context);
     const collections = await getCollections();
-    const destination = context.params?.locale === 'en' ? '/' : `/${context.params?.locale}`;
+    const destination = r.props._nextI18Next?.initialLocale === 'en' ? '/' : `/${r.props._nextI18Next?.initialLocale}`;
 
     try {
         const { activeCustomer } = await SSRQuery(context)({

@@ -26,6 +26,8 @@ const CheckoutPage: React.FC<InferGetServerSidePropsType<typeof getServerSidePro
 
 const getServerSideProps: GetServerSideProps = async context => {
     const r = await makeServerSideProps(['common', 'checkout'])(context);
+    const homePageRedirect =
+        r.props._nextI18Next?.initialLocale === 'en' ? '/' : `/${r.props._nextI18Next?.initialLocale}`;
     const paymentRedirect =
         r.props._nextI18Next?.initialLocale === 'en'
             ? '/checkout/payment'
@@ -45,7 +47,7 @@ const getServerSideProps: GetServerSideProps = async context => {
     }
 
     if (!activeOrder || activeOrder.lines.length === 0) {
-        return { redirect: { destination: '/', permanent: false } };
+        return { redirect: { destination: homePageRedirect, permanent: false } };
     }
 
     const returnedStuff = { ...r.props, availableCountries, initialActiveOrder: activeOrder, YMALProducts };

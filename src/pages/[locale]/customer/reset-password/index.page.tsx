@@ -11,11 +11,12 @@ import { Input } from '@/src/components/forms/Input';
 import { Button } from '@/src/components/molecules/Button';
 import { Stack } from '@/src/components/atoms/Stack';
 import { usePush } from '@/src/lib/redirect';
-import { Form, FormWrapper } from '../components/FormWrapper';
+import { AbsoluteError, Form, FormContent, FormWrapper } from '../components/FormWrapper';
 import { useTranslation } from 'next-i18next';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { TP } from '@/src/components/atoms/TypoGraphy';
+import { ErrorBanner } from '@/src/components/forms/ErrorBanner';
 
 type FormValues = { password: string; confirmPassword: string };
 
@@ -102,10 +103,13 @@ const ResetPassword: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = 
     return (
         <Layout categories={props.collections}>
             <ContentContainer>
-                <Stack w100 justifyCenter itemsCenter>
-                    <Stack column itemsCenter gap="3.5rem">
-                        <TP weight={600}>{t('resetPasswordTitle')}</TP>
-                        <FormWrapper column itemsCenter gap="1.75rem">
+                <Stack column itemsCenter gap="3.5rem" style={{ minHeight: 'calc(100vh - 6rem)' }}>
+                    <AbsoluteError w100>
+                        <ErrorBanner error={errors.root} clearErrors={() => setError('root', { message: undefined })} />
+                    </AbsoluteError>
+                    <TP weight={600}>{t('resetPasswordTitle')}</TP>
+                    <FormWrapper column itemsCenter gap="1.75rem">
+                        <FormContent w100 column itemsCenter gap="1.75rem">
                             <Form onSubmit={handleSubmit(onSubmit)}>
                                 <Input
                                     error={errors.password}
@@ -121,8 +125,8 @@ const ResetPassword: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = 
                                 />
                                 <Button type="submit">{t('resetPassword')}</Button>
                             </Form>
-                        </FormWrapper>
-                    </Stack>
+                        </FormContent>
+                    </FormWrapper>
                 </Stack>
             </ContentContainer>
         </Layout>

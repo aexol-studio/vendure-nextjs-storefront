@@ -63,9 +63,11 @@ export const CustomerForm: React.FC<Props> = ({ initialCustomer }) => {
     });
 
     const onCustomerDataChange: SubmitHandler<CustomerDataForm> = async input => {
+        const { firstName, lastName, phoneNumber } = input;
         const { updateCustomer } = await storefrontApiMutation({
-            updateCustomer: [{ input }, ActiveCustomerSelector],
+            updateCustomer: [{ input: { firstName, lastName, phoneNumber } }, ActiveCustomerSelector],
         });
+
         setActiveCustomer(p => ({ ...p, ...updateCustomer }));
     };
 
@@ -133,7 +135,7 @@ export const CustomerForm: React.FC<Props> = ({ initialCustomer }) => {
             </Stack>
             {view === 'details' ? (
                 <Stack w100 gap="3.5rem">
-                    <Form onSubmit={handleCustomerDataChange(onCustomerDataChange)}>
+                    <Form onSubmit={handleCustomerDataChange(onCustomerDataChange)} noValidate>
                         <Stack column itemsCenter>
                             <Input
                                 {...rCustomer('addressEmail')}
@@ -174,6 +176,12 @@ export const CustomerForm: React.FC<Props> = ({ initialCustomer }) => {
                                             {t('accountPage.lastOrder.totalQuantity')}:&nbsp;
                                         </TP>
                                         <TP>{order?.totalQuantity}</TP>
+                                    </Stack>
+                                    <Stack>
+                                        <TP size="1.5rem" weight={500}>
+                                            {t('accountPage.lastOrder.totalProducts')}:&nbsp;
+                                        </TP>
+                                        <TP>{order?.lines.length}</TP>
                                     </Stack>
                                     <Stack>
                                         <TP size="1.5rem" weight={500}>

@@ -84,7 +84,12 @@ export const ProductDetailSelector = Selector('Product')({
     description: true,
     id: true,
     slug: true,
-
+    optionGroups: {
+        id: true,
+        name: true,
+        code: true,
+        options: { name: true, code: true },
+    },
     assets: {
         source: true,
         preview: true,
@@ -101,7 +106,11 @@ export const ProductDetailSelector = Selector('Product')({
         currencyCode: true,
         priceWithTax: true,
         stockLevel: true,
-        options: { name: true },
+        options: {
+            groupId: true,
+            code: true,
+            name: true,
+        },
     },
     featuredAsset: {
         source: true,
@@ -231,6 +240,15 @@ export const paymentSelector = Selector('Payment')({
 
 export type PaymentType = FromSelector<typeof paymentSelector, 'Payment', typeof scalars>;
 
+export const discountsSelector = Selector('Discount')({
+    type: true,
+    description: true,
+    amountWithTax: true,
+    adjustmentSource: true,
+});
+
+export type DiscountsType = FromSelector<typeof discountsSelector, 'Discount', typeof scalars>;
+
 export const ActiveOrderSelector = Selector('Order')({
     id: true,
     createdAt: true,
@@ -239,10 +257,7 @@ export const ActiveOrderSelector = Selector('Order')({
     shippingWithTax: true,
     totalWithTax: true,
     subTotalWithTax: true,
-    discounts: {
-        description: true,
-        amountWithTax: true,
-    },
+    discounts: discountsSelector,
     active: true,
     lines: {
         id: true,
@@ -292,10 +307,7 @@ export const OrderSelector = Selector('Order')({
     shippingWithTax: true,
     currencyCode: true,
     totalWithTax: true,
-    discounts: {
-        description: true,
-        amountWithTax: true,
-    },
+    discounts: discountsSelector,
     lines: {
         id: true,
         quantity: true,

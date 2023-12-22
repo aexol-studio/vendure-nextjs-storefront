@@ -323,7 +323,7 @@ export const OrderForm: React.FC<OrderFormProps> = ({ availableCountries }) => {
         </Stack>
     ) : (
         <Stack w100 column>
-            <ErrorBanner ref={errorRef} clearErrors={clearErrors} error={errors?.root} />
+            <ErrorBanner ref={errorRef} clearErrors={clearErrors} error={errors?.emailAddress} />
             <Form onSubmit={handleSubmit(onSubmit)} noValidate>
                 {/* Customer Part */}
                 <Stack column gap="0.5rem">

@@ -56,40 +56,46 @@ const useCartContainer = createContainer(() => {
         });
     };
 
-    const addToCart = (id: string, q: number, o?: boolean) => {
-        if (o) open();
+    const addToCart = async (id: string, q: number, o?: boolean) => {
+        //TODO: work here
+        // const founded = activeOrder?.lines.find(l => l.productVariant.id === id);
         setActiveOrder(c => {
             return c && { ...c, totalQuantity: c.totalQuantity + 1 };
         });
-        storefrontApiMutation({
-            addItemToOrder: [
-                { productVariantId: id, quantity: q },
-                {
-                    '...on Order': ActiveOrderSelector,
-                    '...on OrderLimitError': {
-                        errorCode: true,
-                        message: true,
+        try {
+            const { addItemToOrder } = await storefrontApiMutation({
+                addItemToOrder: [
+                    { productVariantId: id, quantity: q },
+                    {
+                        __typename: true,
+                        '...on Order': ActiveOrderSelector,
+                        '...on OrderLimitError': {
+                            errorCode: true,
+                            message: true,
+                        },
+                        '...on InsufficientStockError': {
+                            errorCode: true,
+                            message: true,
+                        },
+                        '...on NegativeQuantityError': {
+                            errorCode: true,
+                            message: true,
+                        },
+                        '...on OrderModificationError': {
+                            errorCode: true,
+                            message: true,
+                        },
                     },
-                    '...on InsufficientStockError': {
-                        errorCode: true,
-                        message: true,
-                    },
-                    '...on NegativeQuantityError': {
-                        errorCode: true,
-                        message: true,
-                    },
-                    '...on OrderModificationError': {
-                        errorCode: true,
-                        message: true,
-                    },
-                    __typename: true,
-                },
-            ],
-        }).then(r => {
-            if (r.addItemToOrder.__typename === 'Order') {
-                setActiveOrder(r.addItemToOrder);
+                ],
+            });
+            if (addItemToOrder.__typename === 'Order') {
+                setActiveOrder(addItemToOrder);
+                if (o) open();
+                return;
             }
-        });
+        } catch (e) {
+            console.error(e);
+        }
     };
     const removeFromCart = (id: string) => {
         setActiveOrder(c => {

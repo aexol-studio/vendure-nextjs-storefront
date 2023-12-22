@@ -15,7 +15,7 @@
     "shipping": "Shipping",
     "subtotal":"Subtotal",
     "total":"Total",
-    "coupon-code":"Coupon code:",
+    "coupon-code":"Code:",
     "empty-cart": "Your cart is empty",
     "remove": "Remove",
     "add-to-cart":"Add to cart",
@@ -48,6 +48,7 @@
     },
     "notifyMe":{"invalidEmail":"Please enter valid email","backendError":"Couldnt't add you to notify list","placeholder":"Notify me"},
     "errors": {
+        "clearErrors": "Clear errors",
         "backend": {
             "UNKNOWN_ERROR": "Unknown error",
             "NATIVE_AUTH_STRATEGY_ERROR": "Native auth strategy error",

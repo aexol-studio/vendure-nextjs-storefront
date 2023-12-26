@@ -58,5 +58,5 @@ const StyledTooltip = styled(motion.div)`
     padding: 0.4rem 0.8rem;
     border-radius: 0.4rem;
     background-color: #ffffff;
-    box-shadow: 0px 4px 16px rgba(0, 0, 0, 0.16);
+    box-shadow: 0px 4px 16px ${({ theme }) => theme.shadow};
 `;

@@ -120,6 +120,7 @@
         "notAvailable": "Default payment method is not available"
     },
     "confirmation": {
-        "orderReceived": "Your order <1>{{code}}</1> has been received"
+        "orderReceived": "Your order <1>{{code}}</1> has been received",
+        "orderCancelled": "Your order <1>{{code}}</1> has been cancelled"
     }
 }

@@ -75,7 +75,7 @@ const BannerBox = styled(motion.div)`
     width: 100%;
     border: 1px solid ${p => p.theme.error};
     font-size: 1.6rem;
-    box-shadow: 0 0 0.4rem 0.4rem ${p => p.theme.gray(200)};
+    box-shadow: 0 0 0.4rem 0.4rem ${({ theme }) => theme.shadow};
 `;
 
 const BannerContent = styled(Stack)``;

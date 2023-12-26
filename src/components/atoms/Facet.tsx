@@ -8,5 +8,5 @@ export const Facet = styled.div`
     :hover {
         background-color: ${p => p.theme.gray(50)};
     }
-    box-shadow: 1px 1px 2px 0px ${({ theme }) => theme.gray(500)};
+    box-shadow: 1px 1px 2px 0px ${({ theme }) => theme.shadow};
 `;

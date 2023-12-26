@@ -70,7 +70,7 @@ export const CartFooter: React.FC<Props> = ({ activeOrder, currencyCode, discoun
 
 const CartFooterWrapper = styled(Stack)<{ haveItems?: boolean }>`
     padding: 1.5rem 2rem;
-    box-shadow: 0 -0.5rem 1rem 0 rgba(0, 0, 0, 0.1);
+    box-shadow: 0 -0.5rem 1rem 0 ${({ theme }) => theme.shadow};
     height: ${p => (p.haveItems ? '30%' : 'fit-content')};
 `;
 

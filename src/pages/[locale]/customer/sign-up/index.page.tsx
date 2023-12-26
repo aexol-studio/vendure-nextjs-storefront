@@ -1,7 +1,7 @@
 import { Layout } from '@/src/layouts';
 import { ContextModel, getStaticPaths, makeStaticProps } from '@/src/lib/getStatic';
 import { InferGetStaticPropsType } from 'next';
-import React from 'react';
+import React, { useState } from 'react';
 import { getCollections } from '@/src/graphql/sharedQueries';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { RegisterCustomerInputType } from '@/src/graphql/selectors';
@@ -12,7 +12,7 @@ import { Input } from '@/src/components/forms/Input';
 import { Button } from '@/src/components/molecules/Button';
 import { ContentContainer } from '@/src/components/atoms/ContentContainer';
 import { useTranslation } from 'next-i18next';
-import { AbsoluteError, Form, FormContent, FormWrapper } from '../components/FormWrapper';
+import { Absolute, Form, FormContainer, FormContent, FormWrapper } from '../components/shared';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { TP } from '@/src/components/atoms/TypoGraphy';
@@ -23,6 +23,7 @@ type FormValues = RegisterCustomerInputType & { confirmPassword: string };
 const SignIn: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = props => {
     const { t } = useTranslation('customer');
     const { t: tErrors } = useTranslation('common');
+    const [success, setSuccess] = useState<boolean>(false);
 
     const schema = z
         .object({
@@ -81,7 +82,7 @@ const SignIn: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = props =
             });
 
             if (registerCustomerAccount.__typename === 'Success') {
-                console.log('success');
+                setSuccess(true);
                 return;
             }
 
@@ -95,14 +96,14 @@ const SignIn: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = props =
     return (
         <Layout categories={props.collections}>
             <ContentContainer>
-                <Stack w100 justifyCenter itemsCenter style={{ minHeight: 'calc(100vh - 6rem)' }}>
+                <FormContainer>
                     <FormWrapper column itemsCenter gap="3.5rem">
-                        <AbsoluteError w100>
+                        <Absolute w100>
                             <ErrorBanner
                                 error={errors.root}
                                 clearErrors={() => setError('root', { message: undefined })}
                             />
-                        </AbsoluteError>
+                        </Absolute>
                         <TP weight={600}>{t('signUpTitle')}</TP>
                         <FormContent w100 column itemsCenter gap="1.75rem">
                             <Form onSubmit={handleSubmit(onSubmit)}>
@@ -126,13 +127,20 @@ const SignIn: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = props =
                                 />
                                 <Button type="submit">{t('signUp')}</Button>
                             </Form>
+                            {/* TODO: ADD NICE SUCCESS BANNER */}
+                            {success && (
+                                <Stack style={{ padding: '1rem' }} w100 column itemsCenter gap="0.5rem">
+                                    <TP size="1.25rem">{t('signUpSuccess')}</TP>
+                                    <Link href="/customer/sign-in">{t('signIn')}</Link>
+                                </Stack>
+                            )}
                             <Stack column itemsCenter gap="0.5rem">
                                 <Link href="/customer/forgot-password">{t('forgotPassword')}</Link>
                                 <Link href="/customer/sign-in">{t('signIn')}</Link>
                             </Stack>
                         </FormContent>
                     </FormWrapper>
-                </Stack>
+                </FormContainer>
             </ContentContainer>
         </Layout>
     );

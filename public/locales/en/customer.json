@@ -16,6 +16,11 @@
     "newPassword": "New password",
     "confirmNewPassword": "Confirm new password",
     "resetPassword": "Reset password",
+    "signUpSuccess":"You have successfully signed up",
+    "verify": {
+        "success": "Your account has been verified",
+        "fail": "Your account could not be verified"
+    },
     "navigation": {
         "manageAccount": "Manage account",
         "manageAddresses": "Manage addresses",

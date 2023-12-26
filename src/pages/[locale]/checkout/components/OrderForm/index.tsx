@@ -130,6 +130,7 @@ export const OrderForm: React.FC<OrderFormProps> = ({ availableCountries }) => {
             : undefined,
         resolver: zodResolver(schema),
     });
+
     console.log(errors);
     const onSubmit: SubmitHandler<Form> = async ({
         emailAddress,
@@ -171,7 +172,7 @@ export const OrderForm: React.FC<OrderFormProps> = ({ availableCountries }) => {
                     },
                     {
                         __typename: true,
-                        '...on Order': ActiveOrderSelector,
+                        '...on Order': { id: true },
                         '...on NoActiveOrderError': { message: true, errorCode: true },
                     },
                 ],
@@ -190,7 +191,7 @@ export const OrderForm: React.FC<OrderFormProps> = ({ availableCountries }) => {
                         { input: { ...shipping, defaultBillingAddress: false, defaultShippingAddress: false } },
                         {
                             __typename: true,
-                            '...on Order': ActiveOrderSelector,
+                            '...on Order': { id: true },
                             '...on NoActiveOrderError': { message: true, errorCode: true },
                         },
                     ],
@@ -207,7 +208,7 @@ export const OrderForm: React.FC<OrderFormProps> = ({ availableCountries }) => {
                         { input: { ...billing, defaultBillingAddress: false, defaultShippingAddress: false } },
                         {
                             __typename: true,
-                            '...on Order': ActiveOrderSelector,
+                            '...on Order': { id: true },
                             '...on NoActiveOrderError': { message: true, errorCode: true },
                         },
                     ],
@@ -225,7 +226,7 @@ export const OrderForm: React.FC<OrderFormProps> = ({ availableCountries }) => {
                         { input: { emailAddress, firstName, lastName, phoneNumber } },
                         {
                             __typename: true,
-                            '...on Order': ActiveOrderSelector,
+                            '...on Order': { id: true },
                             '...on AlreadyLoggedInError': { message: true, errorCode: true },
                             '...on EmailAddressConflictError': { message: true, errorCode: true },
                             '...on GuestCheckoutError': { message: true, errorCode: true },
@@ -323,7 +324,7 @@ export const OrderForm: React.FC<OrderFormProps> = ({ availableCountries }) => {
         </Stack>
     ) : (
         <Stack w100 column>
-            <ErrorBanner ref={errorRef} clearErrors={clearErrors} error={errors?.emailAddress} />
+            <ErrorBanner ref={errorRef} clearErrors={() => clearErrors('root')} error={errors?.root} />
             <Form onSubmit={handleSubmit(onSubmit)} noValidate>
                 {/* Customer Part */}
                 <Stack column gap="0.5rem">

@@ -17,7 +17,6 @@ export const useValidationSchema = () => {
 
         terms: z.boolean().refine(value => value, { message: t('orderForm.errors.terms.required') }),
         regulations: z.boolean().refine(value => value, { message: t('orderForm.errors.regulations.required') }),
-        //TODO: Add password validation
 
         shippingDifferentThanBilling: z.boolean(),
         // userNeedInvoice: z.boolean(),

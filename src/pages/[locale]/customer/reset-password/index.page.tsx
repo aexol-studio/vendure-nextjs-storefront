@@ -1,17 +1,15 @@
 import { Layout } from '@/src/layouts';
-import { ContextModel, getStaticPaths, makeStaticProps } from '@/src/lib/getStatic';
-import { InferGetStaticPropsType } from 'next';
+import { makeServerSideProps, prepareSSRRedirect } from '@/src/lib/getStatic';
+import { GetServerSidePropsContext, InferGetServerSidePropsType } from 'next';
 import React from 'react';
 import { getCollections } from '@/src/graphql/sharedQueries';
 import { ContentContainer } from '@/src/components/atoms/ContentContainer';
-import { useRouter } from 'next/router';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { storefrontApiMutation } from '@/src/graphql/client';
 import { Input } from '@/src/components/forms/Input';
 import { Button } from '@/src/components/molecules/Button';
-import { Stack } from '@/src/components/atoms/Stack';
 import { usePush } from '@/src/lib/redirect';
-import { AbsoluteError, Form, FormContent, FormWrapper } from '../components/FormWrapper';
+import { Absolute, Form, FormContainer, FormContent, FormWrapper } from '../components/shared';
 import { useTranslation } from 'next-i18next';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -20,9 +18,7 @@ import { ErrorBanner } from '@/src/components/forms/ErrorBanner';
 
 type FormValues = { password: string; confirmPassword: string };
 
-const ResetPassword: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = props => {
-    const { query } = useRouter();
-    const token = query?.token;
+const ResetPassword: React.FC<InferGetServerSidePropsType<typeof getServerSideProps>> = props => {
     const { t } = useTranslation('customer');
     const { t: tErrors } = useTranslation('common');
 
@@ -53,11 +49,10 @@ const ResetPassword: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = 
     const push = usePush();
 
     const onSubmit: SubmitHandler<FormValues> = async data => {
-        if (!token) return;
         try {
             const { resetPassword } = await storefrontApiMutation({
                 resetPassword: [
-                    { password: data.password, token: token as string },
+                    { password: data.password, token: props.token as string },
                     {
                         __typename: true,
                         '...on CurrentUser': {
@@ -103,10 +98,10 @@ const ResetPassword: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = 
     return (
         <Layout categories={props.collections}>
             <ContentContainer>
-                <Stack column itemsCenter gap="3.5rem" style={{ minHeight: 'calc(100vh - 6rem)' }}>
-                    <AbsoluteError w100>
+                <FormContainer>
+                    <Absolute w100>
                         <ErrorBanner error={errors.root} clearErrors={() => setError('root', { message: undefined })} />
-                    </AbsoluteError>
+                    </Absolute>
                     <TP weight={600}>{t('resetPasswordTitle')}</TP>
                     <FormWrapper column itemsCenter gap="1.75rem">
                         <FormContent w100 column itemsCenter gap="1.75rem">
@@ -127,26 +122,28 @@ const ResetPassword: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = 
                             </Form>
                         </FormContent>
                     </FormWrapper>
-                </Stack>
+                </FormContainer>
             </ContentContainer>
         </Layout>
     );
 };
 
-const getStaticProps = async (context: ContextModel) => {
-    const r = await makeStaticProps(['common', 'customer'])(context);
+const getServerSideProps = async (context: GetServerSidePropsContext) => {
+    const r = await makeServerSideProps(['common', 'customer'])(context);
     const collections = await getCollections();
+    const token = context.query.token as string;
+    const destination = prepareSSRRedirect('/')(context);
+
+    if (!token) return { redirect: { destination, permanent: false } };
 
     const returnedStuff = {
         ...r.props,
         collections,
+        token,
     };
 
-    return {
-        props: returnedStuff,
-        revalidate: 10,
-    };
+    return { props: returnedStuff };
 };
 
-export { getStaticPaths, getStaticProps };
+export { getServerSideProps };
 export default ResetPassword;

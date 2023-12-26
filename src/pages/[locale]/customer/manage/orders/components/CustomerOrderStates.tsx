@@ -33,5 +33,5 @@ const Circle = styled(Stack)<{ wasActive?: boolean; active?: boolean }>`
     border-radius: 100%;
     border: 1px solid ${p => p.theme.gray(100)};
     background-color: ${p => (p.active ? p.theme.success : p.theme.gray(100))};
-    box-shadow: 0 0.25rem 0.25rem 0 ${p => p.theme.gray(100)};
+    box-shadow: 0 0.25rem 0.25rem 0 ${({ theme }) => theme.shadow};
 `;

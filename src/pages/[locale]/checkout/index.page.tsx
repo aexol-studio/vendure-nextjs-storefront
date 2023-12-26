@@ -1,19 +1,19 @@
 import { CheckoutLayout } from '@/src/layouts';
-import { makeServerSideProps } from '@/src/lib/getStatic';
+import { makeServerSideProps, prepareSSRRedirect } from '@/src/lib/getStatic';
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
 import React from 'react';
 import { OrderSummary } from './components/OrderSummary';
 import { OrderForm } from './components/OrderForm';
 import { getYMALProducts } from '@/src/graphql/sharedQueries';
 import { Content, Main } from './components/ui/Shared';
-import { SSRQuery, storefrontApiQuery } from '@/src/graphql/client';
+import { SSRQuery } from '@/src/graphql/client';
 import { ActiveOrderSelector, AvailableCountriesSelector } from '@/src/graphql/selectors';
 
 const CheckoutPage: React.FC<InferGetServerSidePropsType<typeof getServerSideProps>> = props => {
-    const { availableCountries, YMALProducts, initialActiveOrder } = props;
+    const { availableCountries, YMALProducts } = props;
 
     return (
-        <CheckoutLayout initialActiveOrder={initialActiveOrder}>
+        <CheckoutLayout>
             <Content>
                 <Main w100 justifyBetween>
                     <OrderForm availableCountries={availableCountries} />
@@ -26,32 +26,36 @@ const CheckoutPage: React.FC<InferGetServerSidePropsType<typeof getServerSidePro
 
 const getServerSideProps: GetServerSideProps = async context => {
     const r = await makeServerSideProps(['common', 'checkout'])(context);
-    const homePageRedirect =
-        r.props._nextI18Next?.initialLocale === 'en' ? '/' : `/${r.props._nextI18Next?.initialLocale}`;
-    const paymentRedirect =
-        r.props._nextI18Next?.initialLocale === 'en'
-            ? '/checkout/payment'
-            : `/${r.props._nextI18Next?.initialLocale}/checkout/payment`;
+    const homePageRedirect = prepareSSRRedirect('/')(context);
+    const paymentRedirect = prepareSSRRedirect('/checkout/payment')(context);
 
-    const { availableCountries } = await storefrontApiQuery({
-        availableCountries: AvailableCountriesSelector,
-    });
-    const YMALProducts = await getYMALProducts();
+    try {
+        const [{ activeOrder }, { availableCountries }] = await Promise.all([
+            SSRQuery(context)({ activeOrder: ActiveOrderSelector }),
+            SSRQuery(context)({
+                availableCountries: AvailableCountriesSelector,
+            }),
+        ]);
+        const YMALProducts = await getYMALProducts();
+        if (activeOrder?.state === 'ArrangingPayment') {
+            return paymentRedirect;
+        }
 
-    const { activeOrder } = await SSRQuery(context)({
-        activeOrder: ActiveOrderSelector,
-    });
+        if (!activeOrder || activeOrder.lines.length === 0) {
+            return homePageRedirect;
+        }
+        //MOST IMPORTANT PART WE HAVE TO RETURN `checkout` BECAUSE WE LOOK FOR IT IN _app.tsx
+        const returnedStuff = {
+            ...r.props,
+            availableCountries,
+            checkout: activeOrder,
+            YMALProducts,
+        };
 
-    if (activeOrder?.state === 'ArrangingPayment') {
-        return { redirect: { destination: paymentRedirect, permanent: false } };
+        return { props: returnedStuff };
+    } catch (e) {
+        return homePageRedirect;
     }
-
-    if (!activeOrder || activeOrder.lines.length === 0) {
-        return { redirect: { destination: homePageRedirect, permanent: false } };
-    }
-
-    const returnedStuff = { ...r.props, availableCountries, initialActiveOrder: activeOrder, YMALProducts };
-    return { props: returnedStuff };
 };
 
 export { getServerSideProps };

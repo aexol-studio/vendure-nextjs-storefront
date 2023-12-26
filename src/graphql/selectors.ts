@@ -54,6 +54,7 @@ export const ProductSearchSelector = Selector('SearchResult')({
 export type ProductSearchType = FromSelector<typeof ProductSearchSelector, 'SearchResult', typeof scalars>;
 
 export const FacetSelector = Selector('Facet')({
+    id: true,
     name: true,
     code: true,
     values: {
@@ -85,10 +86,14 @@ export const ProductDetailSelector = Selector('Product')({
     id: true,
     slug: true,
     optionGroups: {
-        id: true,
         name: true,
+        id: true,
         code: true,
-        options: { name: true, code: true },
+        options: {
+            name: true,
+            id: true,
+            code: true,
+        },
     },
     assets: {
         source: true,
@@ -107,7 +112,9 @@ export const ProductDetailSelector = Selector('Product')({
         priceWithTax: true,
         stockLevel: true,
         options: {
+            id: true,
             groupId: true,
+            group: { id: true },
             code: true,
             name: true,
         },
@@ -303,6 +310,8 @@ export type ActiveOrderType = FromSelector<typeof ActiveOrderSelector, 'Order', 
 
 export const OrderSelector = Selector('Order')({
     state: true,
+    active: true,
+    payments: paymentSelector,
     subTotalWithTax: true,
     shippingWithTax: true,
     currencyCode: true,

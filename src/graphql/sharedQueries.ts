@@ -10,4 +10,4 @@ export const getCollections = () =>
 export const getYMALProducts = () =>
     storefrontApiQuery({
         products: [{ options: { take: 8, sort: { createdAt: SortOrder.DESC } } }, { items: YAMLProductsSelector }],
-    }).then(d => d.products.items);
+    }).then(d => d.products.items.filter(p => p.variants.length > 0));

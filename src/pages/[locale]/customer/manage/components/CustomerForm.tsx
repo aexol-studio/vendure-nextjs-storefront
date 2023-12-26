@@ -134,7 +134,7 @@ export const CustomerForm: React.FC<Props> = ({ initialCustomer }) => {
                 </Stack>
             </Stack>
             {view === 'details' ? (
-                <Stack w100 gap="3.5rem">
+                <CustomerWrap w100 gap="3.5rem">
                     <Form onSubmit={handleCustomerDataChange(onCustomerDataChange)} noValidate>
                         <Stack column itemsCenter>
                             <Input
@@ -142,13 +142,13 @@ export const CustomerForm: React.FC<Props> = ({ initialCustomer }) => {
                                 label={t('accountPage.detailsForm.addressEmail')}
                                 disabled
                             />
-                            <Stack gap="1.25rem">
+                            <Stack w100 gap="1.25rem">
                                 <Input label={t('accountPage.detailsForm.firstName')} {...rCustomer('firstName')} />
                                 <Input label={t('accountPage.detailsForm.lastName')} {...rCustomer('lastName')} />
                             </Stack>
                             <Input label={t('accountPage.detailsForm.phoneNumber')} {...rCustomer('phoneNumber')} />
                         </Stack>
-                        <Button type="submit">{t('accountPage.detailsForm.changeDetails')}</Button>
+                        <StyledButton type="submit">{t('accountPage.detailsForm.changeDetails')}</StyledButton>
                     </Form>
                     {order ? (
                         <LastOrderWrap w100 justifyBetween column gap="1.25rem">
@@ -192,7 +192,9 @@ export const CustomerForm: React.FC<Props> = ({ initialCustomer }) => {
                                 </Stack>
                             </Stack>
                             <StyledLink href={`/customer/manage/orders/${order?.code}`}>
-                                {t('accountPage.lastOrder.viewOrder')}
+                                <StyledButton style={{ width: '100%' }}>
+                                    {t('accountPage.lastOrder.viewOrder')}
+                                </StyledButton>
                             </StyledLink>
                         </LastOrderWrap>
                     ) : (
@@ -202,7 +204,7 @@ export const CustomerForm: React.FC<Props> = ({ initialCustomer }) => {
                             </TP>
                         </Stack>
                     )}
-                </Stack>
+                </CustomerWrap>
             ) : null}
             {view === 'password' ? (
                 <Stack w100>
@@ -218,7 +220,7 @@ export const CustomerForm: React.FC<Props> = ({ initialCustomer }) => {
                                 />
                             </Stack>
                         </Stack>
-                        <Button type="submit">{t('accountPage.passwordForm.confirmPassword')}</Button>
+                        <StyledButton type="submit">{t('accountPage.passwordForm.confirmPassword')}</StyledButton>
                     </Form>
                 </Stack>
             ) : null}
@@ -226,19 +228,21 @@ export const CustomerForm: React.FC<Props> = ({ initialCustomer }) => {
     );
 };
 
+const CustomerWrap = styled(Stack)`
+    @media (max-width: ${({ theme }) => theme.breakpoints.md}) {
+        flex-direction: column;
+    }
+`;
+
 const StyledButton = styled(Button)<{ active?: boolean }>`
     background: ${p => p.active && p.theme.gray(700)};
+    font-size: 1.2rem;
 `;
 
 const LastOrderWrap = styled(Stack)``;
 
 const StyledLink = styled(Link)`
-    padding: 1rem 3rem;
-    background: ${p => p.theme.button.back};
-    color: ${p => p.theme.button.front};
-    text-align: center;
-    font-weight: 600;
-    font-size: 1.2rem;
+    width: 100%;
 `;
 
 const Form = styled.form`

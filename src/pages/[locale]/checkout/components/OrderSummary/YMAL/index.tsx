@@ -101,12 +101,12 @@ const Slide = styled.div`
     padding: 1.5rem;
     border: 1px solid ${p => p.theme.gray(100)};
     border-radius: 0.5rem;
-    box-shadow: 0 0 1rem rgba(0, 0, 0, 0.1);
+    box-shadow: 0 0 1rem ${({ theme }) => theme.shadow};
     transition: all 0.2s ease-in-out;
 
     :hover {
         border-color: ${p => p.theme.gray(400)};
-        box-shadow: 0 0 1rem rgba(0, 0, 0, 0.2);
+        box-shadow: 0 0 1rem ${({ theme }) => theme.shadow};
     }
 `;
 

@@ -11,7 +11,7 @@ import { Button } from '@/src/components/molecules/Button';
 import { useTranslation } from 'next-i18next';
 import { ContentContainer } from '@/src/components/atoms/ContentContainer';
 import { storefrontApiMutation } from '@/src/graphql/client';
-import { AbsoluteError, Form, FormContent, FormWrapper } from '../components/FormWrapper';
+import { Absolute, Form, FormContainer, FormContent, FormWrapper } from '../components/shared';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { TP } from '@/src/components/atoms/TypoGraphy';
@@ -76,14 +76,14 @@ const ForgotPassword: React.FC<InferGetStaticPropsType<typeof getStaticProps>> =
     return (
         <Layout categories={props.collections}>
             <ContentContainer>
-                <Stack w100 justifyCenter itemsCenter style={{ minHeight: 'calc(100vh - 6rem)' }}>
+                <FormContainer>
                     <FormWrapper column itemsCenter gap="3.5rem">
-                        <AbsoluteError w100>
+                        <Absolute w100>
                             <ErrorBanner
                                 error={errors.root}
                                 clearErrors={() => setError('root', { message: undefined })}
                             />
-                        </AbsoluteError>
+                        </Absolute>
                         <TP weight={600}>{t('forgotPasswordTitle')}</TP>
                         <FormContent w100 column itemsCenter gap="1.75rem">
                             <Form onSubmit={handleSubmit(onSubmit)}>
@@ -101,7 +101,7 @@ const ForgotPassword: React.FC<InferGetStaticPropsType<typeof getStaticProps>> =
                             </Stack>
                         </FormContent>
                     </FormWrapper>
-                </Stack>
+                </FormContainer>
             </ContentContainer>
         </Layout>
     );

@@ -1,5 +1,5 @@
 import { Layout } from '@/src/layouts';
-import { makeServerSideProps } from '@/src/lib/getStatic';
+import { makeServerSideProps, prepareSSRRedirect } from '@/src/lib/getStatic';
 import { GetServerSidePropsContext, InferGetServerSidePropsType } from 'next';
 import React, { ChangeEvent, useEffect, useRef, useState } from 'react';
 import { getCollections } from '@/src/graphql/sharedQueries';
@@ -93,7 +93,7 @@ const History: React.FC<InferGetServerSidePropsType<typeof getServerSideProps>> 
     return (
         <Layout categories={props.collections}>
             <ContentContainer>
-                <Stack w100 itemsStart gap="1.75rem">
+                <CustomerWrap w100 itemsStart gap="1.75rem">
                     <CustomerNavigation />
                     <Stack column w100 gap="1rem">
                         <TP size="2.5rem" weight={600}>
@@ -172,11 +172,17 @@ const History: React.FC<InferGetServerSidePropsType<typeof getServerSideProps>> 
                             )}
                         </Main>
                     </Stack>
-                </Stack>
+                </CustomerWrap>
             </ContentContainer>
         </Layout>
     );
 };
+
+const CustomerWrap = styled(Stack)`
+    @media (max-width: ${({ theme }) => theme.breakpoints.lg}) {
+        flex-direction: column;
+    }
+`;
 
 const Main = styled(Stack)`
     padding: 1.75rem;
@@ -206,7 +212,7 @@ const Wrap = styled(Stack)`
     }
 
     ::-webkit-scrollbar-thumb {
-        background: ${p => p.theme.gray(200)};
+        background: ${({ theme }) => theme.shadow};
         border-radius: 1rem;
     }
 
@@ -217,10 +223,13 @@ const Wrap = styled(Stack)`
 
 const ContentStack = styled(Stack)`
     padding: 1.75rem;
-    box-shadow: 0 0 0.75rem ${p => p.theme.gray(200)};
+    box-shadow: 0 0 0.75rem ${({ theme }) => theme.shadow};
 `;
 
 const ClickableStack = styled(Stack)`
+    @media (max-width: ${({ theme }) => theme.breakpoints.lg}) {
+        width: 100%;
+    }
     width: 50%;
     height: 20rem;
     padding: 1rem;
@@ -238,7 +247,7 @@ const AbsoluteLink = styled(Link)`
 const getServerSideProps = async (context: GetServerSidePropsContext) => {
     const r = await makeServerSideProps(['common', 'customer'])(context);
     const collections = await getCollections();
-    const destination = r.props._nextI18Next?.initialLocale === 'en' ? '/' : `/${r.props._nextI18Next?.initialLocale}`;
+    const destination = prepareSSRRedirect('/')(context);
 
     try {
         const { activeCustomer } = await SSRQuery(context)({
@@ -260,7 +269,7 @@ const getServerSideProps = async (context: GetServerSidePropsContext) => {
 
         return { props: returnedStuff };
     } catch (error) {
-        return { redirect: { destination, permanent: false } };
+        return destination;
     }
 };
 

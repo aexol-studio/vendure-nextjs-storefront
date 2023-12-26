@@ -62,7 +62,13 @@ const UnderLine = styled(motion.div)`
 `;
 
 const NavigationBox = styled(Stack)`
-    max-width: 30rem;
+    margin-top: 2rem;
+
+    @media (min-width: ${({ theme }) => theme.breakpoints.lg}) {
+        max-width: 30rem;
+        margin-top: 0;
+    }
+
     padding: 4rem 2.75rem;
     border: 1px solid ${p => p.theme.gray(100)};
 `;

@@ -1,5 +1,5 @@
 import { Layout } from '@/src/layouts';
-import { makeServerSideProps } from '@/src/lib/getStatic';
+import { makeServerSideProps, prepareSSRRedirect } from '@/src/lib/getStatic';
 import { GetServerSidePropsContext, InferGetServerSidePropsType } from 'next';
 import React from 'react';
 import { getCollections } from '@/src/graphql/sharedQueries';
@@ -150,7 +150,7 @@ const StyledLink = styled(Link)`
 const getServerSideProps = async (context: GetServerSidePropsContext) => {
     const r = await makeServerSideProps(['common', 'customer'])(context);
     const collections = await getCollections();
-    const destination = r.props._nextI18Next?.initialLocale === 'en' ? '/' : `/${r.props._nextI18Next?.initialLocale}`;
+    const destination = prepareSSRRedirect('/')(context);
     const code = context.params?.code as string;
 
     try {

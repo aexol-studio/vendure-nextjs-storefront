@@ -77,7 +77,7 @@ const Option = styled.button`
 
     color: ${p => p.theme.gray(1000)};
     border-radius: ${p => p.theme.borderRadius};
-    border: 1px solid ${p => p.theme.gray(200)};
+    border: 1px solid ${({ theme }) => theme.shadow};
     padding: 0.5rem 1rem;
     background-color: ${p => p.theme.gray(100)};
 `;
@@ -91,11 +91,12 @@ const Edit = styled(Pen)`
 `;
 
 const CustomerAddress = styled(Stack)<{ selected?: boolean; canBeSelected?: boolean }>`
+    min-width: 42rem;
     position: relative;
     padding: 3rem 2.5rem;
     background-color: ${p => p.theme.gray(50)};
     border-radius: ${p => p.theme.borderRadius};
-    box-shadow: 0 0 0.5rem ${p => p.theme.gray(200)};
+    box-shadow: 0 0 0.5rem ${({ theme }) => theme.shadow};
 
     outline: ${p => (p.selected ? `1px solid ${p.theme.accent(700)}` : `1px solid ${p.theme.gray(200)}`)};
     transition: outline 0.2s ease-in-out;

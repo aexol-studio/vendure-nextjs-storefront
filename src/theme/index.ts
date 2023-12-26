@@ -28,14 +28,21 @@ type DetailTheme = {
             back?: string;
         };
     };
+    shadow: string;
     error: string;
     success: string;
     breakpoints: {
+        /** 576px */
         ssm: string;
+        /** 640px */
         sm: string;
+        /** 768px */
         md: string;
+        /** 1024px */
         lg: string;
+        /** 1280px */
         xl: string;
+        /** 1536px */
         '2xl': string;
     };
 };
@@ -116,6 +123,7 @@ export const LightTheme = createTheme(300, t => ({
         front: t.gray(0),
         icon: { front: t.gray(900) },
     },
+    shadow: t.grayAlpha(200, 200),
     error: '#ff0000',
     success: '#00ff00',
     breakpoints: {

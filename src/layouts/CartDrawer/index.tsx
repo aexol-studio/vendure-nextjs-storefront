@@ -77,7 +77,7 @@ const CartComponentMain = styled(motion.div)`
     overflow-y: auto;
 
     background: ${p => p.theme.gray(0)};
-    box-shadow: -2rem 1.5rem 2.5rem 1rem rgba(0, 0, 0, 0.2);
+    box-shadow: 0rem 0.2rem 0.5rem ${({ theme }) => theme.shadow};
 `;
 
 const CartContainer = styled(Stack)`

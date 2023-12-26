@@ -31,38 +31,43 @@ export const MainBar: React.FC<MainBarProps> = ({ title, categories }) => {
         push(`/search/?${searchParams}`);
     }, [searchPhrase]);
     return (
-        <Main itemsCenter justifyBetween>
+        <Main w100 itemsCenter justifyBetween gap="2rem">
             <Title>{title}</Title>
-            <Stack itemsCenter gap="2rem">
-                <Select
-                    value={selectedCategorySlug}
-                    setValue={e => setSelectedCategorySlug(e)}
-                    options={categories.map(c => ({
-                        label: c.name,
-                        value: c.slug,
-                    }))}
-                />
-                <SearchInput
-                    value={searchPhrase}
-                    onChange={e => setSearchPhrase(e.target.value)}
-                    onKeyDown={e => {
-                        if (e.key === 'Enter') {
+            <BarContent itemsCenter gap="2rem">
+                <Stack itemsCenter justifyBetween w100 gap="2rem">
+                    <Select
+                        value={selectedCategorySlug}
+                        setValue={e => setSelectedCategorySlug(e)}
+                        options={categories.map(c => ({
+                            label: c.name,
+                            value: c.slug,
+                        }))}
+                    />{' '}
+                    <IconButton>
+                        <Filter />
+                    </IconButton>
+                </Stack>
+
+                <Stack itemsCenter justifyBetween w100 gap="2rem">
+                    <SearchInput
+                        value={searchPhrase}
+                        onChange={e => setSearchPhrase(e.target.value)}
+                        onKeyDown={e => {
+                            if (e.key === 'Enter') {
+                                searchClick();
+                                return false;
+                            }
+                        }}
+                        placeholder={t('search-products')}
+                    />
+                    <IconButton
+                        onClick={() => {
                             searchClick();
-                            return false;
-                        }
-                    }}
-                    placeholder={t('search-products')}
-                />
-                <IconButton
-                    onClick={() => {
-                        searchClick();
-                    }}>
-                    <Search />
-                </IconButton>
-                <IconButton>
-                    <Filter />
-                </IconButton>
-            </Stack>
+                        }}>
+                        <Search />
+                    </IconButton>
+                </Stack>
+            </BarContent>
         </Main>
     );
 };
@@ -70,6 +75,19 @@ export const MainBar: React.FC<MainBarProps> = ({ title, categories }) => {
 const Title = styled(TH2)`
     flex: 1;
 `;
+
 const Main = styled(Stack)`
-    width: 100%;
+    @media (max-width: ${p => p.theme.breakpoints.md}) {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+`;
+
+const BarContent = styled(Stack)`
+    @media (max-width: ${p => p.theme.breakpoints.md}) {
+        width: 100%;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+    }
 `;

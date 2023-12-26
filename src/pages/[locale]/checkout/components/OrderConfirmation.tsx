@@ -5,7 +5,7 @@ import { TH2, TP } from '@/src/components/atoms/TypoGraphy';
 
 import { Divider } from '@/src/components/atoms/Divider';
 import { ProductImage } from '@/src/components/atoms/ProductImage';
-import { CheckCircle2 } from 'lucide-react';
+import { CheckCircle2, X } from 'lucide-react';
 import { priceFormatter } from '@/src/util/priceFomatter';
 import { CurrencyCode } from '@/src/zeus';
 import { OrderType } from '@/src/graphql/selectors';
@@ -17,6 +17,11 @@ export const OrderConfirmation: React.FC<{ code: string; order?: OrderType }> = 
 
     const currencyCode = order?.currencyCode || CurrencyCode.USD;
     const discounts = order?.discounts?.reduce((acc, discount) => acc - discount.amountWithTax, 0) ?? 0;
+
+    const orderState = order?.state;
+    //TODO: Add all possible payment states
+    // const paymentState = order?.payments?.[0]?.state;
+
     return (
         <Stack column w100 gap="2.5rem">
             <Stack style={{ paddingBlock: '2rem' }}>
@@ -26,39 +31,56 @@ export const OrderConfirmation: React.FC<{ code: string; order?: OrderType }> = 
                 <Stack justifyBetween w100 gap="2rem">
                     <Stack w100 column gap="4rem">
                         <Stack itemsCenter gap="2rem">
-                            <CheckCircle2 color="green" size={44} />
+                            {orderState === 'Cancelled' ? (
+                                <X color="red" size={44} />
+                            ) : (
+                                <CheckCircle2 color="green" size={44} />
+                            )}
                             <TH2>{t('orderSummary.title')}</TH2>
                         </Stack>
                         <TP size="2rem">
-                            <Trans
-                                i18nKey="confirmation.orderReceived"
-                                t={t}
-                                values={{ code }}
-                                components={{ 1: <strong></strong> }}
-                            />
+                            {orderState === 'Cancelled' ? (
+                                <Trans
+                                    values={{ code }}
+                                    components={{ 1: <strong></strong> }}
+                                    i18nKey="confirmation.orderCancelled"
+                                    t={t}
+                                />
+                            ) : (
+                                <Trans
+                                    i18nKey="confirmation.orderReceived"
+                                    t={t}
+                                    values={{ code }}
+                                    components={{ 1: <strong></strong> }}
+                                />
+                            )}
                         </TP>
                     </Stack>
-                    <Stack w100 column gap="1rem">
-                        <Stack justifyBetween>
-                            <TP>{t('orderSummary.subtotal')}</TP>
-                            <TP weight={600}>{priceFormatter(order?.subTotalWithTax || 0, currencyCode)}</TP>
+                    {orderState !== 'Cancelled' && (
+                        <Stack w100 column gap="1rem">
+                            <Stack justifyBetween>
+                                <TP>{t('orderSummary.subtotal')}</TP>
+                                <TP weight={600}>{priceFormatter(order?.subTotalWithTax || 0, currencyCode)}</TP>
+                            </Stack>
+                            <Stack justifyBetween>
+                                <TP>{t('orderSummary.discount')}</TP>
+                                <TP weight={600}>{priceFormatter(discounts, currencyCode)}</TP>
+                            </Stack>
+                            <Stack justifyBetween>
+                                <TP>{t('orderSummary.shipping')}</TP>
+                                <TP weight={600}> {priceFormatter(order?.shippingWithTax || 0, currencyCode)}</TP>
+                            </Stack>
+                            {order?.discounts && order?.discounts.length > 0 ? <Divider /> : null}
+                            <Discounts withLabel discounts={order?.discounts} currencyCode={currencyCode} />
+                            <Divider />
+                            <Stack justifyBetween>
+                                <TP>{t('orderSummary.total')}</TP>
+                                <TP weight={600}>
+                                    {priceFormatter((order?.totalWithTax ?? 0) - discounts, currencyCode)}
+                                </TP>
+                            </Stack>
                         </Stack>
-                        <Stack justifyBetween>
-                            <TP>{t('orderSummary.discount')}</TP>
-                            <TP weight={600}>{priceFormatter(discounts, currencyCode)}</TP>
-                        </Stack>
-                        <Stack justifyBetween>
-                            <TP>{t('orderSummary.shipping')}</TP>
-                            <TP weight={600}> {priceFormatter(order?.shippingWithTax || 0, currencyCode)}</TP>
-                        </Stack>
-                        {order?.discounts && order?.discounts.length > 0 ? <Divider /> : null}
-                        <Discounts withLabel discounts={order?.discounts} currencyCode={currencyCode} />
-                        <Divider />
-                        <Stack justifyBetween>
-                            <TP>{t('orderSummary.total')}</TP>
-                            <TP weight={600}>{priceFormatter((order?.totalWithTax ?? 0) - discounts, currencyCode)}</TP>
-                        </Stack>
-                    </Stack>
+                    )}
                 </Stack>
                 <Divider marginBlock="4rem" />
                 {order?.lines.map(line => {

@@ -1,5 +1,5 @@
 import { Layout } from '@/src/layouts';
-import { makeServerSideProps } from '@/src/lib/getStatic';
+import { makeServerSideProps, prepareSSRRedirect } from '@/src/lib/getStatic';
 import { GetServerSidePropsContext, InferGetServerSidePropsType } from 'next';
 import React from 'react';
 import { getCollections } from '@/src/graphql/sharedQueries';
@@ -8,41 +8,47 @@ import { Link } from '@/src/components/atoms/Link';
 import { useTranslation } from 'next-i18next';
 import { ContentContainer } from '@/src/components/atoms/ContentContainer';
 import { Stack } from '@/src/components/atoms/Stack';
-import { AbsoluteError, FormContent, FormWrapper } from '../components/FormWrapper';
+import { Absolute, FormContainer, FormContent, FormWrapper } from '../components/shared';
 import { ErrorBanner } from '@/src/components/forms/ErrorBanner';
+import { TH2 } from '@/src/components/atoms/TypoGraphy';
 
 const Verify: React.FC<InferGetServerSidePropsType<typeof getServerSideProps>> = props => {
     const { t } = useTranslation('customer');
     const { t: tError } = useTranslation('common');
-    //TODO: Add error handling
-    const { verifyCustomerAccount } = props.status;
     return (
         <Layout categories={props.collections}>
             <ContentContainer>
-                <Stack column gap="3.5rem" w100 justifyCenter itemsCenter style={{ minHeight: 'calc(100vh - 6rem)' }}>
+                <FormContainer>
                     <FormWrapper column itemsCenter gap="3.5rem">
                         <FormContent w100 column itemsCenter gap="1.75rem">
-                            {verifyCustomerAccount.__typename !== 'CurrentUser' ? (
-                                <AbsoluteError w100>
-                                    <ErrorBanner
-                                        initial={{ opacity: 1 }}
-                                        error={{
-                                            root: {
-                                                message: tError(`errors.backend.${verifyCustomerAccount.errorCode}`),
-                                            },
-                                        }}
-                                    />
-                                </AbsoluteError>
-                            ) : null}
-
-                            {props.status.success ? (
-                                <Link href="/customer/sign-in">{t('signIn')}</Link>
+                            {props.status.verifyCustomerAccount.__typename !== 'CurrentUser' ? (
+                                <>
+                                    <Absolute w100>
+                                        <ErrorBanner
+                                            initial={{ opacity: 1 }}
+                                            error={{
+                                                root: {
+                                                    message: tError(
+                                                        `errors.backend.${props.status.verifyCustomerAccount.errorCode}`,
+                                                    ),
+                                                },
+                                            }}
+                                        />
+                                    </Absolute>
+                                    <Stack>
+                                        <TH2>{t('verify.fail')}</TH2>
+                                        <Link href="/">{t('home')}</Link>
+                                    </Stack>
+                                </>
                             ) : (
-                                <Link href="/">{t('home')}</Link>
+                                <Stack>
+                                    <TH2>{t('verify.success')}</TH2>
+                                    <Link href="/customer/sign-in">{t('signIn')}</Link>
+                                </Stack>
                             )}
                         </FormContent>
                     </FormWrapper>
-                </Stack>
+                </FormContainer>
             </ContentContainer>
         </Layout>
     );
@@ -52,7 +58,7 @@ const getServerSideProps = async (context: GetServerSidePropsContext) => {
     const r = await makeServerSideProps(['common', 'customer'])(context);
     const collections = await getCollections();
     const token = context.query.token as string;
-    const destination = r.props._nextI18Next?.initialLocale === 'en' ? '/' : `/${r.props._nextI18Next?.initialLocale}`;
+    const destination = prepareSSRRedirect('/')(context);
 
     if (!token) return { redirect: { destination, permanent: false } };
 
@@ -94,10 +100,7 @@ const getServerSideProps = async (context: GetServerSidePropsContext) => {
             ],
         });
 
-        let success = false;
-        if (verifyCustomerAccount.__typename === 'CurrentUser') success = true;
-
-        return { props: { ...r.props, collections, status: { success, verifyCustomerAccount } } };
+        return { props: { ...r.props, collections, status: { verifyCustomerAccount } } };
     } catch (e) {
         return { redirect: { destination, permanent: false } };
     }

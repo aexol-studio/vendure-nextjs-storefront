@@ -64,9 +64,9 @@ export const AddressForm: React.FC<{
                 {t('addressForm.title')}
             </TP>
             <Form onSubmit={handleSubmit(onSubmit)}>
-                <Stack column>
+                <Stack w100 column>
                     <Input {...register('fullName')} label={t('addressForm.fullName')} error={errors.fullName} />
-                    <Stack itemsCenter gap="1.25rem">
+                    <Stack w100 itemsCenter gap="1.25rem">
                         <Input {...register('company')} label={t('addressForm.company')} error={errors.company} />
                         <Input
                             type="tel"
@@ -77,7 +77,7 @@ export const AddressForm: React.FC<{
                             error={errors.phoneNumber}
                         />
                     </Stack>
-                    <Stack itemsCenter gap="1.25rem">
+                    <Stack w100 itemsCenter gap="1.25rem">
                         <Input
                             {...register('streetLine1')}
                             label={t('addressForm.streetLine1')}
@@ -103,7 +103,7 @@ export const AddressForm: React.FC<{
                     <Input {...register('postalCode')} label={t('addressForm.postalCode')} error={errors.postalCode} />
                     <Input {...register('province')} label={t('addressForm.province')} error={errors.province} />
                 </Stack>
-                <Stack column gap="1.25rem">
+                <Stack w100 column gap="1.25rem">
                     <Stack itemsCenter gap="2rem">
                         <CheckboxStack itemsCenter gap="0.75rem">
                             <DefaultBilling active={watch('defaultBillingAddress')} />
@@ -116,7 +116,7 @@ export const AddressForm: React.FC<{
                             <label htmlFor="defaultShippingAddress">{t('addressForm.defaultShippingAddress')}</label>
                         </CheckboxStack>
                     </Stack>
-                    <Stack itemsCenter justifyBetween>
+                    <Stack w100 itemsCenter justifyBetween>
                         {onModalClose && (
                             <Button onClick={onModalClose} type="button">
                                 {t('addressForm.cancel')}
@@ -130,7 +130,9 @@ export const AddressForm: React.FC<{
     );
 };
 
-const Form = styled.form``;
+const Form = styled.form`
+    width: 100%;
+`;
 
 const CheckboxStack = styled(Stack)`
     position: relative;

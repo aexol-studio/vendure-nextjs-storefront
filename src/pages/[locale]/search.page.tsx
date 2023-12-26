@@ -66,7 +66,12 @@ const SearchPage: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = pro
                                     </Stack>
                                     <Stack column>
                                         {props.facets.map(f => (
-                                            <FacetFilterCheckbox facet={f} key={f.code} />
+                                            <FacetFilterCheckbox
+                                                facet={f}
+                                                key={f.code}
+                                                onClick={() => {}}
+                                                selected={[]}
+                                            />
                                         ))}
                                     </Stack>
                                 </Stack>

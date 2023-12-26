@@ -17,7 +17,7 @@ export const Hero: React.FC<{
     return (
         <Main justifyCenter>
             <ContentContainer>
-                <Stack justifyBetween>
+                <Content justifyBetween>
                     <Stack column gap="4rem">
                         <Stack column gap="1rem">
                             <TH1>{h1}</TH1>
@@ -29,11 +29,17 @@ export const Hero: React.FC<{
                         </Link>
                     </Stack>
                     <HeroImage src={image} />
-                </Stack>
+                </Content>
             </ContentContainer>
         </Main>
     );
 };
+
+const Content = styled(Stack)`
+    @media (max-width: ${p => p.theme.breakpoints.sm}) {
+        flex-direction: column-reverse;
+    }
+`;
 
 const Main = styled(Stack)`
     width: 100%;

@@ -1,9 +1,9 @@
+import { Price } from '@/src/components/atoms/Price';
 import { Stack } from '@/src/components/atoms/Stack';
 import { TP } from '@/src/components/atoms/TypoGraphy';
 import { QuantityCounter } from '@/src/components/molecules/QuantityCounter';
 import { ActiveOrderType } from '@/src/graphql/selectors';
 import { useCart } from '@/src/state/cart';
-import { priceFormatter } from '@/src/util/priceFomatter';
 import { CurrencyCode } from '@/src/zeus';
 import styled from '@emotion/styled';
 import { Trash2 } from 'lucide-react';
@@ -24,8 +24,6 @@ export const CartBody: React.FC<Props> = ({ currencyCode, activeOrder }) => {
                 activeOrder.lines.map(
                     ({ productVariant, id, featuredAsset, quantity, linePriceWithTax, discountedLinePriceWithTax }) => {
                         const optionInName = productVariant.name.replace(productVariant.product.name, '') !== '';
-                        const isPriceDiscounted = linePriceWithTax !== discountedLinePriceWithTax;
-
                         return (
                             <CartRow w100 justifyBetween key={id}>
                                 <Stack gap="3.5rem">
@@ -50,23 +48,12 @@ export const CartBody: React.FC<Props> = ({ currencyCode, activeOrder }) => {
                                         </Remove>
                                     </Stack>
                                 </Stack>
-                                {isPriceDiscounted ? (
-                                    <Stack justifyEnd gap="0.5rem">
-                                        <TP
-                                            size="1.25rem"
-                                            style={{
-                                                textDecoration: 'line-through',
-                                                lineHeight: '2.4rem',
-                                            }}>
-                                            {priceFormatter(linePriceWithTax, currencyCode)}
-                                        </TP>
-                                        <TP style={{ color: 'red' }}>
-                                            {priceFormatter(discountedLinePriceWithTax, currencyCode)}
-                                        </TP>
-                                    </Stack>
-                                ) : (
-                                    <TP>{priceFormatter(linePriceWithTax, currencyCode)}</TP>
-                                )}
+                                <Price
+                                    currencyCode={currencyCode}
+                                    price={linePriceWithTax}
+                                    discountPrice={discountedLinePriceWithTax}
+                                    quantity={quantity}
+                                />
                             </CartRow>
                         );
                     },

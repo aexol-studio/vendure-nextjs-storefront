@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
-import { makeServerSideProps } from '@/src/lib/getStatic';
+import { makeServerSideProps, prepareSSRRedirect } from '@/src/lib/getStatic';
 import { OrderSummary } from '../components/OrderSummary';
 import { OrderPayment } from '../components/OrderPayment';
 import { Content, Main } from '../components/ui/Shared';
@@ -14,11 +14,10 @@ const PaymentPage: React.FC<InferGetServerSidePropsType<typeof getServerSideProp
     }, []);
 
     return (
-        <CheckoutLayout initialActiveOrder={props.activeOrder}>
+        <CheckoutLayout>
             <Content>
                 <Main>
                     <OrderPayment
-                        activeOrder={props.activeOrder}
                         availablePaymentMethods={props.eligiblePaymentMethods}
                         stripeData={props.stripeData}
                     />
@@ -31,7 +30,7 @@ const PaymentPage: React.FC<InferGetServerSidePropsType<typeof getServerSideProp
 
 const getServerSideProps: GetServerSideProps = async context => {
     const r = await makeServerSideProps(['common', 'checkout'])(context);
-    const destination = r.props._nextI18Next?.initialLocale === 'en' ? '/' : `/${r.props._nextI18Next?.initialLocale}`;
+    const destination = prepareSSRRedirect('/')(context);
 
     try {
         const [{ activeOrder }, { eligiblePaymentMethods }] = await Promise.all([
@@ -50,18 +49,18 @@ const getServerSideProps: GetServerSideProps = async context => {
             paymentIntent = createStripePaymentIntent;
         }
 
+        //MOST IMPORTANT PART WE HAVE TO RETURN `checkout` BECAUSE WE LOOK FOR IT IN _app.tsx
         const returnedStuff = {
             ...r.props,
-            activeOrder,
+            checkout: activeOrder,
             eligiblePaymentMethods,
             stripeData: { paymentIntent },
         };
 
         return { props: returnedStuff };
     } catch (e) {
-        console.log('e', e);
         //If error, redirect to homepage
-        return { redirect: { destination, permanent: false } };
+        return destination;
     }
 };
 

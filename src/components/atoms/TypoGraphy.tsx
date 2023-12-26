@@ -5,12 +5,13 @@ type BaseProps = {
     size: BaseRemUnit;
     weight: 100 | 200 | 300 | 400 | 500 | 600 | 700 | 800 | 900;
     upperCase?: boolean;
+    capitalize?: boolean;
 };
 
 export const TypoGraphy = styled.div<BaseProps>`
     font-size: ${p => p.size};
     font-weight: ${p => p.weight};
-    text-transform: ${p => (p.upperCase ? 'uppercase' : 'none')};
+    text-transform: ${p => (p.upperCase ? 'uppercase' : p.capitalize ? 'capitalize' : 'none')};
 `;
 
 type TypoGraphyProps = Partial<Parameters<typeof TypoGraphy>[0]>;

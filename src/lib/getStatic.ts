@@ -63,3 +63,8 @@ export const getStaticPaths = () => ({
     fallback: false,
     paths: getStandardLocalePaths(),
 });
+
+export const prepareSSRRedirect = (where: string) => (context: GetServerSidePropsContext) => {
+    const destination = context.locale === 'en' ? `/${where}` : `/${context.locale}${where}`;
+    return { redirect: { destination, permanent: false } };
+};

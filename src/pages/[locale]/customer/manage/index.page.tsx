@@ -1,5 +1,5 @@
 import { Layout } from '@/src/layouts';
-import { makeServerSideProps } from '@/src/lib/getStatic';
+import { makeServerSideProps, prepareSSRRedirect } from '@/src/lib/getStatic';
 import { GetServerSidePropsContext, InferGetServerSidePropsType } from 'next';
 import React from 'react';
 import { getCollections } from '@/src/graphql/sharedQueries';
@@ -10,24 +10,31 @@ import { ActiveCustomerSelector, ActiveOrderSelector } from '@/src/graphql/selec
 import { CustomerForm } from './components/CustomerForm';
 import { ContentContainer } from '@/src/components/atoms/ContentContainer';
 import { SortOrder } from '@/src/zeus';
+import styled from '@emotion/styled';
 
 const Account: React.FC<InferGetServerSidePropsType<typeof getServerSideProps>> = props => {
     return (
         <Layout categories={props.collections}>
             <ContentContainer>
-                <Stack itemsStart gap="1.75rem">
+                <CustomerWrap itemsStart gap="1.75rem">
                     <CustomerNavigation />
                     <CustomerForm initialCustomer={props.activeCustomer} />
-                </Stack>
+                </CustomerWrap>
             </ContentContainer>
         </Layout>
     );
 };
 
+const CustomerWrap = styled(Stack)`
+    @media (max-width: ${({ theme }) => theme.breakpoints.lg}) {
+        flex-direction: column;
+    }
+`;
+
 const getServerSideProps = async (context: GetServerSidePropsContext) => {
     const r = await makeServerSideProps(['common', 'customer'])(context);
     const collections = await getCollections();
-    const destination = r.props._nextI18Next?.initialLocale === 'en' ? '/' : `/${r.props._nextI18Next?.initialLocale}`;
+    const destination = prepareSSRRedirect('/')(context);
 
     try {
         const { activeCustomer } = await SSRQuery(context)({
@@ -49,7 +56,7 @@ const getServerSideProps = async (context: GetServerSidePropsContext) => {
 
         return { props: returnedStuff };
     } catch (error) {
-        return { redirect: { destination, permanent: false } };
+        return destination;
     }
 };
 

@@ -8,6 +8,8 @@ import { Content } from '../components/ui/Shared';
 import { makeServerSideProps } from '@/src/lib/getStatic';
 import { usePush } from '@/src/lib/redirect';
 import { getCollections } from '@/src/graphql/sharedQueries';
+import { TP } from '@/src/components/atoms/TypoGraphy';
+import { Stack } from '@/src/components/atoms/Stack';
 
 const ConfirmationPage: React.FC<InferGetServerSidePropsType<typeof getServerSideProps>> = props => {
     const [order, setOrder] = useState<OrderType>(props.order);
@@ -44,7 +46,9 @@ const ConfirmationPage: React.FC<InferGetServerSidePropsType<typeof getServerSid
                 </Content>
             ) : (
                 <Content>
-                    <p>Order not found</p>
+                    <Stack w100 justifyCenter itemsCenter>
+                        <TP>Order not found</TP>
+                    </Stack>
                 </Content>
             )}
         </Layout>

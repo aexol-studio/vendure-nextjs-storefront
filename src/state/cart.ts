@@ -91,10 +91,10 @@ const useCartContainer = createContainer(() => {
             if (addItemToOrder.__typename === 'Order') {
                 setActiveOrder(addItemToOrder);
                 if (o) open();
-                return;
+                return true;
             }
         } catch (e) {
-            console.error(e);
+            return false;
         }
     };
     const removeFromCart = (id: string) => {
@@ -152,13 +152,17 @@ const useCartContainer = createContainer(() => {
                     __typename: true,
                 },
             ],
-        }).then(r => {
-            if (r.adjustOrderLine.__typename === 'Order') {
-                setActiveOrder(r.adjustOrderLine);
-                return;
-            }
-            return r.adjustOrderLine;
-        });
+        })
+            .then(r => {
+                if (r.adjustOrderLine.__typename === 'Order') {
+                    setActiveOrder(r.adjustOrderLine);
+                    return;
+                }
+                return r.adjustOrderLine;
+            })
+            .catch(e => {
+                console.log(e);
+            });
     };
 
     const applyCouponCode = async (code: string) => {

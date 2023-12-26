@@ -1,10 +1,10 @@
 import { Layout } from '@/src/layouts';
-import { ContextModel, getStaticPaths, makeStaticProps } from '@/src/lib/getStatic';
-import { InferGetStaticPropsType } from 'next';
+import { makeServerSideProps, prepareSSRRedirect } from '@/src/lib/getStatic';
+import { GetServerSidePropsContext, InferGetServerSidePropsType } from 'next';
 import React, { useEffect, useRef, useState } from 'react';
 import { getCollections } from '@/src/graphql/sharedQueries';
 import { CustomerNavigation } from '../components/CustomerNavigation';
-import { storefrontApiMutation, storefrontApiQuery } from '@/src/graphql/client';
+import { SSRQuery, storefrontApiMutation, storefrontApiQuery } from '@/src/graphql/client';
 import {
     ActiveCustomerType,
     ActiveCustomerSelector,
@@ -20,9 +20,9 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { SubmitHandler } from 'react-hook-form';
 import { AddressForm } from './components/AddressForm';
 
-const Addresses: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = props => {
+const Addresses: React.FC<InferGetServerSidePropsType<typeof getServerSideProps>> = props => {
+    const [activeCustomer, setActiveCustomer] = useState<ActiveCustomerType>(props.activeCustomer);
     const [addressToEdit, setAddressToEdit] = useState<ActiveAddressType>();
-    const [activeCustomer, setActiveCustomer] = useState<ActiveCustomerType>();
     const [refresh, setRefresh] = useState(false);
 
     const ref = useRef<HTMLDivElement>(null);
@@ -43,10 +43,10 @@ const Addresses: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = prop
             const { activeCustomer } = await storefrontApiQuery({
                 activeCustomer: ActiveCustomerSelector,
             });
-            setActiveCustomer(activeCustomer);
+            if (activeCustomer) setActiveCustomer(activeCustomer);
             setRefresh(false);
         };
-        fetchCustomer();
+        if (refresh) fetchCustomer();
     }, [refresh]);
 
     const onEdit = (id: string) => {
@@ -124,32 +124,45 @@ const Addresses: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = prop
                 )}
             </AnimatePresence>
             <ContentContainer>
-                <Stack w100 itemsStart gap="1.75rem">
+                <CustomerWrap w100 itemsStart gap="1.75rem">
                     <CustomerNavigation />
-                    <Wrapper w100>
-                        <FormWrapper>
+                    <Wrapper w100 gap="1.5rem">
+                        <FormWrapper w100>
                             <AddressForm onSubmit={onSubmitCreate} availableCountries={props.availableCountries} />
                         </FormWrapper>
-                        <Wrap column itemsCenter gap="2.5rem">
+                        <Wrap w100 itemsCenter gap="2.5rem">
                             {activeCustomer?.addresses?.map(address => (
                                 <AddressBox key={address.id} address={address} onEdit={onEdit} onDelete={onDelete} />
                             ))}
                         </Wrap>
                     </Wrapper>
-                </Stack>
+                </CustomerWrap>
             </ContentContainer>
         </Layout>
     );
 };
 
+const CustomerWrap = styled(Stack)`
+    @media (max-width: ${({ theme }) => theme.breakpoints.lg}) {
+        flex-direction: column;
+    }
+`;
+
 const Wrapper = styled(Stack)`
     justify-content: space-evenly;
+    @media (max-width: ${({ theme }) => theme.breakpoints.lg}) {
+        flex-direction: column-reverse;
+    }
 `;
 
 const Wrap = styled(Stack)`
-    overflow-y: auto;
+    overflow: auto;
     max-height: 80vh;
     padding: 1.75rem 0.5rem;
+
+    @media (min-width: ${({ theme }) => theme.breakpoints.lg}) {
+        flex-direction: column;
+    }
 
     ::-webkit-scrollbar {
         height: 0.8rem;
@@ -170,9 +183,7 @@ const Wrap = styled(Stack)`
     }
 `;
 
-const FormWrapper = styled(Stack)`
-    width: fit-content;
-`;
+const FormWrapper = styled(Stack)``;
 
 const ModalContent = styled(Stack)`
     width: fit-content;
@@ -196,25 +207,33 @@ const Modal = styled(motion.div)`
     background-color: rgba(0, 0, 0, 0.5);
 `;
 
-const getStaticProps = async (context: ContextModel) => {
-    const r = await makeStaticProps(['common', 'customer'])(context);
+const getServerSideProps = async (context: GetServerSidePropsContext) => {
+    const r = await makeServerSideProps(['common', 'customer'])(context);
     const collections = await getCollections();
+    const destination = prepareSSRRedirect('/')(context);
 
-    const { availableCountries } = await storefrontApiQuery({
-        availableCountries: AvailableCountriesSelector,
-    });
+    try {
+        const { activeCustomer } = await SSRQuery(context)({
+            activeCustomer: ActiveCustomerSelector,
+        });
+        if (!activeCustomer) throw new Error('No active customer');
 
-    const returnedStuff = {
-        ...r.props,
-        collections,
-        availableCountries,
-    };
+        const { availableCountries } = await storefrontApiQuery({
+            availableCountries: AvailableCountriesSelector,
+        });
 
-    return {
-        props: returnedStuff,
-        revalidate: 10,
-    };
+        const returnedStuff = {
+            ...r.props,
+            collections,
+            activeCustomer,
+            availableCountries,
+        };
+
+        return { props: returnedStuff };
+    } catch (error) {
+        return destination;
+    }
 };
 
-export { getStaticPaths, getStaticProps };
+export { getServerSideProps };
 export default Addresses;

@@ -85,7 +85,7 @@ const Language = styled.div`
 `;
 
 export const LanguageSwitcher = () => {
-    const { query, push, pathname } = useRouter();
+    const { query, push, asPath } = useRouter();
     const { locales, defaultLocale } = nextI18nextConfig.i18n;
     const currentLocale = (query.locale as string) || defaultLocale;
 
@@ -97,8 +97,13 @@ export const LanguageSwitcher = () => {
                     key={newLang}
                     className="language"
                     onClick={() => {
+                        // languageDetector.cache && languageDetector.cache(newLang);
+                        // push(pathname.replace('[locale]', newLang === 'en' ? '' : newLang));
+
+                        // TODO: verify this <- replace with new path
                         languageDetector.cache && languageDetector.cache(newLang);
-                        push(pathname.replace('[locale]', newLang === 'en' ? '' : newLang));
+                        const route = asPath.replace(`/${currentLocale}/`, `/[locale]/`);
+                        push(route.replace('[locale]', newLang === 'en' ? '' : newLang));
                     }}>
                     {getFlagByCode(newLang)}
                 </Language>

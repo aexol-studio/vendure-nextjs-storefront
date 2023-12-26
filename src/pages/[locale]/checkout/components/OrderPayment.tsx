@@ -1,5 +1,5 @@
 import { storefrontApiMutation } from '@/src/graphql/client';
-import { ActiveOrderSelector, ActiveOrderType, AvailablePaymentMethodsType } from '@/src/graphql/selectors';
+import { AvailablePaymentMethodsType } from '@/src/graphql/selectors';
 import { usePush } from '@/src/lib/redirect';
 import React, { useEffect, useState } from 'react';
 import { Stack } from '@/src/components/atoms/Stack';
@@ -7,18 +7,19 @@ import { DefaultMethod } from './PaymentMethods/DefaultMethod';
 import { Elements } from '@stripe/react-stripe-js';
 import { loadStripe, Stripe } from '@stripe/stripe-js';
 import { StripeForm } from './PaymentMethods/StripeForm';
+import { useCheckout } from '@/src/state/checkout';
 
 const STRIPE_PUBLIC_KEY = process.env.NEXT_PUBLIC_STRIPE_KEY;
 
 interface OrderPaymentProps {
-    activeOrder: ActiveOrderType;
     availablePaymentMethods?: AvailablePaymentMethodsType[];
     stripeData?: {
         paymentIntent: string;
     };
 }
 
-export const OrderPayment: React.FC<OrderPaymentProps> = ({ activeOrder, availablePaymentMethods, stripeData }) => {
+export const OrderPayment: React.FC<OrderPaymentProps> = ({ availablePaymentMethods, stripeData }) => {
+    const { activeOrder } = useCheckout();
     const push = usePush();
     //For stripe
     const [stripe, setStripe] = useState<Stripe | null>(null);
@@ -43,7 +44,7 @@ export const OrderPayment: React.FC<OrderPaymentProps> = ({ activeOrder, availab
                             method,
                             metadata: JSON.stringify({
                                 // TODO: Try to add some metadata
-                                shouldDecline: false,
+                                shouldDecline: true,
                                 shouldCancel: false,
                                 shouldError: false,
                                 shouldErrorOnSettle: false,
@@ -52,7 +53,7 @@ export const OrderPayment: React.FC<OrderPaymentProps> = ({ activeOrder, availab
                     },
                     {
                         __typename: true,
-                        '...on Order': ActiveOrderSelector,
+                        '...on Order': { state: true, code: true },
                         '...on IneligiblePaymentMethodError': {
                             message: true,
                             errorCode: true,
@@ -87,6 +88,7 @@ export const OrderPayment: React.FC<OrderPaymentProps> = ({ activeOrder, availab
                 ],
             });
             if (addPaymentToOrder.__typename === 'Order' && addPaymentToOrder.state === 'PaymentAuthorized') {
+                //TODO: ADD ERROR HANDLING
                 push(`/checkout/confirmation/${addPaymentToOrder.code}`);
             } else {
                 console.log(addPaymentToOrder);

@@ -14,7 +14,7 @@ import { ContentContainer } from '@/src/components/atoms/ContentContainer';
 import { usePush } from '@/src/lib/redirect';
 import { CheckBox } from '@/src/components/forms/CheckBox';
 import { useTranslation } from 'next-i18next';
-import { AbsoluteError, Form, FormContent, FormWrapper } from '../components/FormWrapper';
+import { Absolute, Form, FormContainer, FormContent, FormWrapper } from '../components/shared';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { TP } from '@/src/components/atoms/TypoGraphy';
@@ -26,7 +26,8 @@ const SignIn: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = props =
 
     const schema = z.object({
         emailAddress: z.string().email(tErrors('errors.email.invalid')).min(1, tErrors('errors.email.required')),
-        password: z.string().min(8, tErrors('errors.password.minLength')).max(25, tErrors('errors.password.maxLength')),
+        password: z.string(), //let backend handle this
+        // password: z.string().min(8, tErrors('errors.password.minLength')).max(25, tErrors('errors.password.maxLength')),
         rememberMe: z.boolean().optional(),
     });
 
@@ -81,14 +82,14 @@ const SignIn: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = props =
     return (
         <Layout categories={props.collections}>
             <ContentContainer>
-                <Stack column gap="3.5rem" w100 justifyCenter itemsCenter style={{ minHeight: 'calc(100vh - 6rem)' }}>
+                <FormContainer>
                     <FormWrapper column itemsCenter gap="3.5rem">
-                        <AbsoluteError w100>
+                        <Absolute w100>
                             <ErrorBanner
                                 error={errors.root}
                                 clearErrors={() => setError('root', { message: undefined })}
                             />
-                        </AbsoluteError>
+                        </Absolute>
                         <TP weight={600}>{t('signInTitle')}</TP>
                         <FormContent w100 column itemsCenter gap="1.75rem">
                             <Form onSubmit={handleSubmit(onSubmit)}>
@@ -113,7 +114,7 @@ const SignIn: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = props =
                             </Stack>
                         </FormContent>
                     </FormWrapper>
-                </Stack>
+                </FormContainer>
             </ContentContainer>
         </Layout>
     );

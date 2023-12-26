@@ -21,7 +21,7 @@ export const CartHeader: React.FC<Props> = ({ activeOrder }) => {
                 <TH2>{t('your-cart')}</TH2>
                 {activeOrder?.totalQuantity ? (
                     <TP style={{ marginTop: '0.8rem' }}>
-                        ({activeOrder?.totalQuantity} {t('items')})
+                        ({activeOrder?.lines.length} {t('items')})
                     </TP>
                 ) : null}
             </Stack>
@@ -34,5 +34,5 @@ export const CartHeader: React.FC<Props> = ({ activeOrder }) => {
 
 const CartHeaderWrapper = styled(Stack)`
     padding: 1.5rem 2rem;
-    box-shadow: 0 0.5rem 1rem 0 rgba(0, 0, 0, 0.1);
+    box-shadow: 0 0.5rem 1rem 0 ${({ theme }) => theme.shadow};
 `;

@@ -5,21 +5,26 @@ import styled from '@emotion/styled';
 
 interface FacetProps {
     facet: FacetType;
+    selected?: string[];
+    onClick: (group: { id: string; name: string }, facet: { id: string; name: string }) => void;
 }
 
-export const FacetFilterCheckbox: React.FC<FacetProps> = ({ facet: { name, values } }) => {
+export const FacetFilterCheckbox: React.FC<FacetProps> = ({ facet: { id, name, values }, onClick, selected }) => {
     return (
         <Main column gap="2rem">
             <TFacetHeading upperCase>{name}</TFacetHeading>
             <CheckGrid>
-                {values.map(v => (
-                    <Stack gap="1rem" key={v.id}>
-                        <input type="checkbox" />
-                        <TP weight={400} as="label">
-                            {v.name}
-                        </TP>
-                    </Stack>
-                ))}
+                {values.map(v => {
+                    const isSelected = selected?.includes(v.id);
+                    return (
+                        <Stack gap="1rem" key={v.id} itemsCenter onClick={() => onClick({ id, name }, v)}>
+                            <input checked={isSelected} type="checkbox" />
+                            <TP weight={400} as="label">
+                                {v.name}
+                            </TP>
+                        </Stack>
+                    );
+                })}
             </CheckGrid>
         </Main>
     );

@@ -11,7 +11,6 @@ import styled from '@emotion/styled';
 import { CreditCard, Truck } from 'lucide-react';
 import { Input } from '@/src/components/forms/Input';
 import { TP } from '@/src/components/atoms/TypoGraphy';
-import { Spinner } from '@/src/components/atoms/Spinner';
 
 export const AddressForm: React.FC<{
     loading: boolean;
@@ -125,7 +124,7 @@ export const AddressForm: React.FC<{
                             </Button>
                         )}
                         <FullWidthButton type="submit" disabled={loading}>
-                            {loading ? <Spinner /> : addressToEdit ? t('addressForm.update') : t('addressForm.add')}
+                            {addressToEdit ? t('addressForm.update') : t('addressForm.add')}
                         </FullWidthButton>
                     </Stack>
                 </Stack>

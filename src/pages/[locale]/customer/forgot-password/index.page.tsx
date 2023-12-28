@@ -63,7 +63,7 @@ const ForgotPassword: React.FC<InferGetStaticPropsType<typeof getStaticProps>> =
             }
 
             if (requestPasswordReset?.__typename === 'Success') {
-                console.log('success');
+                //TODO: Add success message and info about email
                 return;
             }
 

@@ -48,13 +48,10 @@ const SignIn: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = props =
                     { password, username: emailAddress, rememberMe },
                     {
                         __typename: true,
+                        '...on CurrentUser': { id: true },
                         '...on InvalidCredentialsError': {
                             errorCode: true,
                             message: true,
-                        },
-                        '...on CurrentUser': {
-                            id: true,
-                            identifier: true,
                         },
                         '...on NativeAuthStrategyError': {
                             errorCode: true,

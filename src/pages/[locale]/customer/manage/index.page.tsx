@@ -18,7 +18,7 @@ const Account: React.FC<InferGetServerSidePropsType<typeof getServerSideProps>> 
             <ContentContainer>
                 <CustomerWrap itemsStart gap="1.75rem">
                     <CustomerNavigation />
-                    <CustomerForm initialCustomer={props.activeCustomer} />
+                    <CustomerForm initialCustomer={props.activeCustomer} order={props.lastOrder} />
                 </CustomerWrap>
             </ContentContainer>
         </Layout>
@@ -48,10 +48,13 @@ const getServerSideProps = async (context: GetServerSidePropsContext) => {
         });
         if (!activeCustomer) throw new Error('No active customer');
 
+        const { orders, ...customer } = activeCustomer;
+
         const returnedStuff = {
             ...r.props,
             collections,
-            activeCustomer,
+            activeCustomer: customer,
+            lastOrder: orders.items && orders.items.length > 0 ? orders.items[0] : null,
         };
 
         return { props: returnedStuff };

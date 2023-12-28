@@ -91,11 +91,21 @@
         "password": {
             "required": "Password is required",
             "minLength": "Password must be at least 8 characters long",
-            "maxLength": "Password cannot be more than 25 characters long"
+            "maxLength": "Password cannot be more than 25 characters long",
+            "mustDifferent": "Password must be different from current one"
         },
         "confirmPassword": {
             "required": "Confirm password is required",
             "mustMatch": "Passwords must match"
+        },
+        "firstName": {
+            "required": "First name is required"
+        },
+        "lastName": {
+            "required": "Last name is required"
+        },
+        "phoneNumber": {
+            "required": "Phone number is required"
         }
     }
 }

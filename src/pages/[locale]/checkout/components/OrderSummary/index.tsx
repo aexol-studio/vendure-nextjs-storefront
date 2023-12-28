@@ -93,8 +93,8 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({ isForm, YMALProducts
     );
 };
 
-const SummaryContainer = styled(Stack)`
-    width: calc(50% - 2.5rem);
+const SummaryContainer = styled(Stack)<{ isForm?: boolean }>`
+    width: ${({ isForm }) => (isForm ? 'calc(50% - 2.5rem)' : '100%')};
     position: sticky;
     top: 9.5rem;
     height: fit-content;

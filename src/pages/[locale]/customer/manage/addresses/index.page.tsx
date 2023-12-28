@@ -85,13 +85,12 @@ const Addresses: React.FC<InferGetServerSidePropsType<typeof getServerSideProps>
             const { updateCustomerAddress } = await storefrontApiMutation({
                 updateCustomerAddress: [{ input }, { __typename: true, id: true }],
             });
+            setEditing(false);
             if (updateCustomerAddress) {
-                setEditing(false);
                 setRefresh(true);
                 onModalClose();
             }
         } catch (e) {
-            console.log(e);
             setEditing(false);
         }
     };
@@ -102,12 +101,11 @@ const Addresses: React.FC<InferGetServerSidePropsType<typeof getServerSideProps>
             const { createCustomerAddress } = await storefrontApiMutation({
                 createCustomerAddress: [{ input: data }, { __typename: true, id: true }],
             });
+            setAdding(false);
             if (createCustomerAddress) {
-                setAdding(false);
                 setRefresh(true);
             }
         } catch (e) {
-            console.log(e);
             setAdding(false);
         }
     };
@@ -118,13 +116,11 @@ const Addresses: React.FC<InferGetServerSidePropsType<typeof getServerSideProps>
             const { deleteCustomerAddress } = await storefrontApiMutation({
                 deleteCustomerAddress: [{ id }, { success: true }],
             });
+            setDeleting(undefined);
             if (deleteCustomerAddress.success) {
-                setDeleting(undefined);
                 setRefresh(true);
             }
-            console.log(deleteCustomerAddress);
         } catch (e) {
-            console.log(e);
             setDeleting(undefined);
         }
     };

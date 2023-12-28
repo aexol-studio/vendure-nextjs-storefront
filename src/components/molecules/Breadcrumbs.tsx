@@ -19,7 +19,7 @@ export const Breadcrumbs: React.FC<{
 
                 return (
                     <Stack itemsCenter gap="0.5rem" key={b.name}>
-                        <StyledLink href={b.href} isLast={isLast}>
+                        <StyledLink href={b.href} last={isLast}>
                             <Stack itemsCenter gap="0.5rem">
                                 {isHome && <Home size={16} />}
                                 <TP size="1.25rem" weight={i === breadcrumbs.length - 1 ? 600 : 400}>
@@ -39,8 +39,8 @@ export const Breadcrumbs: React.FC<{
     );
 };
 
-const StyledLink = styled(Link)<{ isLast?: boolean }>`
+const StyledLink = styled(Link)<{ last?: boolean }>`
     text-decoration: none;
-    pointer-events: ${p => (p.isLast ? 'none' : 'auto')};
+    pointer-events: ${p => (p.last ? 'none' : 'auto')};
     color: ${p => p.theme.gray(900)};
 `;

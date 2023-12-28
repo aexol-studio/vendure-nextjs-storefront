@@ -55,9 +55,7 @@ const ResetPassword: React.FC<InferGetServerSidePropsType<typeof getServerSidePr
                     { password: data.password, token: props.token as string },
                     {
                         __typename: true,
-                        '...on CurrentUser': {
-                            id: true,
-                        },
+                        '...on CurrentUser': { id: true },
                         '...on NativeAuthStrategyError': {
                             errorCode: true,
                             message: true,
@@ -84,8 +82,7 @@ const ResetPassword: React.FC<InferGetServerSidePropsType<typeof getServerSidePr
             });
 
             if (resetPassword.__typename === 'CurrentUser') {
-                console.log('success');
-                push('/customer/manage');
+                push('/customer/sign-in');
                 return;
             }
 

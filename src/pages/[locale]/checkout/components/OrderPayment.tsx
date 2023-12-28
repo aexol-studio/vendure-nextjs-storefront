@@ -47,7 +47,7 @@ export const OrderPayment: React.FC<OrderPaymentProps> = ({ availablePaymentMeth
                                 shouldDecline: false,
                                 shouldCancel: false,
                                 shouldError: false,
-                                shouldErrorOnSettle: true,
+                                shouldErrorOnSettle: false,
                             }),
                         },
                     },

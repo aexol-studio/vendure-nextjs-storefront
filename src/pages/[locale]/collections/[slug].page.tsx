@@ -214,7 +214,7 @@ const CollectionPage: React.FC<InferGetStaticPropsType<typeof getStaticProps>> =
                                         key={col.name}
                                         href={`/collections/${col.slug}`}
                                         imageSrc={col.featuredAsset?.preview}
-                                        size="tile"
+                                        size="thumbnail-big"
                                         text={col.name}
                                     />
                                 ))}
@@ -231,7 +231,9 @@ const CollectionPage: React.FC<InferGetStaticPropsType<typeof getStaticProps>> =
                         </Filters>
                     </Stack>
                     <MainGrid>
-                        {products?.map(p => <ProductTile collections={props.collections} product={p} key={p.slug} />)}
+                        {products?.map(p => {
+                            return <ProductTile collections={props.collections} product={p} key={p.slug} />;
+                        })}
                     </MainGrid>
                     <Pagination page={page} changePage={changePage} totalPages={Math.ceil(totalProducts / PER_PAGE)} />
                 </Stack>

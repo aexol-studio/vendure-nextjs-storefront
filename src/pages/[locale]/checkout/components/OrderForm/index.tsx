@@ -306,7 +306,6 @@ export const OrderForm: React.FC<OrderFormProps> = ({ availableCountries }) => {
             // Redirect to payment page
             push('/checkout/payment');
         } catch (error) {
-            console.log(error);
             setError('root', { message: tErrors(`errors.backend.UNKNOWN_ERROR`) });
         }
     };

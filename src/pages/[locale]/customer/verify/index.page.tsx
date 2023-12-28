@@ -68,9 +68,7 @@ const getServerSideProps = async (context: GetServerSidePropsContext) => {
                 { token },
                 {
                     __typename: true,
-                    '...on CurrentUser': {
-                        id: true,
-                    },
+                    '...on CurrentUser': { id: true },
                     '...on MissingPasswordError': {
                         message: true,
                         errorCode: true,

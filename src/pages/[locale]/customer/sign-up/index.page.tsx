@@ -50,7 +50,6 @@ const SignIn: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = props =
     } = useForm<FormValues>({
         resolver: zodResolver(schema),
     });
-    console.log(errors);
 
     const onSubmit: SubmitHandler<FormValues> = async data => {
         const { emailAddress, password } = data;
@@ -61,6 +60,7 @@ const SignIn: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = props =
                     { input: { emailAddress, password } },
                     {
                         __typename: true,
+                        '...on Success': { success: true },
                         '...on MissingPasswordError': {
                             message: true,
                             errorCode: true,
@@ -74,9 +74,6 @@ const SignIn: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = props =
                             message: true,
                             validationErrorMessage: true,
                         },
-                        '...on Success': {
-                            success: true,
-                        },
                     },
                 ],
             });
@@ -86,7 +83,6 @@ const SignIn: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = props =
                 return;
             }
 
-            console.log(registerCustomerAccount);
             setError('root', { message: tErrors(`errors.backend.${registerCustomerAccount.errorCode}`) });
         } catch {
             setError('root', { message: tErrors('errors.backend.UNKNOWN_ERROR') });

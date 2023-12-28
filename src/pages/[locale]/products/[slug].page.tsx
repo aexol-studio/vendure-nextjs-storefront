@@ -18,7 +18,6 @@ import {
 import { getCollections } from '@/src/graphql/sharedQueries';
 import { Layout } from '@/src/layouts';
 import { ContextModel, localizeGetStaticPaths, makeStaticProps } from '@/src/lib/getStatic';
-import { usePush } from '@/src/lib/redirect';
 import { useCart } from '@/src/state/cart';
 import { priceFormatter } from '@/src/util/priceFomatter';
 import { translateProductFacetsNames } from '@/src/util/translateFacetsNames';
@@ -31,14 +30,22 @@ import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'next-i18next';
 import { useRouter } from 'next/router';
 import { ProductOptions } from '@/src/components/organisms/ProductOptions';
+import { Breadcrumbs } from '@/src/components/molecules/Breadcrumbs';
+import { usePush } from '@/src/lib/redirect';
 
 type Variant = ProductDetailType['variants'][number];
 
 const ProductPage: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = props => {
     const { addToCart } = useCart();
     const { query } = useRouter();
-    const push = usePush();
     const { t } = useTranslation('common');
+    const push = usePush();
+
+    const breadcrumbs = [
+        { name: t('home'), href: '/' },
+        { name: props.product.name, href: `/products/${props.product.slug}` },
+    ];
+
     const [variant, setVariant] = useState<Variant | undefined>(
         props.product.variants.length === 1 ? props.product.variants[0] : undefined,
     );
@@ -52,7 +59,7 @@ const ProductPage: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = pr
         if (props.product.variants.length === 1) {
             const url = new URL(window.location.href);
             url.searchParams.set('variant', props.product.variants[0].id);
-            push(url.pathname + url.search);
+            window.history.replaceState({}, '', url.pathname + url.search);
         }
     }, []);
 
@@ -69,7 +76,7 @@ const ProductPage: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = pr
             setAddingError(undefined);
         } else url.searchParams.delete('variant');
         setVariant(variant);
-        push(url.pathname + url.search);
+        window.history.replaceState({}, '', url.pathname + url.search);
     };
 
     const handleAddToCart = async () => {
@@ -87,6 +94,7 @@ const ProductPage: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = pr
     return (
         <Layout categories={props.collections}>
             <ContentContainer>
+                <Breadcrumbs breadcrumbs={breadcrumbs} />
                 <Main gap="5rem">
                     <StickyLeft w100 itemsCenter justifyCenter gap="2.5rem">
                         <ProductPhotosPreview

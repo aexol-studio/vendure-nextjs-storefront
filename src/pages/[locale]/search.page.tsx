@@ -2,7 +2,7 @@ import { ContentContainer } from '@/src/components/atoms/ContentContainer';
 import { MainGrid } from '@/src/components/atoms/MainGrid';
 import { Stack } from '@/src/components/atoms/Stack';
 import { TP } from '@/src/components/atoms/TypoGraphy';
-import { FacetFilterCheckbox } from '@/src/components/molecules/FacetFilter';
+// import { FacetFilterCheckbox } from '@/src/components/molecules/FacetFilter';
 import { ProductTile } from '@/src/components/molecules/ProductTile';
 import { storefrontApiQuery } from '@/src/graphql/client';
 import { FacetSelector, ProductSearchSelector, ProductSearchType } from '@/src/graphql/selectors';
@@ -64,7 +64,8 @@ const SearchPage: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = pro
                                             <X />
                                         </IconButton>
                                     </Stack>
-                                    <Stack column>
+                                    {/* TODO: TEMP COMMENTED WHILE WORKING ON COLLECTION */}
+                                    {/* <Stack column>
                                         {props.facets.map(f => (
                                             <FacetFilterCheckbox
                                                 facet={f}
@@ -73,7 +74,7 @@ const SearchPage: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = pro
                                                 selected={[]}
                                             />
                                         ))}
-                                    </Stack>
+                                    </Stack> */}
                                 </Stack>
                             </FacetsFilters>
                         </Facets>

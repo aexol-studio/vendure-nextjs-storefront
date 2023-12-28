@@ -1,5 +1,5 @@
 import { Stack } from '@/src/components/atoms/Stack';
-import { Button } from '@/src/components/molecules/Button';
+import { Button, FullWidthButton } from '@/src/components/molecules/Button';
 import { CountrySelect } from '@/src/components/forms/CountrySelect';
 
 import { CreateAddressType, ActiveAddressType, AvailableCountriesType } from '@/src/graphql/selectors';
@@ -11,14 +11,16 @@ import styled from '@emotion/styled';
 import { CreditCard, Truck } from 'lucide-react';
 import { Input } from '@/src/components/forms/Input';
 import { TP } from '@/src/components/atoms/TypoGraphy';
+import { Spinner } from '@/src/components/atoms/Spinner';
 
 export const AddressForm: React.FC<{
+    loading: boolean;
     onSubmit: SubmitHandler<CreateAddressType>;
     addressToEdit?: ActiveAddressType;
     availableCountries?: AvailableCountriesType[];
     country?: string;
     onModalClose?: () => void;
-}> = ({ addressToEdit, onSubmit, availableCountries, country, onModalClose }) => {
+}> = ({ addressToEdit, onSubmit, loading, availableCountries, country, onModalClose }) => {
     const { t } = useTranslation('customer');
 
     const schema = z.object({
@@ -116,13 +118,15 @@ export const AddressForm: React.FC<{
                             <label htmlFor="defaultShippingAddress">{t('addressForm.defaultShippingAddress')}</label>
                         </CheckboxStack>
                     </Stack>
-                    <Stack w100 itemsCenter justifyBetween>
+                    <Stack gap="3.5rem" w100 itemsCenter justifyBetween>
                         {onModalClose && (
-                            <Button onClick={onModalClose} type="button">
+                            <Button disabled={loading} onClick={onModalClose} type="button">
                                 {t('addressForm.cancel')}
                             </Button>
                         )}
-                        <Button type="submit">{addressToEdit ? t('addressForm.update') : t('addressForm.add')}</Button>
+                        <FullWidthButton type="submit" disabled={loading}>
+                            {loading ? <Spinner /> : addressToEdit ? t('addressForm.update') : t('addressForm.add')}
+                        </FullWidthButton>
                     </Stack>
                 </Stack>
             </Form>

@@ -5,6 +5,7 @@ import styled from '@emotion/styled';
 import { CreditCard, Pen, Trash2, Truck } from 'lucide-react';
 import React from 'react';
 import { useTranslation } from 'next-i18next';
+import { Spinner } from '@/src/components/atoms/Spinner';
 
 interface Props {
     address: ActiveAddressType;
@@ -12,9 +13,10 @@ interface Props {
     onSelect?: (id: string) => void;
     onEdit?: (id: string) => void;
     onDelete?: (id: string) => void;
+    deleting?: string;
 }
 
-export const AddressBox: React.FC<Props> = ({ address, selected, onSelect, onEdit, onDelete }) => {
+export const AddressBox: React.FC<Props> = ({ address, selected, onSelect, onEdit, onDelete, deleting }) => {
     const { t } = useTranslation('customer');
     return (
         <CustomerAddress onClick={() => onSelect?.(address.id)} column selected={selected} canBeSelected={!!onSelect}>
@@ -44,7 +46,7 @@ export const AddressBox: React.FC<Props> = ({ address, selected, onSelect, onEdi
                     {onDelete && (
                         <Option onClick={() => onDelete(address.id)}>
                             <TP>{t('addressForm.delete')}</TP>
-                            <Delete size={16} />
+                            {deleting === address.id ? <Spinner /> : <Delete size={16} />}
                         </Option>
                     )}
                 </Wrapper>

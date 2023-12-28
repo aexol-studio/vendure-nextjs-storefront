@@ -16,6 +16,8 @@ export type OrderStateType =
     | 'Modifying'
     | 'ArrangingAdditionalPayment';
 
+export type FiltersFacetType = FacetType & { values: (FacetType & { count: number })[] };
+
 export const ProductTileSelector = Selector('Product')({
     id: true,
     name: true,
@@ -47,6 +49,8 @@ export const ProductSearchSelector = Selector('SearchResult')({
             value: true,
         },
     },
+    facetIds: true,
+    facetValueIds: true,
     productAsset: {
         preview: true,
     },
@@ -57,13 +61,23 @@ export const FacetSelector = Selector('Facet')({
     id: true,
     name: true,
     code: true,
-    values: {
-        name: true,
-        id: true,
-    },
 });
 
 export type FacetType = FromSelector<typeof FacetSelector, 'Facet', typeof scalars>;
+
+export const SearchSelector = Selector('SearchResponse')({
+    items: ProductSearchSelector,
+    totalItems: true,
+    facetValues: {
+        count: true,
+        facetValue: {
+            ...FacetSelector,
+            facet: FacetSelector,
+        },
+    },
+});
+
+export type SearchType = FromSelector<typeof SearchSelector, 'SearchResponse', typeof scalars>;
 
 export const ProductSlugSelector = Selector('Product')({
     name: true,

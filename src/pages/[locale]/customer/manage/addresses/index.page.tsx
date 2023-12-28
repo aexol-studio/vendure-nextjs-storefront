@@ -23,6 +23,9 @@ import { AddressForm } from './components/AddressForm';
 const Addresses: React.FC<InferGetServerSidePropsType<typeof getServerSideProps>> = props => {
     const [activeCustomer, setActiveCustomer] = useState<ActiveCustomerType>(props.activeCustomer);
     const [addressToEdit, setAddressToEdit] = useState<ActiveAddressType>();
+    const [adding, setAdding] = useState(false);
+    const [editing, setEditing] = useState(false);
+    const [deleting, setDeleting] = useState<string>();
     const [refresh, setRefresh] = useState(false);
 
     const ref = useRef<HTMLDivElement>(null);
@@ -53,10 +56,14 @@ const Addresses: React.FC<InferGetServerSidePropsType<typeof getServerSideProps>
         const address = activeCustomer?.addresses?.find(address => address.id === id);
         setAddressToEdit(address);
     };
+
     const onModalClose = () => setAddressToEdit(undefined);
 
     const onSubmitEdit: SubmitHandler<CreateAddressType> = async data => {
-        if (!addressToEdit) return;
+        if (!addressToEdit) {
+            return;
+        }
+
         const input = {
             ...data,
             id: addressToEdit?.id,
@@ -64,46 +71,61 @@ const Addresses: React.FC<InferGetServerSidePropsType<typeof getServerSideProps>
 
         const isSame = Object.keys(input).every(key => {
             if (key === 'id') return true;
-            if (key === 'countryCode') return true;
+            if (key === 'countryCode') return input[key as keyof CreateAddressType] === addressToEdit.country.code;
             return input[key as keyof CreateAddressType] === addressToEdit[key as keyof ActiveAddressType];
         });
-        if (isSame) return;
+
+        if (isSame) {
+            return;
+        }
+
+        setEditing(true);
 
         try {
             const { updateCustomerAddress } = await storefrontApiMutation({
                 updateCustomerAddress: [{ input }, { __typename: true, id: true }],
             });
             if (updateCustomerAddress) {
+                setEditing(false);
                 setRefresh(true);
                 onModalClose();
             }
         } catch (e) {
             console.log(e);
+            setEditing(false);
         }
     };
 
     const onSubmitCreate: SubmitHandler<CreateAddressType> = async data => {
+        setAdding(true);
         try {
             const { createCustomerAddress } = await storefrontApiMutation({
                 createCustomerAddress: [{ input: data }, { __typename: true, id: true }],
             });
             if (createCustomerAddress) {
+                setAdding(false);
                 setRefresh(true);
             }
         } catch (e) {
             console.log(e);
+            setAdding(false);
         }
     };
 
     const onDelete = async (id: string) => {
+        setDeleting(id);
         try {
             const { deleteCustomerAddress } = await storefrontApiMutation({
                 deleteCustomerAddress: [{ id }, { success: true }],
             });
-            setRefresh(true);
+            if (deleteCustomerAddress.success) {
+                setDeleting(undefined);
+                setRefresh(true);
+            }
             console.log(deleteCustomerAddress);
         } catch (e) {
             console.log(e);
+            setDeleting(undefined);
         }
     };
 
@@ -114,6 +136,7 @@ const Addresses: React.FC<InferGetServerSidePropsType<typeof getServerSideProps>
                     <Modal initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
                         <ModalContent ref={ref} itemsCenter column>
                             <AddressForm
+                                loading={editing}
                                 onSubmit={onSubmitEdit}
                                 availableCountries={props.availableCountries}
                                 addressToEdit={addressToEdit}
@@ -128,11 +151,21 @@ const Addresses: React.FC<InferGetServerSidePropsType<typeof getServerSideProps>
                     <CustomerNavigation />
                     <Wrapper w100 gap="1.5rem">
                         <FormWrapper w100>
-                            <AddressForm onSubmit={onSubmitCreate} availableCountries={props.availableCountries} />
+                            <AddressForm
+                                loading={adding}
+                                onSubmit={onSubmitCreate}
+                                availableCountries={props.availableCountries}
+                            />
                         </FormWrapper>
                         <Wrap w100 itemsCenter gap="2.5rem">
                             {activeCustomer?.addresses?.map(address => (
-                                <AddressBox key={address.id} address={address} onEdit={onEdit} onDelete={onDelete} />
+                                <AddressBox
+                                    key={address.id}
+                                    address={address}
+                                    onEdit={onEdit}
+                                    onDelete={onDelete}
+                                    deleting={deleting}
+                                />
                             ))}
                         </Wrap>
                     </Wrapper>

@@ -37,6 +37,7 @@ const getServerSideProps: GetServerSideProps = async context => {
             }),
         ]);
         const YMALProducts = await getYMALProducts();
+
         if (activeOrder?.state === 'ArrangingPayment') {
             return paymentRedirect;
         }

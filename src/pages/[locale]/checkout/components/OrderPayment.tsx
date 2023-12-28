@@ -44,10 +44,10 @@ export const OrderPayment: React.FC<OrderPaymentProps> = ({ availablePaymentMeth
                             method,
                             metadata: JSON.stringify({
                                 // TODO: Try to add some metadata
-                                shouldDecline: true,
+                                shouldDecline: false,
                                 shouldCancel: false,
                                 shouldError: false,
-                                shouldErrorOnSettle: false,
+                                shouldErrorOnSettle: true,
                             }),
                         },
                     },

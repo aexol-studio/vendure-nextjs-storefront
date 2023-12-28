@@ -36,7 +36,14 @@ const History: React.FC<InferGetServerSidePropsType<typeof getServerSideProps>> 
             activeCustomer: {
                 ...ActiveCustomerSelector,
                 orders: [
-                    { options: { take: page * GET_MORE, skip: 0, filter: { code: { contains } } } },
+                    {
+                        options: {
+                            take: page * GET_MORE,
+                            skip: page * GET_MORE - GET_MORE,
+
+                            filter: { code: { contains } },
+                        },
+                    },
                     { items: ActiveOrderSelector },
                 ],
             },
@@ -79,10 +86,6 @@ const History: React.FC<InferGetServerSidePropsType<typeof getServerSideProps>> 
         });
 
         if (!activeCustomer) return;
-        if (activeCustomer.orders.totalItems <= activeOrders?.length + GET_MORE) {
-            //TODO: show no more orders
-            return;
-        }
 
         setActiveOrders([...(activeOrders || []), ...activeCustomer.orders.items]);
         setPage(page + 1);
@@ -231,7 +234,6 @@ const ClickableStack = styled(Stack)`
         width: 100%;
     }
     width: 50%;
-    height: 20rem;
     padding: 1rem;
     position: relative;
 `;

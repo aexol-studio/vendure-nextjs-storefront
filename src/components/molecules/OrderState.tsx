@@ -10,24 +10,27 @@ interface Props {
     state: string;
     size?: 'small' | 'medium' | 'large';
     column?: boolean;
+    withoutText?: boolean;
 }
 
-export const OrderState: React.FC<Props> = ({ state, size = 'small', column }) => {
+export const OrderState: React.FC<Props> = ({ state, size = 'small', column, withoutText }) => {
     const { t } = useTranslation('common');
     const iconSize = size === 'small' ? 20 : size === 'medium' ? 30 : 40;
     return (
-        <Stack w100 itemsEnd gap="0.25rem" column={column}>
+        <Stack w100 itemsEnd gap="0.5rem" column={column}>
             <Stack justifyCenter itemsCenter>
                 {orderStateToIcon(state, iconSize)}
             </Stack>
-            <StyledTP v={size} weight={500}>
-                {t(`orderStates.${state as OrderStateType}`)}
-            </StyledTP>
+            {!withoutText && (
+                <StyledTP v={size} weight={500}>
+                    {t(`orderStates.${state as OrderStateType}`)}
+                </StyledTP>
+            )}
         </Stack>
     );
 };
 
 const StyledTP = styled(TP)<{ v: Props['size'] }>`
-    font-size: ${p => (p.v === 'small' ? '1.25rem' : p.v === 'medium' ? '1.5rem' : '2rem')};
+    font-size: ${p => (p.v === 'small' ? '1rem' : p.v === 'medium' ? '1.25rem' : '1.5rem')};
     font-weight: 500;
 `;

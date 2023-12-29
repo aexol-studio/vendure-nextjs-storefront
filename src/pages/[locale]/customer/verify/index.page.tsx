@@ -60,7 +60,7 @@ const getServerSideProps = async (context: GetServerSidePropsContext) => {
     const token = context.query.token as string;
     const destination = prepareSSRRedirect('/')(context);
 
-    if (!token) return { redirect: { destination, permanent: false } };
+    if (!token) return destination;
 
     try {
         const { verifyCustomerAccount } = await storefrontApiMutation({
@@ -100,7 +100,7 @@ const getServerSideProps = async (context: GetServerSidePropsContext) => {
 
         return { props: { ...r.props, collections, status: { verifyCustomerAccount } } };
     } catch (e) {
-        return { redirect: { destination, permanent: false } };
+        return destination;
     }
 };
 

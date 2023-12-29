@@ -7,12 +7,21 @@ const TEMP_CUSTOMER = 'vendure-customer';
 
 const useCartContainer = createContainer(() => {
     const [activeOrder, setActiveOrder] = useState<ActiveOrderType>();
+    const [isLogged, setIsLogged] = useState(false);
 
     const fetchActiveOrder = async () => {
         const response = await storefrontApiQuery({
             activeOrder: ActiveOrderSelector,
         });
         setActiveOrder(response.activeOrder);
+
+        const { activeCustomer } = await storefrontApiQuery({
+            activeCustomer: {
+                id: true,
+            },
+        });
+        setIsLogged(!!activeCustomer?.id);
+
         return response.activeOrder;
     };
 
@@ -199,6 +208,7 @@ const useCartContainer = createContainer(() => {
     const close = () => setOpen(false);
 
     return {
+        isLogged,
         activeOrder,
         cart: activeOrder,
         addToCart,

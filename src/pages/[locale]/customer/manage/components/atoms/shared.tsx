@@ -1,8 +1,11 @@
-import { Stack } from '@/src/components/atoms/Stack';
 import { Button } from '@/src/components/molecules/Button';
 import styled from '@emotion/styled';
+import { motion } from 'framer-motion';
 
-export const CustomerWrap = styled(Stack)`
+export const CustomerWrap = styled(motion.div)`
+    display: flex;
+    width: 100%;
+    gap: 3.5rem;
     @media (max-width: ${({ theme }) => theme.breakpoints.md}) {
         flex-direction: column;
     }

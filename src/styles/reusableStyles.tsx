@@ -1,6 +1,6 @@
 import styled from '@emotion/styled';
 
-export const HoverMenu = styled.div<{ langSwitcher?: boolean }>`
+export const HoverMenu = styled.div<{ customerMenu?: boolean; langSwitcher?: boolean }>`
     display: block;
     opacity: 0;
     visibility: hidden;
@@ -24,6 +24,14 @@ export const HoverMenu = styled.div<{ langSwitcher?: boolean }>`
         margin-right: 0px;
         font-size: 1.6rem;
     }
+
+    ${({ customerMenu }) =>
+        customerMenu &&
+        `
+        padding: 16px;
+        right: 0;
+        transform: none;
+    `}
 
     ${({ langSwitcher }) =>
         langSwitcher &&
@@ -79,9 +87,9 @@ export const Dropdown = styled.div`
             opacity: 1;
             visibility: visible;
         }
-        svg:not(.no-default-fill) path {
+        /* svg:not(.no-default-fill) path {
             fill: blue;
-        }
+        } */
     }
 
     &.hide div:last-of-type {

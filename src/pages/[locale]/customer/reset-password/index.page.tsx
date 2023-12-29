@@ -131,7 +131,7 @@ const getServerSideProps = async (context: GetServerSidePropsContext) => {
     const token = context.query.token as string;
     const destination = prepareSSRRedirect('/')(context);
 
-    if (!token) return { redirect: { destination, permanent: false } };
+    if (!token) return destination;
 
     const returnedStuff = {
         ...r.props,

@@ -19,10 +19,12 @@ import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { TP } from '@/src/components/atoms/TypoGraphy';
 import { ErrorBanner } from '@/src/components/forms/ErrorBanner';
+import { useCart } from '@/src/state/cart';
 
 const SignIn: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = props => {
     const { t } = useTranslation('customer');
     const { t: tErrors } = useTranslation('common');
+    const { fetchActiveOrder } = useCart();
 
     const schema = z.object({
         emailAddress: z.string().email(tErrors('errors.email.invalid')).min(1, tErrors('errors.email.required')),
@@ -66,7 +68,9 @@ const SignIn: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = props =
             });
 
             if (login.__typename === 'CurrentUser') {
+                await fetchActiveOrder();
                 push('/customer/manage');
+
                 return;
             }
 

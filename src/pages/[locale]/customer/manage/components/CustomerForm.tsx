@@ -6,6 +6,7 @@ import { useTranslation } from 'next-i18next';
 import { CustomerResetPasswordForm } from './forms/CustomerResetPasswordForm';
 import { CustomerDetailsForm } from './forms/CustomerDetailsForm';
 import { StyledButton } from './atoms/shared';
+import { AnimatePresence } from 'framer-motion';
 
 interface Props {
     initialCustomer: ActiveCustomerType;
@@ -32,11 +33,13 @@ export const CustomerForm: React.FC<Props> = ({ initialCustomer, order }) => {
                     </StyledButton>
                 </Stack>
             </Stack>
-            {view === 'details' ? (
-                <CustomerDetailsForm order={order} initialCustomer={initialCustomer} />
-            ) : (
-                <CustomerResetPasswordForm />
-            )}
+            <AnimatePresence>
+                {view === 'details' ? (
+                    <CustomerDetailsForm order={order} initialCustomer={initialCustomer} />
+                ) : (
+                    <CustomerResetPasswordForm />
+                )}
+            </AnimatePresence>
         </Stack>
     );
 };

@@ -4,19 +4,27 @@ import { GetServerSidePropsContext, InferGetServerSidePropsType } from 'next';
 import React from 'react';
 import { getCollections } from '@/src/graphql/sharedQueries';
 import { CustomerNavigation } from './components/CustomerNavigation';
-import { Stack } from '@/src/components/atoms/Stack';
 import { SSRQuery } from '@/src/graphql/client';
 import { ActiveCustomerSelector, ActiveOrderSelector } from '@/src/graphql/selectors';
 import { CustomerForm } from './components/CustomerForm';
 import { ContentContainer } from '@/src/components/atoms/ContentContainer';
 import { SortOrder } from '@/src/zeus';
 import styled from '@emotion/styled';
+import { motion } from 'framer-motion';
 
 const Account: React.FC<InferGetServerSidePropsType<typeof getServerSideProps>> = props => {
     return (
         <Layout categories={props.collections}>
             <ContentContainer>
-                <CustomerWrap itemsStart gap="1.75rem">
+                <CustomerWrap
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    transition={{
+                        type: 'spring',
+                        stiffness: 380,
+                        damping: 30,
+                    }}>
                     <CustomerNavigation />
                     <CustomerForm initialCustomer={props.activeCustomer} order={props.lastOrder} />
                 </CustomerWrap>
@@ -25,7 +33,9 @@ const Account: React.FC<InferGetServerSidePropsType<typeof getServerSideProps>> 
     );
 };
 
-const CustomerWrap = styled(Stack)`
+const CustomerWrap = styled(motion.div)`
+    justify-content: flex-start;
+    gap: 1.75rem;
     @media (max-width: ${({ theme }) => theme.breakpoints.lg}) {
         flex-direction: column;
     }

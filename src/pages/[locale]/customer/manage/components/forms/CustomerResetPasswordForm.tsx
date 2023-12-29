@@ -7,7 +7,7 @@ import { storefrontApiMutation } from '@/src/graphql/client';
 import { Stack } from '@/src/components/atoms/Stack';
 import { Input } from '@/src/components/forms/Input';
 import { usePush } from '@/src/lib/redirect';
-import { Form, StyledButton } from '../atoms/shared';
+import { CustomerWrap, Form, StyledButton } from '../atoms/shared';
 
 type ResetPasswordForm = {
     oldPassword: string;
@@ -88,7 +88,15 @@ export const CustomerResetPasswordForm = () => {
         if (logout.success) push('/customer/sign-in/');
     };
     return (
-        <Stack w100>
+        <CustomerWrap
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{
+                type: 'spring',
+                stiffness: 380,
+                damping: 30,
+            }}>
             <Form onSubmit={handleSubmit(onPasswordChange)}>
                 <Stack column itemsCenter>
                     <Input
@@ -111,6 +119,6 @@ export const CustomerResetPasswordForm = () => {
                 </Stack>
                 <StyledButton type="submit">{t('accountPage.passwordForm.confirmPassword')}</StyledButton>
             </Form>
-        </Stack>
+        </CustomerWrap>
     );
 };

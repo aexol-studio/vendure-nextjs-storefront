@@ -179,7 +179,7 @@ const getServerSideProps = async (context: GetServerSidePropsContext) => {
 
         return { props: returnedStuff };
     } catch (error) {
-        return { redirect: { destination, permanent: false } };
+        return destination;
     }
 };
 

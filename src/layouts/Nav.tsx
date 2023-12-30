@@ -73,9 +73,9 @@ export const Nav: React.FC = () => {
                                 </HoverMenu>
                             </Dropdown>
                         ) : (
-                            <StyledLink href="/customer/sign-in">
+                            <Link href="/customer/sign-in">
                                 <User2 size="2.4rem" />
-                            </StyledLink>
+                            </Link>
                         )}
                         {/* <Cart activeOrder={cart} /> */}
                         <CartDrawer activeOrder={cart} />

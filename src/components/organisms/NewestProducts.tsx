@@ -1,11 +1,10 @@
 import { NewestProductType } from '@/src/graphql/selectors';
 import React from 'react';
-import { Stack } from '../atoms/Stack';
-import { TH2 } from '../atoms/TypoGraphy';
+import { TH2, Stack } from '@/src/components/atoms';
+import { ProductImageWithInfo } from '@/src/components/molecules/ProductImageWithInfo';
 import styled from '@emotion/styled';
 
 import { useTranslation } from 'next-i18next';
-import { ProductImageWithInfo } from '../molecules/ProductImageWithInfo';
 
 interface NewesProductsProps {
     products: NewestProductType[];

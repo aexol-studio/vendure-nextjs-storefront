@@ -1,13 +1,10 @@
-import { SearchInput } from '@/src/components/atoms/SearchInput';
-import { Stack } from '@/src/components/atoms/Stack';
-import { TH2 } from '@/src/components/atoms/TypoGraphy';
+import { Select, TH2, Stack, SearchInput } from '@/src/components/atoms';
 import { IconButton } from '@/src/components/molecules/Button';
 import { usePush } from '@/src/lib/redirect';
 import styled from '@emotion/styled';
 import { Filter, Search } from 'lucide-react';
 import React, { useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'next-i18next';
-import { Select } from '@/src/components/atoms/Select';
 import { CollectionTileType } from '@/src/graphql/selectors';
 
 interface MainBarProps {

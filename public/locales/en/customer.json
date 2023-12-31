@@ -6,6 +6,7 @@
     "signUpTitle": "Create a new account",
     "signOut": "Sign out",
     "resetPasswordTitle": "Reset your password",
+    "addressesPageTitle": "Addresses",
     "username": "Username",
     "password": "Password",
     "rememberMe": "Remember me",
@@ -19,7 +20,8 @@
     "signUpSuccess":"You have successfully signed up",
     "verify": {
         "success": "Your account has been verified",
-        "fail": "Your account could not be verified"
+        "fail": "Your account could not be verified",
+        "title": "Verify your account"
     },
     "navigation": {
         "manageAccount": "Manage account",
@@ -45,7 +47,8 @@
             "addressEmail": "Address email",
             "firstName": "First name",
             "lastName": "Last name",
-            "phoneNumber": "Phone number"
+            "phoneNumber": "Phone number",
+            "successMessage": "Your account details have been updated successfully"
         },
         "passwordForm": {
             "title": "Change Password",
@@ -56,15 +59,19 @@
         }
     },
     "orderPage": {
+        "title": "Order",
         "backToOrders": "Go to My Orders",
         "orderCode": "Order Code",
-        "customerDetails": "Customer Details",
+        "items": "Items",
         "shippingAddress": "Shipping Address",
         "billingAddress": "Billing Address",
         "shippingMethod": "Shipping Method",
         "discounts": "Discounts",
         "totalPrice": "Total Price",
-        "quantity": "Quantity"
+        "quantity": "Quantity",
+        "customerName": "Customer Name",
+        "email": "Email",
+        "phone": "Phone"
     },
     "ordersPage": {
         "title": "My Orders",

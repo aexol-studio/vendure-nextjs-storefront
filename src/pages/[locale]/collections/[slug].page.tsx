@@ -5,58 +5,39 @@ import { TH1, TH2, TP } from '@/src/components/atoms/TypoGraphy';
 import { FacetFilterCheckbox } from '@/src/components/molecules/FacetFilter';
 import { ProductTile } from '@/src/components/molecules/ProductTile';
 import { storefrontApiQuery } from '@/src/graphql/client';
-import { FiltersFacetType, SearchSelector, SearchType } from '@/src/graphql/selectors';
-import { getCollections } from '@/src/graphql/sharedQueries';
+import { CollectionSelector, SearchSelector } from '@/src/graphql/selectors';
+import { getCollections, getCollectionsPaths } from '@/src/graphql/sharedQueries';
 import { Layout } from '@/src/layouts';
 import { ContextModel, localizeGetStaticPaths, makeStaticProps } from '@/src/lib/getStatic';
 import styled from '@emotion/styled';
 import { InferGetStaticPropsType } from 'next';
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { useTranslation } from 'next-i18next';
 import { IconButton } from '@/src/components/molecules/Button';
 import { Filter, X } from 'lucide-react';
 import { AnimatePresence, motion } from 'framer-motion';
-import { GraphQLTypes } from '@/src/zeus';
-import { useRouter } from 'next/router';
 import { Pagination } from '@/src/components/molecules/Pagination';
 import { ProductImageWithInfo } from '@/src/components/molecules/ProductImageWithInfo';
 import { Breadcrumbs } from '@/src/components/molecules/Breadcrumbs';
 
-const PER_PAGE = 24;
-
-const reduceFacets = (facetValues: SearchType['facetValues']): FiltersFacetType[] => {
-    return facetValues.reduce((acc, curr) => {
-        const facet = curr.facetValue.facet;
-        const facetValue = {
-            ...curr.facetValue,
-            count: curr.count,
-        };
-        const facetGroup = acc.find(f => f.name === facet.name);
-        if (facetGroup) {
-            facetGroup.values.push(facetValue);
-        } else {
-            acc.push({
-                id: facet.id,
-                name: facet.name,
-                code: facet.code,
-                values: [facetValue],
-            });
-        }
-        return acc;
-    }, [] as FiltersFacetType[]);
-};
+import { useCollection } from '@/src/state/collection';
+import { PER_PAGE, reduceFacets } from '@/src/state/collection/utils';
+import { arrayToTree } from '@/src/util/arrayToTree';
 
 const CollectionPage: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = props => {
     const { t } = useTranslation('common');
-    const { query } = useRouter();
-
-    const [page, setPage] = useState(1);
-    const [filtersOpen, setFiltersOpen] = useState(false);
-    const [filters, setFilters] = useState<{ [key: string]: string[] }>({});
-
-    const [totalProducts, setTotalProducts] = useState(props.totalProducts);
-    const [products, setProducts] = useState(props.products);
-    const [facetValues, setFacetValues] = useState(props.facets);
+    const {
+        collection,
+        products,
+        facetValues,
+        filtersOpen,
+        setFiltersOpen,
+        paginationInfo,
+        changePage,
+        filters,
+        applyFilter,
+        removeFilter,
+    } = useCollection();
 
     const breadcrumbs = [
         {
@@ -73,95 +54,8 @@ const CollectionPage: React.FC<InferGetStaticPropsType<typeof getStaticProps>> =
         },
     ].filter(b => b.name !== '__root_collection__');
 
-    useEffect(() => {
-        if (query.page) setPage(parseInt(query.page as string));
-        if (query && Object.keys(query).filter(k => k !== 'slug' && k !== 'locale').length) {
-            const filters: { [key: string]: string[] } = {};
-            Object.entries(query).forEach(([key, value]) => {
-                if (key === 'slug' || key === 'locale' || key === 'page' || !value) return;
-                const facetGroup = props.facets.find(f => f.name === key);
-                if (!facetGroup) return;
-                const facet = facetGroup.values.find(v => v.name === value);
-                if (!facet) return;
-                filters[facetGroup.id] = [...(filters[facetGroup.id] || []), facet.id];
-            });
-            setFilters(filters);
-            getFilteredProducts(filters, query.page ? parseInt(query.page as string) : 1);
-        }
-    }, [query]);
-
-    const changePage = (page: number) => {
-        const url = new URL(window.location.href);
-        url.searchParams.set('page', page.toString());
-        window.history.pushState({}, '', url.toString());
-        setPage(page);
-        getFilteredProducts(filters, page);
-    };
-
-    const getFilteredProducts = async (state: { [key: string]: string[] }, page: number) => {
-        if (page < 1) page = 1;
-        const facetValueFilters: GraphQLTypes['FacetValueFilterInput'][] = [];
-
-        Object.entries(state).forEach(([key, value]) => {
-            const facet = props.facets.find(f => f.id === key);
-            if (!facet) return;
-            const filter: GraphQLTypes['FacetValueFilterInput'] = {};
-            if (value.length === 1) filter.and = value[0];
-            else filter.or = value;
-            facetValueFilters.push(filter);
-        });
-
-        const input: GraphQLTypes['SearchInput'] = {
-            collectionSlug: props.slug,
-            groupByProduct: true,
-            facetValueFilters,
-            take: PER_PAGE * page,
-            skip: PER_PAGE * (page - 1),
-        };
-
-        const { search } = await storefrontApiQuery({
-            search: [{ input }, SearchSelector],
-        });
-
-        setProducts(search?.items);
-        setTotalProducts(search?.totalItems);
-        const facets = reduceFacets(search?.facetValues || []);
-        setFacetValues(facets);
-    };
-
-    const applyFilter = async (group: { id: string; name: string }, value: { id: string; name: string }) => {
-        const newState = { ...filters, [group.id]: [...(filters[group.id] || []), value.id] };
-
-        const url = new URL(window.location.href);
-        if (url.searchParams.get(group.name)) {
-            url.searchParams.set(group.name, `${url.searchParams.get(group.name)},${value.name}`);
-        } else url.searchParams.set(group.name, value.name);
-
-        setFilters(newState);
-        url.searchParams.set('page', '1');
-        await getFilteredProducts(newState, 1);
-        window.history.pushState({}, '', url.toString());
-    };
-
-    const removeFilter = async (group: { id: string; name: string }, value: { id: string; name: string }) => {
-        const newState = { ...filters, [group.id]: filters[group.id].filter(f => f !== value.id) };
-
-        const url = new URL(window.location.href);
-        if (url.searchParams.get(group.name)) {
-            const values = url.searchParams.get(group.name)?.split(',');
-            const filtered = values?.filter(v => v !== value.name);
-            if (filtered?.length) url.searchParams.set(group.name, filtered.join(','));
-            else url.searchParams.delete(group.name);
-        }
-
-        setFilters(newState);
-        url.searchParams.set('page', '1');
-        await getFilteredProducts(newState, 1);
-        window.history.pushState({}, '', url.toString());
-    };
-
     return (
-        <Layout categories={props.collections}>
+        <Layout categories={props.collections} navigation={props.navigation}>
             <ContentContainer>
                 <AnimatePresence>
                     {filtersOpen && (
@@ -185,7 +79,7 @@ const CollectionPage: React.FC<InferGetStaticPropsType<typeof getStaticProps>> =
                                         </IconButton>
                                     </Stack>
                                     <Stack column>
-                                        {facetValues.map(f => (
+                                        {facetValues?.map(f => (
                                             <FacetFilterCheckbox
                                                 facet={f}
                                                 key={f.code}
@@ -203,13 +97,14 @@ const CollectionPage: React.FC<InferGetStaticPropsType<typeof getStaticProps>> =
                         </Facets>
                     )}
                 </AnimatePresence>
-                <Stack gap="2rem" column>
+                <RelativeStack gap="2rem" column>
+                    <ScrollPoint id="collection-scroll" />
                     <Breadcrumbs breadcrumbs={breadcrumbs} />
-                    {props.collection?.children && props.collection.children.length > 0 ? (
+                    {collection?.children && collection.children.length > 0 ? (
                         <Stack column gap="1.25rem">
                             <TH2>{t('related-collections')}</TH2>
                             <Stack itemsCenter gap="2rem">
-                                {props.collection.children.map(col => (
+                                {collection.children.map(col => (
                                     <ProductImageWithInfo
                                         key={col.name}
                                         href={`/collections/${col.slug}`}
@@ -222,7 +117,9 @@ const CollectionPage: React.FC<InferGetStaticPropsType<typeof getStaticProps>> =
                         </Stack>
                     ) : null}
                     <Stack justifyBetween itemsCenter>
-                        <TH1>{props.name}</TH1>
+                        <Stack itemsEnd>
+                            <TH1>{collection?.name}</TH1>
+                        </Stack>
                         <Filters onClick={() => setFiltersOpen(true)}>
                             <TP>{t('filters')}</TP>
                             <IconButton title={t('filters')}>
@@ -231,16 +128,31 @@ const CollectionPage: React.FC<InferGetStaticPropsType<typeof getStaticProps>> =
                         </Filters>
                     </Stack>
                     <MainGrid>
-                        {products?.map(p => {
-                            return <ProductTile collections={props.collections} product={p} key={p.slug} />;
-                        })}
+                        {products?.map(p => <ProductTile collections={props.collections} product={p} key={p.slug} />)}
                     </MainGrid>
-                    <Pagination page={page} changePage={changePage} totalPages={Math.ceil(totalProducts / PER_PAGE)} />
-                </Stack>
+                    <Pagination
+                        page={paginationInfo.currentPage}
+                        changePage={changePage}
+                        totalPages={paginationInfo.totalPages}
+                    />
+                </RelativeStack>
             </ContentContainer>
         </Layout>
     );
 };
+
+const RelativeStack = styled(Stack)`
+    position: relative;
+    @media (min-width: ${p => p.theme.breakpoints.xl}) {
+        padding: 3.5rem 0;
+    }
+`;
+
+const ScrollPoint = styled.div`
+    position: absolute;
+    top: -5rem;
+    left: 0;
+`;
 
 const Filters = styled(Stack)`
     width: auto;
@@ -264,7 +176,7 @@ const FacetsFilters = styled(motion.div)`
     overflow-y: auto;
 `;
 export const getStaticPaths = async () => {
-    const resp = await getCollections();
+    const resp = await getCollectionsPaths();
     const paths = localizeGetStaticPaths(
         resp.map(collection => ({
             params: { id: collection.id, slug: collection.slug },
@@ -277,22 +189,10 @@ export const getStaticProps = async (context: ContextModel<{ slug?: string }>) =
     const { slug } = context.params || {};
     const r = await makeStaticProps(['common'])(context);
     const collections = await getCollections();
+    const navigation = arrayToTree(collections);
 
     const { collection } = await storefrontApiQuery({
-        collection: [
-            { slug },
-            {
-                name: true,
-                slug: true,
-                parent: { slug: true, name: true },
-                children: {
-                    id: true,
-                    name: true,
-                    slug: true,
-                    featuredAsset: { preview: true },
-                },
-            },
-        ],
+        collection: [{ slug }, CollectionSelector],
     });
     // const facets = await storefrontApiQuery({
     //     facets: [{}, { items: FacetSelector }],
@@ -311,12 +211,13 @@ export const getStaticProps = async (context: ContextModel<{ slug?: string }>) =
         facets,
         totalProducts: productsQuery.search?.totalItems,
         collection,
+        navigation,
         ...r.props,
     };
 
     return {
         props: returnedStuff,
-        revalidate: 10,
+        revalidate: process.env.NEXT_REVALIDATE ? parseInt(process.env.NEXT_REVALIDATE) : 10,
     };
 };
 

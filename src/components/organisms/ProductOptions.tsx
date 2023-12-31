@@ -1,9 +1,8 @@
 import { ProductDetailType } from '@/src/graphql/selectors';
 import styled from '@emotion/styled';
 import { useEffect, useState } from 'react';
-import { TP } from '@/src/components/atoms/TypoGraphy';
 import { Button } from '@/src/components/molecules/Button';
-import { Stack } from '@/src/components/atoms/Stack';
+import { TP, Stack } from '@/src/components/atoms';
 import { AnimatePresence, motion } from 'framer-motion';
 
 export const ProductOptions: React.FC<{
@@ -18,15 +17,14 @@ export const ProductOptions: React.FC<{
     }>({});
 
     useEffect(() => {
-        if (!selectedVariant || Object.keys(selectedOptions).length) return;
-        const newState = selectedVariant.options.reduce(
+        const newState = selectedVariant?.options.reduce(
             (acc, option) => {
                 acc[option.group.id] = option.id;
                 return acc;
             },
             {} as { [key: string]: string },
         );
-        setSelectedOptions(newState);
+        setSelectedOptions(newState ? newState : {});
     }, [selectedVariant]);
 
     const handleClick = (groupId: string, id: string) => {
@@ -34,10 +32,8 @@ export const ProductOptions: React.FC<{
         if (selectedOptions[groupId] === id) {
             newState = { ...selectedOptions };
             delete newState[groupId];
-            setSelectedOptions(newState);
         } else {
             newState = { ...selectedOptions, [groupId]: id };
-            setSelectedOptions(newState);
         }
         const variant = variants.find(v => v.options.every(ov => ov.id === newState[ov.group.id]));
         if (variant && variant !== selectedVariant) setVariant(variant);
@@ -49,7 +45,7 @@ export const ProductOptions: React.FC<{
             {optionGroups?.map((og, i) => {
                 const variantsInGroup = variants
                     .filter(v => v.options.some(o => o.group.id === og.id))
-                    .filter(v => v.stockLevel !== 'OUT_OF_STOCK');
+                    .filter(v => Number(v.stockLevel) > 0);
 
                 return (
                     <StyledStack key={i} column gap="0.5rem">

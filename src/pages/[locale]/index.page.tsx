@@ -12,12 +12,14 @@ import { MainGrid } from '@/src/components/atoms/MainGrid';
 import { Hero } from '@/src/components/organisms/Hero';
 import { Stack } from '@/src/components/atoms/Stack';
 import { MainBar } from '@/src/components/organisms/MainBar';
+import { arrayToTree } from '@/src/util/arrayToTree';
+import styled from '@emotion/styled';
 
 export const Index: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = props => {
     const { t } = useTranslation('homepage');
     return (
-        <Layout categories={props.collections} pageTitle="HomePage">
-            <Stack w100 column gap="4rem">
+        <Layout navigation={props.navigation} categories={props.categories} pageTitle={t('seo.home')}>
+            <Main w100 column gap="4rem">
                 <Hero
                     cta={t('hero-cta')}
                     h1={t('hero-h1')}
@@ -28,40 +30,37 @@ export const Index: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = p
                 />
                 <ContentContainer>
                     <Stack gap="4rem" column>
-                        <MainBar title={t('most-wanted')} categories={props.collections} />
+                        <MainBar title={t('most-wanted')} categories={props.categories} />
                         <MainGrid>
-                            {props.products.map(p => {
-                                return <ProductTile collections={props.collections} product={p} key={p.slug} />;
-                            })}
+                            {props.products.map(p => (
+                                <ProductTile collections={props.categories} product={p} key={p.slug} />
+                            ))}
                         </MainGrid>
                     </Stack>
                 </ContentContainer>
-            </Stack>
+            </Main>
         </Layout>
     );
 };
 
+const Main = styled(Stack)`
+    padding: 0 0 4rem 0;
+`;
+
 const getStaticProps = async (ctx: ContextModel) => {
     const products = await storefrontApiQuery({
-        search: [
-            {
-                input: {
-                    take: 24,
-                    groupByProduct: true,
-                },
-            },
-            {
-                items: ProductSearchSelector,
-            },
-        ],
+        search: [{ input: { take: 24, groupByProduct: true } }, { items: ProductSearchSelector }],
     });
+
     const collections = await getCollections();
-    const sprops = makeStaticProps(['common', 'homepage']);
-    const r = await sprops(ctx);
+    const navigation = arrayToTree(collections);
+    const r = await makeStaticProps(['common', 'homepage'])(ctx);
+
     const returnedStuff = {
-        props: { ...r.props, products: products.search.items, collections },
-        revalidate: 10, // In seconds
+        props: { ...r.props, products: products.search.items, categories: collections, navigation },
+        revalidate: process.env.NEXT_REVALIDATE ? parseInt(process.env.NEXT_REVALIDATE) : 10,
     };
+
     return returnedStuff;
 };
 

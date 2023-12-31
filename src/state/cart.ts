@@ -3,66 +3,25 @@ import { ActiveOrderSelector, ActiveOrderType } from '@/src/graphql/selectors';
 import { useState } from 'react';
 import { createContainer } from 'unstated-next';
 
-const TEMP_CUSTOMER = 'vendure-customer';
-
 const useCartContainer = createContainer(() => {
     const [activeOrder, setActiveOrder] = useState<ActiveOrderType>();
     const [isLogged, setIsLogged] = useState(false);
+    const [isOpen, setOpen] = useState(false);
+    const open = () => setOpen(true);
+    const close = () => setOpen(false);
 
     const fetchActiveOrder = async () => {
-        const response = await storefrontApiQuery({
-            activeOrder: ActiveOrderSelector,
-        });
-        setActiveOrder(response.activeOrder);
-
-        const { activeCustomer } = await storefrontApiQuery({
-            activeCustomer: {
-                id: true,
-            },
-        });
-        setIsLogged(!!activeCustomer?.id);
-
-        return response.activeOrder;
-    };
-
-    const setTemporaryCustomerForOrder = async () => {
-        const tempCustomerId = window.localStorage.getItem(TEMP_CUSTOMER) || Math.random().toFixed(8);
-        window.localStorage.setItem(TEMP_CUSTOMER, tempCustomerId);
-        storefrontApiMutation({
-            setCustomerForOrder: [
-                {
-                    input: {
-                        firstName: 'Artur',
-                        lastName: 'Czemiel',
-                        emailAddress: 'artur@aexol.com',
-                    },
-                },
-                {
-                    __typename: true,
-                    '...on Order': ActiveOrderSelector,
-                    '...on AlreadyLoggedInError': {
-                        errorCode: true,
-                        message: true,
-                    },
-                    '...on EmailAddressConflictError': {
-                        errorCode: true,
-                        message: true,
-                    },
-                    '...on GuestCheckoutError': {
-                        errorCode: true,
-                        message: true,
-                    },
-                    '...on NoActiveOrderError': {
-                        errorCode: true,
-                        message: true,
-                    },
-                },
-            ],
-        }).then(r => {
-            if (r.setCustomerForOrder.__typename === 'Order') {
-                setActiveOrder(r.setCustomerForOrder);
-            }
-        });
+        try {
+            const [{ activeOrder }, { activeCustomer }] = await Promise.all([
+                storefrontApiQuery({ activeOrder: ActiveOrderSelector }),
+                storefrontApiQuery({ activeCustomer: { id: true } }),
+            ]);
+            setActiveOrder(activeOrder);
+            setIsLogged(!!activeCustomer?.id);
+            return activeOrder;
+        } catch (e) {
+            console.log(e);
+        }
     };
 
     const addToCart = async (id: string, q: number, o?: boolean) => {
@@ -100,112 +59,118 @@ const useCartContainer = createContainer(() => {
             if (addItemToOrder.__typename === 'Order') {
                 setActiveOrder(addItemToOrder);
                 if (o) open();
-                return true;
             }
         } catch (e) {
-            return false;
+            console.log(e);
         }
     };
-    const removeFromCart = (id: string) => {
+    const removeFromCart = async (id: string) => {
         setActiveOrder(c => {
             return c && { ...c, lines: c.lines.filter(l => l.id !== id) };
         });
-        storefrontApiMutation({
-            removeOrderLine: [
-                { orderLineId: id },
-                {
-                    '...on Order': ActiveOrderSelector,
-                    '...on OrderModificationError': {
-                        errorCode: true,
-                        message: true,
+        try {
+            const { removeOrderLine } = await storefrontApiMutation({
+                removeOrderLine: [
+                    { orderLineId: id },
+                    {
+                        __typename: true,
+                        '...on Order': ActiveOrderSelector,
+                        '...on OrderModificationError': {
+                            errorCode: true,
+                            message: true,
+                        },
                     },
-                    __typename: true,
-                },
-            ],
-        }).then(r => {
-            if (r.removeOrderLine.__typename === 'Order') {
-                setActiveOrder(r.removeOrderLine);
+                ],
+            });
+            if (removeOrderLine.__typename === 'Order') {
+                setActiveOrder(removeOrderLine);
                 return;
             }
-            return r.removeOrderLine;
-        });
+        } catch (e) {
+            console.log(e);
+        }
     };
-    const setItemQuantityInCart = (id: string, q: number) => {
-        setActiveOrder(c => {
-            if (c?.lines.find(l => l.id === id)) {
-                return { ...c, lines: c.lines.map(l => (l.id === id ? { ...l, q } : l)) };
-            }
-            return c;
-        });
-        return storefrontApiMutation({
-            adjustOrderLine: [
-                { orderLineId: id, quantity: q },
-                {
-                    '...on Order': ActiveOrderSelector,
-                    '...on OrderLimitError': {
-                        errorCode: true,
-                        message: true,
-                    },
-                    '...on InsufficientStockError': {
-                        errorCode: true,
-                        message: true,
-                    },
-                    '...on NegativeQuantityError': {
-                        errorCode: true,
-                        message: true,
-                    },
-                    '...on OrderModificationError': {
-                        errorCode: true,
-                        message: true,
-                    },
-                    __typename: true,
-                },
-            ],
-        })
-            .then(r => {
-                if (r.adjustOrderLine.__typename === 'Order') {
-                    setActiveOrder(r.adjustOrderLine);
-                    return;
+    const setItemQuantityInCart = async (id: string, q: number) => {
+        try {
+            setActiveOrder(c => {
+                if (c?.lines.find(l => l.id === id)) {
+                    return { ...c, lines: c.lines.map(l => (l.id === id ? { ...l, q } : l)) };
                 }
-                return r.adjustOrderLine;
-            })
-            .catch(e => {
-                console.log(e);
+                return c;
             });
+            const { adjustOrderLine } = await storefrontApiMutation({
+                adjustOrderLine: [
+                    { orderLineId: id, quantity: q },
+                    {
+                        __typename: true,
+                        '...on Order': ActiveOrderSelector,
+                        '...on OrderLimitError': {
+                            errorCode: true,
+                            message: true,
+                        },
+                        '...on InsufficientStockError': {
+                            errorCode: true,
+                            message: true,
+                        },
+                        '...on NegativeQuantityError': {
+                            errorCode: true,
+                            message: true,
+                        },
+                        '...on OrderModificationError': {
+                            errorCode: true,
+                            message: true,
+                        },
+                    },
+                ],
+            });
+            if (adjustOrderLine.__typename === 'Order') {
+                setActiveOrder(adjustOrderLine);
+                return;
+            }
+            return adjustOrderLine;
+        } catch (e) {
+            console.log(e);
+        }
     };
 
     const applyCouponCode = async (code: string) => {
-        const { applyCouponCode } = await storefrontApiMutation({
-            applyCouponCode: [
-                { couponCode: code },
-                {
-                    __typename: true,
-                    '...on Order': ActiveOrderSelector,
-                    '...on CouponCodeExpiredError': { errorCode: true, message: true },
-                    '...on CouponCodeInvalidError': { errorCode: true, message: true },
-                    '...on CouponCodeLimitError': { errorCode: true, message: true },
-                },
-            ],
-        });
-        if (applyCouponCode.__typename === 'Order') {
-            setActiveOrder(applyCouponCode);
-            return true;
+        try {
+            const { applyCouponCode } = await storefrontApiMutation({
+                applyCouponCode: [
+                    { couponCode: code },
+                    {
+                        __typename: true,
+                        '...on Order': ActiveOrderSelector,
+                        '...on CouponCodeExpiredError': { errorCode: true, message: true },
+                        '...on CouponCodeInvalidError': { errorCode: true, message: true },
+                        '...on CouponCodeLimitError': { errorCode: true, message: true },
+                    },
+                ],
+            });
+            if (applyCouponCode.__typename === 'Order') {
+                setActiveOrder(applyCouponCode);
+                return true;
+            }
+            return false;
+        } catch (e) {
+            console.log(e);
+            return false;
         }
-        return false;
     };
 
     const removeCouponCode = async (code: string) => {
-        const { removeCouponCode } = await storefrontApiMutation({
-            removeCouponCode: [{ couponCode: code }, ActiveOrderSelector],
-        });
-        if (removeCouponCode?.id) {
-            setActiveOrder(removeCouponCode);
-            return;
+        try {
+            const { removeCouponCode } = await storefrontApiMutation({
+                removeCouponCode: [{ couponCode: code }, ActiveOrderSelector],
+            });
+            if (removeCouponCode?.id) {
+                setActiveOrder(removeCouponCode);
+                return;
+            }
+        } catch (e) {
+            console.log(e);
         }
     };
-    const [isOpen, setOpen] = useState(false);
-    const open = () => setOpen(true);
-    const close = () => setOpen(false);
 
     return {
         isLogged,
@@ -213,7 +178,6 @@ const useCartContainer = createContainer(() => {
         cart: activeOrder,
         addToCart,
         setItemQuantityInCart,
-        setTemporaryCustomerForOrder,
         removeFromCart,
         fetchActiveOrder,
 

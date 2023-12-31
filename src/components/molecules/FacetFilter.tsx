@@ -1,5 +1,4 @@
-import { Stack } from '@/src/components/atoms/Stack';
-import { TFacetHeading, TP } from '@/src/components/atoms/TypoGraphy';
+import { Stack, TFacetHeading, TP } from '@/src/components/atoms';
 import { FiltersFacetType } from '@/src/graphql/selectors';
 import styled from '@emotion/styled';
 

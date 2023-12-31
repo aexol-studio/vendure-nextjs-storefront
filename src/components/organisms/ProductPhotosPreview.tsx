@@ -1,9 +1,7 @@
 import React, { useMemo, useState } from 'react';
-import { Stack } from '@/src/components/atoms/Stack';
+import { Stack, ProductImage, ImageSwitcherArrow } from '@/src/components/atoms';
 import styled from '@emotion/styled';
-import { ProductImage } from '../atoms/ProductImage';
 import { ImageOff } from 'lucide-react';
-import { ImageSwitcherArrow } from '../atoms/ImageSwitcherArrow';
 type Asset = { source: string; preview: string } | undefined;
 
 interface ProductPhotosPreview {

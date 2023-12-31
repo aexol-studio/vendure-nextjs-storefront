@@ -8,7 +8,7 @@
         "url": "https://aexol.com"
     },
     "scripts": {
-        "dev": "next dev",
+        "dev": "next dev -p 3001",
         "build": "next build",
         "start": "next start",
         "zeus": "zeus http://localhost:3000/shop-api ./src --td",

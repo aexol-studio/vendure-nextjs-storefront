@@ -2,11 +2,11 @@ import React from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { TagIcon } from 'lucide-react';
 import styled from '@emotion/styled';
-import { Stack } from '@/src/components/atoms/Stack';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useTranslation } from 'next-i18next';
-import { FormError } from '@/src/components/forms/atoms';
+import { FormError } from '@/src/components/forms';
+import { Stack } from '@/src/components/atoms';
 
 export const DiscountForm = ({ applyCouponCode }: { applyCouponCode: (code: string) => Promise<boolean> }) => {
     const { t } = useTranslation('common');

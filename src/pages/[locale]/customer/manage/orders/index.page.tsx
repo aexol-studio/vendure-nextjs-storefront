@@ -12,9 +12,10 @@ import { TP } from '@/src/components/atoms/TypoGraphy';
 import { SortOrder } from '@/src/zeus';
 import styled from '@emotion/styled';
 import { Button } from '@/src/components/molecules/Button';
-import { Input } from '@/src/components/forms/Input';
+import { Input } from '@/src/components/forms';
 import { useTranslation } from 'next-i18next';
 import { OrderBox } from './components/OrderBox';
+import { arrayToTree } from '@/src/util/arrayToTree';
 
 const GET_MORE = 4;
 
@@ -90,7 +91,7 @@ const History: React.FC<InferGetServerSidePropsType<typeof getServerSideProps>> 
     };
 
     return (
-        <Layout categories={props.collections}>
+        <Layout categories={props.collections} navigation={props.navigation} pageTitle={t('ordersPage.title')}>
             <ContentContainer>
                 <CustomerWrap w100 itemsStart gap="1.75rem">
                     <CustomerNavigation />
@@ -121,6 +122,8 @@ const History: React.FC<InferGetServerSidePropsType<typeof getServerSideProps>> 
 };
 
 const CustomerWrap = styled(Stack)`
+    padding: 2rem 0;
+
     @media (max-width: ${({ theme }) => theme.breakpoints.lg}) {
         flex-direction: column;
     }
@@ -166,7 +169,8 @@ const Wrap = styled(Stack)`
 const getServerSideProps = async (context: GetServerSidePropsContext) => {
     const r = await makeServerSideProps(['common', 'customer'])(context);
     const collections = await getCollections();
-    const destination = prepareSSRRedirect('/')(context);
+    const navigation = arrayToTree(collections);
+    const homePageRedirect = prepareSSRRedirect('/')(context);
 
     try {
         const { activeCustomer } = await SSRQuery(context)({
@@ -184,11 +188,12 @@ const getServerSideProps = async (context: GetServerSidePropsContext) => {
             ...r.props,
             collections,
             activeCustomer,
+            navigation,
         };
 
         return { props: returnedStuff };
     } catch (error) {
-        return destination;
+        return homePageRedirect;
     }
 };
 

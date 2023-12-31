@@ -6,7 +6,7 @@ import { getCollections } from '@/src/graphql/sharedQueries';
 import { ContentContainer } from '@/src/components/atoms/ContentContainer';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { storefrontApiMutation } from '@/src/graphql/client';
-import { Input } from '@/src/components/forms/Input';
+import { Input, Banner } from '@/src/components/forms';
 import { Button } from '@/src/components/molecules/Button';
 import { usePush } from '@/src/lib/redirect';
 import { Absolute, Form, FormContainer, FormContent, FormWrapper } from '../components/shared';
@@ -14,7 +14,7 @@ import { useTranslation } from 'next-i18next';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { TP } from '@/src/components/atoms/TypoGraphy';
-import { ErrorBanner } from '@/src/components/forms/ErrorBanner';
+import { arrayToTree } from '@/src/util/arrayToTree';
 
 type FormValues = { password: string; confirmPassword: string };
 
@@ -93,11 +93,11 @@ const ResetPassword: React.FC<InferGetServerSidePropsType<typeof getServerSidePr
     };
 
     return (
-        <Layout categories={props.collections}>
+        <Layout categories={props.collections} navigation={props.navigation} pageTitle={t('resetPasswordTitle')}>
             <ContentContainer>
                 <FormContainer>
                     <Absolute w100>
-                        <ErrorBanner error={errors.root} clearErrors={() => setError('root', { message: undefined })} />
+                        <Banner error={errors.root} clearErrors={() => setError('root', { message: undefined })} />
                     </Absolute>
                     <TP weight={600}>{t('resetPasswordTitle')}</TP>
                     <FormWrapper column itemsCenter gap="1.75rem">
@@ -128,15 +128,17 @@ const ResetPassword: React.FC<InferGetServerSidePropsType<typeof getServerSidePr
 const getServerSideProps = async (context: GetServerSidePropsContext) => {
     const r = await makeServerSideProps(['common', 'customer'])(context);
     const collections = await getCollections();
+    const navigation = arrayToTree(collections);
     const token = context.query.token as string;
-    const destination = prepareSSRRedirect('/')(context);
+    const homePageRedirect = prepareSSRRedirect('/')(context);
 
-    if (!token) return destination;
+    if (!token) return homePageRedirect;
 
     const returnedStuff = {
         ...r.props,
         collections,
         token,
+        navigation,
     };
 
     return { props: returnedStuff };

@@ -3,6 +3,7 @@ import styled from '@emotion/styled';
 import { motion } from 'framer-motion';
 
 export const CustomerWrap = styled(motion.div)`
+    align-items: flex-start;
     display: flex;
     width: 100%;
     gap: 3.5rem;

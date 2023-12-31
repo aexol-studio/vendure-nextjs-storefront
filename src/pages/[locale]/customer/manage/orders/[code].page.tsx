@@ -15,11 +15,13 @@ import { useTranslation } from 'next-i18next';
 import { CustomerOrderStates } from './components/CustomerOrderStates';
 import { OrderPaymentState } from './components/OrderPaymentState';
 import { OrderAddress } from './components/OrderAddress';
-import { CreditCard, Mail, MoveLeft, PackageCheck, Phone, ShoppingCart, Truck, User } from 'lucide-react';
+import { CreditCard, Mail, MoveLeft, Phone, ShoppingCart, Truck, User } from 'lucide-react';
 import styled from '@emotion/styled';
 import { OrderLine } from './components/OrderLine';
 import { Divider } from '@/src/components/atoms/Divider';
 import { Discounts } from '@/src/components/molecules/Discounts';
+import { OrderShippingStatus } from './components/OrderShippingStatus';
+import { arrayToTree } from '@/src/util/arrayToTree';
 
 const Order: React.FC<InferGetServerSidePropsType<typeof getServerSideProps>> = props => {
     const { t } = useTranslation('customer');
@@ -32,9 +34,12 @@ const Order: React.FC<InferGetServerSidePropsType<typeof getServerSideProps>> = 
     const shippingMethod = order?.shippingLines?.[0];
 
     return (
-        <Layout categories={props.collections}>
+        <Layout
+            categories={props.collections}
+            navigation={props.navigation}
+            pageTitle={`${t('orderPage.title')} #${order.code}`}>
             <ContentContainer>
-                <Stack itemsStart gap="1.75rem">
+                <CustomerWrap itemsStart gap="1.75rem">
                     <CustomerNavigation />
                     <Stack column w100 gap="3.5rem">
                         <Stack column gap="1.5rem">
@@ -53,67 +58,69 @@ const Order: React.FC<InferGetServerSidePropsType<typeof getServerSideProps>> = 
                             </Stack>
                             <CustomerOrderStates state={order?.state} />
                         </Stack>
-                        <Stack w100>
+                        <Stack w100 justifyBetween gap="2.5rem">
                             <Stack w100 column gap="2.5rem">
-                                <Stack column>
-                                    <Stack gap="0.25rem" itemsCenter>
-                                        <ShoppingCart size={'1.6rem'} />
-                                        <TP size="1.25rem" weight={500}>
-                                            {t('orderPage.customerDetails')}
-                                        </TP>
-                                    </Stack>
-                                    <Stack column>
-                                        <Stack itemsCenter gap="0.25rem">
+                                <Stack column gap="2rem">
+                                    <Stack column gap="0.5rem">
+                                        <Stack gap="0.5rem" itemsCenter>
                                             <User size={'1.6rem'} />
-                                            <TP>
-                                                {order.customer?.firstName} {order.customer?.lastName}
+                                            <TP size="1.25rem" weight={500}>
+                                                {t('orderPage.customerName')}
                                             </TP>
                                         </Stack>
-                                        <Stack itemsCenter gap="0.25rem">
-                                            <Mail size={'1.6rem'} />
+                                        <TP>
+                                            {order.customer?.firstName} {order.customer?.lastName}
+                                        </TP>
+                                    </Stack>
+                                    <Stack gap="2.5rem">
+                                        <Stack column gap="0.5rem">
+                                            <Stack gap="0.5rem" itemsCenter>
+                                                <Mail size={'1.6rem'} />
+                                                <TP size="1.25rem" weight={500}>
+                                                    {t('orderPage.email')}
+                                                </TP>
+                                            </Stack>
                                             <TP>{order.customer?.emailAddress}</TP>
                                         </Stack>
-                                        <Stack itemsCenter gap="0.25rem">
-                                            <Phone size={'1.6rem'} />
-                                            <TP>{order.customer?.phoneNumber}</TP>
-                                        </Stack>
+                                        {order.customer?.phoneNumber ? (
+                                            <Stack column gap="0.5rem">
+                                                <Stack gap="0.5rem" itemsCenter>
+                                                    <Phone size={'1.6rem'} />
+                                                    <TP size="1.25rem" weight={500}>
+                                                        {t('orderPage.phone')}
+                                                    </TP>
+                                                </Stack>
+                                                <TP>{order.customer?.phoneNumber}</TP>
+                                            </Stack>
+                                        ) : null}
                                     </Stack>
                                 </Stack>
+                                <OrderShippingStatus
+                                    currencyCode={currencyCode}
+                                    shipping={shippingMethod}
+                                    label={t('orderPage.shippingMethod')}
+                                />
                                 <Stack w100 gap="3.5rem">
-                                    <Stack column gap="0.5rem">
-                                        <Stack gap="0.25rem" itemsCenter>
-                                            <Truck size={'1.6rem'} />
-                                            <TP size="1.25rem" weight={500}>
-                                                {t('orderPage.shippingAddress')}
-                                            </TP>
-                                        </Stack>
-                                        <OrderAddress address={order?.shippingAddress} />
-                                    </Stack>
-                                    <Stack column gap="0.5rem">
-                                        <Stack gap="0.25rem" itemsCenter>
-                                            <CreditCard size={'1.6rem'} />
-                                            <TP size="1.25rem" weight={500}>
-                                                {t('orderPage.billingAddress')}
-                                            </TP>
-                                        </Stack>
-                                        <OrderAddress address={order?.billingAddress} />
-                                    </Stack>
-                                </Stack>
-                                <Stack column gap="0.5rem">
-                                    <Stack gap="0.25rem" itemsCenter>
-                                        <PackageCheck size={'1.6rem'} />
-                                        <TP size="1.25rem" weight={500}>
-                                            {t('orderPage.shippingMethod')}
-                                        </TP>
-                                    </Stack>
-                                    <Stack itemsCenter>
-                                        <Price currencyCode={currencyCode} price={shippingMethod?.priceWithTax} />
-                                        <TP>&nbsp;- {shippingMethod?.shippingMethod.name}</TP>
-                                    </Stack>
+                                    <OrderAddress
+                                        address={order?.shippingAddress}
+                                        label={t('orderPage.shippingAddress')}
+                                        icon={<Truck size={'1.6rem'} />}
+                                    />
+                                    <OrderAddress
+                                        address={order?.billingAddress}
+                                        label={t('orderPage.billingAddress')}
+                                        icon={<CreditCard size={'1.6rem'} />}
+                                    />
                                 </Stack>
                             </Stack>
                             <Stack column w100>
                                 <Stack w100 column gap="2.5rem">
+                                    <Stack gap="0.5rem" itemsCenter>
+                                        <ShoppingCart size={'1.6rem'} />
+                                        <TP size="1.25rem" weight={500}>
+                                            {t('orderPage.items')}
+                                        </TP>
+                                    </Stack>
                                     {order?.lines?.map(line => (
                                         <OrderLine key={line.id} currencyCode={currencyCode} line={line} />
                                     ))}
@@ -129,11 +136,15 @@ const Order: React.FC<InferGetServerSidePropsType<typeof getServerSideProps>> = 
                             </Stack>
                         </Stack>
                     </Stack>
-                </Stack>
+                </CustomerWrap>
             </ContentContainer>
         </Layout>
     );
 };
+
+const CustomerWrap = styled(Stack)`
+    padding: 2rem 0;
+`;
 
 const StyledDivider = styled(Divider)`
     width: 100%;
@@ -150,7 +161,8 @@ const StyledLink = styled(Link)`
 const getServerSideProps = async (context: GetServerSidePropsContext) => {
     const r = await makeServerSideProps(['common', 'customer'])(context);
     const collections = await getCollections();
-    const destination = prepareSSRRedirect('/')(context);
+    const navigation = arrayToTree(collections);
+    const homePageRedirect = prepareSSRRedirect('/')(context);
     const code = context.params?.code as string;
 
     try {
@@ -175,11 +187,12 @@ const getServerSideProps = async (context: GetServerSidePropsContext) => {
             ...r.props,
             collections,
             activeCustomer,
+            navigation,
         };
 
         return { props: returnedStuff };
     } catch (error) {
-        return destination;
+        return homePageRedirect;
     }
 };
 

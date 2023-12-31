@@ -1,6 +1,4 @@
-import { Link } from '@/src/components/atoms/Link';
-import { ProductImageGrid } from '@/src/components/atoms/ProductImage';
-import { Stack } from '@/src/components/atoms/Stack';
+import { Stack, Link, ProductImageGrid } from '@/src/components/atoms/';
 import { CollectionTileType, ProductSearchType } from '@/src/graphql/selectors';
 import { priceFormatter } from '@/src/util/priceFomatter';
 import styled from '@emotion/styled';

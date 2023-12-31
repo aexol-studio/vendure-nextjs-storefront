@@ -8,18 +8,17 @@ import { LoginCustomerInputType } from '@/src/graphql/selectors';
 import { storefrontApiMutation } from '@/src/graphql/client';
 import { Link } from '@/src/components/atoms/Link';
 import { Stack } from '@/src/components/atoms/Stack';
-import { Input } from '@/src/components/forms/Input';
+import { Input, Banner, CheckBox } from '@/src/components/forms';
 import { Button } from '@/src/components/molecules/Button';
 import { ContentContainer } from '@/src/components/atoms/ContentContainer';
 import { usePush } from '@/src/lib/redirect';
-import { CheckBox } from '@/src/components/forms/CheckBox';
 import { useTranslation } from 'next-i18next';
 import { Absolute, Form, FormContainer, FormContent, FormWrapper } from '../components/shared';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { TP } from '@/src/components/atoms/TypoGraphy';
-import { ErrorBanner } from '@/src/components/forms/ErrorBanner';
 import { useCart } from '@/src/state/cart';
+import { arrayToTree } from '@/src/util/arrayToTree';
 
 const SignIn: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = props => {
     const { t } = useTranslation('customer');
@@ -81,15 +80,12 @@ const SignIn: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = props =
     };
 
     return (
-        <Layout categories={props.collections}>
+        <Layout categories={props.collections} navigation={props.navigation} pageTitle={t('signInTitle')}>
             <ContentContainer>
                 <FormContainer>
                     <FormWrapper column itemsCenter gap="3.5rem">
                         <Absolute w100>
-                            <ErrorBanner
-                                error={errors.root}
-                                clearErrors={() => setError('root', { message: undefined })}
-                            />
+                            <Banner error={errors.root} clearErrors={() => setError('root', { message: undefined })} />
                         </Absolute>
                         <TP weight={600}>{t('signInTitle')}</TP>
                         <FormContent w100 column itemsCenter gap="1.75rem">
@@ -124,15 +120,17 @@ const SignIn: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = props =
 const getStaticProps = async (context: ContextModel) => {
     const r = await makeStaticProps(['common', 'customer'])(context);
     const collections = await getCollections();
+    const navigation = arrayToTree(collections);
 
     const returnedStuff = {
         ...r.props,
         collections,
+        navigation,
     };
 
     return {
         props: returnedStuff,
-        revalidate: 10,
+        revalidate: process.env.NEXT_REVALIDATE ? parseInt(process.env.NEXT_REVALIDATE) : 10,
     };
 };
 

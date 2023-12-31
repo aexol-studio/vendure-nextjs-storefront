@@ -98,7 +98,7 @@ export const Cart = ({ activeOrder }: { activeOrder?: ActiveOrderType }) => {
                                                                 v={quantity}
                                                                 onChange={v => setItemQuantityInCart(id, v)}
                                                             />
-                                                            <Remove onClick={() => removeFromCart(id)}>
+                                                            <Remove onClick={async () => await removeFromCart(id)}>
                                                                 <Trash2 size={20} />
                                                                 <TP weight={600} size="1.25rem" upperCase>
                                                                     {t('remove')}

@@ -1,5 +1,7 @@
 import { LogoAexol } from '@/src/assets';
-import { ContentContainer } from '@/src/components/atoms/ContentContainer';
+import { ContentContainer, ProductImage } from '@/src/components/atoms';
+import { UserMenu } from '@/src/components/molecules/UserMenu';
+
 import { Stack } from '@/src/components/atoms/Stack';
 import styled from '@emotion/styled';
 import { LanguageSwitcher } from '@/src/components';
@@ -9,45 +11,15 @@ import { User2 } from 'lucide-react';
 
 // import { Cart } from '@/src/layouts/Cart';
 import { CartDrawer } from '@/src/layouts/CartDrawer';
-import { Dropdown, HoverMenu } from '../styles/reusableStyles';
-import { motion } from 'framer-motion';
-import { useRouter } from 'next/router';
-import { useTranslation } from 'next-i18next';
-import { storefrontApiMutation } from '../graphql/client';
-import { usePush } from '../lib/redirect';
+import { CollectionTileType } from '../graphql/selectors';
+import { RootNode } from '../util/arrayToTree';
 
-const routes = [
-    { href: '/customer/manage', sub: [''], label: 'navigation.manageAccount' as const },
-    { href: '/customer/manage/addresses', sub: [''], label: 'navigation.manageAddresses' as const },
-    {
-        href: '/customer/manage/orders',
-        sub: ['/customer/manage/orders/[code]'],
-        label: 'navigation.manageOrders' as const,
-    },
-];
+interface NavProps {
+    navigation: RootNode<CollectionTileType> | null;
+}
 
-export const Nav: React.FC = () => {
+export const Nav: React.FC<NavProps> = ({ navigation }) => {
     const { isLogged, cart } = useCart();
-    const { pathname } = useRouter();
-    const { t } = useTranslation('customer');
-    const push = usePush();
-
-    const userMenu = routes.map(route => (
-        <MenuItem key={route.href}>
-            <StyledLink href={route.href}>{t(route.label)}</StyledLink>
-            <UnderLine
-                initial={{ width: 0 }}
-                animate={{ width: pathname === route.href || route.sub.includes(pathname) ? '100%' : '0%' }}
-                exit={{ width: 0 }}
-                transition={{ duration: 0.3 }}
-            />
-        </MenuItem>
-    ));
-
-    const handleLogout = async () => {
-        await storefrontApiMutation({ logout: { success: true } });
-        push('/');
-    };
 
     return (
         <Main justifyCenter>
@@ -58,24 +30,55 @@ export const Nav: React.FC = () => {
                             <LogoAexol />
                         </Link>
                     </Stack>
-                    <LanguageSwitcher />
-                    <Stack gap="1rem">
+                    <DesktopStack itemsCenter gap="10rem">
+                        {navigation?.children.map(c => {
+                            if (c.children.length === 0) {
+                                return (
+                                    <Stack key={c.name}>
+                                        <StyledLink href={`/collections/${c.slug}`}>{c.name}</StyledLink>
+                                    </Stack>
+                                );
+                            }
+                            return (
+                                <RelativeStack w100 key={c.name}>
+                                    <StyledLink href={`/collections/${c.slug}`}>{c.name}</StyledLink>
+                                    <AbsoluteStack w100>
+                                        <ContentContainer>
+                                            <Background w100 justifyBetween>
+                                                <Stack column>
+                                                    {c.children.map(cc => (
+                                                        <Stack key={cc.name + '1'}>
+                                                            <StyledLink href={`/collections/${cc.slug}`}>
+                                                                {cc.name}
+                                                            </StyledLink>
+                                                        </Stack>
+                                                    ))}
+                                                </Stack>
+                                                <Stack>
+                                                    {c.children.map(cc => (
+                                                        <Stack key={cc.name + '2'}>
+                                                            <ProductImage
+                                                                src={cc.featuredAsset?.preview || ''}
+                                                                size="tile"
+                                                            />
+                                                        </Stack>
+                                                    ))}
+                                                </Stack>
+                                            </Background>
+                                        </ContentContainer>
+                                    </AbsoluteStack>
+                                </RelativeStack>
+                            );
+                        })}
+                    </DesktopStack>
+                    <Stack gap="1rem" itemsCenter>
+                        <LanguageSwitcher />
                         {isLogged ? (
-                            <Dropdown>
-                                <StyledLink href="/customer/manage">
-                                    <User2 size="2.4rem" color="black" />
-                                </StyledLink>
-                                <HoverMenu customerMenu>
-                                    {userMenu}
-                                    <MenuItem className="button" onClick={handleLogout}>
-                                        {t('navigation.logout')}
-                                    </MenuItem>
-                                </HoverMenu>
-                            </Dropdown>
+                            <UserMenu />
                         ) : (
-                            <Link href="/customer/sign-in">
+                            <StyledLink href="/customer/sign-in">
                                 <User2 size="2.4rem" />
-                            </Link>
+                            </StyledLink>
                         )}
                         {/* <Cart activeOrder={cart} /> */}
                         <CartDrawer activeOrder={cart} />
@@ -85,25 +88,57 @@ export const Nav: React.FC = () => {
         </Main>
     );
 };
-const StyledLink = styled(Link)`
-    color: white;
 
-    &:hover {
-        transition: 0.3s all ease-in-out;
-        color: black;
+const DesktopStack = styled(Stack)`
+    @media (max-width: ${p => p.theme.breakpoints.xl}) {
+        display: none;
     }
 `;
 
-const MenuItem = styled.div`
-    color: white;
-    font-size: 1.6rem;
-    cursor: pointer;
-    margin-bottom: 1.2rem;
+const Background = styled(Stack)`
+    height: 100%;
+    background: ${p => p.theme.gray(0)};
+    box-shadow: 0.1rem 0.25rem 0.2rem ${p => p.theme.shadow};
+    border: 1px solid ${p => p.theme.gray(100)};
+
+    margin-top: 3.2rem;
+    padding: 2rem 2rem 2rem 2rem;
+`;
+
+const RelativeStack = styled(Stack)`
+    & > div {
+        opacity: 0;
+        visibility: hidden;
+    }
 
     &:hover {
-        transition: 0.3s all ease-in-out;
-        color: black;
+        & > div {
+            opacity: 1;
+            visibility: visible;
+        }
     }
+`;
+
+const AbsoluteStack = styled(Stack)`
+    position: absolute;
+    top: 0;
+    right: 0;
+    margin-top: 5rem;
+    transition: opacity 0.35s ease-in-out;
+
+    :hover {
+        opacity: 1;
+        visibility: visible;
+    }
+`;
+
+const StyledLink = styled(Link)`
+    color: ${p => p.theme.text.main};
+
+    text-transform: uppercase;
+    font-weight: 700;
+    font-size: 1.2rem;
+    white-space: nowrap;
 `;
 
 const Main = styled(Stack)`
@@ -117,10 +152,4 @@ const Main = styled(Stack)`
     svg {
         max-height: 4rem;
     }
-`;
-
-const UnderLine = styled(motion.s)`
-    width: 100%;
-    height: 2px;
-    background-color: ${p => p.theme.grayAlpha(300, 200)};
 `;

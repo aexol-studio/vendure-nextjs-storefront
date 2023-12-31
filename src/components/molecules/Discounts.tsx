@@ -1,6 +1,4 @@
-import { Stack } from '@/src/components/atoms/Stack';
-import { TP } from '@/src/components/atoms/TypoGraphy';
-import { Price } from '@/src/components/atoms/Price';
+import { Price, TP, Stack } from '@/src/components/atoms';
 import { DiscountsType } from '@/src/graphql/selectors';
 import { X } from 'lucide-react';
 import { useTranslation } from 'next-i18next';

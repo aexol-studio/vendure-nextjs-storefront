@@ -6,7 +6,7 @@ import React from 'react';
 import { useTranslation } from 'next-i18next';
 import { priceFormatter } from '@/src/util/priceFomatter';
 import { CurrencyCode } from '@/src/zeus';
-import { FormError } from '@/src/components/forms/atoms/FormError';
+import { FormError } from '@/src/components/forms';
 
 interface Props {
     selected?: string;

@@ -2,8 +2,7 @@ import React from 'react';
 import { useTranslation } from 'next-i18next';
 import { orderStateToIcon } from '@/src/util/orderStateToIcon';
 import { OrderStateType } from '@/src/graphql/selectors';
-import { Stack } from '@/src/components/atoms/Stack';
-import { TP } from '@/src/components/atoms/TypoGraphy';
+import { Stack, TP } from '@/src/components/atoms';
 import styled from '@emotion/styled';
 
 interface Props {

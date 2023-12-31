@@ -1,18 +1,20 @@
 import React, { useEffect, useState } from 'react';
-import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
+import { GetServerSidePropsContext, InferGetServerSidePropsType } from 'next';
 import { SSRQuery, storefrontApiQuery } from '@/src/graphql/client';
 import { OrderSelector, OrderType } from '@/src/graphql/selectors';
 import { Layout } from '@/src/layouts';
 import { OrderConfirmation } from '../components/OrderConfirmation';
 import { Content } from '../components/ui/Shared';
-import { makeServerSideProps } from '@/src/lib/getStatic';
+import { makeServerSideProps, prepareSSRRedirect } from '@/src/lib/getStatic';
 import { usePush } from '@/src/lib/redirect';
 import { getCollections } from '@/src/graphql/sharedQueries';
-import { TP } from '@/src/components/atoms/TypoGraphy';
-import { Stack } from '@/src/components/atoms/Stack';
+import { TP, Stack } from '@/src/components/atoms';
+import { useTranslation } from 'next-i18next';
+import { arrayToTree } from '@/src/util/arrayToTree';
 
 const ConfirmationPage: React.FC<InferGetServerSidePropsType<typeof getServerSideProps>> = props => {
-    const [order, setOrder] = useState<OrderType>(props.order);
+    const { t } = useTranslation('checkout');
+    const [order, setOrder] = useState<OrderType | null>(props.order);
     const push = usePush();
     const maxRetries = 3;
 
@@ -39,7 +41,10 @@ const ConfirmationPage: React.FC<InferGetServerSidePropsType<typeof getServerSid
     }, []);
 
     return (
-        <Layout categories={props.collections}>
+        <Layout
+            categories={props.collections}
+            navigation={props.navigation}
+            pageTitle={`${t('seoTitles.confirmation')} | Next.js Storefront`}>
             {order ? (
                 <Content>
                     <OrderConfirmation code={props.code} order={order} />
@@ -55,12 +60,14 @@ const ConfirmationPage: React.FC<InferGetServerSidePropsType<typeof getServerSid
     );
 };
 
-const getServerSideProps: GetServerSideProps = async context => {
+const getServerSideProps = async (context: GetServerSidePropsContext) => {
     const r = await makeServerSideProps(['common', 'checkout'])(context);
+    const homePageRedirect = prepareSSRRedirect('/')(context);
 
     const collections = await getCollections();
+    const navigation = arrayToTree(collections);
     const code = context.params?.code as string;
-    if (!code) return { props: { ...r.props } };
+    if (!code) return homePageRedirect;
 
     try {
         const { orderByCode } = await SSRQuery(context)({
@@ -69,9 +76,17 @@ const getServerSideProps: GetServerSideProps = async context => {
 
         if (!orderByCode) throw new Error(`Order not ready yet ${code}`);
 
-        return { props: { ...r.props, collections, code, order: orderByCode } };
+        const returnedStuff = {
+            ...r.props,
+            collections,
+            code,
+            order: orderByCode,
+            navigation,
+        };
+
+        return { props: returnedStuff };
     } catch (e) {
-        return { props: { ...r.props, collections, code, order: null } };
+        return { props: { ...r.props, collections, code, navigation, order: null } };
     }
 };
 

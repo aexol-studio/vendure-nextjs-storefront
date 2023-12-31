@@ -24,11 +24,11 @@ export const Price: React.FC<PriceProps> = ({ price, discountPrice, currencyCode
 };
 
 const StyledPrice = styled(TP)<{ discount?: boolean }>`
-    color: ${p => p.theme.text.main};
+    color: ${p => p.theme.price.default};
     ${p => (p.discount ? `text-decoration: line-through;` : '')}
 `;
 
 const StyledDiscountPrice = styled(TP)`
     //TODO: Add color to theme
-    color: red;
+    color: ${p => p.theme.price.discount};
 `;

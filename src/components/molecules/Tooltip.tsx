@@ -2,7 +2,7 @@ import * as React from 'react';
 import { useLayer, useHover, Arrow, Placement } from 'react-laag';
 import { motion, AnimatePresence } from 'framer-motion';
 import styled from '@emotion/styled';
-import { TP } from '../atoms/TypoGraphy';
+import { TP } from '@/src/components/atoms';
 
 export const Tooltip: React.FC<{
     text: string;

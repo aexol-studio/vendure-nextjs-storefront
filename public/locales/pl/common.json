@@ -1,8 +1,19 @@
 {
-    "title":"Cześć",
+    "title": "Cześć",
     "add-to-cart":"Dodaj do koszyka",
     "buy-now":"Kup teraz",
     "stockLevel":{"OUT_OF_STOCK":"Brak na stanie", "IN_STOCK":"W magazynie"},
     "notifyMe":{"invalidEmail":"Proszę wpisać prawidłowy adres email","backendError":"Nie udało się dodać siędo notyfikacji","placeholder":"Powiadom mnie"},   
-    "send":"Wyślij"
+    "send":"Wyślij",
+
+    "footer":{
+        "sections":[
+            {"header":"Bestsellery","linksTitles":["Laptop","Tablet","Mysz bezprzewodowa","Kabel USB","Kabel Ethernet"]},
+            {"header":"Promocje + Oferty","linksTitles":["Poleć znajomemu i zdobądź 10%","Zarejestruj się i zdobądź 20%","Napisz do nas i zdobądź 25%","Wszystkie promocje i oferty"]},
+            {"header":"Skontaktuj się z nami","contactInfo":["4-500-600-44332","Poniedziałek - Piątek: 9:00 - 20:00","Sobota: 10:00 - 16:30","Niedziela - ZAMKNIĘTE"]},
+            {"header":"Informacje","linksTitles":["Konto","Status zamówienia","Zwroty","FAQ","Feedback"]},
+            {"header":"Firma","linksTitles":["Nasza historia","Blog"]}
+            ],    
+        "law":["Polityka prywatności", "Warunki użytkowania","Polityka cookies"]
+    }
 }

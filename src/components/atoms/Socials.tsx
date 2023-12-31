@@ -1,8 +1,9 @@
 import React from 'react';
 import { Stack } from './Stack';
 import { Facebook, Github, Instagram, Twitter, Youtube } from 'lucide-react';
-import { useTheme } from '@emotion/react';
+
 import { Link } from '@/src/components/atoms/Link';
+import styled from '@emotion/styled';
 
 const socialHrefs = [
     { href: 'https://www.facebook.com/', icon: <Facebook /> },
@@ -13,19 +14,18 @@ const socialHrefs = [
 ];
 
 export const Socials = () => {
-    const theme = useTheme();
     const mode = 'light';
     return (
-        <Stack gap="0.75rem" justifyEnd>
+        <Container gap="0.75rem" justifyEnd mode={mode}>
             {socialHrefs.map(({ href, icon }) => (
-                <Link
-                    external
-                    style={{ height: 'max-content', color: mode === 'light' ? theme.gray(800) : theme.gray(200) }}
-                    key={href}
-                    href={href}>
+                <Link external style={{ height: 'max-content', color: 'inherit' }} key={href} href={href}>
                     {icon}
                 </Link>
             ))}
-        </Stack>
+        </Container>
     );
 };
+
+const Container = styled(Stack)<{ mode?: string }>`
+    color: ${({ theme, mode }) => (mode === 'light' ? theme.gray(800) : theme.gray(200))};
+`;

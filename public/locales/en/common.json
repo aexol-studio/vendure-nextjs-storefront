@@ -107,5 +107,15 @@
         "phoneNumber": {
             "required": "Phone number is required"
         }
+    },    
+    "footer":{
+        "sections":[
+            {"header":"Best sellers","linksTitles":["Laptop","Tablet","Wireless Optical Mouse","USB Cable","Ethernet Cable"]},
+            {"header":"Promotions + Offers","linksTitles":["Refer a friend and Get 10% Off","Register and Get 20% Off","Text us and Get 25% Off","All Promotions + Offers"]},
+            {"header":"Contact us","contactInfo":["4-500-600-44332","Monday - Friday: 9 AM - 8 PM","Sobota: 10 AM - 4:40 PM","Sunday - CLOSED"]},
+            {"header":"Information","linksTitles":["Account","Order status","Returns","FAQ","Feedback"]},
+            {"header":"Company","linksTitles":["Our history","Blog"]}
+            ],
+            "law":["Privacy Policy", "Terms and Conditions","Cookie Policy"]
     }
 }

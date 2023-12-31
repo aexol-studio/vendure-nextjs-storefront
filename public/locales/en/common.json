@@ -129,6 +129,7 @@
         }
     },    
     "bestOf":"Best of",
+    "shopNow":"Shop now",
     "footer":{
         "sections":[
             {"header":"Best sellers","linksTitles":["Laptop","Tablet","Wireless Optical Mouse","USB Cable","Ethernet Cable"]},

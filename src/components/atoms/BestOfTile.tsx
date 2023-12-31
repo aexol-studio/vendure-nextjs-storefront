@@ -4,6 +4,7 @@ import { ProductImageGrid } from '@/src/components/atoms/ProductImage';
 import { Stack } from '@/src/components/atoms/Stack';
 import { TP } from '@/src/components/atoms/TypoGraphy';
 import { Link } from '@/src/components/atoms/Link';
+import { useTranslation } from 'react-i18next';
 
 interface BestOfTileI {
     productName: string;
@@ -13,13 +14,14 @@ interface BestOfTileI {
 }
 
 export const BestOfTile: React.FC<BestOfTileI> = ({ desc, imgSrc, productName, slug }) => {
+    const { t } = useTranslation('common');
     return (
         <Stack column itemsCenter gap="1rem">
             <ProductImageGrid src={imgSrc} />
             <TP size="2rem">{productName}</TP>
             <Description>{desc}</Description>
             <Stack style={{ flexGrow: 1, width: '100%' }} itemsEnd>
-                <ShopNow href={`products/${slug}`}>Shop now</ShopNow>
+                <ShopNow href={`products/${slug}`}>{t('shopNow')}</ShopNow>
             </Stack>
         </Stack>
     );

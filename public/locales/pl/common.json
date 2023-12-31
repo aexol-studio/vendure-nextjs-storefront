@@ -6,6 +6,7 @@
     "notifyMe":{"invalidEmail":"Proszę wpisać prawidłowy adres email","backendError":"Nie udało się dodać siędo notyfikacji","placeholder":"Powiadom mnie"},   
     "send":"Wyślij",
     "bestOf":"Najlepsze w",
+    "shopNow":"Kup teraz",
     "footer":{
         "sections":[
             {"header":"Bestsellery","linksTitles":["Laptop","Tablet","Mysz bezprzewodowa","Kabel USB","Kabel Ethernet"]},

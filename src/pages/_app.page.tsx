@@ -6,7 +6,10 @@ import { Noto_Sans_HK } from 'next/font/google';
 import { Global, ThemeProvider } from '@emotion/react';
 import { LightTheme } from '@/src/theme';
 import { CartProvider } from '@/src/state/cart';
-import { CheckoutProvider } from '../state/checkout';
+import { CheckoutProvider } from '@/src/state/checkout';
+import { ProductProvider } from '@/src/state/product';
+import { CollectionProvider } from '@/src/state/collection';
+
 const sans = Noto_Sans_HK({ subsets: ['latin'] });
 
 const App = ({ Component, pageProps }: AppProps) => {
@@ -15,12 +18,22 @@ const App = ({ Component, pageProps }: AppProps) => {
             <Global styles={`body { font-family:${sans.style.fontFamily}; }`} />
             {/* ONLY CHECKOUT SHOULD HAVE checkout prop */}
             {'checkout' in pageProps ? (
-                <CheckoutProvider initialState={{ initialActiveOrder: pageProps.checkout }}>
+                <CheckoutProvider initialState={{ checkout: pageProps.checkout }}>
                     <Component {...pageProps} />
                 </CheckoutProvider>
             ) : (
                 <CartProvider>
-                    <Component {...pageProps} />
+                    <ProductProvider initialState={{ product: 'product' in pageProps ? pageProps.product : undefined }}>
+                        <CollectionProvider
+                            initialState={{
+                                collection: 'collection' in pageProps ? pageProps.collection : undefined,
+                                products: 'products' in pageProps ? pageProps.products : undefined,
+                                facets: 'facets' in pageProps ? pageProps.facets : undefined,
+                                totalProducts: 'totalProducts' in pageProps ? pageProps.totalProducts : undefined,
+                            }}>
+                            <Component {...pageProps} />
+                        </CollectionProvider>
+                    </ProductProvider>
                 </CartProvider>
             )}
         </ThemeProvider>

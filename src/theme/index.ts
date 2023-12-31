@@ -45,6 +45,10 @@ type DetailTheme = {
         /** 1536px */
         '2xl': string;
     };
+    price: {
+        default: string;
+        discount: string;
+    };
 };
 
 export type MainTheme = FunctionTheme & DetailTheme;
@@ -124,8 +128,12 @@ export const LightTheme = createTheme(300, t => ({
         icon: { front: t.gray(900) },
     },
     shadow: t.grayAlpha(200, 200),
-    error: '#ff0000',
-    success: '#00ff00',
+    error: '#eb1b19',
+    success: '#1beb1b',
+    price: {
+        default: t.gray(1000),
+        discount: '#eb1a1a',
+    },
     breakpoints: {
         ssm: '576px',
         sm: '640px',

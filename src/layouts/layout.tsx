@@ -8,13 +8,17 @@ import { Stack } from '@/src/components/atoms/Stack';
 import { useCart } from '@/src/state/cart';
 import { CategoryBar } from '@/src/layouts/CategoryBar';
 import { thv } from '@/src/theme';
+import { useProduct } from '../state/product';
+import { useCollection } from '../state/collection';
+import { RootNode } from '../util/arrayToTree';
 
-export const siteTitle = 'Next.js Sample Website';
+export const siteTitle = 'Aexol Next.js Storefront';
 
 interface LayoutProps {
     pageTitle?: string;
     children: React.ReactNode;
     categories: CollectionTileType[];
+    navigation: RootNode<CollectionTileType> | null;
 }
 
 interface CheckoutLayoutProps {
@@ -34,16 +38,23 @@ const MainStack = styled(Stack)`
     background: ${thv.background.main};
 `;
 
-export const Layout: React.FC<LayoutProps> = ({ pageTitle, children, categories }) => {
+export const Layout: React.FC<LayoutProps> = ({ pageTitle, children, categories, navigation }) => {
     const { fetchActiveOrder } = useCart();
+    const { product, variant } = useProduct();
+    const { collection } = useCollection();
     useEffect(() => {
         fetchActiveOrder();
     }, []);
 
     return (
         <MainStack column>
-            <CustomHelmet pageTitle={pageTitle ? pageTitle : undefined} />
-            <Nav />
+            <CustomHelmet
+                pageTitle={pageTitle ? `${pageTitle} | ${siteTitle}` : siteTitle}
+                product={product}
+                variant={variant}
+                collection={collection}
+            />
+            <Nav navigation={navigation} />
             {categories?.length > 0 ? <CategoryBar collections={categories} /> : null}
             <Container>{children}</Container>
             <Footer />
@@ -54,7 +65,7 @@ export const Layout: React.FC<LayoutProps> = ({ pageTitle, children, categories 
 export const CheckoutLayout: React.FC<CheckoutLayoutProps> = ({ pageTitle, children }) => {
     return (
         <MainStack column>
-            <CustomHelmet pageTitle={pageTitle ? pageTitle : undefined} />
+            <CustomHelmet pageTitle={pageTitle ? `${pageTitle} | ${siteTitle}` : siteTitle} />
             <Container>{children}</Container>
         </MainStack>
     );

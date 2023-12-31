@@ -1,7 +1,4 @@
-import { ContentContainer } from '@/src/components/atoms/ContentContainer';
-import { Link } from '@/src/components/atoms/Link';
-import { Stack } from '@/src/components/atoms/Stack';
-import { TH1, TH2, TP } from '@/src/components/atoms/TypoGraphy';
+import { ContentContainer, Link, Stack, TH1, TH2, TP } from '@/src/components/atoms';
 import { Button } from '@/src/components/molecules/Button';
 import { thv } from '@/src/theme';
 import styled from '@emotion/styled';

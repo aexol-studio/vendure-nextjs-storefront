@@ -24,7 +24,11 @@
     "buy-now":"Buy now",
     "related-collections":"Related Collections", 
     "newest-products":"Newest Products", 
-    "stockLevel":{"OUT_OF_STOCK":"Out of stock", "IN_STOCK":"In stock"},
+    "stockLevel":{
+        "OUT_OF_STOCK":"Out of stock",
+        "IN_STOCK":"In stock",
+        "LOW_STOCK":"🔥 Make it quick only {{value}} left! 🔥"
+    },
     "commonError":"Something wen't wrong",
     "send":"Send",
     "search-results":"Search results for:",
@@ -33,6 +37,12 @@
     "shipping-protection": {
         "title": "Shipping Protection",
         "subtitle": "From Damage, Loss & Theft for {{value}}"
+    },
+    "navigation": {
+        "manageAccount": "Manage account",
+        "manageAddresses": "Manage addresses",
+        "manageOrders": "Manage orders",
+        "logout": "Logout"
     },
     "orderStates": {
         "Created": "Created",
@@ -83,6 +93,16 @@
             "PASSWORD_RESET_TOKEN_INVALID_ERROR": "Password reset token invalid error",
             "PASSWORD_RESET_TOKEN_EXPIRED_ERROR": "Password reset token expired error",
             "NOT_VERIFIED_ERROR": "Not verified error"
+        },
+        "stripe": {
+            "api_connection_error": "Stripe API connection error",
+            "api_error": "Stripe API error",
+            "authentication_error": "Stripe authentication error",
+            "card_error": "Stripe card error",
+            "idempotency_error": "Stripe idempotency error",
+            "invalid_request_error": "Stripe invalid request error",
+            "rate_limit_error": "Stripe rate limit error",
+            "validation_error": "Stripe validation error"
         },
         "email": {
             "required": "Email is required",

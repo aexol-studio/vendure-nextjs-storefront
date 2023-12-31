@@ -1,6 +1,6 @@
 import { Stack } from '@/src/components/atoms/Stack';
 import { Button, FullWidthButton } from '@/src/components/molecules/Button';
-import { CountrySelect } from '@/src/components/forms/CountrySelect';
+import { CountrySelect, Input } from '@/src/components/forms';
 
 import { CreateAddressType, ActiveAddressType, AvailableCountriesType } from '@/src/graphql/selectors';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -9,7 +9,6 @@ import { useTranslation } from 'next-i18next';
 import { z } from 'zod';
 import styled from '@emotion/styled';
 import { CreditCard, Truck } from 'lucide-react';
-import { Input } from '@/src/components/forms/Input';
 import { TP } from '@/src/components/atoms/TypoGraphy';
 
 export const AddressForm: React.FC<{
@@ -123,7 +122,7 @@ export const AddressForm: React.FC<{
                                 {t('addressForm.cancel')}
                             </Button>
                         )}
-                        <FullWidthButton type="submit" disabled={loading}>
+                        <FullWidthButton loading={loading} type="submit">
                             {addressToEdit ? t('addressForm.update') : t('addressForm.add')}
                         </FullWidthButton>
                     </Stack>

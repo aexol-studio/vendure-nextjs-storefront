@@ -9,14 +9,15 @@ import { useTranslation } from 'next-i18next';
 import { ContentContainer } from '@/src/components/atoms/ContentContainer';
 import { Stack } from '@/src/components/atoms/Stack';
 import { Absolute, FormContainer, FormContent, FormWrapper } from '../components/shared';
-import { ErrorBanner } from '@/src/components/forms/ErrorBanner';
+import { Banner } from '@/src/components/forms';
 import { TH2 } from '@/src/components/atoms/TypoGraphy';
+import { arrayToTree } from '@/src/util/arrayToTree';
 
 const Verify: React.FC<InferGetServerSidePropsType<typeof getServerSideProps>> = props => {
     const { t } = useTranslation('customer');
     const { t: tError } = useTranslation('common');
     return (
-        <Layout categories={props.collections}>
+        <Layout categories={props.collections} navigation={props.navigation} pageTitle={t('verify.title')}>
             <ContentContainer>
                 <FormContainer>
                     <FormWrapper column itemsCenter gap="3.5rem">
@@ -24,14 +25,12 @@ const Verify: React.FC<InferGetServerSidePropsType<typeof getServerSideProps>> =
                             {props.status.verifyCustomerAccount.__typename !== 'CurrentUser' ? (
                                 <>
                                     <Absolute w100>
-                                        <ErrorBanner
+                                        <Banner
                                             initial={{ opacity: 1 }}
                                             error={{
-                                                root: {
-                                                    message: tError(
-                                                        `errors.backend.${props.status.verifyCustomerAccount.errorCode}`,
-                                                    ),
-                                                },
+                                                message: tError(
+                                                    `errors.backend.${props.status.verifyCustomerAccount.errorCode}`,
+                                                ),
                                             }}
                                         />
                                     </Absolute>
@@ -57,10 +56,12 @@ const Verify: React.FC<InferGetServerSidePropsType<typeof getServerSideProps>> =
 const getServerSideProps = async (context: GetServerSidePropsContext) => {
     const r = await makeServerSideProps(['common', 'customer'])(context);
     const collections = await getCollections();
-    const token = context.query.token as string;
-    const destination = prepareSSRRedirect('/')(context);
+    const navigation = arrayToTree(collections);
 
-    if (!token) return { redirect: { destination, permanent: false } };
+    const token = context.query.token as string;
+    const homePageRedirect = prepareSSRRedirect('/')(context);
+
+    if (!token) return homePageRedirect;
 
     try {
         const { verifyCustomerAccount } = await storefrontApiMutation({
@@ -98,9 +99,9 @@ const getServerSideProps = async (context: GetServerSidePropsContext) => {
             ],
         });
 
-        return { props: { ...r.props, collections, status: { verifyCustomerAccount } } };
+        return { props: { ...r.props, collections, status: { verifyCustomerAccount }, navigation } };
     } catch (e) {
-        return { redirect: { destination, permanent: false } };
+        return homePageRedirect;
     }
 };
 

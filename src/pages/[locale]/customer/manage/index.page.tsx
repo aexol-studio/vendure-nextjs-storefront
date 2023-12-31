@@ -4,19 +4,22 @@ import { GetServerSidePropsContext, InferGetServerSidePropsType } from 'next';
 import React from 'react';
 import { getCollections } from '@/src/graphql/sharedQueries';
 import { CustomerNavigation } from './components/CustomerNavigation';
-import { Stack } from '@/src/components/atoms/Stack';
 import { SSRQuery } from '@/src/graphql/client';
 import { ActiveCustomerSelector, ActiveOrderSelector } from '@/src/graphql/selectors';
 import { CustomerForm } from './components/CustomerForm';
 import { ContentContainer } from '@/src/components/atoms/ContentContainer';
 import { SortOrder } from '@/src/zeus';
+import { Stack } from '@/src/components';
+import { arrayToTree } from '@/src/util/arrayToTree';
+import { useTranslation } from 'next-i18next';
 import styled from '@emotion/styled';
 
 const Account: React.FC<InferGetServerSidePropsType<typeof getServerSideProps>> = props => {
+    const { t } = useTranslation('customer');
     return (
-        <Layout categories={props.collections}>
+        <Layout categories={props.collections} navigation={props.navigation} pageTitle={t('accountPage.title')}>
             <ContentContainer>
-                <CustomerWrap itemsStart gap="1.75rem">
+                <CustomerWrap itemsStart w100 gap="3rem">
                     <CustomerNavigation />
                     <CustomerForm initialCustomer={props.activeCustomer} order={props.lastOrder} />
                 </CustomerWrap>
@@ -26,6 +29,8 @@ const Account: React.FC<InferGetServerSidePropsType<typeof getServerSideProps>> 
 };
 
 const CustomerWrap = styled(Stack)`
+    padding: 2rem 0;
+
     @media (max-width: ${({ theme }) => theme.breakpoints.lg}) {
         flex-direction: column;
     }
@@ -34,7 +39,8 @@ const CustomerWrap = styled(Stack)`
 const getServerSideProps = async (context: GetServerSidePropsContext) => {
     const r = await makeServerSideProps(['common', 'customer'])(context);
     const collections = await getCollections();
-    const destination = prepareSSRRedirect('/')(context);
+    const navigation = arrayToTree(collections);
+    const homePageRedirect = prepareSSRRedirect('/')(context);
 
     try {
         const { activeCustomer } = await SSRQuery(context)({
@@ -55,11 +61,12 @@ const getServerSideProps = async (context: GetServerSidePropsContext) => {
             collections,
             activeCustomer: customer,
             lastOrder: orders.items && orders.items.length > 0 ? orders.items[0] : null,
+            navigation,
         };
 
         return { props: returnedStuff };
     } catch (error) {
-        return destination;
+        return homePageRedirect;
     }
 };
 

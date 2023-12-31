@@ -18,6 +18,7 @@ import { X } from 'lucide-react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useRouter } from 'next/router';
 import { MainBar } from '@/src/components/organisms/MainBar';
+import { arrayToTree } from '@/src/util/arrayToTree';
 
 const SearchPage: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = props => {
     const { t } = useTranslation('common');
@@ -41,7 +42,7 @@ const SearchPage: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = pro
     }, [router.query]);
 
     return (
-        <Layout categories={props.collections}>
+        <Layout categories={props.collections} navigation={props.navigation}>
             <ContentContainer>
                 <AnimatePresence>
                     {filtersOpen && (
@@ -113,23 +114,20 @@ const FacetsFilters = styled(motion.div)`
 const getStaticProps = async (context: ContextModel) => {
     const r = await makeStaticProps(['common'])(context);
     const collections = await getCollections();
+    const navigation = arrayToTree(collections);
 
     const facets = await storefrontApiQuery({
-        facets: [
-            {},
-            {
-                items: FacetSelector,
-            },
-        ],
+        facets: [{}, { items: FacetSelector }],
     });
     const returnedStuff = {
-        collections: collections,
+        collections,
         facets: facets.facets.items,
+        navigation,
         ...r.props,
     };
     return {
         props: returnedStuff,
-        revalidate: 10,
+        revalidate: process.env.NEXT_REVALIDATE ? parseInt(process.env.NEXT_REVALIDATE) : 10,
     };
 };
 export { getStaticProps, getStaticPaths };

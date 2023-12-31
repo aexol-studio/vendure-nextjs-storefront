@@ -1,7 +1,23 @@
 import { thv } from '@/src/theme';
 import styled from '@emotion/styled';
+import { ButtonHTMLAttributes, forwardRef } from 'react';
+import { Spinner } from '../atoms';
 
-export const Button = styled.button`
+type ButtonType = ButtonHTMLAttributes<HTMLButtonElement> & {
+    loading?: boolean;
+};
+
+export const _Button = forwardRef((props: ButtonType, ref: React.ForwardedRef<HTMLButtonElement>) => {
+    const { loading, ...rest } = props;
+
+    return (
+        <button disabled={loading || props.disabled} ref={ref} {...rest}>
+            {loading ? <Spinner /> : props.children}
+        </button>
+    );
+});
+
+export const Button = styled(_Button)`
     background-color: ${thv.button.back};
     color: ${thv.button.front};
     border: 0;
@@ -19,7 +35,8 @@ export const Button = styled.button`
 export const FullWidthButton = styled(Button)`
     width: 100%;
 `;
-export const SecondaryButton = styled.button`
+
+export const SecondaryButton = styled(_Button)`
     background-color: ${thv.button.front};
     color: ${thv.button.back};
     border: 0;
@@ -37,7 +54,9 @@ export const SecondaryButton = styled.button`
 export const FullWidthSecondaryButton = styled(SecondaryButton)`
     width: 100%;
 `;
+
 export const IconButton = styled.button<{ isActive?: boolean }>`
+    position: relative;
     color: ${thv.button.icon.front};
     border: 0;
     border-radius: 100%;

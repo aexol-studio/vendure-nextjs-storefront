@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
+import { GetServerSidePropsContext, InferGetServerSidePropsType } from 'next';
 import { makeServerSideProps, prepareSSRRedirect } from '@/src/lib/getStatic';
 import { OrderSummary } from '../components/OrderSummary';
 import { OrderPayment } from '../components/OrderPayment';
@@ -7,14 +7,16 @@ import { Content, Main } from '../components/ui/Shared';
 import { ActiveOrderSelector, AvailablePaymentMethodsSelector } from '@/src/graphql/selectors';
 import { SSRMutation, SSRQuery } from '@/src/graphql/client';
 import { CheckoutLayout } from '@/src/layouts';
+import { useTranslation } from 'next-i18next';
 
 const PaymentPage: React.FC<InferGetServerSidePropsType<typeof getServerSideProps>> = props => {
+    const { t } = useTranslation('checkout');
     useEffect(() => {
         window.onpopstate = () => window.history.forward();
     }, []);
 
     return (
-        <CheckoutLayout>
+        <CheckoutLayout pageTitle={`${t('seoTitles.payment')} | Next.js Storefront`}>
             <Content>
                 <Main>
                     <OrderPayment
@@ -28,9 +30,9 @@ const PaymentPage: React.FC<InferGetServerSidePropsType<typeof getServerSideProp
     );
 };
 
-const getServerSideProps: GetServerSideProps = async context => {
+const getServerSideProps = async (context: GetServerSidePropsContext) => {
     const r = await makeServerSideProps(['common', 'checkout'])(context);
-    const destination = prepareSSRRedirect('/')(context);
+    const homePageRedirect = prepareSSRRedirect('/')(context);
 
     try {
         const [{ activeOrder }, { eligiblePaymentMethods }] = await Promise.all([
@@ -60,7 +62,7 @@ const getServerSideProps: GetServerSideProps = async context => {
         return { props: returnedStuff };
     } catch (e) {
         //If error, redirect to homepage
-        return destination;
+        return homePageRedirect;
     }
 };
 

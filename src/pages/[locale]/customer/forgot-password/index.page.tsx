@@ -6,7 +6,7 @@ import { getCollections } from '@/src/graphql/sharedQueries';
 import { Stack } from '@/src/components/atoms/Stack';
 import { Link } from '@/src/components/atoms/Link';
 import { SubmitHandler, useForm } from 'react-hook-form';
-import { Input } from '@/src/components/forms/Input';
+import { Input, Banner } from '@/src/components/forms';
 import { Button } from '@/src/components/molecules/Button';
 import { useTranslation } from 'next-i18next';
 import { ContentContainer } from '@/src/components/atoms/ContentContainer';
@@ -15,7 +15,7 @@ import { Absolute, Form, FormContainer, FormContent, FormWrapper } from '../comp
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { TP } from '@/src/components/atoms/TypoGraphy';
-import { ErrorBanner } from '@/src/components/forms/ErrorBanner';
+import { arrayToTree } from '@/src/util/arrayToTree';
 
 type FormValues = {
     emailAddress: string;
@@ -74,15 +74,12 @@ const ForgotPassword: React.FC<InferGetStaticPropsType<typeof getStaticProps>> =
     };
 
     return (
-        <Layout categories={props.collections}>
+        <Layout categories={props.collections} navigation={props.navigation} pageTitle={t('forgotPasswordTitle')}>
             <ContentContainer>
                 <FormContainer>
                     <FormWrapper column itemsCenter gap="3.5rem">
                         <Absolute w100>
-                            <ErrorBanner
-                                error={errors.root}
-                                clearErrors={() => setError('root', { message: undefined })}
-                            />
+                            <Banner error={errors.root} clearErrors={() => setError('root', { message: undefined })} />
                         </Absolute>
                         <TP weight={600}>{t('forgotPasswordTitle')}</TP>
                         <FormContent w100 column itemsCenter gap="1.75rem">
@@ -110,15 +107,17 @@ const ForgotPassword: React.FC<InferGetStaticPropsType<typeof getStaticProps>> =
 const getStaticProps = async (context: ContextModel) => {
     const r = await makeStaticProps(['common', 'customer'])(context);
     const collections = await getCollections();
+    const navigation = arrayToTree(collections);
 
     const returnedStuff = {
         ...r.props,
         collections,
+        navigation,
     };
 
     return {
         props: returnedStuff,
-        revalidate: 10,
+        revalidate: process.env.NEXT_REVALIDATE ? parseInt(process.env.NEXT_REVALIDATE) : 10,
     };
 };
 

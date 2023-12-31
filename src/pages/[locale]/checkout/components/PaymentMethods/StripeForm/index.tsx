@@ -2,9 +2,15 @@ import { Button } from '@/src/components/molecules/Button';
 import { ActiveOrderType } from '@/src/graphql/selectors';
 import styled from '@emotion/styled';
 import { useStripe, useElements, PaymentElement } from '@stripe/react-stripe-js';
+import { StripeError } from '@stripe/stripe-js';
 import React, { FormEvent } from 'react';
 
-export const StripeForm = ({ activeOrder }: { activeOrder: ActiveOrderType }) => {
+interface StripeFormProps {
+    activeOrder: ActiveOrderType;
+    onStripeSubmit: (result: { error: StripeError }) => void;
+}
+
+export const StripeForm: React.FC<StripeFormProps> = ({ activeOrder, onStripeSubmit }) => {
     const stripe = useStripe();
     const elements = useElements();
 
@@ -17,14 +23,7 @@ export const StripeForm = ({ activeOrder }: { activeOrder: ActiveOrderType }) =>
             confirmParams: { return_url: location.origin + `/checkout/confirmation/${activeOrder.code}` },
         });
 
-        if (result.error) {
-            // Show error to your customer (for example, payment details incomplete)
-            console.log(result.error.message);
-        } else {
-            // Your customer will be redirected to your `return_url`. For some payment
-            // methods like iDEAL, your customer will be redirected to an intermediate
-            // site first to authorize the payment, then redirected to the `return_url`.
-        }
+        onStripeSubmit(result);
     };
 
     return (

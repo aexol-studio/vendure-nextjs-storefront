@@ -30,4 +30,8 @@ const Cat = styled(Link)`
 const Main = styled(Stack)`
     padding: 4rem 0;
     overflow-x: auto;
+
+    @media (min-width: ${p => p.theme.breakpoints.xl}) {
+        display: none;
+    }
 `;

@@ -38,7 +38,11 @@ export const CartDrawer = ({ activeOrder }: { activeOrder?: ActiveOrderType }) =
         <>
             <IconButton onClick={open}>
                 <ShoppingCartIcon size={'2.4rem'} />
-                <TP>{activeOrder?.lines.length}</TP>
+                <QuantityBadge>
+                    <Quantity size="1rem" weight={500}>
+                        {activeOrder ? activeOrder.lines.length : 0}
+                    </Quantity>
+                </QuantityBadge>
             </IconButton>
             <AnimatePresence initial={false}>
                 {isOpen && (
@@ -62,6 +66,25 @@ export const CartDrawer = ({ activeOrder }: { activeOrder?: ActiveOrderType }) =
         </>
     );
 };
+
+const QuantityBadge = styled.div`
+    position: absolute;
+    top: -0.5rem;
+    right: -0.5rem;
+
+    padding: 0.25rem;
+    width: 1.5rem;
+    height: 1.5rem;
+    border-radius: 100%;
+    background: ${p => p.theme.gray(100)};
+    display: flex;
+    justify-content: center;
+    align-items: center;
+`;
+
+const Quantity = styled(TP)`
+    color: ${p => p.theme.text.main};
+`;
 
 const CartComponentMain = styled(motion.div)`
     width: 100%;

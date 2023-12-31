@@ -31,7 +31,7 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({ isForm, YMALProducts
     const currencyCode = activeOrder?.currencyCode ?? CurrencyCode.USD;
 
     return (
-        <SummaryContainer>
+        <SummaryContainer isForm={isForm}>
             <SummaryContent w100 column gap="2.5rem">
                 <Stack itemsCenter w100 gap="3.5rem">
                     <LogoAexol width={48} height={48} />

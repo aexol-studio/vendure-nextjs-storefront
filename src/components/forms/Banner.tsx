@@ -5,20 +5,25 @@ import { GlobalError } from 'react-hook-form';
 import { AnimatePresence, HTMLMotionProps, motion } from 'framer-motion';
 import { AlertCircle, X } from 'lucide-react';
 
-type ErrorBannerType = HTMLMotionProps<'div'> & {
-    error?: Record<string, GlobalError> & GlobalError;
+type BannerType = HTMLMotionProps<'div'> & {
+    success?: { message?: string; type?: string | number };
+    error?: GlobalError & { type?: string | number; message?: string };
     clearErrors?: () => void;
 };
 
-export const ErrorBanner = forwardRef((props: ErrorBannerType, ref: React.ForwardedRef<HTMLDivElement>) => {
-    const { error, clearErrors, ...rest } = props;
+export const Banner = forwardRef((props: BannerType, ref: React.ForwardedRef<HTMLDivElement>) => {
+    const { error, success, clearErrors, ...rest } = props;
+
+    const type = error ? 'error' : 'success';
+    const prop = error ? error : success;
 
     return (
         <BannerWrapper>
             <Position ref={ref} />
             <AnimatePresence>
-                {error?.message && (
+                {prop?.message && (
                     <BannerBox
+                        status={type}
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
@@ -34,10 +39,10 @@ export const ErrorBanner = forwardRef((props: ErrorBannerType, ref: React.Forwar
                             </HideBannerButton>
                         )}
                         <BannerContent column>
-                            {error?.type && <FormError>{error?.type}</FormError>}
-                            <FormError>
+                            {prop?.type && <FormError>{prop?.type}</FormError>}
+                            <FormError status={type}>
                                 <AlertCircle size={'1.4rem'} />
-                                {error?.message}
+                                {prop?.message}
                             </FormError>
                         </BannerContent>
                     </BannerBox>
@@ -47,11 +52,10 @@ export const ErrorBanner = forwardRef((props: ErrorBannerType, ref: React.Forwar
     );
 });
 
-ErrorBanner.displayName = 'ErrorBanner';
+Banner.displayName = 'Banner';
 
-const BannerWrapper = styled(Stack)<{ status?: 'success' | 'error' }>`
+const BannerWrapper = styled(Stack)`
     width: 100%;
-    margin-bottom: 1rem;
     position: relative;
 `;
 
@@ -70,21 +74,22 @@ const Position = styled.span`
     pointer-events: none;
 `;
 
-const BannerBox = styled(motion.div)`
-    padding: 0.8rem 1.6rem;
+const BannerBox = styled(motion.div)<{ status?: 'success' | 'error' }>`
+    padding: 0.75rem 1.5rem;
     width: 100%;
-    border: 1px solid ${p => p.theme.error};
-    font-size: 1.6rem;
-    box-shadow: 0 0 0.4rem 0.4rem ${({ theme }) => theme.shadow};
+    border: 1px solid ${p => (p.status === 'success' ? p.theme.success : p.theme.error)};
+    background-color: ${p => p.theme.background.main};
+    font-size: 1.5rem;
+    box-shadow: 0 0 0.5rem 0.5rem ${({ theme }) => theme.shadow};
 `;
 
 const BannerContent = styled(Stack)``;
 
-const FormError = styled(motion.span)`
-    color: ${p => p.theme.error};
-    font-size: 1.2rem;
+const FormError = styled(motion.span)<{ status?: 'success' | 'error' }>`
+    color: ${p => p.theme.text.main};
+    font-size: 1.25rem;
     font-weight: 500;
     display: flex;
-    gap: 0.6rem;
+    gap: 0.5rem;
     align-items: center;
 `;

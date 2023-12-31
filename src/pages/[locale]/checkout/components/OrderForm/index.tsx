@@ -22,18 +22,14 @@ import { useForm, SubmitHandler } from 'react-hook-form';
 import { Trans, useTranslation } from 'next-i18next';
 import styled from '@emotion/styled';
 import { AnimatePresence, motion } from 'framer-motion';
-import { CountrySelect } from '@/src/components/forms/CountrySelect';
-import { CheckBox } from '@/src/components/forms/CheckBox';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Input } from '@/src/components/forms/Input';
+import { Input, FormError, Banner, CountrySelect, CheckBox } from '@/src/components/forms';
 import { WhatAccountGives } from '../ui/WhatAccountGives';
 import { DeliveryMethod } from '../DeliveryMethod';
 import { useValidationSchema } from './useValidationSchema';
-import { FormError } from '@/src/components/forms/atoms';
 import { Link } from '@/src/components/atoms/Link';
 import { useCheckout } from '@/src/state/checkout';
 import { MoveLeft } from 'lucide-react';
-import { ErrorBanner } from '@/src/components/forms/ErrorBanner';
 
 type Form = CreateCustomerType & {
     deliveryMethod?: string;
@@ -149,16 +145,11 @@ export const OrderForm: React.FC<OrderFormProps> = ({ availableCountries }) => {
             if (deliveryMethod && activeOrder?.shippingLines[0]?.shippingMethod.id !== deliveryMethod) {
                 await changeShippingMethod(deliveryMethod);
             }
-
-            const { nextOrderStates } = await storefrontApiQuery({
-                nextOrderStates: true,
-            });
-
+            const { nextOrderStates } = await storefrontApiQuery({ nextOrderStates: true });
             if (!nextOrderStates.includes('ArrangingPayment')) {
                 //TODO: Handle error (no next order state)
                 return;
             }
-
             // Set the billing address for the order
             const { setOrderBillingAddress } = await storefrontApiMutation({
                 setOrderBillingAddress: [
@@ -323,7 +314,7 @@ export const OrderForm: React.FC<OrderFormProps> = ({ availableCountries }) => {
         </Stack>
     ) : (
         <Stack w100 column>
-            <ErrorBanner ref={errorRef} clearErrors={() => clearErrors('root')} error={errors?.root} />
+            <Banner ref={errorRef} clearErrors={() => clearErrors('root')} error={errors?.root} />
             <Form onSubmit={handleSubmit(onSubmit)} noValidate>
                 {/* Customer Part */}
                 <Stack column gap="0.5rem">

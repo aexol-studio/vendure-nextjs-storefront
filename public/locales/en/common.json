@@ -108,6 +108,7 @@
             "required": "Phone number is required"
         }
     },    
+    "bestOf":"Best of",
     "footer":{
         "sections":[
             {"header":"Best sellers","linksTitles":["Laptop","Tablet","Wireless Optical Mouse","USB Cable","Ethernet Cable"]},

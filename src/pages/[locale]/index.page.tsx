@@ -12,6 +12,7 @@ import { MainGrid } from '@/src/components/atoms/MainGrid';
 import { Hero } from '@/src/components/organisms/Hero';
 import { Stack } from '@/src/components/atoms/Stack';
 import { MainBar } from '@/src/components/organisms/MainBar';
+import { BestOf } from '@/src/components/molecules/BestOf';
 
 export const Index: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = props => {
     const { t } = useTranslation('homepage');
@@ -35,6 +36,7 @@ export const Index: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = p
                             })}
                         </MainGrid>
                     </Stack>
+                    <BestOf products={props.products.slice(0, 4)} />
                 </ContentContainer>
             </Stack>
         </Layout>

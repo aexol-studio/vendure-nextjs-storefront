@@ -54,6 +54,7 @@ export const ProductSearchSelector = Selector('SearchResult')({
     productAsset: {
         preview: true,
     },
+    description: true,
 });
 export type ProductSearchType = FromSelector<typeof ProductSearchSelector, 'SearchResult', typeof scalars>;
 

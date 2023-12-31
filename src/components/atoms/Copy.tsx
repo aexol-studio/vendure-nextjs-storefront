@@ -1,9 +1,9 @@
 import React from 'react';
-import { TP } from './TypoGraphy';
+import { useTheme } from '@emotion/react';
+import { TP } from '@/src/components/atoms/TypoGraphy';
 import { LogoAexol, LogoAexolDark } from '@/src/assets';
 import { Stack } from '@/src/components/atoms/Stack';
 import { Link } from '@/src/components/atoms/Link';
-import { useTheme } from '@emotion/react';
 
 export const Copy = () => {
     const theme = useTheme();

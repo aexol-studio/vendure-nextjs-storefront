@@ -14,7 +14,7 @@ import { Link } from '@/src/components/atoms/Link';
 import { useTranslation } from 'next-i18next';
 import { priceFormatter } from '@/src/util/priceFomatter';
 import { DiscountForm } from '@/src/components/molecules/DiscountForm';
-import { CurrencyCode } from '../zeus';
+import { CurrencyCode } from '@/src/zeus';
 
 export const Cart = ({ activeOrder }: { activeOrder?: ActiveOrderType }) => {
     const { setItemQuantityInCart, removeFromCart, removeCouponCode, applyCouponCode } = useCart();
@@ -267,7 +267,6 @@ const CartContainer = styled(Stack)`
     padding: 4rem 0;
 `;
 const CartSummary = styled(Stack)`
-    //TODO: Remove this when left side is done
     min-width: 390px;
     max-width: 480px;
 

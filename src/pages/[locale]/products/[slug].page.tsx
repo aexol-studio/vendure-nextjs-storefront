@@ -14,7 +14,6 @@ import { getCollections } from '@/src/graphql/sharedQueries';
 import { Layout } from '@/src/layouts';
 import { ContextModel, localizeGetStaticPaths, makeStaticProps } from '@/src/lib/getStatic';
 import { priceFormatter } from '@/src/util/priceFomatter';
-import { translateProductFacetsNames } from '@/src/util/translateFacetsNames';
 import { CurrencyCode, SortOrder } from '@/src/zeus';
 import styled from '@emotion/styled';
 import { Check, X } from 'lucide-react';
@@ -30,11 +29,11 @@ import { arrayToTree } from '@/src/util/arrayToTree';
 const ProductPage: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = props => {
     const { product, variant, addingError, handleVariant, handleBuyNow, handleAddToCart } = useProduct();
     const { t } = useTranslation('common');
+
     const breadcrumbs = [
         { name: t('home'), href: '/' },
         { name: props.product.name, href: `/products/${props.product.slug}` },
     ];
-    const language = props._nextI18Next?.initialLocale || 'en';
 
     return (
         <Layout categories={props.collections} navigation={props.navigation}>
@@ -57,9 +56,7 @@ const ProductPage: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = pr
                                 />
                             ) : (
                                 <FacetContainer gap="1rem">
-                                    {translateProductFacetsNames(language, product?.facetValues).map(({ id, name }) => (
-                                        <Facet key={id}>{name}</Facet>
-                                    ))}
+                                    {product?.facetValues.map(({ id, name }) => <Facet key={id}>{name}</Facet>)}
                                 </FacetContainer>
                             )}
 
@@ -107,7 +104,7 @@ const ProductPage: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = pr
                             )}
                         </StyledStack>
                     </Main>
-                    <RelatedProductCollections collections={product?.collections} />
+                    <RelatedProductCollections collections={props?.collections} />
                     <NewestProducts products={props.newestProducts.products.items} />
                 </Wrapper>
             </ContentContainer>

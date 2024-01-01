@@ -41,7 +41,7 @@ const ResetPassword: React.FC<InferGetServerSidePropsType<typeof getServerSidePr
     const {
         register,
         handleSubmit,
-        formState: { errors },
+        formState: { errors, isSubmitting },
         setError,
     } = useForm<FormValues>({
         resolver: zodResolver(schema),
@@ -115,7 +115,9 @@ const ResetPassword: React.FC<InferGetServerSidePropsType<typeof getServerSidePr
                                     type="password"
                                     {...register('confirmPassword')}
                                 />
-                                <Button type="submit">{t('resetPassword')}</Button>
+                                <Button loading={isSubmitting} type="submit">
+                                    {t('resetPassword')}
+                                </Button>
                             </Form>
                         </FormContent>
                     </FormWrapper>

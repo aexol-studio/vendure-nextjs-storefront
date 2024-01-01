@@ -16,15 +16,16 @@ import { Input } from '@/src/components/forms';
 import { useTranslation } from 'next-i18next';
 import { OrderBox } from './components/OrderBox';
 import { arrayToTree } from '@/src/util/arrayToTree';
+import { CustomerWrap } from '../../components/shared';
 
 const GET_MORE = 4;
 
 const History: React.FC<InferGetServerSidePropsType<typeof getServerSideProps>> = props => {
     const { t } = useTranslation('customer');
     const [query, setQuery] = useState('');
+    const [more, setMore] = useState(false);
     const [loading, setLoading] = useState(false);
     const [page, setPage] = useState(1);
-
     const scrollableRef = useRef<HTMLDivElement>(null);
     const [activeOrders, setActiveOrders] = useState(props.activeCustomer?.orders.items);
 
@@ -37,7 +38,6 @@ const History: React.FC<InferGetServerSidePropsType<typeof getServerSideProps>> 
                         options: {
                             take: page * GET_MORE,
                             skip: page * GET_MORE - GET_MORE,
-
                             filter: { code: { contains } },
                         },
                     },
@@ -72,6 +72,7 @@ const History: React.FC<InferGetServerSidePropsType<typeof getServerSideProps>> 
     }, [query]);
 
     const onLoadMore = async () => {
+        setMore(true);
         const { activeCustomer } = await storefrontApiQuery({
             activeCustomer: {
                 ...ActiveCustomerSelector,
@@ -82,11 +83,15 @@ const History: React.FC<InferGetServerSidePropsType<typeof getServerSideProps>> 
             },
         });
 
-        if (!activeCustomer) return;
+        if (!activeCustomer) {
+            setMore(false);
+            return;
+        }
 
         setActiveOrders([...(activeOrders || []), ...activeCustomer.orders.items]);
         setPage(page + 1);
         await new Promise(resolve => setTimeout(resolve, 200));
+        setMore(false);
         scrollableRef.current?.scrollTo({ top: scrollableRef.current?.scrollHeight, behavior: 'smooth' });
     };
 
@@ -110,7 +115,9 @@ const History: React.FC<InferGetServerSidePropsType<typeof getServerSideProps>> 
                             </Wrap>
                             {props.activeCustomer?.orders.totalItems > activeOrders?.length && (
                                 <ButtonWrap w100>
-                                    <StyledButton onClick={onLoadMore}>{t('ordersPage.loadMore')}</StyledButton>
+                                    <StyledButton loading={more} onClick={onLoadMore}>
+                                        {t('ordersPage.loadMore')}
+                                    </StyledButton>
                                 </ButtonWrap>
                             )}
                         </Main>
@@ -120,14 +127,6 @@ const History: React.FC<InferGetServerSidePropsType<typeof getServerSideProps>> 
         </Layout>
     );
 };
-
-const CustomerWrap = styled(Stack)`
-    padding: 2rem 0;
-
-    @media (max-width: ${({ theme }) => theme.breakpoints.lg}) {
-        flex-direction: column;
-    }
-`;
 
 const Main = styled(Stack)`
     padding: 1.75rem;

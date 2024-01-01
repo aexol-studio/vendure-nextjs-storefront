@@ -1,5 +1,5 @@
 import { useTranslation } from 'next-i18next';
-import React, { useState } from 'react';
+import React from 'react';
 import * as z from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { SubmitHandler, useForm } from 'react-hook-form';
@@ -19,7 +19,6 @@ export const CustomerResetPasswordForm = () => {
     const push = usePush();
     const { t } = useTranslation('customer');
     const { t: tErrors } = useTranslation('common');
-    const [loading, setLoading] = useState(false);
 
     const passwordSchema = z
         .object({
@@ -50,7 +49,7 @@ export const CustomerResetPasswordForm = () => {
         handleSubmit,
         setError,
         clearErrors,
-        formState: { errors },
+        formState: { errors, isSubmitting },
     } = useForm<ResetPasswordForm>({
         values: {
             oldPassword: '',
@@ -61,7 +60,6 @@ export const CustomerResetPasswordForm = () => {
     });
 
     const onPasswordChange: SubmitHandler<ResetPasswordForm> = async data => {
-        setLoading(true);
         try {
             const { updateCustomerPassword } = await storefrontApiMutation({
                 updateCustomerPassword: [
@@ -91,7 +89,6 @@ export const CustomerResetPasswordForm = () => {
 
             if (updateCustomerPassword.__typename !== 'Success') {
                 setError('root', { message: tErrors(`errors.backend.${updateCustomerPassword.errorCode}`) });
-                setLoading(false);
                 return;
             }
 
@@ -99,7 +96,6 @@ export const CustomerResetPasswordForm = () => {
             if (logout.success) push('/customer/sign-in/');
         } catch (error) {
             setError('root', { message: tErrors('errors.backend.UNKNOWN_ERROR') });
-            setLoading(false);
         }
     };
     return (
@@ -133,7 +129,7 @@ export const CustomerResetPasswordForm = () => {
                         />
                     </Stack>
                 </Stack>
-                <StyledButton loading={loading} type="submit">
+                <StyledButton loading={isSubmitting} type="submit">
                     {t('accountPage.passwordForm.confirmPassword')}
                 </StyledButton>
             </Form>

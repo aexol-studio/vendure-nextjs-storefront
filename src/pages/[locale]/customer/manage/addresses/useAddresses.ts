@@ -11,8 +11,6 @@ import { SubmitHandler } from 'react-hook-form';
 export const useAddresses = (customer: ActiveCustomerType) => {
     const [activeCustomer, setActiveCustomer] = useState<ActiveCustomerType>(customer);
     const [addressToEdit, setAddressToEdit] = useState<ActiveAddressType>();
-    const [adding, setAdding] = useState(false);
-    const [editing, setEditing] = useState(false);
     const [deleting, setDeleting] = useState<string>();
     const [refresh, setRefresh] = useState(false);
 
@@ -54,34 +52,29 @@ export const useAddresses = (customer: ActiveCustomerType) => {
             return;
         }
 
-        setEditing(true);
-
         try {
             const { updateCustomerAddress } = await storefrontApiMutation({
                 updateCustomerAddress: [{ input }, { __typename: true, id: true }],
             });
-            setEditing(false);
             if (updateCustomerAddress) {
                 setRefresh(true);
                 onModalClose();
             }
         } catch (e) {
-            setEditing(false);
+            console.log(e);
         }
     };
 
     const onSubmitCreate: SubmitHandler<CreateAddressType> = async data => {
-        setAdding(true);
         try {
             const { createCustomerAddress } = await storefrontApiMutation({
                 createCustomerAddress: [{ input: data }, { __typename: true, id: true }],
             });
-            setAdding(false);
             if (createCustomerAddress) {
                 setRefresh(true);
             }
         } catch (e) {
-            setAdding(false);
+            console.log(e);
         }
     };
 
@@ -103,8 +96,6 @@ export const useAddresses = (customer: ActiveCustomerType) => {
     return {
         activeCustomer,
         addressToEdit,
-        editing,
-        adding,
         deleting,
         onEdit,
         onModalClose,

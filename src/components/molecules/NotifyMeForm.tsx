@@ -18,7 +18,6 @@ export const NotifyMeForm = () => {
     const {
         handleSubmit,
         register,
-
         formState: { errors },
         reset,
     } = useForm<{ email: string }>({

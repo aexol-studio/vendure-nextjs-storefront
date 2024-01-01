@@ -15,21 +15,12 @@ import { AddressForm } from './components/AddressForm';
 import { useAddresses } from './useAddresses';
 import { arrayToTree } from '@/src/util/arrayToTree';
 import { useTranslation } from 'next-i18next';
+import { CustomerWrap } from '../../components/shared';
 
 const Addresses: React.FC<InferGetServerSidePropsType<typeof getServerSideProps>> = props => {
     const { t } = useTranslation('customer');
-    const {
-        activeCustomer,
-        adding,
-        addressToEdit,
-        deleting,
-        editing,
-        onDelete,
-        onEdit,
-        onModalClose,
-        onSubmitCreate,
-        onSubmitEdit,
-    } = useAddresses(props.activeCustomer);
+    const { activeCustomer, addressToEdit, deleting, onDelete, onEdit, onModalClose, onSubmitCreate, onSubmitEdit } =
+        useAddresses(props.activeCustomer);
 
     const ref = useRef<HTMLDivElement>(null);
     useEffect(() => {
@@ -51,7 +42,6 @@ const Addresses: React.FC<InferGetServerSidePropsType<typeof getServerSideProps>
                     <Modal initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
                         <ModalContent ref={ref} itemsCenter column>
                             <AddressForm
-                                loading={editing}
                                 onSubmit={onSubmitEdit}
                                 availableCountries={props.availableCountries}
                                 addressToEdit={addressToEdit}
@@ -66,11 +56,7 @@ const Addresses: React.FC<InferGetServerSidePropsType<typeof getServerSideProps>
                     <CustomerNavigation />
                     <Wrapper w100 gap="1.5rem">
                         <Stack w100>
-                            <AddressForm
-                                loading={adding}
-                                onSubmit={onSubmitCreate}
-                                availableCountries={props.availableCountries}
-                            />
+                            <AddressForm onSubmit={onSubmitCreate} availableCountries={props.availableCountries} />
                         </Stack>
                         <Wrap w100 itemsCenter gap="2.5rem">
                             {activeCustomer?.addresses?.map(address => (
@@ -89,13 +75,6 @@ const Addresses: React.FC<InferGetServerSidePropsType<typeof getServerSideProps>
         </Layout>
     );
 };
-
-const CustomerWrap = styled(Stack)`
-    padding: 2rem 0;
-    @media (max-width: ${({ theme }) => theme.breakpoints.lg}) {
-        flex-direction: column;
-    }
-`;
 
 const Wrapper = styled(Stack)`
     justify-content: space-evenly;

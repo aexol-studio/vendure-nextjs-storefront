@@ -12,13 +12,12 @@ import { CreditCard, Truck } from 'lucide-react';
 import { TP } from '@/src/components/atoms/TypoGraphy';
 
 export const AddressForm: React.FC<{
-    loading: boolean;
     onSubmit: SubmitHandler<CreateAddressType>;
     addressToEdit?: ActiveAddressType;
     availableCountries?: AvailableCountriesType[];
     country?: string;
     onModalClose?: () => void;
-}> = ({ addressToEdit, onSubmit, loading, availableCountries, country, onModalClose }) => {
+}> = ({ addressToEdit, onSubmit, availableCountries, country, onModalClose }) => {
     const { t } = useTranslation('customer');
 
     const schema = z.object({
@@ -38,7 +37,7 @@ export const AddressForm: React.FC<{
     const {
         register,
         handleSubmit,
-        formState: { errors },
+        formState: { errors, isSubmitting },
         watch,
     } = useForm<CreateAddressType>({
         values: addressToEdit
@@ -118,11 +117,11 @@ export const AddressForm: React.FC<{
                     </Stack>
                     <Stack gap="3.5rem" w100 itemsCenter justifyBetween>
                         {onModalClose && (
-                            <Button disabled={loading} onClick={onModalClose} type="button">
+                            <Button disabled={isSubmitting} onClick={onModalClose} type="button">
                                 {t('addressForm.cancel')}
                             </Button>
                         )}
-                        <FullWidthButton loading={loading} type="submit">
+                        <FullWidthButton loading={isSubmitting} type="submit">
                             {addressToEdit ? t('addressForm.update') : t('addressForm.add')}
                         </FullWidthButton>
                     </Stack>

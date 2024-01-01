@@ -9,6 +9,7 @@ import { emptyCheckoutState } from './utils';
 //It is used to manage the active order on checkout pages
 //It looks same as the Cart Store, but it accept an initial state and it has some extra methods
 //Prepared for future use *in feature checkout can be different than cart
+//Additional useCart is on client side, because it is used in many places
 const useCheckoutContainer = createContainer<CheckoutContainerType, { checkout: ActiveOrderType }>(initialState => {
     if (!initialState?.checkout) return emptyCheckoutState;
 

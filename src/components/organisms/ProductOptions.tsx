@@ -61,7 +61,7 @@ export const ProductOptions: React.FC<{
                                             onClick={handleSwatchClick}
                                             color={o.name}
                                             selected={selectedOptions[og.id] === o.id}
-                                            canBeSelected={totallyOOS}
+                                            selectable={totallyOOS}
                                         />
                                     );
                                 }
@@ -69,7 +69,7 @@ export const ProductOptions: React.FC<{
                                     <SizeSelector
                                         key={o.name + j}
                                         onClick={handleSwatchClick}
-                                        canBeSelected={totallyOOS}
+                                        selectable={totallyOOS}
                                         selected={selectedOptions[og.id] === o.id}>
                                         {o.name}
                                     </SizeSelector>
@@ -100,14 +100,14 @@ const Error = styled(TP)`
 
 const NoVariantInfo = styled(motion.div)``;
 
-const ColorSwatch = styled.div<{ color: string; canBeSelected?: boolean; selected?: boolean }>`
+const ColorSwatch = styled.div<{ color: string; selectable: boolean; selected: boolean }>`
     width: 3.2rem;
     height: 3.2rem;
     background-color: ${p => p.color};
     border: 1px solid black;
     cursor: pointer;
     ${p =>
-        p.canBeSelected &&
+        p.selectable &&
         `
         opacity: 0.5;
     `}
@@ -118,7 +118,7 @@ const ColorSwatch = styled.div<{ color: string; canBeSelected?: boolean; selecte
     `}
 `;
 
-const SizeSelector = styled(Button)<{ selected: boolean; canBeSelected?: boolean }>`
+const SizeSelector = styled(Button)<{ selected: boolean; selectable: boolean }>`
     border: 1px solid ${p => p.theme.gray(500)};
     background: ${p => p.theme.gray(0)};
     color: ${p => p.theme.gray(900)};
@@ -134,7 +134,7 @@ const SizeSelector = styled(Button)<{ selected: boolean; canBeSelected?: boolean
     `}
 
     ${p =>
-        p.canBeSelected &&
+        p.selectable &&
         `
         background: ${p.theme.gray(500)};
         color: ${p.theme.gray(0)};

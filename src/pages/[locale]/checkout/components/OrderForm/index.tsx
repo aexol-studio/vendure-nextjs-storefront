@@ -89,7 +89,7 @@ export const OrderForm: React.FC<OrderFormProps> = ({ availableCountries }) => {
         clearErrors,
         watch,
         setFocus,
-        formState: { errors },
+        formState: { errors, isSubmitting },
     } = useForm<Form>({
         delayError: 100,
         defaultValues: {
@@ -148,6 +148,7 @@ export const OrderForm: React.FC<OrderFormProps> = ({ availableCountries }) => {
             const { nextOrderStates } = await storefrontApiQuery({ nextOrderStates: true });
             if (!nextOrderStates.includes('ArrangingPayment')) {
                 //TODO: Handle error (no next order state)
+                setError('root', { message: tErrors(`errors.backend.UNKNOWN_ERROR`) });
                 return;
             }
             // Set the billing address for the order
@@ -581,7 +582,7 @@ export const OrderForm: React.FC<OrderFormProps> = ({ availableCountries }) => {
                 )}
 
                 {/* Submit */}
-                <Stack w100 justifyBetween itemsEnd gap="3rem">
+                <Stack justifyBetween itemsEnd gap="3rem">
                     <Stack itemsStart column>
                         <CheckBox
                             {...register('regulations')}
@@ -608,7 +609,9 @@ export const OrderForm: React.FC<OrderFormProps> = ({ availableCountries }) => {
                             required
                         />
                     </Stack>
-                    <ButtonDesktop type="submit">{t('orderForm.continueToPayment')}</ButtonDesktop>
+                    <ButtonDesktop loading={isSubmitting} type="submit">
+                        {t('orderForm.continueToPayment')}
+                    </ButtonDesktop>
                 </Stack>
                 <Stack column>
                     <AnimatePresence>
@@ -635,7 +638,9 @@ export const OrderForm: React.FC<OrderFormProps> = ({ availableCountries }) => {
                     </AnimatePresence>
                 </Stack>
                 <Stack w100 justifyEnd>
-                    <ButtonMobile type="submit">{t('orderForm.continueToPayment')}</ButtonMobile>
+                    <ButtonMobile loading={isSubmitting} type="submit">
+                        {t('orderForm.continueToPayment')}
+                    </ButtonMobile>
                 </Stack>
             </Form>
         </Stack>

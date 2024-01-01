@@ -23,7 +23,8 @@ import { Breadcrumbs } from '@/src/components/molecules/Breadcrumbs';
 import { useCollection } from '@/src/state/collection';
 import { PER_PAGE, reduceFacets } from '@/src/state/collection/utils';
 import { arrayToTree } from '@/src/util/arrayToTree';
-
+import { SortBy } from '@/src/components/molecules/SortBy';
+import { SortOrder } from '@/src/zeus';
 const CollectionPage: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = props => {
     const { t } = useTranslation('common');
     const {
@@ -37,6 +38,8 @@ const CollectionPage: React.FC<InferGetStaticPropsType<typeof getStaticProps>> =
         filters,
         applyFilter,
         removeFilter,
+        sort,
+        handleSort,
     } = useCollection();
 
     const breadcrumbs = [
@@ -109,7 +112,7 @@ const CollectionPage: React.FC<InferGetStaticPropsType<typeof getStaticProps>> =
                                         key={col.name}
                                         href={`/collections/${col.slug}`}
                                         imageSrc={col.featuredAsset?.preview}
-                                        size="thumbnail-big"
+                                        size="tile"
                                         text={col.name}
                                     />
                                 ))}
@@ -120,12 +123,15 @@ const CollectionPage: React.FC<InferGetStaticPropsType<typeof getStaticProps>> =
                         <Stack itemsEnd>
                             <TH1>{collection?.name}</TH1>
                         </Stack>
-                        <Filters onClick={() => setFiltersOpen(true)}>
-                            <TP>{t('filters')}</TP>
-                            <IconButton title={t('filters')}>
-                                <Filter />
-                            </IconButton>
-                        </Filters>
+                        <Stack itemsCenter gap="2.5rem">
+                            <SortBy sort={sort} handleSort={handleSort} />
+                            <Filters onClick={() => setFiltersOpen(true)}>
+                                <TP>{t('filters')}</TP>
+                                <IconButton title={t('filters')}>
+                                    <Filter />
+                                </IconButton>
+                            </Filters>
+                        </Stack>
                     </Stack>
                     <MainGrid>
                         {products?.map(p => <ProductTile collections={props.collections} product={p} key={p.slug} />)}
@@ -187,6 +193,7 @@ export const getStaticPaths = async () => {
 
 export const getStaticProps = async (context: ContextModel<{ slug?: string }>) => {
     const { slug } = context.params || {};
+
     const r = await makeStaticProps(['common'])(context);
     const collections = await getCollections();
     const navigation = arrayToTree(collections);
@@ -194,13 +201,20 @@ export const getStaticProps = async (context: ContextModel<{ slug?: string }>) =
     const { collection } = await storefrontApiQuery({
         collection: [{ slug }, CollectionSelector],
     });
-    // const facets = await storefrontApiQuery({
-    //     facets: [{}, { items: FacetSelector }],
-    // });
-    const productsQuery = await storefrontApiQuery({
-        search: [{ input: { collectionSlug: slug, groupByProduct: true, take: PER_PAGE } }, SearchSelector],
-    });
 
+    const productsQuery = await storefrontApiQuery({
+        search: [
+            {
+                input: {
+                    collectionSlug: slug,
+                    groupByProduct: true,
+                    take: PER_PAGE,
+                    sort: { name: SortOrder.ASC },
+                },
+            },
+            SearchSelector,
+        ],
+    });
     const facets = reduceFacets(productsQuery.search.facetValues);
 
     const returnedStuff = {

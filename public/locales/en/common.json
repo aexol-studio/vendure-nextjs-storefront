@@ -6,6 +6,7 @@
     "made-by":"Made by VendureAgency.com 2023",
     "select-category":"Select category",
     "filters":"Filters",
+    "sort-by":"Sort by",
     "cart":"Cart",
     "cart-summary":"Cart summary",
     "your-cart":"Your cart",
@@ -24,6 +25,21 @@
     "buy-now":"Buy now",
     "related-collections":"Related Collections", 
     "newest-products":"Newest Products", 
+    "featured-products":"Featured Products",
+    "sort-keys": {
+        "title": "Title",
+        "price": "Price"
+    },
+    "sort-directions": {
+        "ASC": "Ascending",
+        "DESC": "Descending"
+    },
+    "payments": {
+        "dummy-method": "Dummy Payment Method",
+        "states": {
+            "Authorized": "Authorized"
+        }
+    },
     "stockLevel":{
         "OUT_OF_STOCK":"Out of stock",
         "IN_STOCK":"In stock",

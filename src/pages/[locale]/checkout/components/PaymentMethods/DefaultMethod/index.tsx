@@ -24,7 +24,6 @@ export const DefaultMethod = ({
             <TP>{t('paymentMethod.title')}</TP>
             <Stack w100 column justifyBetween itemsCenter gap="1.25rem">
                 <Button
-                    key={defaultMethod.code + 'success'}
                     onClick={async () =>
                         await onClick(defaultMethod.code, {
                             shouldCancel: false,
@@ -33,13 +32,13 @@ export const DefaultMethod = ({
                             shouldErrorOnSettle: false,
                         })
                     }>
-                    <StyledCreditCard method="success" />
-                    <TP>{t('paymentMethod.success')}</TP>
-                    <TP>{defaultMethod.name}</TP>
+                    <Stack itemsCenter gap="1rem">
+                        <StyledCreditCard method="success" />
+                        <Text>{t('paymentMethod.success')}</Text>
+                    </Stack>
                 </Button>
                 <Stack w100 justifyBetween itemsCenter gap="1.25rem">
                     <Button
-                        key={defaultMethod.code + 'cancel'}
                         onClick={async () =>
                             await onClick(defaultMethod.code, {
                                 shouldCancel: false,
@@ -48,12 +47,12 @@ export const DefaultMethod = ({
                                 shouldErrorOnSettle: false,
                             })
                         }>
-                        <StyledCreditCard method="decline" />
-                        <TP>{t('paymentMethod.decline')}</TP>
-                        <TP>{defaultMethod.name}</TP>
+                        <Stack itemsCenter gap="1rem">
+                            <StyledCreditCard method="decline" />
+                            <Text>{t('paymentMethod.decline')}</Text>
+                        </Stack>
                     </Button>
                     <Button
-                        key={defaultMethod.code + 'error'}
                         onClick={async () =>
                             await onClick(defaultMethod.code, {
                                 shouldCancel: false,
@@ -62,9 +61,10 @@ export const DefaultMethod = ({
                                 shouldErrorOnSettle: false,
                             })
                         }>
-                        <StyledCreditCard method="error" />
-                        <TP>{t('paymentMethod.error')}</TP>
-                        <TP>{defaultMethod.name}</TP>
+                        <Stack itemsCenter gap="1rem">
+                            <StyledCreditCard method="error" />
+                            <Text>{t('paymentMethod.error')}</Text>
+                        </Stack>
                     </Button>
                 </Stack>
             </Stack>
@@ -73,6 +73,10 @@ export const DefaultMethod = ({
         <TP>{t('paymentMethod.notAvailable')}</TP>
     );
 };
+
+const Text = styled(TP)`
+    white-space: nowrap;
+`;
 
 const StyledCreditCard = styled(CreditCard)<{ method: 'success' | 'decline' | 'error' }>`
     color: ${({ theme, method }) => (method === 'success' ? theme.success : theme.error)};

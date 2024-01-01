@@ -25,8 +25,6 @@ const useCartContainer = createContainer(() => {
     };
 
     const addToCart = async (id: string, q: number, o?: boolean) => {
-        //TODO: work here
-        // const founded = activeOrder?.lines.find(l => l.productVariant.id === id);
         setActiveOrder(c => {
             return c && { ...c, totalQuantity: c.totalQuantity + 1 };
         });
@@ -90,14 +88,15 @@ const useCartContainer = createContainer(() => {
             console.log(e);
         }
     };
+
     const setItemQuantityInCart = async (id: string, q: number) => {
+        setActiveOrder(c => {
+            if (c?.lines.find(l => l.id === id)) {
+                return { ...c, lines: c.lines.map(l => (l.id === id ? { ...l, q } : l)) };
+            }
+            return c;
+        });
         try {
-            setActiveOrder(c => {
-                if (c?.lines.find(l => l.id === id)) {
-                    return { ...c, lines: c.lines.map(l => (l.id === id ? { ...l, q } : l)) };
-                }
-                return c;
-            });
             const { adjustOrderLine } = await storefrontApiMutation({
                 adjustOrderLine: [
                     { orderLineId: id, quantity: q },

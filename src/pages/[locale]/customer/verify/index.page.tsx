@@ -8,10 +8,11 @@ import { Link } from '@/src/components/atoms/Link';
 import { useTranslation } from 'next-i18next';
 import { ContentContainer } from '@/src/components/atoms/ContentContainer';
 import { Stack } from '@/src/components/atoms/Stack';
-import { Absolute, FormContainer, FormContent, FormWrapper } from '../components/shared';
 import { Banner } from '@/src/components/forms';
 import { TH2 } from '@/src/components/atoms/TypoGraphy';
 import { arrayToTree } from '@/src/util/arrayToTree';
+
+import { Absolute, FormContainer, FormContent, FormWrapper } from '../components/shared';
 
 const Verify: React.FC<InferGetServerSidePropsType<typeof getServerSideProps>> = props => {
     const { t } = useTranslation('customer');

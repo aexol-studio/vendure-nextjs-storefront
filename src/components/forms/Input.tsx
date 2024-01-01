@@ -2,7 +2,7 @@ import { InputHTMLAttributes, forwardRef, useState } from 'react';
 import { FieldError } from 'react-hook-form';
 import styled from '@emotion/styled';
 import { Stack } from '@/src/components/atoms/Stack';
-import { FormRequired, FormErrorWrapper, Label } from './atoms';
+import { FormRequired, FormErrorWrapper, Label } from './shared';
 import { AnimatePresence, motion } from 'framer-motion';
 import { Eye } from 'lucide-react';
 

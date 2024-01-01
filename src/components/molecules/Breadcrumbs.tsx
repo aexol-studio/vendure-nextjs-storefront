@@ -13,18 +13,18 @@ export const Breadcrumbs: React.FC<{
         <Stack itemsCenter>
             {breadcrumbs.map((b, i) => {
                 const isHome = i === 0;
-
+                const last = !!(i === breadcrumbs.length - 1);
                 return (
                     <Stack itemsCenter gap="0.5rem" key={b.name}>
-                        <StyledLink href={b.href} isLast={i === breadcrumbs.length - 1}>
+                        <StyledLink href={b.href} last={last}>
                             <Stack itemsCenter gap="0.5rem">
                                 {isHome && <Home size={16} />}
-                                <TP size="1.25rem" weight={i === breadcrumbs.length - 1 ? 600 : 400}>
+                                <TP size="1.25rem" weight={last ? 600 : 400}>
                                     {b.name}
                                 </TP>
                             </Stack>
                         </StyledLink>
-                        {!(i === breadcrumbs.length - 1) && (
+                        {!last && (
                             <TP size="1.25rem" weight={600}>
                                 /&nbsp;
                             </TP>
@@ -36,8 +36,8 @@ export const Breadcrumbs: React.FC<{
     );
 };
 
-const StyledLink = styled(Link)<{ isLast: boolean }>`
+const StyledLink = styled(Link)<{ last: boolean }>`
     text-decoration: none;
-    pointer-events: ${p => (p.isLast ? 'none' : 'auto')};
+    pointer-events: ${p => (p.last ? 'none' : 'auto')};
     color: ${p => p.theme.gray(900)};
 `;

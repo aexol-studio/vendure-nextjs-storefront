@@ -35,13 +35,15 @@ export const Banner = forwardRef((props: BannerType, ref: React.ForwardedRef<HTM
                         {...rest}>
                         {clearErrors && (
                             <HideBannerButton onClick={clearErrors}>
-                                <X size={'1.4rem'} />
+                                <X size={'1.5rem'} />
                             </HideBannerButton>
                         )}
                         <BannerContent column>
                             {prop?.type && <FormError>{prop?.type}</FormError>}
                             <FormError status={type}>
-                                <AlertCircle size={'1.4rem'} />
+                                <IconWrapper justifyCenter itemsCenter type={type}>
+                                    <AlertCircle size={'1.5rem'} />
+                                </IconWrapper>
                                 {prop?.message}
                             </FormError>
                         </BannerContent>
@@ -53,6 +55,13 @@ export const Banner = forwardRef((props: BannerType, ref: React.ForwardedRef<HTM
 });
 
 Banner.displayName = 'Banner';
+
+const IconWrapper = styled(Stack)<{ type: 'success' | 'error' }>`
+    margin-top: 0.25rem;
+    width: 1.5rem;
+    height: 1.5rem;
+    color: ${p => (p.type === 'success' ? p.theme.success : p.theme.error)};
+`;
 
 const BannerWrapper = styled(Stack)`
     width: 100%;
@@ -90,6 +99,6 @@ const FormError = styled(motion.span)<{ status?: 'success' | 'error' }>`
     font-size: 1.25rem;
     font-weight: 500;
     display: flex;
-    gap: 0.5rem;
-    align-items: center;
+    gap: 1rem;
+    align-items: start;
 `;

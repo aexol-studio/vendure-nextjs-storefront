@@ -43,7 +43,7 @@ const SignIn: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = props =
         });
 
     const {
-        formState: { errors },
+        formState: { errors, isSubmitting },
         register,
         handleSubmit,
         setError,
@@ -118,15 +118,12 @@ const SignIn: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = props =
                                     type="password"
                                     {...register('confirmPassword')}
                                 />
-                                <Button type="submit">{t('signUp')}</Button>
+                                <Button loading={isSubmitting} type="submit">
+                                    {t('signUp')}
+                                </Button>
                             </Form>
-                            {/* TODO: ADD NICE SUCCESS BANNER */}
-                            {success && (
-                                <Stack style={{ padding: '1rem' }} w100 column itemsCenter gap="0.5rem">
-                                    <TP size="1.25rem">{t('signUpSuccess')}</TP>
-                                    <Link href="/customer/sign-in">{t('signIn')}</Link>
-                                </Stack>
-                            )}
+
+                            {success && <Banner success={{ message: t('signUpSuccess') }} />}
                             <Stack column itemsCenter gap="0.5rem">
                                 <Link href="/customer/forgot-password">{t('forgotPassword')}</Link>
                                 <Link href="/customer/sign-in">{t('signIn')}</Link>

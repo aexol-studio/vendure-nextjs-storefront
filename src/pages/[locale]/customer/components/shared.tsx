@@ -30,5 +30,16 @@ export const Absolute = styled(Stack)`
 `;
 
 export const FormContent = styled(Stack)`
-    max-width: 22rem;
+    //TODO: Make it better
+    min-width: 32rem;
+    max-width: 40rem;
+`;
+
+export const CustomerWrap = styled(Stack)`
+    min-height: calc(100vh - 10rem);
+    padding: 2rem 0;
+
+    @media (max-width: ${({ theme }) => theme.breakpoints.lg}) {
+        flex-direction: column;
+    }
 `;

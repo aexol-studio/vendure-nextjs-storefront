@@ -11,6 +11,5 @@ export * from './Price';
 export * from './ProductImage';
 export * from './SearchInput';
 export * from './Select';
-export * from './Spinner';
 export * from './Stack';
 export * from './TypoGraphy';

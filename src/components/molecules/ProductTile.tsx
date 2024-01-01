@@ -11,10 +11,12 @@ export const ProductTile: React.FC<{
     const priceValue =
         'value' in product.priceWithTax
             ? priceFormatter(product.priceWithTax.value, product.currencyCode)
-            : `${priceFormatter(product.priceWithTax.min, product.currencyCode)} - ${priceFormatter(
-                  product.priceWithTax.max,
-                  product.currencyCode,
-              )}`;
+            : product.priceWithTax.min === product.priceWithTax.max
+              ? priceFormatter(product.priceWithTax.min, product.currencyCode)
+              : `${priceFormatter(product.priceWithTax.min, product.currencyCode)} - ${priceFormatter(
+                    product.priceWithTax.max,
+                    product.currencyCode,
+                )}`;
 
     return (
         <Main column gap="2rem">
@@ -25,6 +27,7 @@ export const ProductTile: React.FC<{
                 {product.collectionIds
                     .filter((cId, index) => product.collectionIds.indexOf(cId) === index)
                     .map(cId => collections.find(c => c.id === cId))
+                    .filter(c => c)
                     .map(c => (
                         <ProductCategory href={`/collections/${c?.slug}/`} key={c?.slug}>
                             {c?.name}

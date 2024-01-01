@@ -5,7 +5,7 @@ import styled from '@emotion/styled';
 import { CreditCard, Pen, Trash2, Truck } from 'lucide-react';
 import React from 'react';
 import { useTranslation } from 'next-i18next';
-import { Spinner } from '@/src/components/atoms/Spinner';
+import { Button } from '@/src/components/molecules/Button';
 
 interface Props {
     address: ActiveAddressType;
@@ -39,14 +39,14 @@ export const AddressBox: React.FC<Props> = ({ address, selected, onSelect, onEdi
                 <Wrapper itemsCenter gap="2.5rem">
                     {onEdit && (
                         <Option onClick={() => onEdit(address.id)}>
-                            <TP>{t('addressForm.edit')}</TP>
-                            <Edit size={16} />
+                            <TP size="1.25rem">{t('addressForm.edit')}</TP>
+                            <Edit size={'1.5rem'} />
                         </Option>
                     )}
                     {onDelete && (
-                        <Option onClick={() => onDelete(address.id)}>
-                            <TP>{t('addressForm.delete')}</TP>
-                            {deleting === address.id ? <Spinner /> : <Delete size={16} />}
+                        <Option loading={deleting === address.id} onClick={() => onDelete(address.id)}>
+                            <TP size="1.25rem">{t('addressForm.delete')}</TP>
+                            <Delete size={'1.5rem'} />
                         </Option>
                     )}
                 </Wrapper>
@@ -66,29 +66,26 @@ const DefaultShipping = styled(Truck)<{ active?: boolean }>`
 
 const Wrapper = styled(Stack)`
     margin-top: 1rem;
+
+    p {
+        white-space: nowrap;
+    }
 `;
 
-const Option = styled.button`
+const Option = styled(Button)`
+    width: 100%;
     display: flex;
     align-items: center;
     gap: 1.25rem;
-
-    background-color: transparent;
-    border: none;
-    cursor: pointer;
-
-    color: ${p => p.theme.gray(1000)};
-    border-radius: ${p => p.theme.borderRadius};
-    border: 1px solid ${({ theme }) => theme.shadow};
-    padding: 0.5rem 1rem;
-    background-color: ${p => p.theme.gray(100)};
 `;
 
 const Delete = styled(Trash2)`
+    min-width: 1.5rem;
     cursor: pointer;
 `;
 
 const Edit = styled(Pen)`
+    min-width: 1.5rem;
     cursor: pointer;
 `;
 

@@ -1,7 +1,7 @@
 import { Layout } from '@/src/layouts';
 import { ContextModel, getStaticPaths, makeStaticProps } from '@/src/lib/getStatic';
 import { InferGetStaticPropsType } from 'next';
-import React from 'react';
+import React, { useState } from 'react';
 import { getCollections } from '@/src/graphql/sharedQueries';
 import { Stack } from '@/src/components/atoms/Stack';
 import { Link } from '@/src/components/atoms/Link';
@@ -24,6 +24,7 @@ type FormValues = {
 const ForgotPassword: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = props => {
     const { t } = useTranslation('customer');
     const { t: tErrors } = useTranslation('common');
+    const [success, setSuccess] = useState<string>();
 
     const schema = z.object({
         emailAddress: z.string().email(tErrors('errors.email.invalid')).min(1, tErrors('errors.email.required')),
@@ -33,7 +34,7 @@ const ForgotPassword: React.FC<InferGetStaticPropsType<typeof getStaticProps>> =
         register,
         handleSubmit,
         setError,
-        formState: { errors },
+        formState: { errors, isSubmitting },
     } = useForm<FormValues>({
         resolver: zodResolver(schema),
     });
@@ -59,11 +60,12 @@ const ForgotPassword: React.FC<InferGetStaticPropsType<typeof getStaticProps>> =
 
             if (!requestPasswordReset) {
                 setError('root', { message: tErrors(`errors.backend.UNKNOWN_ERROR`) });
+
                 return;
             }
 
             if (requestPasswordReset?.__typename === 'Success') {
-                //TODO: Add success message and info about email
+                setSuccess(t('forgotPasswordSuccess'));
                 return;
             }
 
@@ -79,7 +81,14 @@ const ForgotPassword: React.FC<InferGetStaticPropsType<typeof getStaticProps>> =
                 <FormContainer>
                     <FormWrapper column itemsCenter gap="3.5rem">
                         <Absolute w100>
-                            <Banner error={errors.root} clearErrors={() => setError('root', { message: undefined })} />
+                            <Banner
+                                error={errors.root}
+                                success={success ? { message: success } : undefined}
+                                clearErrors={() => {
+                                    setError('root', { message: undefined });
+                                    setSuccess(undefined);
+                                }}
+                            />
                         </Absolute>
                         <TP weight={600}>{t('forgotPasswordTitle')}</TP>
                         <FormContent w100 column itemsCenter gap="1.75rem">
@@ -90,7 +99,9 @@ const ForgotPassword: React.FC<InferGetStaticPropsType<typeof getStaticProps>> =
                                     type="text"
                                     {...register('emailAddress')}
                                 />
-                                <Button type="submit">{t('newPassword')}</Button>
+                                <Button loading={isSubmitting} type="submit">
+                                    {t('newPassword')}
+                                </Button>
                             </Form>
                             <Stack column itemsCenter gap="0.5rem">
                                 <Link href="/customer/sign-in">{t('signIn')}</Link>

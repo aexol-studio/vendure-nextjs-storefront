@@ -118,6 +118,21 @@ export const CollectionTileSelector = Selector('Collection')({
     id: true,
     slug: true,
     parentId: true,
+    description: true,
+    productVariants: [
+        { options: { take: 1, filter: { priceWithTax: { lte: 5000 } } } },
+        {
+            totalItems: true,
+            items: {
+                product: { name: true, slug: true, featuredAsset: { preview: true } },
+                id: true,
+                featuredAsset: { preview: true },
+                priceWithTax: true,
+                currencyCode: true,
+                name: true,
+            },
+        },
+    ],
     featuredAsset: {
         preview: true,
     },
@@ -144,7 +159,6 @@ export const ProductDetailSelector = Selector('Product')({
         source: true,
         preview: true,
     },
-    collections: CollectionTileSelector,
     variants: {
         id: true,
         name: true,

@@ -15,9 +15,11 @@ import { MainBar } from '@/src/components/organisms/MainBar';
 import { BestOf } from '@/src/components/molecules/BestOf';
 import { arrayToTree } from '@/src/util/arrayToTree';
 import styled from '@emotion/styled';
+import { SortOrder } from '@/src/zeus';
 
 export const Index: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = props => {
     const { t } = useTranslation('homepage');
+
     return (
         <Layout navigation={props.navigation} categories={props.categories} pageTitle={t('seo.home')}>
             <Main w100 column gap="4rem">
@@ -27,10 +29,14 @@ export const Index: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = p
                     h2={t('hero-h2')}
                     desc={t('hero-p')}
                     link="/collections/electronics"
-                    image={props.products[0].productAsset?.preview || ''}
+                    image={
+                        props.products.find(p => p.slug.includes('laptop'))?.productAsset?.preview ??
+                        (props.products[0].productAsset?.preview || '')
+                    }
                 />
                 <ContentContainer>
                     <Stack gap="4rem" column>
+                        <BestOf products={props.bestOf} />
                         <MainBar title={t('most-wanted')} categories={props.categories} />
                         <MainGrid>
                             {props.products.map(p => (
@@ -38,7 +44,6 @@ export const Index: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = p
                             ))}
                         </MainGrid>
                     </Stack>
-                    <BestOf products={props.products.slice(0, 4)} />
                 </ContentContainer>
             </Main>
         </Layout>
@@ -51,7 +56,17 @@ const Main = styled(Stack)`
 
 const getStaticProps = async (ctx: ContextModel) => {
     const products = await storefrontApiQuery({
-        search: [{ input: { take: 24, groupByProduct: true } }, { items: ProductSearchSelector }],
+        search: [
+            { input: { take: 24, groupByProduct: true, sort: { price: SortOrder.DESC } } },
+            { items: ProductSearchSelector },
+        ],
+    });
+
+    const bestOf = await storefrontApiQuery({
+        search: [
+            { input: { take: 4, groupByProduct: true, sort: { name: SortOrder.DESC } } },
+            { items: ProductSearchSelector },
+        ],
     });
 
     const collections = await getCollections();
@@ -59,7 +74,13 @@ const getStaticProps = async (ctx: ContextModel) => {
     const r = await makeStaticProps(['common', 'homepage'])(ctx);
 
     const returnedStuff = {
-        props: { ...r.props, products: products.search.items, categories: collections, navigation },
+        props: {
+            ...r.props,
+            products: products.search.items,
+            categories: collections,
+            navigation,
+            bestOf: bestOf.search.items,
+        },
         revalidate: process.env.NEXT_REVALIDATE ? parseInt(process.env.NEXT_REVALIDATE) : 10,
     };
 

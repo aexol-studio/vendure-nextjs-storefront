@@ -25,6 +25,7 @@ export const OrderPayment: React.FC<OrderPaymentProps> = ({ availablePaymentMeth
     //For stripe
     const [stripe, setStripe] = useState<Stripe | null>(null);
     const [error, setError] = useState<string | null>(null);
+
     useEffect(() => {
         const initStripe = async () => {
             if (STRIPE_PUBLIC_KEY) {
@@ -46,6 +47,7 @@ export const OrderPayment: React.FC<OrderPaymentProps> = ({ availablePaymentMeth
     ) => {
         // Add payment to order
         try {
+            setError(null);
             const { addPaymentToOrder } = await storefrontApiMutation({
                 addPaymentToOrder: [
                     { input: { method, metadata: JSON.stringify(metadata) } },
@@ -93,7 +95,6 @@ export const OrderPayment: React.FC<OrderPaymentProps> = ({ availablePaymentMeth
             ) {
                 push(`/checkout/confirmation/${addPaymentToOrder.code}`);
             }
-            //TODO: ADD ERROR HANDLING
         } catch (e) {
             console.log(e);
             setError(t(`errors.backend.UNKNOWN_ERROR`));

@@ -9,10 +9,9 @@ import { ActiveCustomerSelector, ActiveOrderSelector } from '@/src/graphql/selec
 import { CustomerForm } from './components/CustomerForm';
 import { ContentContainer } from '@/src/components/atoms/ContentContainer';
 import { SortOrder } from '@/src/zeus';
-import { Stack } from '@/src/components';
 import { arrayToTree } from '@/src/util/arrayToTree';
 import { useTranslation } from 'next-i18next';
-import styled from '@emotion/styled';
+import { CustomerWrap } from '../components/shared';
 
 const Account: React.FC<InferGetServerSidePropsType<typeof getServerSideProps>> = props => {
     const { t } = useTranslation('customer');
@@ -27,14 +26,6 @@ const Account: React.FC<InferGetServerSidePropsType<typeof getServerSideProps>> 
         </Layout>
     );
 };
-
-const CustomerWrap = styled(Stack)`
-    padding: 2rem 0;
-
-    @media (max-width: ${({ theme }) => theme.breakpoints.lg}) {
-        flex-direction: column;
-    }
-`;
 
 const getServerSideProps = async (context: GetServerSidePropsContext) => {
     const r = await makeServerSideProps(['common', 'customer'])(context);

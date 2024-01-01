@@ -25,7 +25,6 @@ export const CustomerDetailsForm: React.FC<{
     const { t: tErrors } = useTranslation('common');
     const [activeCustomer, setActiveCustomer] = useState<ActiveCustomerType>(initialCustomer);
     const [successBanner, setSuccessBanner] = useState<string>();
-    const [isLoading, setIsLoading] = useState<boolean>(false);
 
     const customerSchema = z.object({
         firstName: z.string().min(1, { message: tErrors('errors.firstName.required') }),
@@ -40,7 +39,7 @@ export const CustomerDetailsForm: React.FC<{
         register,
         handleSubmit,
         setError,
-        formState: { errors },
+        formState: { errors, isSubmitting },
     } = useForm<CustomerDataForm>({
         values: {
             addressEmail: activeCustomer?.emailAddress,
@@ -59,8 +58,6 @@ export const CustomerDetailsForm: React.FC<{
         );
         if (isDirty) return;
 
-        setIsLoading(true);
-
         try {
             const { updateCustomer } = await storefrontApiMutation({
                 updateCustomer: [{ input: { firstName, lastName, phoneNumber } }, ActiveCustomerSelector],
@@ -68,15 +65,14 @@ export const CustomerDetailsForm: React.FC<{
 
             if (!updateCustomer) {
                 setError('root', { message: tErrors('errors.backend.UNKNOWN_ERROR') });
-                setIsLoading(false);
+
                 return;
             }
-            setIsLoading(false);
+
             setActiveCustomer(p => ({ ...p, ...updateCustomer }));
             setSuccessBanner(t('accountPage.detailsForm.successMessage'));
         } catch {
             setError('root', { message: tErrors('errors.backend.UNKNOWN_ERROR') });
-            setIsLoading(false);
         }
     };
 
@@ -128,7 +124,7 @@ export const CustomerDetailsForm: React.FC<{
                             error={errors.phoneNumber}
                         />
                     </Stack>
-                    <StyledButton loading={isLoading} type="submit">
+                    <StyledButton loading={isSubmitting} type="submit">
                         {t('accountPage.detailsForm.changeDetails')}
                     </StyledButton>
                 </Form>

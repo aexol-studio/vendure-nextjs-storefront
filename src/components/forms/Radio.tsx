@@ -2,7 +2,7 @@ import { InputHTMLAttributes, forwardRef } from 'react';
 import { FieldError } from 'react-hook-form';
 import styled from '@emotion/styled';
 import { Stack } from '@/src/components/atoms/Stack';
-import { FormError, Label } from './atoms';
+import { FormError, Label } from './shared';
 
 const RadioWrapper = styled(Stack)<{ active?: boolean }>`
     position: relative;

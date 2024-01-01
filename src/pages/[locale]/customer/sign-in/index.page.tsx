@@ -13,12 +13,12 @@ import { Button } from '@/src/components/molecules/Button';
 import { ContentContainer } from '@/src/components/atoms/ContentContainer';
 import { usePush } from '@/src/lib/redirect';
 import { useTranslation } from 'next-i18next';
-import { Absolute, Form, FormContainer, FormContent, FormWrapper } from '../components/shared';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { TP } from '@/src/components/atoms/TypoGraphy';
 import { useCart } from '@/src/state/cart';
 import { arrayToTree } from '@/src/util/arrayToTree';
+import { Absolute, Form, FormContainer, FormContent, FormWrapper } from '../components/shared';
 
 const SignIn: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = props => {
     const { t } = useTranslation('customer');
@@ -36,7 +36,7 @@ const SignIn: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = props =
         register,
         handleSubmit,
         setError,
-        formState: { errors },
+        formState: { errors, isSubmitting },
     } = useForm<LoginCustomerInputType>({
         resolver: zodResolver(schema),
     });
@@ -69,7 +69,6 @@ const SignIn: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = props =
             if (login.__typename === 'CurrentUser') {
                 await fetchActiveOrder();
                 push('/customer/manage');
-
                 return;
             }
 
@@ -103,7 +102,9 @@ const SignIn: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = props =
                                     {...register('password')}
                                 />
                                 <CheckBox label={t('rememberMe')} {...register('rememberMe')} />
-                                <Button type="submit">{t('signIn')}</Button>
+                                <Button loading={isSubmitting} type="submit">
+                                    {t('signIn')}
+                                </Button>
                             </Form>
                             <Stack column itemsCenter gap="0.5rem">
                                 <Link href="/customer/forgot-password">{t('forgotPassword')}</Link>

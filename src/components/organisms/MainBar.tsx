@@ -1,9 +1,9 @@
-import { Select, TH2, Stack, SearchInput } from '@/src/components/atoms';
+import { TH2, Stack, SearchInput } from '@/src/components/atoms';
 import { IconButton } from '@/src/components/molecules/Button';
 import { usePush } from '@/src/lib/redirect';
 import styled from '@emotion/styled';
-import { Filter, Search } from 'lucide-react';
-import React, { useCallback, useMemo, useState } from 'react';
+import { Search } from 'lucide-react';
+import React from 'react';
 import { useTranslation } from 'next-i18next';
 import { CollectionTileType } from '@/src/graphql/selectors';
 
@@ -12,62 +12,39 @@ interface MainBarProps {
     categories: CollectionTileType[];
 }
 
-export const MainBar: React.FC<MainBarProps> = ({ title, categories }) => {
-    const [selectedCategorySlug, setSelectedCategorySlug] = useState<string>();
-    const [searchPhrase, setSearchPhrase] = useState('');
+export const MainBar: React.FC<MainBarProps> = ({ title }) => {
     const { t } = useTranslation('common');
-    const searchParams = useMemo(() => {
-        const u = new URLSearchParams();
-        if (selectedCategorySlug) u.set('collection', selectedCategorySlug);
-        if (searchPhrase) u.set('q', searchPhrase);
-        return u.toString();
-    }, [selectedCategorySlug, searchPhrase]);
     const push = usePush();
-    const searchClick = useCallback(() => {
-        if (!searchPhrase) return;
-        push(`/search/?${searchParams}`);
-    }, [searchPhrase]);
+
+    const onSearch = (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        const q = e.currentTarget.elements.namedItem('q') as HTMLInputElement;
+        if (!q.value) return;
+        push(`/search?q=${q.value}`);
+    };
+
     return (
         <Main w100 itemsCenter justifyBetween gap="2rem">
             <Title>{title}</Title>
             <BarContent itemsCenter gap="2rem">
-                <Stack itemsCenter justifyBetween w100 gap="2rem">
-                    <Select
-                        value={selectedCategorySlug}
-                        setValue={e => setSelectedCategorySlug(e)}
-                        options={categories.map(c => ({
-                            label: c.name,
-                            value: c.slug,
-                        }))}
-                    />{' '}
-                    <IconButton>
-                        <Filter />
-                    </IconButton>
-                </Stack>
-
-                <Stack itemsCenter justifyBetween w100 gap="2rem">
-                    <SearchInput
-                        value={searchPhrase}
-                        onChange={e => setSearchPhrase(e.target.value)}
-                        onKeyDown={e => {
-                            if (e.key === 'Enter') {
-                                searchClick();
-                                return false;
-                            }
-                        }}
-                        placeholder={t('search-products')}
-                    />
-                    <IconButton
-                        onClick={() => {
-                            searchClick();
-                        }}>
+                <SearchForm onSubmit={onSearch}>
+                    <SearchInput name="q" placeholder={t('search-products')} />
+                    <IconButton type="submit">
                         <Search />
                     </IconButton>
-                </Stack>
+                </SearchForm>
             </BarContent>
         </Main>
     );
 };
+
+const SearchForm = styled.form`
+    width: 100%;
+    display: flex;
+    gap: 2rem;
+    justify-content: center;
+    align-items: center;
+`;
 
 const Title = styled(TH2)`
     flex: 1;

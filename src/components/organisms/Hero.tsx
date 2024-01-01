@@ -41,7 +41,7 @@ const Content = styled(Stack)`
 const Main = styled(Stack)`
     width: 100%;
     background: ${thv.background.third};
-    padding: 4rem 0;
+    padding: 15rem 0 20rem 0;
 `;
 const HeroImage = styled.img`
     aspect-ratio: 2.2;

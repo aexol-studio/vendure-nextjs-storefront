@@ -2,35 +2,34 @@ import { Layout } from '@/src/layouts';
 import { makeServerSideProps, prepareSSRRedirect } from '@/src/lib/getStatic';
 import { GetServerSidePropsContext, InferGetServerSidePropsType } from 'next';
 import React from 'react';
+import styled from '@emotion/styled';
 import { getCollections } from '@/src/graphql/sharedQueries';
 import { SSRQuery } from '@/src/graphql/client';
 import { ActiveCustomerSelector, ActiveOrderSelector, OrderAddressSelector } from '@/src/graphql/selectors';
-import { ContentContainer } from '@/src/components/atoms/ContentContainer';
-import { Stack } from '@/src/components/atoms/Stack';
-import { CustomerNavigation } from '../components/CustomerNavigation';
-import { Link } from '@/src/components/atoms/Link';
-import { TP } from '@/src/components/atoms/TypoGraphy';
-import { Price } from '@/src/components/atoms/Price';
+import { Divider, ContentContainer, Stack, Link, TP, Price } from '@/src/components/atoms';
 import { useTranslation } from 'next-i18next';
-import { CustomerOrderStates } from './components/CustomerOrderStates';
+
+import { CreditCard, MoveLeft, ShoppingCart, Truck } from 'lucide-react';
+import { Discounts } from '@/src/components/molecules/Discounts';
+import { arrayToTree } from '@/src/util/arrayToTree';
+
+import { CustomerWrap } from '../../components/shared';
+import { CustomerNavigation } from '../components/CustomerNavigation';
+
+import { OrderLine } from './components/OrderLine';
+import { OrderShippingStatus } from './components/OrderShippingStatus';
 import { OrderPaymentState } from './components/OrderPaymentState';
 import { OrderAddress } from './components/OrderAddress';
-import { CreditCard, Mail, MoveLeft, Phone, ShoppingCart, Truck, User } from 'lucide-react';
-import styled from '@emotion/styled';
-import { OrderLine } from './components/OrderLine';
-import { Divider } from '@/src/components/atoms/Divider';
-import { Discounts } from '@/src/components/molecules/Discounts';
-import { OrderShippingStatus } from './components/OrderShippingStatus';
-import { arrayToTree } from '@/src/util/arrayToTree';
+import { CustomerOrderStates } from './components/CustomerOrderStates';
+import { OrderCustomer } from './components/OrderCustomer';
 
 const Order: React.FC<InferGetServerSidePropsType<typeof getServerSideProps>> = props => {
     const { t } = useTranslation('customer');
     const order = props.activeCustomer?.orders.items?.[0];
     const currencyCode = order?.currencyCode;
 
-    //TODO: Now we will display only one method of payment
+    //TODO: Now we will display only one method
     const paymentMethod = order?.payments?.[0];
-    //TODO: Now we will display only one method of shipping
     const shippingMethod = order?.shippingLines?.[0];
 
     return (
@@ -60,41 +59,7 @@ const Order: React.FC<InferGetServerSidePropsType<typeof getServerSideProps>> = 
                         </Stack>
                         <Stack w100 justifyBetween gap="2.5rem">
                             <Stack w100 column gap="2.5rem">
-                                <Stack column gap="2rem">
-                                    <Stack column gap="0.5rem">
-                                        <Stack gap="0.5rem" itemsCenter>
-                                            <User size={'1.6rem'} />
-                                            <TP size="1.25rem" weight={500}>
-                                                {t('orderPage.customerName')}
-                                            </TP>
-                                        </Stack>
-                                        <TP>
-                                            {order.customer?.firstName} {order.customer?.lastName}
-                                        </TP>
-                                    </Stack>
-                                    <Stack gap="2.5rem">
-                                        <Stack column gap="0.5rem">
-                                            <Stack gap="0.5rem" itemsCenter>
-                                                <Mail size={'1.6rem'} />
-                                                <TP size="1.25rem" weight={500}>
-                                                    {t('orderPage.email')}
-                                                </TP>
-                                            </Stack>
-                                            <TP>{order.customer?.emailAddress}</TP>
-                                        </Stack>
-                                        {order.customer?.phoneNumber ? (
-                                            <Stack column gap="0.5rem">
-                                                <Stack gap="0.5rem" itemsCenter>
-                                                    <Phone size={'1.6rem'} />
-                                                    <TP size="1.25rem" weight={500}>
-                                                        {t('orderPage.phone')}
-                                                    </TP>
-                                                </Stack>
-                                                <TP>{order.customer?.phoneNumber}</TP>
-                                            </Stack>
-                                        ) : null}
-                                    </Stack>
-                                </Stack>
+                                <OrderCustomer customer={order?.customer} />
                                 <OrderShippingStatus
                                     currencyCode={currencyCode}
                                     shipping={shippingMethod}
@@ -141,10 +106,6 @@ const Order: React.FC<InferGetServerSidePropsType<typeof getServerSideProps>> = 
         </Layout>
     );
 };
-
-const CustomerWrap = styled(Stack)`
-    padding: 2rem 0;
-`;
 
 const StyledDivider = styled(Divider)`
     width: 100%;

@@ -1,16 +1,16 @@
 import React, { useEffect } from 'react';
 import styled from '@emotion/styled';
 import { CustomHelmet } from '@/src/components';
-import { Nav } from '@/src/layouts/Nav';
+import { Navigation } from '@/src/layouts/Navigation';
 import { CollectionTileType } from '@/src/graphql/selectors';
 import { Footer } from '@/src/layouts/Footer';
 import { Stack } from '@/src/components/atoms/Stack';
-import { useCart } from '@/src/state/cart';
 import { CategoryBar } from '@/src/layouts/CategoryBar';
 import { thv } from '@/src/theme';
-import { useProduct } from '../state/product';
-import { useCollection } from '../state/collection';
-import { RootNode } from '../util/arrayToTree';
+import { useProduct } from '@/src/state/product';
+import { useCollection } from '@/src/state/collection';
+import { useCart } from '@/src/state/cart';
+import { RootNode } from '@/src/util/arrayToTree';
 
 export const siteTitle = 'Aexol Next.js Storefront';
 
@@ -54,7 +54,7 @@ export const Layout: React.FC<LayoutProps> = ({ pageTitle, children, categories,
                 variant={variant}
                 collection={collection}
             />
-            <Nav navigation={navigation} />
+            <Navigation navigation={navigation} />
             {categories?.length > 0 ? <CategoryBar collections={categories} /> : null}
             <Container>{children}</Container>
             <Footer />

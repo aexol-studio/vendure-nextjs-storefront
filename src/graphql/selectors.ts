@@ -16,6 +16,13 @@ export type OrderStateType =
     | 'Modifying'
     | 'ArrangingAdditionalPayment';
 
+export type NavigationType = CollectionTileType & {
+    productVariants?: {
+        items: CollectionTileProductVariantType[];
+        totalItems: number;
+    };
+};
+
 export type FiltersFacetType = FacetType & { values: (FacetType & { count: number })[] };
 
 export const ProductTileSelector = Selector('Product')({
@@ -113,26 +120,27 @@ export const ProductDetailsFacetSelector = Selector('FacetValue')({
 
 export type ProductDetailsFacetType = FromSelector<typeof ProductDetailsFacetSelector, 'FacetValue', typeof scalars>;
 
+const CollectionTileProductVariantSelector = Selector('ProductVariant')({
+    id: true,
+    featuredAsset: { preview: true },
+    priceWithTax: true,
+    currencyCode: true,
+    name: true,
+    product: { name: true, slug: true, featuredAsset: { preview: true } },
+});
+
+export type CollectionTileProductVariantType = FromSelector<
+    typeof CollectionTileProductVariantSelector,
+    'ProductVariant',
+    typeof scalars
+>;
+
 export const CollectionTileSelector = Selector('Collection')({
     name: true,
     id: true,
     slug: true,
     parentId: true,
     description: true,
-    productVariants: [
-        { options: { take: 1, filter: { priceWithTax: { lte: 5000 } } } },
-        {
-            totalItems: true,
-            items: {
-                product: { name: true, slug: true, featuredAsset: { preview: true } },
-                id: true,
-                featuredAsset: { preview: true },
-                priceWithTax: true,
-                currencyCode: true,
-                name: true,
-            },
-        },
-    ],
     featuredAsset: {
         preview: true,
     },

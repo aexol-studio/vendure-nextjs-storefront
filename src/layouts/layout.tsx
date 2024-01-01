@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import styled from '@emotion/styled';
 import { CustomHelmet } from '@/src/components';
 import { Navigation } from '@/src/layouts/Navigation';
-import { CollectionTileType } from '@/src/graphql/selectors';
+import { CollectionTileType, NavigationType } from '@/src/graphql/selectors';
 import { Footer } from '@/src/layouts/Footer';
 import { Stack } from '@/src/components/atoms/Stack';
 import { CategoryBar } from '@/src/layouts/CategoryBar';
@@ -18,7 +18,7 @@ interface LayoutProps {
     pageTitle?: string;
     children: React.ReactNode;
     categories: CollectionTileType[];
-    navigation: RootNode<CollectionTileType> | null;
+    navigation: RootNode<NavigationType> | null;
 }
 
 interface CheckoutLayoutProps {

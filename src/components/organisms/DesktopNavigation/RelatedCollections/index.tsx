@@ -1,12 +1,12 @@
-import { CollectionTileType } from '@/src/graphql/selectors';
+import { NavigationType } from '@/src/graphql/selectors';
 import { RootNode } from '@/src/util/arrayToTree';
 import { useTranslation } from 'next-i18next';
 import { Stack, ProductImage, Link, TP } from '@/src/components/atoms';
 import styled from '@emotion/styled';
 
-export const RelatedCollections: React.FC<{ collection: RootNode<CollectionTileType>['children'][number] }> = ({
-    collection,
-}) => {
+export const RelatedCollections: React.FC<{
+    collection: RootNode<NavigationType>['children'][number];
+}> = ({ collection }) => {
     const { t } = useTranslation('common');
     return (
         <Stack column gap="1.5rem">
@@ -20,7 +20,7 @@ export const RelatedCollections: React.FC<{ collection: RootNode<CollectionTileT
                             <ProductImage src={children.featuredAsset?.preview || ''} size="thumbnail-big" />
                         </Link>
                         <StyledLink href={`/collections/${children.slug}`}>
-                            {children.name} ({children.productVariants.totalItems})
+                            {children.name} ({children.productVariants ? children.productVariants.totalItems : 0})
                         </StyledLink>
                     </Stack>
                 ))}

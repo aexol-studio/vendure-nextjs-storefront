@@ -2,13 +2,13 @@ import styled from '@emotion/styled';
 import React from 'react';
 import { Stack, Link, ContentContainer } from '@/src/components/atoms';
 import { RootNode } from '@/src/util/arrayToTree';
-import { CollectionTileType } from '@/src/graphql/selectors';
+import { NavigationType } from '@/src/graphql/selectors';
 import { NavigationLinks } from './NavigationLinks';
 import { ProductsSellout } from './ProductsSellout';
 import { RelatedCollections } from './RelatedCollections';
 
 interface NavProps {
-    navigation: RootNode<CollectionTileType> | null;
+    navigation: RootNode<NavigationType> | null;
 }
 
 export const DesktopNavigation: React.FC<NavProps> = ({ navigation }) => {

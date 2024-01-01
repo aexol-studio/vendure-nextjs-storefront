@@ -3,11 +3,9 @@ import { useTranslation } from 'next-i18next';
 import { useCart } from '@/src/state/cart';
 import { Stack, ProductImage, TP, Price, Link } from '@/src/components/atoms';
 import { Button } from '@/src/components/molecules/Button';
-import { CollectionTileType } from '@/src/graphql/selectors';
+import { CollectionTileProductVariantType } from '@/src/graphql/selectors';
 
-export const ProductCard: React.FC<{ variant: CollectionTileType['productVariants']['items'][number] }> = ({
-    variant,
-}) => {
+export const ProductCard: React.FC<{ variant: CollectionTileProductVariantType }> = ({ variant }) => {
     const { t } = useTranslation('common');
     const { addToCart } = useCart();
     const optionInName = variant.name.replace(variant.product.name, '') !== '';

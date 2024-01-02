@@ -12,16 +12,24 @@ const useCollectionContainer = createContainer<
     { collection: CollectionType; products: ProductSearchType[]; totalProducts: number; facets: FiltersFacetType[] }
 >(initialState => {
     if (!initialState?.collection) return collectionsEmptyState;
-    const [collection] = useState(initialState.collection);
+    const [collection, setCollection] = useState(initialState.collection);
     const [products, setProducts] = useState(initialState.products);
     const [totalProducts, setTotalProducts] = useState(initialState.totalProducts);
     const [facetValues, setFacetValues] = useState(initialState.facets);
+    const [filters, setFilters] = useState<{ [key: string]: string[] }>({});
+    const { query } = useRouter();
+
+    useEffect(() => {
+        setProducts(initialState.products);
+        setTotalProducts(initialState.totalProducts);
+        setFacetValues(initialState.facets);
+        setCollection(initialState.collection);
+        setFilters({});
+    }, [initialState]);
 
     const [q, setQ] = useState<string>();
-    const [filters, setFilters] = useState<{ [key: string]: string[] }>({});
     const [currentPage, setCurrentPage] = useState(1);
     const [filtersOpen, setFiltersOpen] = useState(false);
-    const { query } = useRouter();
     const [sort, setSort] = useState<{
         key: string;
         direction: SortOrder;
@@ -31,7 +39,6 @@ const useCollectionContainer = createContainer<
     });
 
     const totalPages = useMemo(() => Math.ceil(totalProducts / PER_PAGE), [totalProducts]);
-
     useEffect(() => {
         if (query.page) setCurrentPage(parseInt(query.page as string));
         if (query.sort) {

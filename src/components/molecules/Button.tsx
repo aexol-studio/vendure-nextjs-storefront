@@ -24,7 +24,7 @@ export const _Button = forwardRef((props: ButtonType, ref: React.ForwardedRef<HT
                     </LoaderWrapper>
                 ) : null}
             </AnimatePresence>
-            <HideChildren loading={!!loading}>{props.children}</HideChildren>
+            <HideChildren loading={loading ? true : undefined}>{props.children}</HideChildren>
         </FakeButton>
     );
 });
@@ -41,7 +41,7 @@ const LoaderWrapper = styled(motion.div)`
     transform: translate(-50%, -50%);
 `;
 
-const HideChildren = styled.div<{ loading: boolean }>`
+const HideChildren = styled.div<{ loading?: boolean }>`
     width: inherit;
     display: inherit;
     flex-direction: inherit;

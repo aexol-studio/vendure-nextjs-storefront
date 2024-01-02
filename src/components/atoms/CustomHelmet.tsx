@@ -2,7 +2,7 @@ import { CollectionType, ProductDetailType } from '@/src/graphql/selectors';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 
-const SHOP_URL = 'https://yourdomain.pl';
+const SHOP_URL = 'http://localhost:3000';
 
 export const CustomHelmet: React.FC<{
     pageTitle: string;
@@ -21,18 +21,18 @@ export const CustomHelmet: React.FC<{
     }
 
     const seo = {
-        name: 'Your Shop Name',
-        description: product?.description || collection?.description || 'Your Shop Description',
+        name: 'Aexol Demo Store',
+        description: product?.description || collection?.description || 'Demo store made by Aexol',
         pageUrl: `${SHOP_URL}${asPath}`,
-        keywords: 'keywords',
-        faviconUrl: `${SHOP_URL}/images/png/favicon.png`,
-        logo: `${SHOP_URL}/images/png/logo.png`,
-        facebook: 'https://www.facebook.com/youraddress123123123',
-        twitter: 'https://twitter.com/youraddress123123123',
+        keywords: 'Aexol, Shop, E-commerce, React, Next.js, GraphQL, TypeScript, Demo, Example, Boilerplate',
+        faviconUrl: `favicon.ico`,
+        logo: `${SHOP_URL}/images/aexol_full_logo.png`,
+        facebook: 'https://www.facebook.com/Aexol',
+        twitter: 'https://twitter.com/aexol',
         image:
             product?.featuredAsset?.preview ||
             collection?.featuredAsset?.preview ||
-            `${SHOP_URL}/images/jpg/ogImage.jpg`,
+            `${SHOP_URL}/images/aexol_full_logo.png`,
     };
 
     return (

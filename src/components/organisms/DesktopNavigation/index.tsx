@@ -55,7 +55,7 @@ const Background = styled(Stack)`
     box-shadow: 0.1rem 0.25rem 0.2rem ${p => p.theme.shadow};
     border: 1px solid ${p => p.theme.gray(100)};
 
-    margin-top: 3.5rem;
+    margin-top: 3.8rem;
     padding: 2rem 2rem 10rem 2rem;
 `;
 

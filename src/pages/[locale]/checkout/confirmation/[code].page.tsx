@@ -44,7 +44,7 @@ const ConfirmationPage: React.FC<InferGetServerSidePropsType<typeof getServerSid
         <Layout
             categories={props.collections}
             navigation={props.navigation}
-            pageTitle={`${t('seoTitles.confirmation')} | Next.js Storefront`}>
+            pageTitle={`${t('seoTitles.confirmation')}`}>
             {order ? (
                 <Content>
                     <OrderConfirmation code={props.code} order={order} />
@@ -52,7 +52,7 @@ const ConfirmationPage: React.FC<InferGetServerSidePropsType<typeof getServerSid
             ) : (
                 <Content>
                     <Stack w100 justifyCenter itemsCenter>
-                        <TP>Order not found</TP>
+                        <TP>{t('confirmation.orderNotFound')}</TP>
                     </Stack>
                 </Content>
             )}

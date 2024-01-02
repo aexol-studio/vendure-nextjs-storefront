@@ -16,7 +16,7 @@ const PaymentPage: React.FC<InferGetServerSidePropsType<typeof getServerSideProp
     }, []);
 
     return (
-        <CheckoutLayout pageTitle={`${t('seoTitles.payment')} | Next.js Storefront`}>
+        <CheckoutLayout pageTitle={`${t('seoTitles.payment')}`}>
             <Content>
                 <Main>
                     <OrderPayment

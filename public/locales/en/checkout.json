@@ -129,6 +129,7 @@
     },
     "confirmation": {
         "orderReceived": "Your order <1>{{code}}</1> has been received",
-        "orderCancelled": "Your order <1>{{code}}</1> has been cancelled"
+        "orderCancelled": "Your order <1>{{code}}</1> has been cancelled",
+        "orderNotFound": "Order not found"
     }
 }

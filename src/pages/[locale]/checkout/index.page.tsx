@@ -15,7 +15,7 @@ const CheckoutPage: React.FC<InferGetServerSidePropsType<typeof getServerSidePro
     const { availableCountries, YMALProducts } = props;
 
     return (
-        <CheckoutLayout pageTitle={`${t('seoTitles.checkout')} | Next.js Storefront"`}>
+        <CheckoutLayout pageTitle={`${t('seoTitles.checkout')}`}>
             <Content>
                 <Main w100 justifyBetween>
                     <OrderForm availableCountries={availableCountries} />

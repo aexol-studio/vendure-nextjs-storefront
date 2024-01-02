@@ -1,10 +1,9 @@
-import { Stack } from '@/src/components/atoms/Stack';
-import { TFacetHeading, TP } from '@/src/components/atoms/TypoGraphy';
-import { FacetType } from '@/src/graphql/selectors';
+import { Stack, TFacetHeading, TP } from '@/src/components/atoms';
+import { FiltersFacetType } from '@/src/graphql/selectors';
 import styled from '@emotion/styled';
 
 interface FacetProps {
-    facet: FacetType;
+    facet: FiltersFacetType;
     selected?: string[];
     onClick: (group: { id: string; name: string }, facet: { id: string; name: string }) => void;
 }
@@ -20,7 +19,7 @@ export const FacetFilterCheckbox: React.FC<FacetProps> = ({ facet: { id, name, v
                         <Stack gap="1rem" key={v.id} itemsCenter onClick={() => onClick({ id, name }, v)}>
                             <input checked={isSelected} type="checkbox" />
                             <TP weight={400} as="label">
-                                {v.name}
+                                {v.name} ({v.count})
                             </TP>
                         </Stack>
                     );

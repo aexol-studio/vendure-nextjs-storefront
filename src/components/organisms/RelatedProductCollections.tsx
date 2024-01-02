@@ -1,18 +1,13 @@
 import { CollectionTileType } from '@/src/graphql/selectors';
 import React from 'react';
-import { Stack } from '../atoms/Stack';
+import { TH2, Stack } from '@/src/components/atoms';
+import { ProductImageWithInfo } from '@/src/components/molecules/ProductImageWithInfo';
 
-import { ProductImageWithInfo } from '../molecules/ProductImageWithInfo';
 import { useTranslation } from 'next-i18next';
-import { TH2 } from '../atoms/TypoGraphy';
 import styled from '@emotion/styled';
 
 interface RelatedProductCollectionsProps {
-    collections?: (CollectionTileType & {
-        featuredAsset?: {
-            preview: string;
-        };
-    })[];
+    collections?: CollectionTileType[];
 }
 
 export const RelatedProductCollections: React.FC<RelatedProductCollectionsProps> = ({ collections }) => {

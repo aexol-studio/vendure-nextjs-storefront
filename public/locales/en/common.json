@@ -1,10 +1,12 @@
 {
+    "home": "Home",
     "shop":"Demo Shop",
     "title":"Hello",
     "search-products":"Search products",
     "made-by":"Made by VendureAgency.com 2023",
     "select-category":"Select category",
     "filters":"Filters",
+    "sort-by":"Sort by",
     "cart":"Cart",
     "cart-summary":"Cart summary",
     "your-cart":"Your cart",
@@ -23,7 +25,26 @@
     "buy-now":"Buy now",
     "related-collections":"Related Collections", 
     "newest-products":"Newest Products", 
-    "stockLevel":{"OUT_OF_STOCK":"Out of stock", "IN_STOCK":"In stock"},
+    "featured-products":"Featured Products",
+    "sort-keys": {
+        "title": "Title",
+        "price": "Price"
+    },
+    "sort-directions": {
+        "ASC": "Ascending",
+        "DESC": "Descending"
+    },
+    "payments": {
+        "dummy-method": "Dummy Payment Method",
+        "states": {
+            "Authorized": "Authorized"
+        }
+    },
+    "stockLevel":{
+        "OUT_OF_STOCK":"Out of stock",
+        "IN_STOCK":"In stock",
+        "LOW_STOCK":"🔥 Make it quick only {{value}} left! 🔥"
+    },
     "commonError":"Something wen't wrong",
     "send":"Send",
     "search-results":"Search results for:",
@@ -32,6 +53,12 @@
     "shipping-protection": {
         "title": "Shipping Protection",
         "subtitle": "From Damage, Loss & Theft for {{value}}"
+    },
+    "navigation": {
+        "manageAccount": "Manage account",
+        "manageAddresses": "Manage addresses",
+        "manageOrders": "Manage orders",
+        "logout": "Logout"
     },
     "orderStates": {
         "Created": "Created",
@@ -83,6 +110,16 @@
             "PASSWORD_RESET_TOKEN_EXPIRED_ERROR": "Password reset token expired error",
             "NOT_VERIFIED_ERROR": "Not verified error"
         },
+        "stripe": {
+            "api_connection_error": "Stripe API connection error",
+            "api_error": "Stripe API error",
+            "authentication_error": "Stripe authentication error",
+            "card_error": "Stripe card error",
+            "idempotency_error": "Stripe idempotency error",
+            "invalid_request_error": "Stripe invalid request error",
+            "rate_limit_error": "Stripe rate limit error",
+            "validation_error": "Stripe validation error"
+        },
         "email": {
             "required": "Email is required",
             "invalid": "Email is invalid"
@@ -90,11 +127,33 @@
         "password": {
             "required": "Password is required",
             "minLength": "Password must be at least 8 characters long",
-            "maxLength": "Password cannot be more than 25 characters long"
+            "maxLength": "Password cannot be more than 25 characters long",
+            "mustDifferent": "Password must be different from current one"
         },
         "confirmPassword": {
             "required": "Confirm password is required",
             "mustMatch": "Passwords must match"
+        },
+        "firstName": {
+            "required": "First name is required"
+        },
+        "lastName": {
+            "required": "Last name is required"
+        },
+        "phoneNumber": {
+            "required": "Phone number is required"
         }
+    },    
+    "bestOf":"Best of",
+    "shopNow":"Shop now",
+    "footer":{
+        "sections":[
+            {"header":"Best sellers","linksTitles":["Laptop","Tablet","Wireless Optical Mouse","USB Cable","Ethernet Cable"]},
+            {"header":"Promotions + Offers","linksTitles":["Refer a friend and Get 10% Off","Register and Get 20% Off","Text us and Get 25% Off","All Promotions + Offers"]},
+            {"header":"Contact us","contactInfo":["4-500-600-44332","Monday - Friday: 9 AM - 8 PM","Sobota: 10 AM - 4:40 PM","Sunday - CLOSED"]},
+            {"header":"Information","linksTitles":["Account","Order status","Returns","FAQ","Feedback"]},
+            {"header":"Company","linksTitles":["Our history","Blog"]}
+            ],
+            "law":["Privacy Policy", "Terms and Conditions","Cookie Policy"]
     }
 }

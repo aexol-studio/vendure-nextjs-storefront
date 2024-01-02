@@ -9,149 +9,118 @@ import { NewestProducts } from '@/src/components/organisms/NewestProducts';
 import { ProductPhotosPreview } from '@/src/components/organisms/ProductPhotosPreview';
 import { RelatedProductCollections } from '@/src/components/organisms/RelatedProductCollections';
 import { storefrontApiQuery } from '@/src/graphql/client';
-import {
-    NewestProductSelector,
-    ProductDetailSelector,
-    ProductDetailType,
-    ProductSlugSelector,
-} from '@/src/graphql/selectors';
+import { NewestProductSelector, ProductDetailSelector, ProductSlugSelector } from '@/src/graphql/selectors';
 import { getCollections } from '@/src/graphql/sharedQueries';
 import { Layout } from '@/src/layouts';
 import { ContextModel, localizeGetStaticPaths, makeStaticProps } from '@/src/lib/getStatic';
-import { usePush } from '@/src/lib/redirect';
-import { useCart } from '@/src/state/cart';
 import { priceFormatter } from '@/src/util/priceFomatter';
-import { translateProductFacetsNames } from '@/src/util/translateFacetsNames';
 import { CurrencyCode, SortOrder } from '@/src/zeus';
 import styled from '@emotion/styled';
 import { Check, X } from 'lucide-react';
 import { InferGetStaticPropsType } from 'next';
 
-import React, { useEffect, useState } from 'react';
-import { useTranslation } from 'next-i18next';
-import { useRouter } from 'next/router';
+import React from 'react';
+import { Trans, useTranslation } from 'next-i18next';
 import { ProductOptions } from '@/src/components/organisms/ProductOptions';
-
-type Variant = ProductDetailType['variants'][number];
+import { Breadcrumbs } from '@/src/components/molecules/Breadcrumbs';
+import { useProduct } from '@/src/state/product';
+import { arrayToTree } from '@/src/util/arrayToTree';
 
 const ProductPage: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = props => {
-    const { addToCart } = useCart();
-    const { query } = useRouter();
-    const push = usePush();
+    const { product, variant, addingError, handleVariant, handleBuyNow, handleAddToCart } = useProduct();
     const { t } = useTranslation('common');
-    const [variant, setVariant] = useState<Variant | undefined>(
-        props.product.variants.length === 1 ? props.product.variants[0] : undefined,
-    );
-    const [addingError, setAddingError] = useState<string | undefined>();
 
-    const translatedStockLevel = t('stockLevel', { returnObjects: true });
-    const language = props._nextI18Next?.initialLocale || 'en';
-
-    useEffect(() => {
-        if (typeof window === 'undefined' || !props.product) return;
-        if (props.product.variants.length === 1) {
-            const url = new URL(window.location.href);
-            url.searchParams.set('variant', props.product.variants[0].id);
-            push(url.pathname + url.search);
-        }
-    }, []);
-
-    useEffect(() => {
-        if (typeof window === 'undefined' || !query.variant || !props.product) return;
-        const variant = props.product?.variants.find(v => v.id === query.variant);
-        setVariant(variant);
-    }, [query.variant]);
-
-    const handleVariant = (variant?: Variant) => {
-        const url = new URL(window.location.href);
-        if (variant) {
-            url.searchParams.set('variant', variant.id);
-            setAddingError(undefined);
-        } else url.searchParams.delete('variant');
-        setVariant(variant);
-        push(url.pathname + url.search);
-    };
-
-    const handleAddToCart = async () => {
-        if (variant?.id) await addToCart(variant.id, 1, true);
-        else setAddingError(t('select-options'));
-    };
-
-    const handleBuyNow = async () => {
-        if (variant?.id) {
-            const added = await addToCart(variant.id, 1);
-            if (added) push('/checkout');
-        } else setAddingError(t('select-options'));
-    };
+    const breadcrumbs = [
+        { name: t('home'), href: '/' },
+        { name: props.product.name, href: `/products/${props.product.slug}` },
+    ];
 
     return (
-        <Layout categories={props.collections}>
+        <Layout categories={props.collections} navigation={props.navigation}>
             <ContentContainer>
-                <Main gap="5rem">
-                    <StickyLeft w100 itemsCenter justifyCenter gap="2.5rem">
-                        <ProductPhotosPreview
-                            featuredAsset={props.product?.featuredAsset}
-                            images={props.product?.assets}
-                        />
-                    </StickyLeft>
-                    <StyledStack column gap="2.5rem">
-                        <TH1>{props.product?.name}</TH1>
-                        {props.product.variants.length > 1 ? (
-                            <ProductOptions
-                                optionGroups={props.optionGroups}
-                                variants={props.product.variants}
-                                selectedVariant={variant}
-                                setVariant={handleVariant}
-                                addingError={addingError}
-                            />
-                        ) : (
-                            <FacetContainer gap="1rem">
-                                {translateProductFacetsNames(language, props.product?.facetValues).map(
-                                    ({ id, name }) => (
-                                        <Facet key={id}>{name}</Facet>
-                                    ),
-                                )}
-                            </FacetContainer>
-                        )}
+                <Wrapper column>
+                    <Breadcrumbs breadcrumbs={breadcrumbs} />
+                    <Main gap="5rem">
+                        <StickyLeft w100 itemsCenter justifyCenter gap="2.5rem">
+                            <ProductPhotosPreview featuredAsset={product?.featuredAsset} images={product?.assets} />
+                        </StickyLeft>
+                        <StyledStack column gap="2.5rem">
+                            <TH1>{product?.name}</TH1>
+                            {product && product.variants.length > 1 ? (
+                                <ProductOptions
+                                    optionGroups={props.optionGroups}
+                                    variants={product.variants}
+                                    selectedVariant={variant}
+                                    setVariant={handleVariant}
+                                    addingError={addingError}
+                                />
+                            ) : (
+                                <FacetContainer gap="1rem">
+                                    {product?.facetValues.map(({ id, name }) => <Facet key={id}>{name}</Facet>)}
+                                </FacetContainer>
+                            )}
 
-                        <Stack justifyBetween itemsCenter>
-                            <Stack gap="1rem">
-                                <TPriceBig>
-                                    {priceFormatter(
-                                        variant?.priceWithTax || 0,
-                                        variant?.currencyCode || CurrencyCode.USD,
-                                    )}
-                                </TPriceBig>
-                                <TPriceBig>{props.product?.variants[0].currencyCode}</TPriceBig>
+                            <Stack justifyBetween itemsCenter>
+                                <Stack gap="1rem">
+                                    <TPriceBig>
+                                        {priceFormatter(
+                                            variant?.priceWithTax || 0,
+                                            variant?.currencyCode || CurrencyCode.USD,
+                                        )}
+                                    </TPriceBig>
+                                    <TPriceBig>{product?.variants[0].currencyCode}</TPriceBig>
+                                </Stack>
                             </Stack>
-                        </Stack>
-                        <Stack gap="1rem">
-                            <StockInfo outOfStock={variant?.stockLevel === 'OUT_OF_STOCK'} itemsCenter gap="0.25rem">
-                                {variant?.stockLevel === 'OUT_OF_STOCK' ? <X /> : <Check size="1.75rem" />}
-                                <TP>
-                                    {translatedStockLevel[variant?.stockLevel as keyof typeof translatedStockLevel]}
-                                </TP>
-                            </StockInfo>
-                        </Stack>
-                        <TP>{props.product?.description}</TP>
-                        {variant?.stockLevel === 'OUT_OF_STOCK' ? (
-                            <NotifyMeForm />
-                        ) : (
-                            <Stack w100 gap="2.5rem" justifyBetween column>
-                                <FullWidthSecondaryButton onClick={handleAddToCart}>
-                                    {t('add-to-cart')}
-                                </FullWidthSecondaryButton>
-                                <FullWidthButton onClick={handleBuyNow}>{t('buy-now')}</FullWidthButton>
+                            <Stack gap="1rem" column>
+                                {Number(variant?.stockLevel) > 0 && Number(variant?.stockLevel) <= 10 && (
+                                    <MakeItQuick size="1.25rem" weight={400}>
+                                        <Trans
+                                            i18nKey="stockLevel.LOW_STOCK"
+                                            t={t}
+                                            values={{ value: variant?.stockLevel }}
+                                            components={{ 1: <span></span> }}
+                                        />
+                                    </MakeItQuick>
+                                )}
+                                <StockInfo outOfStock={Number(variant?.stockLevel) <= 0} itemsCenter gap="0.25rem">
+                                    {Number(variant?.stockLevel) <= 0 ? <X /> : <Check size="1.75rem" />}
+                                    <TP>
+                                        {Number(variant?.stockLevel || 0) > 0
+                                            ? t('stockLevel.IN_STOCK')
+                                            : t('stockLevel.OUT_OF_STOCK')}
+                                    </TP>
+                                </StockInfo>
                             </Stack>
-                        )}
-                    </StyledStack>
-                </Main>
-                <RelatedProductCollections collections={props.product?.collections} />
-                <NewestProducts products={props.newestProducts.products.items} />
+                            <TP>{product?.description}</TP>
+                            {Number(variant?.stockLevel) <= 0 ? (
+                                <NotifyMeForm />
+                            ) : (
+                                <Stack w100 gap="2.5rem" justifyBetween column>
+                                    <FullWidthSecondaryButton onClick={handleAddToCart}>
+                                        {t('add-to-cart')}
+                                    </FullWidthSecondaryButton>
+                                    <FullWidthButton onClick={handleBuyNow}>{t('buy-now')}</FullWidthButton>
+                                </Stack>
+                            )}
+                        </StyledStack>
+                    </Main>
+                    <RelatedProductCollections collections={props?.collections} />
+                    <NewestProducts products={props.newestProducts.products.items} />
+                </Wrapper>
             </ContentContainer>
         </Layout>
     );
 };
+
+const Wrapper = styled(Stack)`
+    @media (min-width: ${p => p.theme.breakpoints.xl}) {
+        padding: 3.5rem 0;
+    }
+`;
+
+const MakeItQuick = styled(TP)`
+    color: ${({ theme }) => theme.error};
+`;
 
 const StickyLeft = styled(Stack)`
     @media (min-width: 1024px) {
@@ -221,6 +190,8 @@ export const getStaticProps = async (context: ContextModel<{ slug?: string }>) =
     const r = await makeStaticProps(['common'])(context);
 
     const collections = await getCollections();
+    const navigation = arrayToTree(collections);
+
     const newestProducts = await storefrontApiQuery({
         products: [{ options: { take: 10, sort: { createdAt: SortOrder.DESC } } }, { items: NewestProductSelector }],
     });
@@ -255,12 +226,13 @@ export const getStaticProps = async (context: ContextModel<{ slug?: string }>) =
         product,
         collections,
         newestProducts,
+        navigation,
         ...r.props,
     };
 
     return {
         props: returnedStuff,
-        revalidate: 10,
+        revalidate: process.env.NEXT_REVALIDATE ? parseInt(process.env.NEXT_REVALIDATE) : 10,
     };
 };
 

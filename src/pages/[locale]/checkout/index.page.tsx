@@ -1,6 +1,6 @@
 import { CheckoutLayout } from '@/src/layouts';
 import { makeServerSideProps, prepareSSRRedirect } from '@/src/lib/getStatic';
-import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
+import { GetServerSidePropsContext, InferGetServerSidePropsType } from 'next';
 import React from 'react';
 import { OrderSummary } from './components/OrderSummary';
 import { OrderForm } from './components/OrderForm';
@@ -8,12 +8,14 @@ import { getYMALProducts } from '@/src/graphql/sharedQueries';
 import { Content, Main } from './components/ui/Shared';
 import { SSRQuery } from '@/src/graphql/client';
 import { ActiveOrderSelector, AvailableCountriesSelector } from '@/src/graphql/selectors';
+import { useTranslation } from 'next-i18next';
 
 const CheckoutPage: React.FC<InferGetServerSidePropsType<typeof getServerSideProps>> = props => {
+    const { t } = useTranslation('checkout');
     const { availableCountries, YMALProducts } = props;
 
     return (
-        <CheckoutLayout>
+        <CheckoutLayout pageTitle={`${t('seoTitles.checkout')}`}>
             <Content>
                 <Main w100 justifyBetween>
                     <OrderForm availableCountries={availableCountries} />
@@ -24,7 +26,7 @@ const CheckoutPage: React.FC<InferGetServerSidePropsType<typeof getServerSidePro
     );
 };
 
-const getServerSideProps: GetServerSideProps = async context => {
+const getServerSideProps = async (context: GetServerSidePropsContext) => {
     const r = await makeServerSideProps(['common', 'checkout'])(context);
     const homePageRedirect = prepareSSRRedirect('/')(context);
     const paymentRedirect = prepareSSRRedirect('/checkout/payment')(context);
@@ -37,6 +39,7 @@ const getServerSideProps: GetServerSideProps = async context => {
             }),
         ]);
         const YMALProducts = await getYMALProducts();
+
         if (activeOrder?.state === 'ArrangingPayment') {
             return paymentRedirect;
         }

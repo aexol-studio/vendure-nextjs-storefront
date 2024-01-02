@@ -1,4 +1,9 @@
 {
+    "seoTitles": {
+        "checkout": "Checkout",
+        "payment": "Payment",
+        "confirmation": "Confirmation"
+    },
     "steps": {
         "shipping": "Shipping",
         "payment": "Payment",
@@ -117,10 +122,14 @@
     "paymentMethod": {
         "title": "This is a dummy payment for demonstration purposes only",
         "submit": "Pay with Standard Payment",
-        "notAvailable": "Default payment method is not available"
+        "notAvailable": "Default payment method is not available",
+        "success": "Return success",
+        "error": "Return error",
+        "decline": "Return declined"
     },
     "confirmation": {
         "orderReceived": "Your order <1>{{code}}</1> has been received",
-        "orderCancelled": "Your order <1>{{code}}</1> has been cancelled"
+        "orderCancelled": "Your order <1>{{code}}</1> has been cancelled",
+        "orderNotFound": "Order not found"
     }
 }

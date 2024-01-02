@@ -1,12 +1,12 @@
 import { Layout } from '@/src/layouts';
 import { ContextModel, getStaticPaths, makeStaticProps } from '@/src/lib/getStatic';
 import { InferGetStaticPropsType } from 'next';
-import React from 'react';
+import React, { useState } from 'react';
 import { getCollections } from '@/src/graphql/sharedQueries';
 import { Stack } from '@/src/components/atoms/Stack';
 import { Link } from '@/src/components/atoms/Link';
 import { SubmitHandler, useForm } from 'react-hook-form';
-import { Input } from '@/src/components/forms/Input';
+import { Input, Banner } from '@/src/components/forms';
 import { Button } from '@/src/components/molecules/Button';
 import { useTranslation } from 'next-i18next';
 import { ContentContainer } from '@/src/components/atoms/ContentContainer';
@@ -15,7 +15,7 @@ import { Absolute, Form, FormContainer, FormContent, FormWrapper } from '../comp
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { TP } from '@/src/components/atoms/TypoGraphy';
-import { ErrorBanner } from '@/src/components/forms/ErrorBanner';
+import { arrayToTree } from '@/src/util/arrayToTree';
 
 type FormValues = {
     emailAddress: string;
@@ -24,6 +24,7 @@ type FormValues = {
 const ForgotPassword: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = props => {
     const { t } = useTranslation('customer');
     const { t: tErrors } = useTranslation('common');
+    const [success, setSuccess] = useState<string>();
 
     const schema = z.object({
         emailAddress: z.string().email(tErrors('errors.email.invalid')).min(1, tErrors('errors.email.required')),
@@ -33,7 +34,7 @@ const ForgotPassword: React.FC<InferGetStaticPropsType<typeof getStaticProps>> =
         register,
         handleSubmit,
         setError,
-        formState: { errors },
+        formState: { errors, isSubmitting },
     } = useForm<FormValues>({
         resolver: zodResolver(schema),
     });
@@ -59,11 +60,12 @@ const ForgotPassword: React.FC<InferGetStaticPropsType<typeof getStaticProps>> =
 
             if (!requestPasswordReset) {
                 setError('root', { message: tErrors(`errors.backend.UNKNOWN_ERROR`) });
+
                 return;
             }
 
             if (requestPasswordReset?.__typename === 'Success') {
-                console.log('success');
+                setSuccess(t('forgotPasswordSuccess'));
                 return;
             }
 
@@ -74,14 +76,18 @@ const ForgotPassword: React.FC<InferGetStaticPropsType<typeof getStaticProps>> =
     };
 
     return (
-        <Layout categories={props.collections}>
+        <Layout categories={props.collections} navigation={props.navigation} pageTitle={t('forgotPasswordTitle')}>
             <ContentContainer>
                 <FormContainer>
                     <FormWrapper column itemsCenter gap="3.5rem">
                         <Absolute w100>
-                            <ErrorBanner
+                            <Banner
                                 error={errors.root}
-                                clearErrors={() => setError('root', { message: undefined })}
+                                success={success ? { message: success } : undefined}
+                                clearErrors={() => {
+                                    setError('root', { message: undefined });
+                                    setSuccess(undefined);
+                                }}
                             />
                         </Absolute>
                         <TP weight={600}>{t('forgotPasswordTitle')}</TP>
@@ -93,7 +99,9 @@ const ForgotPassword: React.FC<InferGetStaticPropsType<typeof getStaticProps>> =
                                     type="text"
                                     {...register('emailAddress')}
                                 />
-                                <Button type="submit">{t('newPassword')}</Button>
+                                <Button loading={isSubmitting} type="submit">
+                                    {t('newPassword')}
+                                </Button>
                             </Form>
                             <Stack column itemsCenter gap="0.5rem">
                                 <Link href="/customer/sign-in">{t('signIn')}</Link>
@@ -110,15 +118,17 @@ const ForgotPassword: React.FC<InferGetStaticPropsType<typeof getStaticProps>> =
 const getStaticProps = async (context: ContextModel) => {
     const r = await makeStaticProps(['common', 'customer'])(context);
     const collections = await getCollections();
+    const navigation = arrayToTree(collections);
 
     const returnedStuff = {
         ...r.props,
         collections,
+        navigation,
     };
 
     return {
         props: returnedStuff,
-        revalidate: 10,
+        revalidate: process.env.NEXT_REVALIDATE ? parseInt(process.env.NEXT_REVALIDATE) : 10,
     };
 };
 

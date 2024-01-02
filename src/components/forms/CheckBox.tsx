@@ -3,8 +3,8 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { Check } from 'lucide-react';
 import React, { forwardRef, InputHTMLAttributes, useState } from 'react';
 import { FieldError } from 'react-hook-form';
-import { Stack } from '../atoms/Stack';
-import { FormError, FormErrorWrapper, FormRequired, Label } from './atoms';
+import { Stack } from '@/src/components/atoms/Stack';
+import { FormError, FormErrorWrapper, FormRequired, Label } from './shared';
 
 type InputType = InputHTMLAttributes<HTMLInputElement> & {
     label: string | React.ReactNode;

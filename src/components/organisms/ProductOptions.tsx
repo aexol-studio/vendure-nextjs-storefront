@@ -1,9 +1,8 @@
 import { ProductDetailType } from '@/src/graphql/selectors';
 import styled from '@emotion/styled';
 import { useEffect, useState } from 'react';
-import { TP } from '@/src/components/atoms/TypoGraphy';
 import { Button } from '@/src/components/molecules/Button';
-import { Stack } from '@/src/components/atoms/Stack';
+import { TP, Stack } from '@/src/components/atoms';
 import { AnimatePresence, motion } from 'framer-motion';
 
 export const ProductOptions: React.FC<{
@@ -18,15 +17,14 @@ export const ProductOptions: React.FC<{
     }>({});
 
     useEffect(() => {
-        if (!selectedVariant || Object.keys(selectedOptions).length) return;
-        const newState = selectedVariant.options.reduce(
+        const newState = selectedVariant?.options.reduce(
             (acc, option) => {
                 acc[option.group.id] = option.id;
                 return acc;
             },
             {} as { [key: string]: string },
         );
-        setSelectedOptions(newState);
+        setSelectedOptions(newState ? newState : {});
     }, [selectedVariant]);
 
     const handleClick = (groupId: string, id: string) => {
@@ -34,10 +32,8 @@ export const ProductOptions: React.FC<{
         if (selectedOptions[groupId] === id) {
             newState = { ...selectedOptions };
             delete newState[groupId];
-            setSelectedOptions(newState);
         } else {
             newState = { ...selectedOptions, [groupId]: id };
-            setSelectedOptions(newState);
         }
         const variant = variants.find(v => v.options.every(ov => ov.id === newState[ov.group.id]));
         if (variant && variant !== selectedVariant) setVariant(variant);
@@ -49,7 +45,7 @@ export const ProductOptions: React.FC<{
             {optionGroups?.map((og, i) => {
                 const variantsInGroup = variants
                     .filter(v => v.options.some(o => o.group.id === og.id))
-                    .filter(v => v.stockLevel !== 'OUT_OF_STOCK');
+                    .filter(v => Number(v.stockLevel) > 0);
 
                 return (
                     <StyledStack key={i} column gap="0.5rem">
@@ -65,7 +61,7 @@ export const ProductOptions: React.FC<{
                                             onClick={handleSwatchClick}
                                             color={o.name}
                                             selected={selectedOptions[og.id] === o.id}
-                                            canBeSelected={totallyOOS}
+                                            selectable={totallyOOS}
                                         />
                                     );
                                 }
@@ -73,7 +69,7 @@ export const ProductOptions: React.FC<{
                                     <SizeSelector
                                         key={o.name + j}
                                         onClick={handleSwatchClick}
-                                        canBeSelected={totallyOOS}
+                                        selectable={totallyOOS}
                                         selected={selectedOptions[og.id] === o.id}>
                                         {o.name}
                                     </SizeSelector>
@@ -104,14 +100,14 @@ const Error = styled(TP)`
 
 const NoVariantInfo = styled(motion.div)``;
 
-const ColorSwatch = styled.div<{ color: string; canBeSelected?: boolean; selected?: boolean }>`
+const ColorSwatch = styled.div<{ color: string; selectable: boolean; selected: boolean }>`
     width: 3.2rem;
     height: 3.2rem;
     background-color: ${p => p.color};
     border: 1px solid black;
     cursor: pointer;
     ${p =>
-        p.canBeSelected &&
+        p.selectable &&
         `
         opacity: 0.5;
     `}
@@ -122,7 +118,7 @@ const ColorSwatch = styled.div<{ color: string; canBeSelected?: boolean; selecte
     `}
 `;
 
-const SizeSelector = styled(Button)<{ selected: boolean; canBeSelected?: boolean }>`
+const SizeSelector = styled(Button)<{ selected: boolean; selectable: boolean }>`
     border: 1px solid ${p => p.theme.gray(500)};
     background: ${p => p.theme.gray(0)};
     color: ${p => p.theme.gray(900)};
@@ -138,7 +134,7 @@ const SizeSelector = styled(Button)<{ selected: boolean; canBeSelected?: boolean
     `}
 
     ${p =>
-        p.canBeSelected &&
+        p.selectable &&
         `
         background: ${p.theme.gray(500)};
         color: ${p.theme.gray(0)};

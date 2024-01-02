@@ -1,29 +1,26 @@
 import { Layout } from '@/src/layouts';
 import { makeServerSideProps, prepareSSRRedirect } from '@/src/lib/getStatic';
 import { GetServerSidePropsContext, InferGetServerSidePropsType } from 'next';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { getCollections } from '@/src/graphql/sharedQueries';
 import { CustomerNavigation } from '../components/CustomerNavigation';
-import { SSRQuery, storefrontApiMutation, storefrontApiQuery } from '@/src/graphql/client';
-import {
-    ActiveCustomerType,
-    ActiveCustomerSelector,
-    ActiveAddressType,
-    CreateAddressType,
-    AvailableCountriesSelector,
-} from '@/src/graphql/selectors';
+import { SSRQuery, storefrontApiQuery } from '@/src/graphql/client';
+import { ActiveCustomerSelector, AvailableCountriesSelector } from '@/src/graphql/selectors';
 import { AddressBox } from './components/AddressBox';
 import { Stack } from '@/src/components/atoms/Stack';
 import styled from '@emotion/styled';
 import { ContentContainer } from '@/src/components/atoms/ContentContainer';
 import { AnimatePresence, motion } from 'framer-motion';
-import { SubmitHandler } from 'react-hook-form';
 import { AddressForm } from './components/AddressForm';
+import { useAddresses } from './useAddresses';
+import { arrayToTree } from '@/src/util/arrayToTree';
+import { useTranslation } from 'next-i18next';
+import { CustomerWrap } from '../../components/shared';
 
 const Addresses: React.FC<InferGetServerSidePropsType<typeof getServerSideProps>> = props => {
-    const [activeCustomer, setActiveCustomer] = useState<ActiveCustomerType>(props.activeCustomer);
-    const [addressToEdit, setAddressToEdit] = useState<ActiveAddressType>();
-    const [refresh, setRefresh] = useState(false);
+    const { t } = useTranslation('customer');
+    const { activeCustomer, addressToEdit, deleting, onDelete, onEdit, onModalClose, onSubmitCreate, onSubmitEdit } =
+        useAddresses(props.activeCustomer);
 
     const ref = useRef<HTMLDivElement>(null);
     useEffect(() => {
@@ -38,77 +35,8 @@ const Addresses: React.FC<InferGetServerSidePropsType<typeof getServerSideProps>
         };
     }, []);
 
-    useEffect(() => {
-        const fetchCustomer = async () => {
-            const { activeCustomer } = await storefrontApiQuery({
-                activeCustomer: ActiveCustomerSelector,
-            });
-            if (activeCustomer) setActiveCustomer(activeCustomer);
-            setRefresh(false);
-        };
-        if (refresh) fetchCustomer();
-    }, [refresh]);
-
-    const onEdit = (id: string) => {
-        const address = activeCustomer?.addresses?.find(address => address.id === id);
-        setAddressToEdit(address);
-    };
-    const onModalClose = () => setAddressToEdit(undefined);
-
-    const onSubmitEdit: SubmitHandler<CreateAddressType> = async data => {
-        if (!addressToEdit) return;
-        const input = {
-            ...data,
-            id: addressToEdit?.id,
-        };
-
-        const isSame = Object.keys(input).every(key => {
-            if (key === 'id') return true;
-            if (key === 'countryCode') return true;
-            return input[key as keyof CreateAddressType] === addressToEdit[key as keyof ActiveAddressType];
-        });
-        if (isSame) return;
-
-        try {
-            const { updateCustomerAddress } = await storefrontApiMutation({
-                updateCustomerAddress: [{ input }, { __typename: true, id: true }],
-            });
-            if (updateCustomerAddress) {
-                setRefresh(true);
-                onModalClose();
-            }
-        } catch (e) {
-            console.log(e);
-        }
-    };
-
-    const onSubmitCreate: SubmitHandler<CreateAddressType> = async data => {
-        try {
-            const { createCustomerAddress } = await storefrontApiMutation({
-                createCustomerAddress: [{ input: data }, { __typename: true, id: true }],
-            });
-            if (createCustomerAddress) {
-                setRefresh(true);
-            }
-        } catch (e) {
-            console.log(e);
-        }
-    };
-
-    const onDelete = async (id: string) => {
-        try {
-            const { deleteCustomerAddress } = await storefrontApiMutation({
-                deleteCustomerAddress: [{ id }, { success: true }],
-            });
-            setRefresh(true);
-            console.log(deleteCustomerAddress);
-        } catch (e) {
-            console.log(e);
-        }
-    };
-
     return (
-        <Layout categories={props.collections}>
+        <Layout categories={props.collections} navigation={props.navigation} pageTitle={t('addressesPageTitle')}>
             <AnimatePresence>
                 {addressToEdit && (
                     <Modal initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
@@ -127,12 +55,18 @@ const Addresses: React.FC<InferGetServerSidePropsType<typeof getServerSideProps>
                 <CustomerWrap w100 itemsStart gap="1.75rem">
                     <CustomerNavigation />
                     <Wrapper w100 gap="1.5rem">
-                        <FormWrapper w100>
+                        <Stack w100>
                             <AddressForm onSubmit={onSubmitCreate} availableCountries={props.availableCountries} />
-                        </FormWrapper>
+                        </Stack>
                         <Wrap w100 itemsCenter gap="2.5rem">
                             {activeCustomer?.addresses?.map(address => (
-                                <AddressBox key={address.id} address={address} onEdit={onEdit} onDelete={onDelete} />
+                                <AddressBox
+                                    key={address.id}
+                                    address={address}
+                                    onEdit={onEdit}
+                                    onDelete={onDelete}
+                                    deleting={deleting}
+                                />
                             ))}
                         </Wrap>
                     </Wrapper>
@@ -141,12 +75,6 @@ const Addresses: React.FC<InferGetServerSidePropsType<typeof getServerSideProps>
         </Layout>
     );
 };
-
-const CustomerWrap = styled(Stack)`
-    @media (max-width: ${({ theme }) => theme.breakpoints.lg}) {
-        flex-direction: column;
-    }
-`;
 
 const Wrapper = styled(Stack)`
     justify-content: space-evenly;
@@ -183,8 +111,6 @@ const Wrap = styled(Stack)`
     }
 `;
 
-const FormWrapper = styled(Stack)``;
-
 const ModalContent = styled(Stack)`
     width: fit-content;
     padding: 3.5rem;
@@ -210,7 +136,8 @@ const Modal = styled(motion.div)`
 const getServerSideProps = async (context: GetServerSidePropsContext) => {
     const r = await makeServerSideProps(['common', 'customer'])(context);
     const collections = await getCollections();
-    const destination = prepareSSRRedirect('/')(context);
+    const navigation = arrayToTree(collections);
+    const homePageRedirect = prepareSSRRedirect('/')(context);
 
     try {
         const { activeCustomer } = await SSRQuery(context)({
@@ -227,11 +154,12 @@ const getServerSideProps = async (context: GetServerSidePropsContext) => {
             collections,
             activeCustomer,
             availableCountries,
+            navigation,
         };
 
         return { props: returnedStuff };
     } catch (error) {
-        return destination;
+        return homePageRedirect;
     }
 };
 

@@ -19,7 +19,6 @@
         "countryCode": "Kod kraju",
         "province": "Województwo",
         "postalCode": "Kod pocztowy",
-        "continue-to-payment": "Przejdź do płatności",
         "errors": {
             "emailAddress": "Pole Imię jest wymagane",
             "firstName": "Pole Nazwisko jest wymagane",

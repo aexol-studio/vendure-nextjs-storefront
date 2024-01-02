@@ -2,46 +2,47 @@ import { ContentContainer } from '@/src/components/atoms/ContentContainer';
 import { MainGrid } from '@/src/components/atoms/MainGrid';
 import { Stack } from '@/src/components/atoms/Stack';
 import { TP } from '@/src/components/atoms/TypoGraphy';
-import { FacetFilterCheckbox } from '@/src/components/molecules/FacetFilter';
+// import { FacetFilterCheckbox } from '@/src/components/molecules/FacetFilter';
 import { ProductTile } from '@/src/components/molecules/ProductTile';
 import { storefrontApiQuery } from '@/src/graphql/client';
-import { FacetSelector, ProductSearchSelector, ProductSearchType } from '@/src/graphql/selectors';
+import { CollectionSelector, FacetSelector, SearchSelector } from '@/src/graphql/selectors';
 import { getCollections } from '@/src/graphql/sharedQueries';
 import { Layout } from '@/src/layouts';
 import { ContextModel, getStaticPaths, makeStaticProps } from '@/src/lib/getStatic';
 import styled from '@emotion/styled';
 import { InferGetStaticPropsType } from 'next';
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { useTranslation } from 'next-i18next';
 import { IconButton } from '@/src/components/molecules/Button';
-import { X } from 'lucide-react';
+import { Filter, X } from 'lucide-react';
 import { AnimatePresence, motion } from 'framer-motion';
-import { useRouter } from 'next/router';
 import { MainBar } from '@/src/components/organisms/MainBar';
+import { arrayToTree } from '@/src/util/arrayToTree';
+import { PER_PAGE } from '@/src/state/collection/utils';
+import { FacetFilterCheckbox } from '@/src/components/molecules/FacetFilter';
+import { useCollection } from '@/src/state/collection';
+import { Pagination } from '@/src/components/molecules/Pagination';
+import { SortBy } from '@/src/components/molecules/SortBy';
 
 const SearchPage: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = props => {
     const { t } = useTranslation('common');
-    const [filtersOpen, setFiltersOpen] = useState(false);
-    const [products, setProducts] = useState<ProductSearchType[]>([]);
-    const router = useRouter();
-
-    const { collection, q } = router.query;
-
-    useEffect(() => {
-        if (q) {
-            storefrontApiQuery({
-                search: [
-                    { input: { groupByProduct: true, collectionSlug: collection as string, term: q as string } },
-                    {
-                        items: ProductSearchSelector,
-                    },
-                ],
-            }).then(r => setProducts(r.search.items));
-        }
-    }, [router.query]);
+    const {
+        searchPhrase,
+        products,
+        facetValues,
+        filtersOpen,
+        setFiltersOpen,
+        paginationInfo,
+        changePage,
+        filters,
+        applyFilter,
+        removeFilter,
+        sort,
+        handleSort,
+    } = useCollection();
 
     return (
-        <Layout categories={props.collections}>
+        <Layout categories={props.collections} navigation={props.navigation}>
             <ContentContainer>
                 <AnimatePresence>
                     {filtersOpen && (
@@ -65,12 +66,16 @@ const SearchPage: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = pro
                                         </IconButton>
                                     </Stack>
                                     <Stack column>
-                                        {props.facets.map(f => (
+                                        {facetValues?.map(f => (
                                             <FacetFilterCheckbox
                                                 facet={f}
                                                 key={f.code}
-                                                onClick={() => {}}
-                                                selected={[]}
+                                                selected={filters[f.id]}
+                                                onClick={(group, value) => {
+                                                    if (filters[group.id]?.includes(value.id))
+                                                        removeFilter(group, value);
+                                                    else applyFilter(group, value);
+                                                }}
                                             />
                                         ))}
                                     </Stack>
@@ -79,19 +84,39 @@ const SearchPage: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = pro
                         </Facets>
                     )}
                 </AnimatePresence>
-                <Stack gap="2rem" column>
-                    <MainBar categories={props.collections} title={t('search-results') + ' ' + q} />
+                <Main gap="2rem" column>
+                    <MainBar categories={props.collections} title={t('search-results') + ' ' + searchPhrase} />
+                    <Stack itemsCenter gap="2.5rem">
+                        <SortBy sort={sort} handleSort={handleSort} />
+                        <Filters onClick={() => setFiltersOpen(true)}>
+                            <TP>{t('filters')}</TP>
+                            <IconButton title={t('filters')}>
+                                <Filter />
+                            </IconButton>
+                        </Filters>
+                    </Stack>
                     <MainGrid>
-                        {products.map(p => {
-                            return <ProductTile collections={props.collections} product={p} key={p.slug} />;
-                        })}
+                        {products?.map(p => <ProductTile collections={props.collections} product={p} key={p.slug} />)}
                     </MainGrid>
-                </Stack>
+                    <Pagination
+                        page={paginationInfo.currentPage}
+                        changePage={changePage}
+                        totalPages={paginationInfo.totalPages}
+                    />
+                </Main>
             </ContentContainer>
         </Layout>
     );
 };
 
+const Filters = styled(Stack)`
+    width: auto;
+    cursor: pointer;
+`;
+
+const Main = styled(Stack)`
+    padding: 3.5rem 0;
+`;
 const Facets = styled(motion.div)`
     background: ${p => p.theme.grayAlpha(900, 0.5)};
     position: fixed;
@@ -112,23 +137,33 @@ const FacetsFilters = styled(motion.div)`
 const getStaticProps = async (context: ContextModel) => {
     const r = await makeStaticProps(['common'])(context);
     const collections = await getCollections();
+    const navigation = arrayToTree(collections);
 
     const facets = await storefrontApiQuery({
-        facets: [
-            {},
-            {
-                items: FacetSelector,
-            },
-        ],
+        facets: [{}, { items: FacetSelector }],
     });
+
+    //we simulate a collection with the search slug + we skip this collection everywhere else
+    const { collection } = await storefrontApiQuery({
+        collection: [{ slug: 'search' }, CollectionSelector],
+    });
+    const productsQuery = await storefrontApiQuery({
+        search: [{ input: { collectionSlug: 'search', groupByProduct: true, take: PER_PAGE } }, SearchSelector],
+    });
+
     const returnedStuff = {
-        collections: collections,
+        collections,
         facets: facets.facets.items,
+        navigation,
+        collection,
+        products: productsQuery.search.items,
+        totalProducts: productsQuery.search.totalItems,
         ...r.props,
     };
+
     return {
         props: returnedStuff,
-        revalidate: 10,
+        revalidate: process.env.NEXT_REVALIDATE ? parseInt(process.env.NEXT_REVALIDATE) : 10,
     };
 };
 export { getStaticProps, getStaticPaths };

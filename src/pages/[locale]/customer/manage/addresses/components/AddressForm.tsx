@@ -1,6 +1,6 @@
 import { Stack } from '@/src/components/atoms/Stack';
-import { Button } from '@/src/components/molecules/Button';
-import { CountrySelect } from '@/src/components/forms/CountrySelect';
+import { Button, FullWidthButton } from '@/src/components/molecules/Button';
+import { CountrySelect, Input } from '@/src/components/forms';
 
 import { CreateAddressType, ActiveAddressType, AvailableCountriesType } from '@/src/graphql/selectors';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -9,7 +9,6 @@ import { useTranslation } from 'next-i18next';
 import { z } from 'zod';
 import styled from '@emotion/styled';
 import { CreditCard, Truck } from 'lucide-react';
-import { Input } from '@/src/components/forms/Input';
 import { TP } from '@/src/components/atoms/TypoGraphy';
 
 export const AddressForm: React.FC<{
@@ -38,7 +37,7 @@ export const AddressForm: React.FC<{
     const {
         register,
         handleSubmit,
-        formState: { errors },
+        formState: { errors, isSubmitting },
         watch,
     } = useForm<CreateAddressType>({
         values: addressToEdit
@@ -116,13 +115,15 @@ export const AddressForm: React.FC<{
                             <label htmlFor="defaultShippingAddress">{t('addressForm.defaultShippingAddress')}</label>
                         </CheckboxStack>
                     </Stack>
-                    <Stack w100 itemsCenter justifyBetween>
+                    <Stack gap="3.5rem" w100 itemsCenter justifyBetween>
                         {onModalClose && (
-                            <Button onClick={onModalClose} type="button">
+                            <Button disabled={isSubmitting} onClick={onModalClose} type="button">
                                 {t('addressForm.cancel')}
                             </Button>
                         )}
-                        <Button type="submit">{addressToEdit ? t('addressForm.update') : t('addressForm.add')}</Button>
+                        <FullWidthButton loading={isSubmitting} type="submit">
+                            {addressToEdit ? t('addressForm.update') : t('addressForm.add')}
+                        </FullWidthButton>
                     </Stack>
                 </Stack>
             </Form>

@@ -31,7 +31,7 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({ isForm, YMALProducts
     const currencyCode = activeOrder?.currencyCode ?? CurrencyCode.USD;
 
     return (
-        <SummaryContainer>
+        <SummaryContainer isForm={isForm}>
             <SummaryContent w100 column gap="2.5rem">
                 <Stack itemsCenter w100 gap="3.5rem">
                     <LogoAexol width={48} height={48} />
@@ -93,8 +93,8 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({ isForm, YMALProducts
     );
 };
 
-const SummaryContainer = styled(Stack)`
-    width: calc(50% - 2.5rem);
+const SummaryContainer = styled(Stack)<{ isForm?: boolean }>`
+    width: ${({ isForm }) => (isForm ? 'calc(50% - 2.5rem)' : '100%')};
     position: sticky;
     top: 9.5rem;
     height: fit-content;

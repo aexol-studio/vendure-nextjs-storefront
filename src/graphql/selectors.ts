@@ -16,6 +16,15 @@ export type OrderStateType =
     | 'Modifying'
     | 'ArrangingAdditionalPayment';
 
+export type NavigationType = CollectionTileType & {
+    productVariants?: {
+        items: CollectionTileProductVariantType[];
+        totalItems: number;
+    };
+};
+
+export type FiltersFacetType = FacetType & { values: (FacetType & { count: number })[] };
+
 export const ProductTileSelector = Selector('Product')({
     id: true,
     name: true,
@@ -47,9 +56,12 @@ export const ProductSearchSelector = Selector('SearchResult')({
             value: true,
         },
     },
+    facetIds: true,
+    facetValueIds: true,
     productAsset: {
         preview: true,
     },
+    description: true,
 });
 export type ProductSearchType = FromSelector<typeof ProductSearchSelector, 'SearchResult', typeof scalars>;
 
@@ -57,13 +69,41 @@ export const FacetSelector = Selector('Facet')({
     id: true,
     name: true,
     code: true,
-    values: {
-        name: true,
-        id: true,
-    },
 });
 
 export type FacetType = FromSelector<typeof FacetSelector, 'Facet', typeof scalars>;
+
+export const CollectionSelector = Selector('Collection')({
+    name: true,
+    slug: true,
+    description: true,
+    featuredAsset: {
+        preview: true,
+    },
+    parent: { slug: true, name: true },
+    children: {
+        id: true,
+        name: true,
+        slug: true,
+        featuredAsset: { preview: true },
+    },
+});
+
+export type CollectionType = FromSelector<typeof CollectionSelector, 'Collection', typeof scalars>;
+
+export const SearchSelector = Selector('SearchResponse')({
+    items: ProductSearchSelector,
+    totalItems: true,
+    facetValues: {
+        count: true,
+        facetValue: {
+            ...FacetSelector,
+            facet: FacetSelector,
+        },
+    },
+});
+
+export type SearchType = FromSelector<typeof SearchSelector, 'SearchResponse', typeof scalars>;
 
 export const ProductSlugSelector = Selector('Product')({
     name: true,
@@ -79,6 +119,34 @@ export const ProductDetailsFacetSelector = Selector('FacetValue')({
 });
 
 export type ProductDetailsFacetType = FromSelector<typeof ProductDetailsFacetSelector, 'FacetValue', typeof scalars>;
+
+const CollectionTileProductVariantSelector = Selector('ProductVariant')({
+    id: true,
+    featuredAsset: { preview: true },
+    priceWithTax: true,
+    currencyCode: true,
+    name: true,
+    product: { name: true, slug: true, featuredAsset: { preview: true } },
+});
+
+export type CollectionTileProductVariantType = FromSelector<
+    typeof CollectionTileProductVariantSelector,
+    'ProductVariant',
+    typeof scalars
+>;
+
+export const CollectionTileSelector = Selector('Collection')({
+    name: true,
+    id: true,
+    slug: true,
+    parentId: true,
+    description: true,
+    featuredAsset: {
+        preview: true,
+    },
+});
+
+export type CollectionTileType = FromSelector<typeof CollectionTileSelector, 'Collection', typeof scalars>;
 
 export const ProductDetailSelector = Selector('Product')({
     name: true,
@@ -98,12 +166,6 @@ export const ProductDetailSelector = Selector('Product')({
     assets: {
         source: true,
         preview: true,
-    },
-    collections: {
-        id: true,
-        name: true,
-        slug: true,
-        featuredAsset: { preview: true },
     },
     variants: {
         id: true,
@@ -141,14 +203,6 @@ export const NewestProductSelector = Selector('Product')({
 export type NewestProductType = FromSelector<typeof NewestProductSelector, 'Product', typeof scalars>;
 
 export type ProductTileType = FromSelector<typeof ProductTileSelector, 'Product', typeof scalars>;
-
-export const CollectionTileSelector = Selector('Collection')({
-    name: true,
-    id: true,
-    slug: true,
-});
-
-export type CollectionTileType = FromSelector<typeof CollectionTileSelector, 'Collection', typeof scalars>;
 
 export const ProductVariantSelector = Selector('ProductVariant')({
     id: true,
@@ -256,6 +310,16 @@ export const discountsSelector = Selector('Discount')({
 
 export type DiscountsType = FromSelector<typeof discountsSelector, 'Discount', typeof scalars>;
 
+export const shippingLineSelector = Selector('ShippingLine')({
+    shippingMethod: {
+        id: true,
+        name: true,
+        description: true,
+    },
+    priceWithTax: true,
+});
+export type ShippingLineType = FromSelector<typeof shippingLineSelector, 'ShippingLine', typeof scalars>;
+
 export const ActiveOrderSelector = Selector('Order')({
     id: true,
     createdAt: true,
@@ -285,19 +349,13 @@ export const ActiveOrderSelector = Selector('Order')({
                 id: true,
                 source: true,
             },
+            stockLevel: true,
             product: {
                 name: true,
             },
         },
     },
-    shippingLines: {
-        shippingMethod: {
-            id: true,
-            name: true,
-            description: true,
-        },
-        priceWithTax: true,
-    },
+    shippingLines: shippingLineSelector,
     state: true,
     couponCodes: true,
     currencyCode: true,

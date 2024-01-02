@@ -3,7 +3,7 @@ import { FieldError } from 'react-hook-form';
 import { Stack } from '@/src/components/atoms/Stack';
 import { AvailableCountriesType } from '@/src/graphql/selectors';
 import styled from '@emotion/styled';
-import { Label, FormError, FormRequired, FormErrorWrapper } from './atoms';
+import { Label, FormError, FormRequired, FormErrorWrapper } from './shared';
 import { AnimatePresence } from 'framer-motion';
 
 type CountrySelectType = SelectHTMLAttributes<HTMLSelectElement> & {

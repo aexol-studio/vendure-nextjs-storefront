@@ -6,6 +6,7 @@
     "signUpTitle": "Create a new account",
     "signOut": "Sign out",
     "resetPasswordTitle": "Reset your password",
+    "addressesPageTitle": "Addresses",
     "username": "Username",
     "password": "Password",
     "rememberMe": "Remember me",
@@ -16,10 +17,12 @@
     "newPassword": "New password",
     "confirmNewPassword": "Confirm new password",
     "resetPassword": "Reset password",
-    "signUpSuccess":"You have successfully signed up",
+    "signUpSuccess":"You have successfully signed up, please check your email to verify your account",
+    "forgotPasswordSuccess": "We have sent you an email with instructions to reset your password",
     "verify": {
         "success": "Your account has been verified",
-        "fail": "Your account could not be verified"
+        "fail": "Your account could not be verified",
+        "title": "Verify your account"
     },
     "navigation": {
         "manageAccount": "Manage account",
@@ -45,23 +48,31 @@
             "addressEmail": "Address email",
             "firstName": "First name",
             "lastName": "Last name",
-            "phoneNumber": "Phone number"
+            "phoneNumber": "Phone number",
+            "successMessage": "Your account details have been updated successfully"
         },
         "passwordForm": {
             "title": "Change Password",
-            "confirmPassword": "Confirm Password"
+            "confirmPassword": "Confirm Password",
+            "oldPassword": "Old Password",
+            "newPassword": "New Password",
+            "newPasswordConfirm": "Confirm New Password"
         }
     },
     "orderPage": {
+        "title": "Order",
         "backToOrders": "Go to My Orders",
         "orderCode": "Order Code",
-        "customerDetails": "Customer Details",
+        "items": "Items",
         "shippingAddress": "Shipping Address",
         "billingAddress": "Billing Address",
         "shippingMethod": "Shipping Method",
         "discounts": "Discounts",
         "totalPrice": "Total Price",
-        "quantity": "Quantity"
+        "quantity": "Quantity",
+        "customerName": "Customer Name",
+        "email": "Email",
+        "phone": "Phone"
     },
     "ordersPage": {
         "title": "My Orders",
@@ -71,7 +82,8 @@
         "totalQuantity": "Total Quantity",
         "totalItems": "Total Items",
         "totalPrice": "Total Price",
-        "loadMore": "Load More"
+        "loadMore": "Load More",
+        "viewOrder": "View Order"
     },
     "addressForm": {
         "title": "My Addresses",

@@ -14,7 +14,7 @@ import { Link } from '@/src/components/atoms/Link';
 import { useTranslation } from 'next-i18next';
 import { priceFormatter } from '@/src/util/priceFomatter';
 import { DiscountForm } from '@/src/components/molecules/DiscountForm';
-import { CurrencyCode } from '../zeus';
+import { CurrencyCode } from '@/src/zeus';
 
 export const Cart = ({ activeOrder }: { activeOrder?: ActiveOrderType }) => {
     const { setItemQuantityInCart, removeFromCart, removeCouponCode, applyCouponCode } = useCart();
@@ -98,7 +98,7 @@ export const Cart = ({ activeOrder }: { activeOrder?: ActiveOrderType }) => {
                                                                 v={quantity}
                                                                 onChange={v => setItemQuantityInCart(id, v)}
                                                             />
-                                                            <Remove onClick={() => removeFromCart(id)}>
+                                                            <Remove onClick={async () => await removeFromCart(id)}>
                                                                 <Trash2 size={20} />
                                                                 <TP weight={600} size="1.25rem" upperCase>
                                                                     {t('remove')}
@@ -267,7 +267,6 @@ const CartContainer = styled(Stack)`
     padding: 4rem 0;
 `;
 const CartSummary = styled(Stack)`
-    //TODO: Remove this when left side is done
     min-width: 390px;
     max-width: 480px;
 

@@ -8,21 +8,22 @@ import { LoginCustomerInputType } from '@/src/graphql/selectors';
 import { storefrontApiMutation } from '@/src/graphql/client';
 import { Link } from '@/src/components/atoms/Link';
 import { Stack } from '@/src/components/atoms/Stack';
-import { Input } from '@/src/components/forms/Input';
+import { Input, Banner, CheckBox } from '@/src/components/forms';
 import { Button } from '@/src/components/molecules/Button';
 import { ContentContainer } from '@/src/components/atoms/ContentContainer';
 import { usePush } from '@/src/lib/redirect';
-import { CheckBox } from '@/src/components/forms/CheckBox';
 import { useTranslation } from 'next-i18next';
-import { Absolute, Form, FormContainer, FormContent, FormWrapper } from '../components/shared';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { TP } from '@/src/components/atoms/TypoGraphy';
-import { ErrorBanner } from '@/src/components/forms/ErrorBanner';
+import { useCart } from '@/src/state/cart';
+import { arrayToTree } from '@/src/util/arrayToTree';
+import { Absolute, Form, FormContainer, FormContent, FormWrapper } from '../components/shared';
 
 const SignIn: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = props => {
     const { t } = useTranslation('customer');
     const { t: tErrors } = useTranslation('common');
+    const { fetchActiveOrder } = useCart();
 
     const schema = z.object({
         emailAddress: z.string().email(tErrors('errors.email.invalid')).min(1, tErrors('errors.email.required')),
@@ -35,7 +36,7 @@ const SignIn: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = props =
         register,
         handleSubmit,
         setError,
-        formState: { errors },
+        formState: { errors, isSubmitting },
     } = useForm<LoginCustomerInputType>({
         resolver: zodResolver(schema),
     });
@@ -48,13 +49,10 @@ const SignIn: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = props =
                     { password, username: emailAddress, rememberMe },
                     {
                         __typename: true,
+                        '...on CurrentUser': { id: true },
                         '...on InvalidCredentialsError': {
                             errorCode: true,
                             message: true,
-                        },
-                        '...on CurrentUser': {
-                            id: true,
-                            identifier: true,
                         },
                         '...on NativeAuthStrategyError': {
                             errorCode: true,
@@ -69,6 +67,7 @@ const SignIn: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = props =
             });
 
             if (login.__typename === 'CurrentUser') {
+                await fetchActiveOrder();
                 push('/customer/manage');
                 return;
             }
@@ -80,15 +79,12 @@ const SignIn: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = props =
     };
 
     return (
-        <Layout categories={props.collections}>
+        <Layout categories={props.collections} navigation={props.navigation} pageTitle={t('signInTitle')}>
             <ContentContainer>
                 <FormContainer>
                     <FormWrapper column itemsCenter gap="3.5rem">
                         <Absolute w100>
-                            <ErrorBanner
-                                error={errors.root}
-                                clearErrors={() => setError('root', { message: undefined })}
-                            />
+                            <Banner error={errors.root} clearErrors={() => setError('root', { message: undefined })} />
                         </Absolute>
                         <TP weight={600}>{t('signInTitle')}</TP>
                         <FormContent w100 column itemsCenter gap="1.75rem">
@@ -106,7 +102,9 @@ const SignIn: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = props =
                                     {...register('password')}
                                 />
                                 <CheckBox label={t('rememberMe')} {...register('rememberMe')} />
-                                <Button type="submit">{t('signIn')}</Button>
+                                <Button loading={isSubmitting} type="submit">
+                                    {t('signIn')}
+                                </Button>
                             </Form>
                             <Stack column itemsCenter gap="0.5rem">
                                 <Link href="/customer/forgot-password">{t('forgotPassword')}</Link>
@@ -123,15 +121,17 @@ const SignIn: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = props =
 const getStaticProps = async (context: ContextModel) => {
     const r = await makeStaticProps(['common', 'customer'])(context);
     const collections = await getCollections();
+    const navigation = arrayToTree(collections);
 
     const returnedStuff = {
         ...r.props,
         collections,
+        navigation,
     };
 
     return {
         props: returnedStuff,
-        revalidate: 10,
+        revalidate: process.env.NEXT_REVALIDATE ? parseInt(process.env.NEXT_REVALIDATE) : 10,
     };
 };
 

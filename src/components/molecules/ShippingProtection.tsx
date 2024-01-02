@@ -1,8 +1,7 @@
 import styled from '@emotion/styled';
 import { BoxIcon } from 'lucide-react';
 import React from 'react';
-import { Stack } from '../atoms/Stack';
-import { TP } from '../atoms/TypoGraphy';
+import { TP, Stack } from '@/src/components/atoms';
 import { Trans, useTranslation } from 'next-i18next';
 import { priceFormatter } from '@/src/util/priceFomatter';
 import { CurrencyCode } from '@/src/zeus';

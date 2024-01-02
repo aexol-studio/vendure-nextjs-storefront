@@ -3,7 +3,7 @@ import React from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { motion } from 'framer-motion';
 import styled from '@emotion/styled';
-import { Stack } from '../atoms/Stack';
+import { Stack } from '@/src/components/atoms';
 
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -18,7 +18,6 @@ export const NotifyMeForm = () => {
     const {
         handleSubmit,
         register,
-
         formState: { errors },
         reset,
     } = useForm<{ email: string }>({

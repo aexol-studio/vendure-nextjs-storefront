@@ -58,7 +58,7 @@ export const YMALCarousel: React.FC<YMALProps> = ({ YMALProducts, currencyCode }
                                             }}>
                                             {product.variants.map(variant => (
                                                 <option
-                                                    disabled={variant.stockLevel !== 'IN_STOCK'}
+                                                    disabled={Number(variant.stockLevel) <= 0}
                                                     key={variant.id}
                                                     value={variant.id}>
                                                     {variant.name.replace(product.name, '')}

@@ -1,6 +1,4 @@
-import { Link } from '@/src/components/atoms/Link';
-import { ProductImageGrid } from '@/src/components/atoms/ProductImage';
-import { Stack } from '@/src/components/atoms/Stack';
+import { Stack, Link, ProductImageGrid } from '@/src/components/atoms/';
 import { CollectionTileType, ProductSearchType } from '@/src/graphql/selectors';
 import { priceFormatter } from '@/src/util/priceFomatter';
 import styled from '@emotion/styled';
@@ -13,10 +11,12 @@ export const ProductTile: React.FC<{
     const priceValue =
         'value' in product.priceWithTax
             ? priceFormatter(product.priceWithTax.value, product.currencyCode)
-            : `${priceFormatter(product.priceWithTax.min, product.currencyCode)} - ${priceFormatter(
-                  product.priceWithTax.max,
-                  product.currencyCode,
-              )}`;
+            : product.priceWithTax.min === product.priceWithTax.max
+              ? priceFormatter(product.priceWithTax.min, product.currencyCode)
+              : `${priceFormatter(product.priceWithTax.min, product.currencyCode)} - ${priceFormatter(
+                    product.priceWithTax.max,
+                    product.currencyCode,
+                )}`;
 
     return (
         <Main column gap="2rem">
@@ -27,6 +27,7 @@ export const ProductTile: React.FC<{
                 {product.collectionIds
                     .filter((cId, index) => product.collectionIds.indexOf(cId) === index)
                     .map(cId => collections.find(c => c.id === cId))
+                    .filter(c => c)
                     .map(c => (
                         <ProductCategory href={`/collections/${c?.slug}/`} key={c?.slug}>
                             {c?.name}

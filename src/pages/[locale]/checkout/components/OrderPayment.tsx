@@ -2,27 +2,29 @@ import { storefrontApiMutation } from '@/src/graphql/client';
 import { AvailablePaymentMethodsType } from '@/src/graphql/selectors';
 import { usePush } from '@/src/lib/redirect';
 import React, { useEffect, useState } from 'react';
-import { Stack } from '@/src/components/atoms/Stack';
+import { Stack } from '@/src/components/atoms';
 import { DefaultMethod } from './PaymentMethods/DefaultMethod';
 import { Elements } from '@stripe/react-stripe-js';
-import { loadStripe, Stripe } from '@stripe/stripe-js';
+import { loadStripe, Stripe, StripeError } from '@stripe/stripe-js';
 import { StripeForm } from './PaymentMethods/StripeForm';
 import { useCheckout } from '@/src/state/checkout';
+import { Banner } from '@/src/components/forms';
+import { useTranslation } from 'next-i18next';
 
 const STRIPE_PUBLIC_KEY = process.env.NEXT_PUBLIC_STRIPE_KEY;
 
 interface OrderPaymentProps {
     availablePaymentMethods?: AvailablePaymentMethodsType[];
-    stripeData?: {
-        paymentIntent: string;
-    };
+    stripeData?: { paymentIntent: string | null };
 }
 
 export const OrderPayment: React.FC<OrderPaymentProps> = ({ availablePaymentMethods, stripeData }) => {
+    const { t } = useTranslation('common');
     const { activeOrder } = useCheckout();
     const push = usePush();
     //For stripe
     const [stripe, setStripe] = useState<Stripe | null>(null);
+    const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
         const initStripe = async () => {
@@ -34,23 +36,21 @@ export const OrderPayment: React.FC<OrderPaymentProps> = ({ availablePaymentMeth
         if (stripeData?.paymentIntent) initStripe();
     }, []);
 
-    const onClick = async (method: string) => {
+    const onClick = async (
+        method: string,
+        metadata: {
+            shouldDecline: boolean;
+            shouldCancel: boolean;
+            shouldError: boolean;
+            shouldErrorOnSettle: boolean;
+        },
+    ) => {
         // Add payment to order
         try {
+            setError(null);
             const { addPaymentToOrder } = await storefrontApiMutation({
                 addPaymentToOrder: [
-                    {
-                        input: {
-                            method,
-                            metadata: JSON.stringify({
-                                // TODO: Try to add some metadata
-                                shouldDecline: true,
-                                shouldCancel: false,
-                                shouldError: false,
-                                shouldErrorOnSettle: false,
-                            }),
-                        },
-                    },
+                    { input: { method, metadata: JSON.stringify(metadata) } },
                     {
                         __typename: true,
                         '...on Order': { state: true, code: true },
@@ -87,24 +87,33 @@ export const OrderPayment: React.FC<OrderPaymentProps> = ({ availablePaymentMeth
                     },
                 ],
             });
-            if (addPaymentToOrder.__typename === 'Order' && addPaymentToOrder.state === 'PaymentAuthorized') {
-                //TODO: ADD ERROR HANDLING
+            if (addPaymentToOrder.__typename !== 'Order') {
+                setError(t(`errors.backend.${addPaymentToOrder.errorCode}`));
+            } else if (
+                addPaymentToOrder.state === 'PaymentSettled' ||
+                addPaymentToOrder.state === 'PaymentAuthorized'
+            ) {
                 push(`/checkout/confirmation/${addPaymentToOrder.code}`);
-            } else {
-                console.log(addPaymentToOrder);
             }
         } catch (e) {
             console.log(e);
+            setError(t(`errors.backend.UNKNOWN_ERROR`));
         }
+    };
+
+    const onStripeSubmit = (result: { error: StripeError }) => {
+        if (!result.error) return;
+        setError(t(`errors.stripe.${result.error.type}`));
     };
 
     const defaultMethod = availablePaymentMethods?.find(m => m.code === 'standard-payment');
     return activeOrder ? (
         <Stack w100 column itemsCenter gap="3.5rem">
+            <Banner error={{ message: error ?? undefined }} clearErrors={() => setError(null)} />
             {defaultMethod && <DefaultMethod defaultMethod={defaultMethod} onClick={onClick} />}
             {stripe && stripeData?.paymentIntent && (
                 <Elements stripe={stripe} options={{ clientSecret: stripeData.paymentIntent }}>
-                    <StripeForm activeOrder={activeOrder} />
+                    <StripeForm activeOrder={activeOrder} onStripeSubmit={onStripeSubmit} />
                 </Elements>
             )}
         </Stack>

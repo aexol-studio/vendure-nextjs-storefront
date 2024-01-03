@@ -5,12 +5,12 @@ import { TP } from '@/src/components/atoms/TypoGraphy';
 // import { FacetFilterCheckbox } from '@/src/components/molecules/FacetFilter';
 import { ProductTile } from '@/src/components/molecules/ProductTile';
 import { storefrontApiQuery } from '@/src/graphql/client';
-import { CollectionSelector, FacetSelector, SearchSelector } from '@/src/graphql/selectors';
+import { CollectionSelector, FacetSelector, ProductSearchSelector } from '@/src/graphql/selectors';
 import { getCollections } from '@/src/graphql/sharedQueries';
 import { Layout } from '@/src/layouts';
-import { ContextModel, getStaticPaths, makeStaticProps } from '@/src/lib/getStatic';
+import { makeServerSideProps } from '@/src/lib/getStatic';
 import styled from '@emotion/styled';
-import { InferGetStaticPropsType } from 'next';
+import { GetServerSidePropsContext, InferGetServerSidePropsType } from 'next';
 import React from 'react';
 import { useTranslation } from 'next-i18next';
 import { IconButton } from '@/src/components/molecules/Button';
@@ -18,13 +18,14 @@ import { Filter, X } from 'lucide-react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { MainBar } from '@/src/components/organisms/MainBar';
 import { arrayToTree } from '@/src/util/arrayToTree';
-import { PER_PAGE } from '@/src/state/collection/utils';
+import { PER_PAGE, reduceFacets } from '@/src/state/collection/utils';
 import { FacetFilterCheckbox } from '@/src/components/molecules/FacetFilter';
 import { useCollection } from '@/src/state/collection';
 import { Pagination } from '@/src/components/molecules/Pagination';
 import { SortBy } from '@/src/components/molecules/SortBy';
+import { GraphQLTypes, SortOrder } from '@/src/zeus';
 
-const SearchPage: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = props => {
+const SearchPage: React.FC<InferGetServerSidePropsType<typeof getServerSideProps>> = props => {
     const { t } = useTranslation('common');
     const {
         searchPhrase,
@@ -42,7 +43,10 @@ const SearchPage: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = pro
     } = useCollection();
 
     return (
-        <Layout categories={props.collections} navigation={props.navigation}>
+        <Layout
+            categories={props.collections}
+            navigation={props.navigation}
+            pageTitle={t('search-results') + ' ' + searchPhrase}>
             <ContentContainer>
                 <AnimatePresence>
                     {filtersOpen && (
@@ -86,7 +90,7 @@ const SearchPage: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = pro
                 </AnimatePresence>
                 <Main gap="2rem" column>
                     <MainBar categories={props.collections} title={t('search-results') + ' ' + searchPhrase} />
-                    <Stack itemsCenter gap="2.5rem">
+                    <Stack itemsCenter gap="2.5rem" justifyEnd w100>
                         <SortBy sort={sort} handleSort={handleSort} />
                         <Filters onClick={() => setFiltersOpen(true)}>
                             <TP>{t('filters')}</TP>
@@ -121,7 +125,7 @@ const Facets = styled(motion.div)`
     background: ${p => p.theme.grayAlpha(900, 0.5)};
     position: fixed;
     inset: 0;
-    z-index: 1;
+    z-index: 2138;
 `;
 const FacetsFilters = styled(motion.div)`
     background: ${p => p.theme.gray(0)};
@@ -134,37 +138,79 @@ const FacetsFilters = styled(motion.div)`
     overflow-y: auto;
 `;
 
-const getStaticProps = async (context: ContextModel) => {
-    const r = await makeStaticProps(['common'])(context);
+const getServerSideProps = async (context: GetServerSidePropsContext) => {
+    const r = await makeServerSideProps(['common'])(context);
     const collections = await getCollections();
     const navigation = arrayToTree(collections);
-
-    const facets = await storefrontApiQuery({
-        facets: [{}, { items: FacetSelector }],
-    });
+    let page = 1;
+    let q = '';
+    let sort = { key: 'name', direction: 'ASC' as SortOrder };
+    if (context.query.sort) {
+        const [key, direction] = (context.query.sort as string).split('-');
+        sort = { key, direction: direction.toUpperCase() as SortOrder };
+    }
+    if (context.query.q) {
+        q = context.query.q as string;
+    }
+    if (context.query.page) {
+        page = parseInt(context.query.page as string);
+    }
 
     //we simulate a collection with the search slug + we skip this collection everywhere else
     const { collection } = await storefrontApiQuery({
         collection: [{ slug: 'search' }, CollectionSelector],
     });
-    const productsQuery = await storefrontApiQuery({
-        search: [{ input: { collectionSlug: 'search', groupByProduct: true, take: PER_PAGE } }, SearchSelector],
+    const filters: { [key: string]: string[] } = {};
+    const facetsQuery = await storefrontApiQuery({
+        search: [
+            { input: { term: q, collectionSlug: 'search', groupByProduct: true, take: PER_PAGE } },
+            { facetValues: { count: true, facetValue: { ...FacetSelector, facet: FacetSelector } } },
+        ],
     });
-
+    const facets = reduceFacets(facetsQuery.search.facetValues);
+    Object.entries(context.query).forEach(([key, value]) => {
+        if (key === 'slug' || key === 'locale' || key === 'page' || key === 'sort' || !value) return;
+        const facetGroup = facets.find(f => f.name === key);
+        if (!facetGroup) return;
+        const facet = facetGroup.values?.find(v => v.name === value);
+        if (!facet) return;
+        filters[facetGroup.id] = [...(filters[facetGroup.id] || []), facet.id];
+    });
+    const facetValueFilters: GraphQLTypes['FacetValueFilterInput'][] = [];
+    Object.entries(filters).forEach(([key, value]) => {
+        const facet = facets.find(f => f.id === key);
+        if (!facet) return;
+        const filter: GraphQLTypes['FacetValueFilterInput'] = {};
+        if (value.length === 1) filter.and = value[0];
+        else filter.or = value;
+        facetValueFilters.push(filter);
+    });
+    const input = {
+        term: q,
+        collectionSlug: 'search',
+        groupByProduct: true,
+        take: PER_PAGE,
+        skip: (page - 1) * PER_PAGE,
+        facetValueFilters,
+        sort: sort.key === 'title' ? { name: sort.direction } : { price: sort.direction },
+    };
+    const productsQuery = await storefrontApiQuery({
+        search: [{ input }, { items: ProductSearchSelector, totalItems: true }],
+    });
     const returnedStuff = {
         collections,
-        facets: facets.facets.items,
+        facets,
         navigation,
         collection,
         products: productsQuery.search.items,
         totalProducts: productsQuery.search.totalItems,
+        filters,
+        searchQuery: q,
+        page,
         ...r.props,
     };
 
-    return {
-        props: returnedStuff,
-        revalidate: process.env.NEXT_REVALIDATE ? parseInt(process.env.NEXT_REVALIDATE) : 10,
-    };
+    return { props: returnedStuff };
 };
-export { getStaticProps, getStaticPaths };
+export { getServerSideProps };
 export default SearchPage;

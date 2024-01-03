@@ -107,6 +107,70 @@ export const OrderPayment: React.FC<OrderPaymentProps> = ({ availablePaymentMeth
     };
 
     const defaultMethod = availablePaymentMethods?.find(m => m.code === 'standard-payment');
+    const przelewy24Method = availablePaymentMethods?.find(m => m.code === 'przelewy-24');
+
+    const przelewy24 = async () => {
+        try {
+            const { addPaymentToOrder } = await storefrontApiMutation({
+                addPaymentToOrder: [
+                    { input: { method: 'przelewy-24', metadata: {} } },
+                    {
+                        __typename: true,
+                        '...on Order': { state: true, code: true, payments: { metadata: true } },
+                        '...on IneligiblePaymentMethodError': {
+                            message: true,
+                            errorCode: true,
+                            eligibilityCheckerMessage: true,
+                        },
+                        '...on NoActiveOrderError': {
+                            message: true,
+                            errorCode: true,
+                        },
+                        '...on OrderPaymentStateError': {
+                            message: true,
+                            errorCode: true,
+                        },
+                        '...on OrderStateTransitionError': {
+                            message: true,
+                            errorCode: true,
+                            fromState: true,
+                            toState: true,
+                            transitionError: true,
+                        },
+                        '...on PaymentDeclinedError': {
+                            errorCode: true,
+                            message: true,
+                            paymentErrorMessage: true,
+                        },
+                        '...on PaymentFailedError': {
+                            errorCode: true,
+                            message: true,
+                            paymentErrorMessage: true,
+                        },
+                    },
+                ],
+            });
+            if (!addPaymentToOrder) {
+                setError(t(`errors.backend.UNKNOWN_ERROR`));
+                return;
+            }
+            if (addPaymentToOrder.__typename !== 'Order') {
+                setError(t(`errors.backend.${addPaymentToOrder.errorCode}`));
+                return;
+            }
+            if (!addPaymentToOrder.payments) {
+                setError(t(`errors.backend.UNKNOWN_ERROR`));
+                return;
+            }
+
+            if (addPaymentToOrder.payments[0].metadata.public.paymentUrl) {
+                push(addPaymentToOrder.payments[0].metadata.public.paymentUrl);
+            }
+        } catch (e) {
+            console.log(e);
+        }
+    };
+
     return activeOrder ? (
         <Stack w100 column itemsCenter gap="3.5rem">
             <Banner error={{ message: error ?? undefined }} clearErrors={() => setError(null)} />
@@ -116,6 +180,7 @@ export const OrderPayment: React.FC<OrderPaymentProps> = ({ availablePaymentMeth
                     <StripeForm activeOrder={activeOrder} onStripeSubmit={onStripeSubmit} />
                 </Elements>
             )}
+            {przelewy24Method && <button onClick={przelewy24}>Przelewy24</button>}
         </Stack>
     ) : null;
 };

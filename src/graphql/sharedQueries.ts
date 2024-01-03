@@ -19,7 +19,7 @@ export const getCollections = async () => {
                     { slug: c.slug },
                     {
                         productVariants: [
-                            { options: { take: 1, filter: { priceWithTax: { lte: 5000 } } } },
+                            { options: { take: 2, filter: { priceWithTax: { lte: 5000 } } } },
                             {
                                 totalItems: true,
                                 items: {

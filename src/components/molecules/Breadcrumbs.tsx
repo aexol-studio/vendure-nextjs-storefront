@@ -16,7 +16,7 @@ export const Breadcrumbs: React.FC<{
                 const isLast = i === breadcrumbs.length - 1;
                 return (
                     <Stack itemsCenter gap="0.5rem" key={b.name}>
-                        <StyledLink href={b.href} blocked={isLast ? true : false}>
+                        <StyledLink href={b.href} blocked={isLast ? true : undefined}>
                             <Stack itemsCenter gap="0.5rem">
                                 {isHome && <Home size={16} />}
                                 <TP size="1.25rem" weight={isLast ? 600 : 400}>
@@ -36,7 +36,7 @@ export const Breadcrumbs: React.FC<{
     );
 };
 
-const StyledLink = styled(Link)<{ blocked: boolean }>`
+const StyledLink = styled(Link)<{ blocked?: boolean }>`
     text-decoration: none;
     pointer-events: ${p => (p.blocked ? 'none' : 'auto')};
     color: ${p => p.theme.gray(900)};

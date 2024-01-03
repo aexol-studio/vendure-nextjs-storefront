@@ -19,7 +19,12 @@ export const scalars = ZeusScalars({
 
 //use 'http://localhost:3000/shop-api/' in local .env file for localhost development and provide env to use on prod/dev envs
 
-export const VENDURE_HOST = `${process.env.NEXT_PUBLIC_VENDURE_HOST || 'https://readonlydemo.vendure.io'}/shop-api`;
+export const DEFAULT_LANGUAGE = 'en';
+export const DEFAULT_CHANNEL = 'pl-channel';
+
+export const VENDURE_HOST = `${
+    process.env.NEXT_PUBLIC_VENDURE_HOST || 'https://vendure-dev.aexol.com'
+}/shop-api?languageCode=${DEFAULT_LANGUAGE}`;
 
 const apiFetchVendure =
     (options: fetchOptions) =>
@@ -66,6 +71,7 @@ export const VendureChain = (...options: chainOptions) => Thunder(apiFetchVendur
 export const storefrontApiQuery = VendureChain(VENDURE_HOST, {
     headers: {
         'Content-Type': 'application/json',
+        'vendure-token': DEFAULT_CHANNEL,
     },
 })('query', {
     scalars,
@@ -73,6 +79,7 @@ export const storefrontApiQuery = VendureChain(VENDURE_HOST, {
 export const storefrontApiMutation = VendureChain(VENDURE_HOST, {
     headers: {
         'Content-Type': 'application/json',
+        'vendure-token': DEFAULT_CHANNEL,
     },
 })('mutation', {
     scalars,
@@ -87,6 +94,7 @@ export const SSRQuery = (context: GetServerSidePropsContext) => {
         headers: {
             Cookie: `session=${authCookies['session']}; session.sig=${authCookies['session.sig']}`,
             'Content-Type': 'application/json',
+            'vendure-token': DEFAULT_CHANNEL,
         },
     })('query', {
         scalars,
@@ -102,6 +110,7 @@ export const SSRMutation = (context: GetServerSidePropsContext) => {
         headers: {
             Cookie: `session=${authCookies['session']}; session.sig=${authCookies['session.sig']}`,
             'Content-Type': 'application/json',
+            'vendure-token': DEFAULT_CHANNEL,
         },
     })('mutation', {
         scalars,

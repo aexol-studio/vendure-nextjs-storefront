@@ -6,6 +6,7 @@ import { Search } from 'lucide-react';
 import React from 'react';
 import { useTranslation } from 'next-i18next';
 import { CollectionTileType } from '@/src/graphql/selectors';
+import { useRouter } from 'next/router';
 
 interface MainBarProps {
     title: string;
@@ -14,6 +15,7 @@ interface MainBarProps {
 
 export const MainBar: React.FC<MainBarProps> = ({ title }) => {
     const { t } = useTranslation('common');
+    const { query } = useRouter();
     const push = usePush();
 
     const onSearch = (e: React.FormEvent<HTMLFormElement>) => {
@@ -28,7 +30,7 @@ export const MainBar: React.FC<MainBarProps> = ({ title }) => {
             <Title>{title}</Title>
             <BarContent itemsCenter gap="2rem">
                 <SearchForm onSubmit={onSearch}>
-                    <SearchInput name="q" placeholder={t('search-products')} />
+                    <SearchInput value={query.q as string} name="q" placeholder={t('search-products')} />
                     <IconButton type="submit">
                         <Search />
                     </IconButton>

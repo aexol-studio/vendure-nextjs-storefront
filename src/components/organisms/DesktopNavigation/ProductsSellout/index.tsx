@@ -1,35 +1,73 @@
 import { NavigationType } from '@/src/graphql/selectors';
 import { RootNode } from '@/src/util/arrayToTree';
 import React from 'react';
-import { Stack, TP } from '@/src/components/atoms';
-import styled from '@emotion/styled';
+import { Price, Stack, TP } from '@/src/components/atoms';
 import { useTranslation } from 'next-i18next';
-import { ProductCard } from './ProductCard';
+import { Slider } from '../../Slider';
+import styled from '@emotion/styled';
+import { CurrencyCode } from '@/src/zeus';
+import { ProductImageWithInfo } from '@/src/components/molecules/ProductImageWithInfo';
+import { Button } from '@/src/components/molecules/Button';
+import { useCart } from '@/src/state/cart';
+
+type SliderItem = {
+    id: string;
+    title: string;
+    image: string;
+    href: string;
+    price: number;
+    currencyCode: CurrencyCode;
+};
 
 export const ProductsSellout: React.FC<{ collection: RootNode<NavigationType>['children'][number] }> = ({
     collection,
 }) => {
+    const { addToCart } = useCart();
     const { t } = useTranslation('common');
+
+    const slides = collection.children
+        .reduce((acc, children) => {
+            if ('productVariants' in children) {
+                const variants = children.productVariants?.items.map(variant => ({
+                    id: variant.id,
+                    title: variant.product.name || '',
+                    image: variant.product.featuredAsset?.preview || '',
+                    href: `/products/${variant.product.slug}`,
+                    price: variant.priceWithTax,
+                    currencyCode: variant.currencyCode,
+                }));
+                if (variants) acc.push(...variants);
+            }
+            return acc;
+        }, [] as SliderItem[])
+        .map((val, index) => (
+            <Stack w100 column key={index} gap="2rem">
+                <Stack w100 column gap="0.5rem">
+                    <ProductImageWithInfo
+                        size="thumbnail-big"
+                        href={val.href}
+                        imageSrc={val.image}
+                        text={val.title}
+                        withText
+                    />
+                    {val.price && val.currencyCode && <Price currencyCode={val.currencyCode} price={val.price} />}
+                </Stack>
+                <Button onClick={async () => await addToCart(val.id, 1, true)}>{t('add-to-cart')}</Button>
+            </Stack>
+        ));
+
     return (
-        <Stack column>
+        <Stack column gap="1.5rem">
             <TP size="1.5rem" weight={500}>
                 {t('featured-products')}
             </TP>
-            <SliderWrapper gap="2.5rem">
-                {collection.children.slice(0, 2).map(children => (
-                    <Stack key={children.name + '2'}>
-                        {'productVariants' in children
-                            ? children.productVariants?.items.map(variant => (
-                                  <ProductCard key={variant.id} variant={variant} />
-                              ))
-                            : null}
-                    </Stack>
-                ))}
-            </SliderWrapper>
+            <MaxWidth>
+                <Slider spacing={16} withArrows slides={slides} />
+            </MaxWidth>
         </Stack>
     );
 };
 
-const SliderWrapper = styled(Stack)`
-    padding: 1.5rem 0;
+const MaxWidth = styled.div`
+    max-width: 42rem;
 `;

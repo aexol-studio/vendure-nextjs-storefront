@@ -6,11 +6,12 @@ import React from 'react';
 
 interface OrderShippingStatusProps {
     label: string;
-    shipping: ShippingLineType;
+    shipping?: ShippingLineType;
     currencyCode: CurrencyCode;
 }
 
 export const OrderShippingStatus: React.FC<OrderShippingStatusProps> = ({ currencyCode, shipping, label }) => {
+    if (!shipping) return null;
     return (
         <Stack column gap="0.5rem">
             <Stack gap="0.25rem" itemsCenter>
@@ -20,7 +21,7 @@ export const OrderShippingStatus: React.FC<OrderShippingStatusProps> = ({ curren
                 </TP>
             </Stack>
             <Stack itemsCenter>
-                <Price currencyCode={currencyCode} price={shipping.priceWithTax} />
+                <Price currencyCode={currencyCode} price={shipping?.priceWithTax} />
                 <TP>&nbsp;- {shipping?.shippingMethod.name}</TP>
             </Stack>
         </Stack>

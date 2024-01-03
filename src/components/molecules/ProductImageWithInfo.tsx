@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from '@emotion/styled';
 import Link from 'next/link';
-import { TP, ProductImage } from '@/src/components/atoms';
+import { TP, ProductImage, Stack } from '@/src/components/atoms';
 
 interface ProductImageWithInfoProps {
     size: 'thumbnail' | 'tile' | 'popup' | 'detail' | 'full' | 'thumbnail-big';
@@ -9,26 +9,48 @@ interface ProductImageWithInfoProps {
     href: string;
     text: string;
     imageSrc?: string;
+    withHover?: boolean;
+    withText?: boolean;
 }
 
-export const ProductImageWithInfo: React.FC<ProductImageWithInfoProps> = ({ href, text, size, imageSrc }) => {
+export const ProductImageWithInfo: React.FC<ProductImageWithInfoProps> = ({
+    href,
+    text,
+    size,
+    imageSrc,
+    withHover,
+    withText,
+}) => {
     return (
-        <StyledLink href={href}>
+        <StyledLink size={size} withHover={withHover} href={href}>
             <ProductImage src={imageSrc} size={size} />
-            <StyledTP upperCase size="2rem">
+            <AbsoluteStyledTP upperCase size="2rem">
                 {text}
-            </StyledTP>
+            </AbsoluteStyledTP>
+            <Stack column>{withText && <StyledTP>{text}</StyledTP>}</Stack>
         </StyledLink>
     );
 };
 
-const StyledLink = styled(Link)`
+const StyledLink = styled(Link)<{ withHover?: boolean; size: string }>`
     position: relative;
-    :hover p {
-        display: block;
-    }
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    ${({ size }) => {
+        if (['thumbnail', 'thumbnail-big'].includes(size)) {
+            return `align-items: flex-start;`;
+        }
+        return `align-items: center;`;
+    }}
+
+    ${({ withHover }) => withHover && `:hover p { display: block; }`}
 `;
 const StyledTP = styled(TP)`
+    color: ${p => p.theme.text.main};
+`;
+
+const AbsoluteStyledTP = styled(TP)`
     position: absolute;
     top: 50%;
     left: 50%;

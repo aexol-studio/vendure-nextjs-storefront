@@ -169,7 +169,7 @@ const Facets = styled(motion.div)`
     background: ${p => p.theme.grayAlpha(900, 0.5)};
     position: fixed;
     inset: 0;
-    z-index: 1;
+    z-index: 2138;
 `;
 const FacetsFilters = styled(motion.div)`
     background: ${p => p.theme.gray(0)};

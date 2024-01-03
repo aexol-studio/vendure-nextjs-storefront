@@ -7,6 +7,7 @@ import { OrderState } from '@/src/components/molecules/OrderState';
 import { ActiveOrderType } from '@/src/graphql/selectors';
 import { dateFormatter } from '@/src/util/dateFormatter';
 import styled from '@emotion/styled';
+import { motion } from 'framer-motion';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
 
@@ -63,15 +64,22 @@ export const OrderBox: React.FC<{ order: ActiveOrderType }> = ({ order }) => {
                 <Stack w100 column justifyBetween itemsEnd style={{ height: '100%' }}>
                     <OrderState state={order.state} column />
                     <Link href={`/customer/manage/orders/${order.code}`}>
-                        <TP size="1.5rem" weight={500}>
-                            {t('ordersPage.viewOrder')}
-                        </TP>
+                        <Styled whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
+                            <TP size="1.5rem" weight={500}>
+                                {t('ordersPage.viewOrder')}
+                            </TP>
+                        </Styled>
                     </Link>
                 </Stack>
             </ContentStack>
         </ClickableStack>
     );
 };
+
+const Styled = styled(motion.div)`
+    position: relative;
+    color: ${p => p.theme.gray(900)};
+`;
 
 const ContentStack = styled(Stack)`
     padding: 1.75rem;

@@ -9,14 +9,37 @@ import { CollectionContainerType, Sort } from './types';
 
 const useCollectionContainer = createContainer<
     CollectionContainerType,
-    { collection: CollectionType; products: ProductSearchType[]; totalProducts: number; facets: FiltersFacetType[] }
+    {
+        collection: CollectionType;
+        products: ProductSearchType[];
+        totalProducts: number;
+        facets: FiltersFacetType[];
+        searchQuery?: string;
+        filters?: { [key: string]: string[] };
+        sort?: Sort;
+        page?: number;
+    }
 >(initialState => {
     if (!initialState?.collection) return collectionsEmptyState;
     const [collection, setCollection] = useState(initialState.collection);
     const [products, setProducts] = useState(initialState.products);
     const [totalProducts, setTotalProducts] = useState(initialState.totalProducts);
     const [facetValues, setFacetValues] = useState(initialState.facets);
-    const [filters, setFilters] = useState<{ [key: string]: string[] }>({});
+    const [filters, setFilters] = useState<{ [key: string]: string[] }>(
+        initialState.filters ? initialState.filters : {},
+    );
+    const initialSort = initialState.sort
+        ? initialState.sort
+        : {
+              key: 'title',
+              direction: SortOrder.ASC,
+          };
+    const [sort, setSort] = useState<{
+        key: string;
+        direction: SortOrder;
+    }>(initialSort);
+    const [currentPage, setCurrentPage] = useState(initialState.page ? initialState.page : 1);
+    const [q, setQ] = useState<string | undefined>(initialState.searchQuery ? initialState.searchQuery : undefined);
     const { query } = useRouter();
 
     useEffect(() => {
@@ -27,19 +50,12 @@ const useCollectionContainer = createContainer<
         setFilters({});
     }, [initialState]);
 
-    const [q, setQ] = useState<string>();
-    const [currentPage, setCurrentPage] = useState(1);
     const [filtersOpen, setFiltersOpen] = useState(false);
-    const [sort, setSort] = useState<{
-        key: string;
-        direction: SortOrder;
-    }>({
-        key: 'title',
-        direction: SortOrder.ASC,
-    });
 
     const totalPages = useMemo(() => Math.ceil(totalProducts / PER_PAGE), [totalProducts]);
+
     useEffect(() => {
+        if (initialState.searchQuery) return;
         if (query.page) setCurrentPage(parseInt(query.page as string));
         if (query.sort) {
             const [key, direction] = (query.sort as string).split('-');
@@ -132,7 +148,7 @@ const useCollectionContainer = createContainer<
             collectionSlug: collection.slug,
             groupByProduct: true,
             facetValueFilters,
-            take: PER_PAGE * page,
+            take: PER_PAGE,
             skip: PER_PAGE * (page - 1),
             sort: sort.key === 'title' ? { name: sort.direction } : { price: sort.direction },
             term: q,

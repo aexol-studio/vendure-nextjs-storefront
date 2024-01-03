@@ -26,9 +26,9 @@ export const CartBody: React.FC<Props> = ({ currencyCode, activeOrder }) => {
                         const optionInName = productVariant.name.replace(productVariant.product.name, '') !== '';
                         return (
                             <CartRow w100 justifyBetween key={id}>
-                                <Stack gap="3.5rem">
+                                <Stack gap="2rem">
                                     <CartImage src={featuredAsset?.preview} />
-                                    <Stack column gap="2.5rem">
+                                    <Stack column gap="2rem">
                                         <Stack column>
                                             <TP size="1.75rem" weight={500} style={{ whiteSpace: 'nowrap' }}>
                                                 {productVariant.product.name}
@@ -41,8 +41,8 @@ export const CartBody: React.FC<Props> = ({ currencyCode, activeOrder }) => {
                                         </Stack>
                                         <QuantityCounter v={quantity} onChange={v => setItemQuantityInCart(id, v)} />
                                         <Remove onClick={async () => await removeFromCart(id)}>
-                                            <Trash2 size={20} />
-                                            <TP weight={600} size="1.25rem" upperCase>
+                                            <Trash2 size={'2rem'} />
+                                            <TP weight={600} size="1rem" upperCase>
                                                 {t('remove')}
                                             </TP>
                                         </Remove>

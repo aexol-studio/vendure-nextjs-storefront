@@ -1,10 +1,10 @@
 import { CollectionTileType } from '@/src/graphql/selectors';
 import React from 'react';
 import { TH2, Stack } from '@/src/components/atoms';
-import { ProductImageWithInfo } from '@/src/components/molecules/ProductImageWithInfo';
 
 import { useTranslation } from 'next-i18next';
-import styled from '@emotion/styled';
+import { Slider } from './Slider';
+import { ProductImageWithInfo } from '@/src/components/molecules/ProductImageWithInfo';
 
 interface RelatedProductCollectionsProps {
     collections?: CollectionTileType[];
@@ -12,41 +12,23 @@ interface RelatedProductCollectionsProps {
 
 export const RelatedProductCollections: React.FC<RelatedProductCollectionsProps> = ({ collections }) => {
     const { t } = useTranslation('common');
+    if (!collections?.length) return null;
+
+    const slides = collections.map(collection => (
+        <ProductImageWithInfo
+            size="tile"
+            key={collection.id}
+            href={`/collections/${collection.slug}`}
+            imageSrc={collection.featuredAsset?.preview || ''}
+            text={collection.name || ''}
+            withHover
+        />
+    ));
+
     return (
-        <Stack column gap="1rem">
+        <Stack column gap="2rem">
             <TH2>{t('related-collections')}</TH2>
-            <StyledStack gap="2rem">
-                {collections?.map(col => (
-                    <ProductImageWithInfo
-                        key={col.name}
-                        href={`/collections/${col.slug}`}
-                        imageSrc={col.featuredAsset?.preview}
-                        size="popup"
-                        text={col.name}
-                    />
-                ))}
-            </StyledStack>
+            <Slider withDots spacing={16} slides={slides} />
         </Stack>
     );
 };
-
-const StyledStack = styled(Stack)`
-    overflow-x: scroll;
-    ::-webkit-scrollbar {
-        height: 0.8rem;
-        width: 0.8rem;
-    }
-
-    ::-webkit-scrollbar-track {
-        background: transparent;
-    }
-
-    ::-webkit-scrollbar-thumb {
-        background: ${p => p.theme.gray(200)};
-        border-radius: 1rem;
-    }
-
-    ::-webkit-scrollbar-thumb:hover {
-        background: ${p => p.theme.gray(400)};
-    }
-`;

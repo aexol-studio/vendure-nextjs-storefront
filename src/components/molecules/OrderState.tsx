@@ -10,13 +10,22 @@ interface Props {
     size?: 'small' | 'medium' | 'large';
     column?: boolean;
     withoutText?: boolean;
+    itemsCenter?: boolean;
+    itemsEnd?: boolean;
 }
 
-export const OrderState: React.FC<Props> = ({ state, size = 'small', column, withoutText }) => {
+export const OrderState: React.FC<Props> = ({
+    state,
+    size = 'small',
+    column,
+    withoutText,
+    itemsCenter,
+    itemsEnd = true,
+}) => {
     const { t } = useTranslation('common');
     const iconSize = size === 'small' ? 20 : size === 'medium' ? 30 : 40;
     return (
-        <Stack w100 itemsEnd gap="0.5rem" column={column}>
+        <Stack w100 itemsEnd={itemsEnd} itemsCenter={itemsCenter} gap="0.5rem" column={column}>
             <Stack justifyCenter itemsCenter>
                 {orderStateToIcon(state, iconSize)}
             </Stack>

@@ -2,7 +2,7 @@ import { storefrontApiMutation } from '@/src/graphql/client';
 import { AvailablePaymentMethodsType } from '@/src/graphql/selectors';
 import { usePush } from '@/src/lib/redirect';
 import React, { useEffect, useState } from 'react';
-import { Stack } from '@/src/components/atoms';
+import { Stack, TP } from '@/src/components/atoms';
 import { DefaultMethod } from './PaymentMethods/DefaultMethod';
 import { Elements } from '@stripe/react-stripe-js';
 import { loadStripe, Stripe, StripeError } from '@stripe/stripe-js';
@@ -10,6 +10,8 @@ import { StripeForm } from './PaymentMethods/StripeForm';
 import { useCheckout } from '@/src/state/checkout';
 import { Banner } from '@/src/components/forms';
 import { useTranslation } from 'next-i18next';
+import { Przelewy24Logo } from '@/src/assets/svg/Przelewy24Logo';
+import styled from '@emotion/styled';
 
 const STRIPE_PUBLIC_KEY = process.env.NEXT_PUBLIC_STRIPE_KEY;
 
@@ -113,7 +115,12 @@ export const OrderPayment: React.FC<OrderPaymentProps> = ({ availablePaymentMeth
         try {
             const { addPaymentToOrder } = await storefrontApiMutation({
                 addPaymentToOrder: [
-                    { input: { method: 'przelewy-24', metadata: {} } },
+                    {
+                        input: {
+                            method: 'przelewy-24',
+                            metadata: JSON.stringify({ blikCode: '123456' }),
+                        },
+                    },
                     {
                         __typename: true,
                         '...on Order': { state: true, code: true, payments: { metadata: true } },
@@ -180,7 +187,37 @@ export const OrderPayment: React.FC<OrderPaymentProps> = ({ availablePaymentMeth
                     <StripeForm activeOrder={activeOrder} onStripeSubmit={onStripeSubmit} />
                 </Elements>
             )}
-            {przelewy24Method && <button onClick={przelewy24}>Przelewy24</button>}
+            {przelewy24Method && (
+                <StyledP24Button onClick={przelewy24}>
+                    <P24Logo itemsCenter justifyCenter>
+                        <Przelewy24Logo />
+                    </P24Logo>
+                    <TP weight={500}>Przelewy24</TP>
+                </StyledP24Button>
+            )}
         </Stack>
     ) : null;
 };
+
+const P24Logo = styled(Stack)`
+    width: 10rem;
+    height: 6.5rem;
+    border-radius: 0.25rem;
+    padding: 0.5rem 1rem;
+`;
+
+const StyledP24Button = styled.button`
+    display: flex;
+    gap: 3.5rem;
+    align-items: center;
+    justify-content: center;
+    background-color: #fff;
+    border: 1px solid #e5e5e5;
+    border-radius: 0.25rem;
+    padding: 1.5rem 3rem;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+    &:hover {
+        background-color: #e5e5e5;
+    }
+`;

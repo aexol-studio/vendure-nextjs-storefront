@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from '@emotion/styled';
 import Link from 'next/link';
-import { TP, ProductImage, Stack } from '@/src/components/atoms';
+import { TP, ProductImage } from '@/src/components/atoms';
 
 interface ProductImageWithInfoProps {
     size: 'thumbnail' | 'tile' | 'popup' | 'detail' | 'full' | 'thumbnail-big';
@@ -10,7 +10,6 @@ interface ProductImageWithInfoProps {
     text: string;
     imageSrc?: string;
     withHover?: boolean;
-    withText?: boolean;
 }
 
 export const ProductImageWithInfo: React.FC<ProductImageWithInfoProps> = ({
@@ -19,7 +18,6 @@ export const ProductImageWithInfo: React.FC<ProductImageWithInfoProps> = ({
     size,
     imageSrc,
     withHover,
-    withText,
 }) => {
     return (
         <StyledLink size={size} withHover={withHover} href={href}>
@@ -27,7 +25,6 @@ export const ProductImageWithInfo: React.FC<ProductImageWithInfoProps> = ({
             <AbsoluteStyledTP upperCase size="2rem">
                 {text}
             </AbsoluteStyledTP>
-            <Stack column>{withText && <StyledTP>{text}</StyledTP>}</Stack>
         </StyledLink>
     );
 };
@@ -45,9 +42,6 @@ const StyledLink = styled(Link)<{ withHover?: boolean; size: string }>`
     }}
 
     ${({ withHover }) => withHover && `:hover p { display: block; }`}
-`;
-const StyledTP = styled(TP)`
-    color: ${p => p.theme.text.main};
 `;
 
 const AbsoluteStyledTP = styled(TP)`

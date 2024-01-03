@@ -5,7 +5,7 @@ import { SortAsc, SortDesc } from 'lucide-react';
 import { Sort } from '@/src/state/collection/types';
 import { useTranslation } from 'next-i18next';
 import styled from '@emotion/styled';
-import { motion } from 'framer-motion';
+import { AnimatePresence, motion } from 'framer-motion';
 
 interface Props {
     sort: Sort;
@@ -46,35 +46,43 @@ export const SortBy: React.FC<Props> = ({ handleSort, sort }) => {
                         {sort.direction === 'ASC' ? <SortAsc size="1.75rem" /> : <SortDesc size="1.75rem" />}
                     </IconWrapper>
                 </StyledOption>
-                <Wrapper
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: open ? 1 : 0, y: open ? 0 : 10 }}
-                    transition={{ duration: 0.2, ease: 'easeInOut' }}
-                    exit={{ opacity: 0, y: 10 }}>
-                    {sortOptions
-                        .filter(o => o.key !== sort.key || o.direction !== sort.direction)
-                        .map(o => (
-                            <StyledOption
-                                itemsCenter
-                                key={o.key + o.direction}
-                                onClick={async () => {
-                                    setOpen(false);
-                                    await handleSort(o);
-                                }}>
-                                <Stack itemsCenter>
-                                    <TP capitalize weight={400} size="1.25rem">
-                                        {o.key}&nbsp;
-                                    </TP>
-                                    <TP capitalize weight={400} size="1.25rem">
-                                        ({t(`sort-directions.${o.direction}`)})
-                                    </TP>
-                                </Stack>
-                                <IconWrapper justifyCenter itemsCenter>
-                                    {o.direction === 'ASC' ? <SortAsc size="1.75rem" /> : <SortDesc size="1.75rem" />}
-                                </IconWrapper>
-                            </StyledOption>
-                        ))}
-                </Wrapper>
+                <AnimatePresence>
+                    {open && (
+                        <Wrapper
+                            initial={{ opacity: 0, y: 10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0, y: 10 }}
+                            transition={{ duration: 0.2, ease: 'easeInOut' }}>
+                            {sortOptions
+                                .filter(o => o.key !== sort.key || o.direction !== sort.direction)
+                                .map(o => (
+                                    <StyledOption
+                                        itemsCenter
+                                        key={o.key + o.direction}
+                                        onClick={async () => {
+                                            setOpen(false);
+                                            await handleSort(o);
+                                        }}>
+                                        <Stack itemsCenter>
+                                            <TP capitalize weight={400} size="1.25rem">
+                                                {o.key}&nbsp;
+                                            </TP>
+                                            <TP capitalize weight={400} size="1.25rem">
+                                                ({t(`sort-directions.${o.direction}`)})
+                                            </TP>
+                                        </Stack>
+                                        <IconWrapper justifyCenter itemsCenter>
+                                            {o.direction === 'ASC' ? (
+                                                <SortAsc size="1.75rem" />
+                                            ) : (
+                                                <SortDesc size="1.75rem" />
+                                            )}
+                                        </IconWrapper>
+                                    </StyledOption>
+                                ))}
+                        </Wrapper>
+                    )}
+                </AnimatePresence>
             </Relative>
         </Container>
     );

@@ -13,6 +13,7 @@ import { useCart } from '@/src/state/cart';
 type SliderItem = {
     id: string;
     title: string;
+    variant?: string;
     image: string;
     href: string;
     price: number;
@@ -28,14 +29,18 @@ export const ProductsSellout: React.FC<{ collection: RootNode<NavigationType>['c
     const slides = collection.children
         .reduce((acc, children) => {
             if ('productVariants' in children) {
-                const variants = children.productVariants?.items.map(variant => ({
-                    id: variant.id,
-                    title: variant.product.name || '',
-                    image: variant.product.featuredAsset?.preview || '',
-                    href: `/products/${variant.product.slug}`,
-                    price: variant.priceWithTax,
-                    currencyCode: variant.currencyCode,
-                }));
+                const variants = children.productVariants?.items.map(variant => {
+                    const optionInName = variant.name.replace(variant.product.name, '') !== '';
+                    return {
+                        id: variant.id,
+                        title: variant.product.name,
+                        variant: optionInName ? variant.name : undefined,
+                        image: variant.product.featuredAsset?.preview || '',
+                        href: `/products/${variant.product.slug}`,
+                        price: variant.priceWithTax,
+                        currencyCode: variant.currencyCode,
+                    };
+                });
                 if (variants) acc.push(...variants);
             }
             return acc;
@@ -43,13 +48,27 @@ export const ProductsSellout: React.FC<{ collection: RootNode<NavigationType>['c
         .map((val, index) => (
             <Stack w100 column key={index} gap="2rem">
                 <Stack w100 column gap="0.5rem">
-                    <ProductImageWithInfo
-                        size="thumbnail-big"
-                        href={val.href}
-                        imageSrc={val.image}
-                        text={val.title}
-                        withText
-                    />
+                    <Relative>
+                        <ProductImageWithInfo
+                            size="thumbnail-big"
+                            href={val.href}
+                            imageSrc={val.image}
+                            text={val.title}
+                        />
+                        {val.variant && (
+                            <Absolute w100 itemsCenter justifyCenter>
+                                <TP size="1.25rem" weight={400}>
+                                    {val.variant.replace(val.title, '')}
+                                </TP>
+                            </Absolute>
+                        )}
+                    </Relative>
+                    {val.title && (
+                        <TP size="1.5rem" weight={500}>
+                            {val.title}
+                        </TP>
+                    )}
+
                     {val.price && val.currencyCode && <Price currencyCode={val.currencyCode} price={val.price} />}
                 </Stack>
                 <Button onClick={async () => await addToCart(val.id, 1, true)}>{t('add-to-cart')}</Button>
@@ -68,6 +87,18 @@ export const ProductsSellout: React.FC<{ collection: RootNode<NavigationType>['c
     );
 };
 
+const Relative = styled.div`
+    position: relative;
+`;
+
 const MaxWidth = styled.div`
     max-width: 42rem;
+`;
+
+const Absolute = styled(Stack)`
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    background: ${p => p.theme.grayAlpha(700, 0.4)};
+    padding: 0.5rem 0;
 `;

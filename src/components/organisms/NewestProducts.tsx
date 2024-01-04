@@ -1,52 +1,33 @@
 import { NewestProductType } from '@/src/graphql/selectors';
 import React from 'react';
-import { TH2, Stack } from '@/src/components/atoms';
-import { ProductImageWithInfo } from '@/src/components/molecules/ProductImageWithInfo';
-import styled from '@emotion/styled';
+import { TH2, Stack, TP } from '@/src/components/atoms';
 
 import { useTranslation } from 'next-i18next';
+import { Slider } from './Slider';
+import { ProductImageWithInfo } from '@/src/components/molecules/ProductImageWithInfo';
 
-interface NewesProductsProps {
+interface NewestProductsProps {
     products: NewestProductType[];
 }
 
-export const NewestProducts: React.FC<NewesProductsProps> = ({ products }) => {
+export const NewestProducts: React.FC<NewestProductsProps> = ({ products }) => {
     const { t } = useTranslation('common');
+
+    const slides = products.map(product => (
+        <Stack column gap="1rem" itemsCenter key={product.name}>
+            <ProductImageWithInfo
+                size="tile"
+                href={`/products/${product.slug}`}
+                imageSrc={product.featuredAsset?.preview || ''}
+            />
+            <TP>{product.name}</TP>
+        </Stack>
+    ));
+
     return (
-        <Stack column gap="1rem" style={{ marginBottom: '2rem' }}>
+        <Stack column gap="2rem" style={{ marginBottom: '2rem' }}>
             <TH2>{t('newest-products')}</TH2>
-            <StyledStack gap="2rem">
-                {products.map(p => (
-                    <ProductImageWithInfo
-                        imageSrc={p.featuredAsset?.preview}
-                        size="popup"
-                        key={p.name}
-                        href={`/products/${p.slug}`}
-                        text={p.name}
-                    />
-                ))}
-            </StyledStack>
+            <Slider withArrows withDots spacing={32} slides={slides} />
         </Stack>
     );
 };
-
-const StyledStack = styled(Stack)`
-    overflow-x: scroll;
-    ::-webkit-scrollbar {
-        height: 0.8rem;
-        width: 0.8rem;
-    }
-
-    ::-webkit-scrollbar-track {
-        background: transparent;
-    }
-
-    ::-webkit-scrollbar-thumb {
-        background: ${p => p.theme.gray(200)};
-        border-radius: 1rem;
-    }
-
-    ::-webkit-scrollbar-thumb:hover {
-        background: ${p => p.theme.gray(400)};
-    }
-`;

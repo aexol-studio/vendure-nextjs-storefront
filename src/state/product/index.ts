@@ -18,6 +18,10 @@ const useProductContainer = createContainer<ProductContainerType, { product: Pro
     const { query } = useRouter();
 
     useEffect(() => {
+        setVariant(initialState.product?.variants[0]);
+    }, [initialState.product]);
+
+    useEffect(() => {
         if (typeof window === 'undefined' || !initialState.product) return;
         if (initialState.product.variants.length) {
             const url = new URL(window.location.href);

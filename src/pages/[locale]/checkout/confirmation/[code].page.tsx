@@ -39,7 +39,7 @@ const ConfirmationPage: React.FC<InferGetServerSidePropsType<typeof getServerSid
 
         if (!order && props.code) fetchOrder();
     }, []);
-
+    console.log('order', order);
     return (
         <Layout
             categories={props.collections}

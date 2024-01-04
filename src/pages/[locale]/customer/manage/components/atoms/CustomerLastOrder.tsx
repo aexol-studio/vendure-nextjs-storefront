@@ -15,9 +15,12 @@ export const CustomerLastOrder: React.FC<{ order?: ActiveOrderType }> = ({ order
     const { t } = useTranslation('customer');
     return order ? (
         <LastOrderWrap w100 justifyBetween column gap="1.25rem">
-            <TP size="1.75rem" weight={600}>
-                {t('accountPage.lastOrder.title')}
-            </TP>
+            <Stack gap="2rem">
+                <TP style={{ whiteSpace: 'nowrap' }} size="1.75rem" weight={600}>
+                    {t('accountPage.lastOrder.title')}
+                </TP>
+                <OrderState itemsCenter state={order.state} />
+            </Stack>
             <Stack gap="1.5rem">
                 <ProductImage size="thumbnail-big" src={order?.lines[0]?.featuredAsset?.preview} />
                 <Stack column gap="0.5rem">
@@ -27,7 +30,6 @@ export const CustomerLastOrder: React.FC<{ order?: ActiveOrderType }> = ({ order
                         </TP>
                         <TP>{order.code}</TP>
                     </Stack>
-                    <OrderState state={order.state} />
                     <Stack>
                         <TP size="1.5rem" weight={500}>
                             {t('accountPage.lastOrder.orderDate')}:&nbsp;

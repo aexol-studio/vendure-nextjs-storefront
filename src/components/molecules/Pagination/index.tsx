@@ -7,6 +7,7 @@ export const Pagination: React.FC<{
     changePage: (page: number) => void;
     totalPages: number;
 }> = ({ page, changePage, totalPages }) => {
+    if (totalPages === 1) return null;
     const { items } = usePagination({ page, totalPages });
     return (
         <PaginationWrapper w100 justifyCenter itemsCenter gap="1rem">

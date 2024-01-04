@@ -7,6 +7,7 @@ import styled from '@emotion/styled';
 export const RelatedCollections: React.FC<{
     collection: RootNode<NavigationType>['children'][number];
 }> = ({ collection }) => {
+    if (!collection || collection?.children?.length === 0) return null;
     const { t } = useTranslation('common');
     return (
         <Stack column gap="1.5rem">

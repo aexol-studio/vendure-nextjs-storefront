@@ -7,28 +7,37 @@ interface ProductImageWithInfoProps {
     size: 'thumbnail' | 'tile' | 'popup' | 'detail' | 'full' | 'thumbnail-big';
 
     href: string;
-    text: string;
+    text?: string;
     imageSrc?: string;
 }
 
 export const ProductImageWithInfo: React.FC<ProductImageWithInfoProps> = ({ href, text, size, imageSrc }) => {
     return (
-        <StyledLink href={href}>
+        <StyledLink size={size} withHover={!!text} href={href}>
             <ProductImage src={imageSrc} size={size} />
-            <StyledTP upperCase size="2rem">
+            <AbsoluteStyledTP upperCase size="2rem">
                 {text}
-            </StyledTP>
+            </AbsoluteStyledTP>
         </StyledLink>
     );
 };
 
-const StyledLink = styled(Link)`
+const StyledLink = styled(Link)<{ withHover?: boolean; size: string }>`
     position: relative;
-    :hover p {
-        display: block;
-    }
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    ${({ size }) => {
+        if (['thumbnail', 'thumbnail-big'].includes(size)) {
+            return `align-items: flex-start;`;
+        }
+        return `align-items: center;`;
+    }}
+
+    ${({ withHover }) => withHover && `:hover p { display: block; }`}
 `;
-const StyledTP = styled(TP)`
+
+const AbsoluteStyledTP = styled(TP)`
     position: absolute;
     top: 50%;
     left: 50%;

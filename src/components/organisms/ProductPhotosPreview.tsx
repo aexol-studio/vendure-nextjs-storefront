@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Stack, ProductImage, ImageSwitcherArrow } from '@/src/components/atoms';
 import styled from '@emotion/styled';
 import { ImageOff } from 'lucide-react';
@@ -12,21 +12,27 @@ interface ProductPhotosPreview {
 export const ProductPhotosPreview: React.FC<ProductPhotosPreview> = ({ featuredAsset, images }) => {
     const [chosenImage, setChosenImage] = useState<Asset>(featuredAsset ?? images?.[0]);
 
+    useEffect(() => {
+        if (typeof featuredAsset === 'undefined' && typeof images === 'undefined' && typeof chosenImage === 'undefined')
+            return;
+        setChosenImage(featuredAsset ?? images?.[0]);
+    }, [featuredAsset, images]);
+
     const handleArrowClick = (forward?: boolean) => {
         const chosenImageIndex = images?.findIndex(image => chosenImage?.source === image?.source);
-
         if (typeof chosenImageIndex === 'undefined') return;
-
         if (forward) {
             setChosenImage(images?.[chosenImageIndex + 1]);
             return;
         }
         setChosenImage(images?.[chosenImageIndex - 1]);
     };
+
     const chosenImageIndex = useMemo(
         () => images?.findIndex(image => chosenImage?.source === image?.source),
         [images, chosenImage],
     );
+
     return (
         <Wrapper gap="3rem">
             <AssetBrowser column gap="1.75rem">

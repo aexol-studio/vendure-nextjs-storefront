@@ -1,5 +1,6 @@
 import React from 'react';
 import '../styles/global.css';
+import 'keen-slider/keen-slider.min.css';
 import { AppProps } from 'next/app';
 import { appWithTranslation } from 'next-i18next';
 import { Noto_Sans_HK } from 'next/font/google';
@@ -30,6 +31,10 @@ const App = ({ Component, pageProps }: AppProps) => {
                                 products: 'products' in pageProps ? pageProps.products : undefined,
                                 facets: 'facets' in pageProps ? pageProps.facets : undefined,
                                 totalProducts: 'totalProducts' in pageProps ? pageProps.totalProducts : undefined,
+                                filters: 'filters' in pageProps ? pageProps.filters : undefined,
+                                searchQuery: 'searchQuery' in pageProps ? pageProps.searchQuery : undefined,
+                                page: 'page' in pageProps ? pageProps.page : undefined,
+                                sort: 'sort' in pageProps ? pageProps.sort : undefined,
                             }}>
                             <Component {...pageProps} />
                         </CollectionProvider>

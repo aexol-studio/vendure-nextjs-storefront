@@ -36,7 +36,7 @@ const Order: React.FC<InferGetServerSidePropsType<typeof getServerSideProps>> = 
         <Layout
             categories={props.collections}
             navigation={props.navigation}
-            pageTitle={`${t('orderPage.title')} #${order.code}`}>
+            pageTitle={`${t('orderPage.title')} #${order?.code}`}>
             <ContentContainer>
                 <CustomerWrap itemsStart gap="1.75rem">
                     <CustomerNavigation />
@@ -91,7 +91,9 @@ const Order: React.FC<InferGetServerSidePropsType<typeof getServerSideProps>> = 
                                     ))}
                                 </Stack>
                                 <StyledDivider />
-                                <Discounts withLabel discounts={order.discounts} currencyCode={currencyCode} />
+                                {order?.discounts.length > 0 ? (
+                                    <Discounts withLabel discounts={order.discounts} currencyCode={currencyCode} />
+                                ) : null}
                                 <Stack column>
                                     <TP size="1.5rem" weight={500}>
                                         {t('orderPage.totalPrice')}

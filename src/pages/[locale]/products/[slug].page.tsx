@@ -1,3 +1,4 @@
+import React from 'react';
 import { ContentContainer } from '@/src/components/atoms/ContentContainer';
 import { Facet } from '@/src/components/atoms/Facet';
 
@@ -19,7 +20,6 @@ import styled from '@emotion/styled';
 import { Check, X } from 'lucide-react';
 import { InferGetStaticPropsType } from 'next';
 
-import React from 'react';
 import { Trans, useTranslation } from 'next-i18next';
 import { ProductOptions } from '@/src/components/organisms/ProductOptions';
 import { Breadcrumbs } from '@/src/components/molecules/Breadcrumbs';
@@ -42,6 +42,17 @@ const ProductPage: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = pr
                     <Breadcrumbs breadcrumbs={breadcrumbs} />
                     <Main gap="5rem">
                         <StickyLeft w100 itemsCenter justifyCenter gap="2.5rem">
+                            {/* <DesktopPhotoSwipe
+                                galleryID="product"
+                                images={
+                                    product?.assets.map(a => ({
+                                        src: a.preview,
+                                        width: a.width,
+                                        height: a.height,
+                                        alt: product.name,
+                                    })) || []
+                                }
+                            /> */}
                             <ProductPhotosPreview featuredAsset={product?.featuredAsset} images={product?.assets} />
                         </StickyLeft>
                         <StyledStack column gap="2.5rem">
@@ -104,8 +115,8 @@ const ProductPage: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = pr
                             )}
                         </StyledStack>
                     </Main>
-                    <RelatedProductCollections collections={props?.collections} />
                     <NewestProducts products={props.newestProducts.products.items} />
+                    <RelatedProductCollections collections={props?.collections} />
                 </Wrapper>
             </ContentContainer>
         </Layout>
@@ -163,6 +174,7 @@ const Main = styled(Stack)`
         flex-direction: row;
         padding: 4rem 0;
     }
+    margin-bottom: 2rem;
     border-bottom: 1px solid ${({ theme }) => theme.gray(100)};
 `;
 

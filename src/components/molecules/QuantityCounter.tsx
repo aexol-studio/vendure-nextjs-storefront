@@ -5,28 +5,41 @@ import { Minus, Plus } from 'lucide-react';
 
 export const QuantityCounter = ({ onChange, v }: { onChange: (v: number) => void; v: number }) => {
     return (
-        <Main gap="2.5rem" itemsCenter>
-            <IconButton>
-                <Minus size={24} onClick={() => onChange(v - 1)} />
-            </IconButton>
+        <Main itemsCenter>
+            <IconButtonStatic onClick={() => onChange(v - 1)}>
+                <MinWidth>
+                    <Minus size={'2.5rem'} />
+                </MinWidth>
+            </IconButtonStatic>
             <span>{v}</span>
-            <IconButton>
-                <Plus size={24} onClick={() => onChange(v + 1)} />
-            </IconButton>
+            <IconButtonStatic onClick={() => onChange(v + 1)}>
+                <MinWidth>
+                    <Plus size={'2.5rem'} />
+                </MinWidth>
+            </IconButtonStatic>
         </Main>
     );
 };
 
+const MinWidth = styled.div`
+    display: flex;
+    align-items: center;
+    justify-content: center;
+`;
+
+const IconButtonStatic = styled(IconButton)`
+    padding: 2rem;
+`;
+
 const Main = styled(Stack)`
     border: 1px solid ${p => p.theme.gray(100)};
-    padding: 0.75rem 1rem;
     color: ${p => p.theme.gray(900)};
     align-self: flex-start;
     width: auto;
     font-size: 2rem;
     font-weight: 600;
-
     span {
+        margin: 0 1rem;
         font-size: 1.8rem;
         font-weight: 600;
         line-height: 2.4rem;

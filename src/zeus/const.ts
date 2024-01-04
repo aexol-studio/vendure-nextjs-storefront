@@ -188,10 +188,10 @@ export const AllTypesProps: Record<string,any> = {
 		customFields:"JSON"
 	},
 	CreateAddressInput:{
-		customFields:"CreateAddressCustomFieldsInput"
+		customFields:"JSON"
 	},
 	UpdateAddressInput:{
-		customFields:"UpdateAddressCustomFieldsInput"
+		customFields:"JSON"
 	},
 	CurrencyCode: "enum" as const,
 	CustomerGroup:{
@@ -288,8 +288,7 @@ export const AllTypesProps: Record<string,any> = {
 		price:"NumberOperators",
 		currencyCode:"StringOperators",
 		priceWithTax:"NumberOperators",
-		stockLevel:"StringOperators",
-		beforePrice:"NumberOperators"
+		stockLevel:"StringOperators"
 	},
 	ProductVariantSortParameter:{
 		id:"SortOrder",
@@ -300,8 +299,7 @@ export const AllTypesProps: Record<string,any> = {
 		name:"SortOrder",
 		price:"SortOrder",
 		priceWithTax:"SortOrder",
-		stockLevel:"SortOrder",
-		beforePrice:"SortOrder"
+		stockLevel:"SortOrder"
 	},
 	CustomerFilterParameter:{
 		id:"IDOperators",
@@ -437,12 +435,6 @@ export const AllTypesProps: Record<string,any> = {
 		slug:"SortOrder",
 		description:"SortOrder"
 	},
-	CreateAddressCustomFieldsInput:{
-
-	},
-	UpdateAddressCustomFieldsInput:{
-
-	},
 	NativeAuthInput:{
 
 	}
@@ -496,8 +488,7 @@ export const ReturnTypes: Record<string,any> = {
 		requestUpdateCustomerEmailAddress:"RequestUpdateCustomerEmailAddressResult",
 		updateCustomerEmailAddress:"UpdateCustomerEmailAddressResult",
 		requestPasswordReset:"RequestPasswordResetResult",
-		resetPassword:"ResetPasswordResult",
-		createStripePaymentIntent:"String"
+		resetPassword:"ResetPasswordResult"
 	},
 	Address:{
 		id:"ID",
@@ -514,7 +505,7 @@ export const ReturnTypes: Record<string,any> = {
 		phoneNumber:"String",
 		defaultShippingAddress:"Boolean",
 		defaultBillingAddress:"Boolean",
-		customFields:"AddressCustomFields"
+		customFields:"JSON"
 	},
 	Asset:{
 		id:"ID",
@@ -1138,7 +1129,7 @@ export const ReturnTypes: Record<string,any> = {
 		country:"String",
 		countryCode:"String",
 		phoneNumber:"String",
-		customFields:"AddressCustomFields"
+		customFields:"JSON"
 	},
 	OrderList:{
 		items:"Order",
@@ -1419,7 +1410,7 @@ export const ReturnTypes: Record<string,any> = {
 		options:"ProductOption",
 		facetValues:"FacetValue",
 		translations:"ProductVariantTranslation",
-		customFields:"ProductVariantCustomFields"
+		customFields:"JSON"
 	},
 	ProductVariantTranslation:{
 		id:"ID",
@@ -1767,12 +1758,6 @@ export const ReturnTypes: Record<string,any> = {
 	ActiveOrderResult:{
 		"...on Order":"Order",
 		"...on NoActiveOrderError":"NoActiveOrderError"
-	},
-	AddressCustomFields:{
-		NIP:"String"
-	},
-	ProductVariantCustomFields:{
-		beforePrice:"Int"
 	}
 }
 

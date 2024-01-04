@@ -7,20 +7,13 @@ interface ProductImageWithInfoProps {
     size: 'thumbnail' | 'tile' | 'popup' | 'detail' | 'full' | 'thumbnail-big';
 
     href: string;
-    text: string;
+    text?: string;
     imageSrc?: string;
-    withHover?: boolean;
 }
 
-export const ProductImageWithInfo: React.FC<ProductImageWithInfoProps> = ({
-    href,
-    text,
-    size,
-    imageSrc,
-    withHover,
-}) => {
+export const ProductImageWithInfo: React.FC<ProductImageWithInfoProps> = ({ href, text, size, imageSrc }) => {
     return (
-        <StyledLink size={size} withHover={withHover} href={href}>
+        <StyledLink size={size} withHover={!!text} href={href}>
             <ProductImage src={imageSrc} size={size} />
             <AbsoluteStyledTP upperCase size="2rem">
                 {text}

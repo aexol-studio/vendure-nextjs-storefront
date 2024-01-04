@@ -47,6 +47,34 @@ export const Layout: React.FC<LayoutProps> = ({ pageTitle, children, categories,
         fetchActiveOrder();
     }, []);
 
+    //TODO: it should be dynamic as plugin.
+    const entries = [
+        {
+            message: 'Next JS Storefront demo made by Aexol',
+            href: 'https://aexol.com',
+            bgColor: 'lch(50% 0 0)',
+            textColor: 'lch(80% 0 0)',
+            hoverTextColor: 'lch(100% 0 0)',
+            hoverBgColor: 'lch(50% 0 0)',
+        },
+        {
+            message: 'Best store ever',
+            href: '/',
+            bgColor: 'lch(50% 0 0)',
+            textColor: 'lch(80% 0 0)',
+            hoverTextColor: 'lch(100% 0 0)',
+            hoverBgColor: 'lch(50% 0 0)',
+        },
+        {
+            message: 'See best products',
+            href: '/collections/all',
+            bgColor: 'lch(50% 0 0)',
+            textColor: 'lch(80% 0 0)',
+            hoverTextColor: 'lch(100% 0 0)',
+            hoverBgColor: 'lch(50% 0 0)',
+        },
+    ];
+
     return (
         <MainStack column>
             <CustomHelmet
@@ -55,7 +83,7 @@ export const Layout: React.FC<LayoutProps> = ({ pageTitle, children, categories,
                 variant={variant}
                 collection={collection}
             />
-            <AnnouncementBar secondsBetween={5} />
+            <AnnouncementBar entries={entries} secondsBetween={5} />
             <Navigation navigation={navigation} />
             {categories?.length > 0 ? <CategoryBar collections={categories} /> : null}
             <Container>{children}</Container>

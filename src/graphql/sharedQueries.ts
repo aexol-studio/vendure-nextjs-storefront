@@ -1,5 +1,10 @@
 import { storefrontApiQuery } from '@/src/graphql/client';
-import { CollectionTileSelector, YAMLProductsSelector } from '@/src/graphql/selectors';
+import {
+    CollectionTileSelector,
+    CollectionTileProductVariantType,
+    CollectionTileProductVariantSelector,
+    YAMLProductsSelector,
+} from '@/src/graphql/selectors';
 import { SortOrder } from '@/src/zeus';
 
 export const getCollectionsPaths = () =>
@@ -12,36 +17,37 @@ export const getCollections = async () => {
         collections: [{ options: { filter: { slug: { notEq: 'search' } } } }, { items: CollectionTileSelector }],
     });
 
-    const variantForCollections = await Promise.all(
-        _collections.collections.items.map(async c => {
-            const products = await storefrontApiQuery({
-                collection: [
-                    { slug: c.slug },
-                    {
-                        productVariants: [
-                            { options: { take: 2, filter: { priceWithTax: { lte: 5000 } } } },
-                            {
-                                totalItems: true,
-                                items: {
-                                    product: { name: true, slug: true, featuredAsset: { preview: true } },
-                                    id: true,
-                                    featuredAsset: { preview: true },
-                                    priceWithTax: true,
-                                    currencyCode: true,
-                                    name: true,
-                                },
-                            },
-                        ],
-                    },
-                ],
-            });
+    let variantForCollections: {
+        id: string;
+        productVariants?: { totalItems: number; items: CollectionTileProductVariantType[] };
+    }[] = [];
 
-            return { ...c, productVariants: products.collection?.productVariants };
-        }),
-    );
+    try {
+        variantForCollections = await Promise.all(
+            _collections.collections.items.map(async c => {
+                const products = await storefrontApiQuery({
+                    collection: [
+                        { slug: c.slug },
+                        {
+                            productVariants: [
+                                { options: { take: 2, filter: { priceWithTax: { lte: 5000 } } } },
+                                { totalItems: true, items: CollectionTileProductVariantSelector },
+                            ],
+                        },
+                    ],
+                });
 
+                return { ...c, productVariants: products.collection?.productVariants };
+            }),
+        );
+    } catch (e) {
+        variantForCollections = [];
+    }
     const collections = _collections.collections.items.map(c => {
-        const collection = variantForCollections.find(p => p.id === c.id);
+        const collection = variantForCollections.length
+            ? variantForCollections.find(p => p.id === c.id)
+            : { productVariants: { items: [], totalItems: 0 } };
+
         return { ...c, productVariants: collection?.productVariants };
     });
 

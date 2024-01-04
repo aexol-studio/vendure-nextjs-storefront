@@ -42,6 +42,7 @@ export const ProductTileSelector = Selector('Product')({
         preview: true,
     },
 });
+
 export const ProductSearchSelector = Selector('SearchResult')({
     productName: true,
     slug: true,
@@ -120,7 +121,7 @@ export const ProductDetailsFacetSelector = Selector('FacetValue')({
 
 export type ProductDetailsFacetType = FromSelector<typeof ProductDetailsFacetSelector, 'FacetValue', typeof scalars>;
 
-const CollectionTileProductVariantSelector = Selector('ProductVariant')({
+export const CollectionTileProductVariantSelector = Selector('ProductVariant')({
     id: true,
     featuredAsset: { preview: true },
     priceWithTax: true,
@@ -369,6 +370,7 @@ export type ActiveOrderType = FromSelector<typeof ActiveOrderSelector, 'Order', 
 export const OrderSelector = Selector('Order')({
     state: true,
     active: true,
+    type: true,
     payments: paymentSelector,
     subTotalWithTax: true,
     shippingWithTax: true,

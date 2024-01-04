@@ -3,40 +3,26 @@ import { useSlider } from './hooks';
 import { Link, Stack, TP } from '../../atoms';
 import styled from '@emotion/styled';
 
-const fakeAnnouncementBar = [
-    {
-        message: 'This is a fake announcement bar',
-        href: '/',
-        bgColor: 'lch(50% 0 0)',
-        textColor: 'lch(80% 0 0)',
-        hoverTextColor: 'lch(100% 0 0)',
-        hoverBgColor: 'lch(50% 0 0)',
-    },
-    {
-        message: 'Best store ever',
-        href: '/',
-        bgColor: 'lch(50% 0 0)',
-        textColor: 'lch(80% 0 0)',
-        hoverTextColor: 'lch(100% 0 0)',
-        hoverBgColor: 'lch(50% 0 0)',
-    },
-    {
-        message: 'This is a fake announcement bar',
-        href: '/',
-        bgColor: 'lch(50% 0 0)',
-        textColor: 'lch(80% 0 0)',
-        hoverTextColor: 'lch(100% 0 0)',
-        hoverBgColor: 'lch(50% 0 0)',
-    },
-];
-type Omitted = Omit<Omit<(typeof fakeAnnouncementBar)[number], 'message'>, 'href'>;
-export const AnnouncementBar: React.FC<{ secondsBetween: number }> = ({ secondsBetween }) => {
+type AnnouncementBarType = {
+    message: string;
+    href: string;
+    bgColor: string;
+    textColor: string;
+    hoverTextColor: string;
+    hoverBgColor: string;
+};
+
+type Omitted = Omit<Omit<AnnouncementBarType, 'message'>, 'href'>;
+export const AnnouncementBar: React.FC<{ entries: AnnouncementBarType[]; secondsBetween: number }> = ({
+    entries,
+    secondsBetween,
+}) => {
     const { ref } = useSlider({ secondsBetween });
 
     return (
         <Stack w100>
             <Stack w100 className="keen-slider" ref={ref}>
-                {fakeAnnouncementBar.map((bar, idx) => {
+                {entries.map((bar, idx) => {
                     const { message, href, ...styles } = bar;
                     return (
                         <Link key={idx} href={href}>

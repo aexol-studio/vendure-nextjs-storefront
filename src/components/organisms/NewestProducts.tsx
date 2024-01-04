@@ -1,6 +1,6 @@
 import { NewestProductType } from '@/src/graphql/selectors';
 import React from 'react';
-import { TH2, Stack } from '@/src/components/atoms';
+import { TH2, Stack, TP } from '@/src/components/atoms';
 
 import { useTranslation } from 'next-i18next';
 import { Slider } from './Slider';
@@ -14,14 +14,14 @@ export const NewestProducts: React.FC<NewestProductsProps> = ({ products }) => {
     const { t } = useTranslation('common');
 
     const slides = products.map(product => (
-        <ProductImageWithInfo
-            size="tile"
-            key={product.name}
-            href={`/products/${product.slug}`}
-            imageSrc={product.featuredAsset?.preview || ''}
-            text={product.name || ''}
-            withText
-        />
+        <Stack column gap="1rem" itemsCenter key={product.name}>
+            <ProductImageWithInfo
+                size="tile"
+                href={`/products/${product.slug}`}
+                imageSrc={product.featuredAsset?.preview || ''}
+            />
+            <TP>{product.name}</TP>
+        </Stack>
     ));
 
     return (

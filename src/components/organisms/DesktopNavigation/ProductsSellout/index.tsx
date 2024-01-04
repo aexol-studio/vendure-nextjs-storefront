@@ -23,9 +23,13 @@ type SliderItem = {
 export const ProductsSellout: React.FC<{ collection: RootNode<NavigationType>['children'][number] }> = ({
     collection,
 }) => {
+    if (!collection || collection?.children?.length === 0) return null;
+    if (collection.children.some(child => child.productVariants?.items.length === 0)) return null;
+
     const { addToCart } = useCart();
     const { t } = useTranslation('common');
 
+    //TODO: move it into static props
     const slides = collection.children
         .reduce((acc, children) => {
             if ('productVariants' in children) {

@@ -1,9 +1,9 @@
 import { storefrontApiMutation } from '@/src/graphql/client';
 import { AvailablePaymentMethodsType } from '@/src/graphql/selectors';
 import { usePush } from '@/src/lib/redirect';
-import React, { useEffect, useState } from 'react';
-import { Stack, TP } from '@/src/components/atoms';
-import { DefaultMethod } from './PaymentMethods/DefaultMethod';
+import React, { InputHTMLAttributes, forwardRef, useEffect, useState } from 'react';
+import { Stack } from '@/src/components/atoms';
+
 import { Elements } from '@stripe/react-stripe-js';
 import { loadStripe, Stripe, StripeError } from '@stripe/stripe-js';
 import { StripeForm } from './PaymentMethods/StripeForm';
@@ -12,6 +12,9 @@ import { Banner } from '@/src/components/forms';
 import { useTranslation } from 'next-i18next';
 import { Przelewy24Logo } from '@/src/assets/svg/Przelewy24Logo';
 import styled from '@emotion/styled';
+import { SubmitHandler, useForm } from 'react-hook-form';
+import { Button } from '@/src/components/molecules/Button';
+import { CreditCard } from 'lucide-react';
 
 const STRIPE_PUBLIC_KEY = process.env.NEXT_PUBLIC_STRIPE_KEY;
 
@@ -20,6 +23,16 @@ interface OrderPaymentProps {
     stripeData?: { paymentIntent: string | null };
 }
 
+type FormValues = {
+    payment: 'przelewy24' | 'stripe' | 'dummy-method-success' | 'dummy-method-error' | 'dummy-method-decline';
+};
+
+type StandardMethodMetadata = {
+    shouldDecline: boolean;
+    shouldError: boolean;
+    shouldErrorOnSettle: boolean;
+};
+
 export const OrderPayment: React.FC<OrderPaymentProps> = ({ availablePaymentMethods, stripeData }) => {
     const { t } = useTranslation('common');
     const { activeOrder } = useCheckout();
@@ -27,6 +40,13 @@ export const OrderPayment: React.FC<OrderPaymentProps> = ({ availablePaymentMeth
     //For stripe
     const [stripe, setStripe] = useState<Stripe | null>(null);
     const [error, setError] = useState<string | null>(null);
+
+    const {
+        watch,
+        handleSubmit,
+        register,
+        formState: { isSubmitting },
+    } = useForm<FormValues>();
 
     useEffect(() => {
         const initStripe = async () => {
@@ -38,15 +58,7 @@ export const OrderPayment: React.FC<OrderPaymentProps> = ({ availablePaymentMeth
         if (stripeData?.paymentIntent) initStripe();
     }, []);
 
-    const onClick = async (
-        method: string,
-        metadata: {
-            shouldDecline: boolean;
-            shouldCancel: boolean;
-            shouldError: boolean;
-            shouldErrorOnSettle: boolean;
-        },
-    ) => {
+    const standardMethod = async (method: string, metadata: StandardMethodMetadata) => {
         // Add payment to order
         try {
             setError(null);
@@ -115,12 +127,7 @@ export const OrderPayment: React.FC<OrderPaymentProps> = ({ availablePaymentMeth
         try {
             const { addPaymentToOrder } = await storefrontApiMutation({
                 addPaymentToOrder: [
-                    {
-                        input: {
-                            method: 'przelewy-24',
-                            metadata: JSON.stringify({ blikCode: '123456' }),
-                        },
-                    },
+                    { input: { method: 'przelewy-24', metadata: {} } },
                     {
                         __typename: true,
                         '...on Order': { state: true, code: true, payments: { metadata: true } },
@@ -178,46 +185,172 @@ export const OrderPayment: React.FC<OrderPaymentProps> = ({ availablePaymentMeth
         }
     };
 
+    const onSubmit: SubmitHandler<FormValues> = async data => {
+        if (data.payment === 'stripe') return;
+        if (data.payment === 'przelewy24') {
+            await przelewy24();
+            return;
+        }
+
+        if (!defaultMethod) return;
+        if (data.payment === 'dummy-method-success') {
+            await standardMethod(defaultMethod.code, {
+                shouldDecline: false,
+                shouldError: false,
+                shouldErrorOnSettle: false,
+            });
+            return;
+        }
+
+        if (data.payment === 'dummy-method-error') {
+            await standardMethod(defaultMethod.code, {
+                shouldDecline: false,
+                shouldError: true,
+                shouldErrorOnSettle: false,
+            });
+            return;
+        }
+
+        if (data.payment === 'dummy-method-decline') {
+            await standardMethod(defaultMethod.code, {
+                shouldDecline: true,
+                shouldError: false,
+                shouldErrorOnSettle: false,
+            });
+            return;
+        }
+
+        console.log(data);
+    };
+
     return activeOrder ? (
         <Stack w100 column itemsCenter gap="3.5rem">
             <Banner error={{ message: error ?? undefined }} clearErrors={() => setError(null)} />
-            {defaultMethod && <DefaultMethod defaultMethod={defaultMethod} onClick={onClick} />}
-            {stripe && stripeData?.paymentIntent && (
+            <PaymentForm onSubmit={handleSubmit(onSubmit)}>
+                {przelewy24Method && (
+                    <PaymentButton
+                        id="przelewy24"
+                        value="przelewy24"
+                        label="Przelewy24"
+                        icon={
+                            <P24Logo itemsCenter justifyCenter>
+                                <Przelewy24Logo />
+                            </P24Logo>
+                        }
+                        checked={watch('payment') === 'przelewy24'}
+                        {...register('payment')}
+                    />
+                )}
+                {stripe && stripeData?.paymentIntent && (
+                    <PaymentButton
+                        id="stripe"
+                        value="stripe"
+                        label="Stripe"
+                        checked={watch('payment') === 'stripe'}
+                        {...register('payment')}
+                    />
+                )}
+                {defaultMethod && (
+                    <>
+                        <PaymentButton
+                            id="dummy-method-success"
+                            value="dummy-method-success"
+                            label="Dummy method - success"
+                            icon={<StyledCreditCard method="success" />}
+                            checked={watch('payment') === 'dummy-method-success'}
+                            {...register('payment')}
+                        />
+                        <PaymentButton
+                            id="dummy-method-error"
+                            value="dummy-method-error"
+                            label="Dummy method - error"
+                            icon={<StyledCreditCard method="error" />}
+                            checked={watch('payment') === 'dummy-method-error'}
+                            {...register('payment')}
+                        />
+                        <PaymentButton
+                            id="dummy-method-decline"
+                            value="dummy-method-decline"
+                            label="Dummy method - decline"
+                            icon={<StyledCreditCard method="decline" />}
+                            checked={watch('payment') === 'dummy-method-decline'}
+                            {...register('payment')}
+                        />
+                    </>
+                )}
+                {watch('payment') !== 'stripe' && (
+                    <Button loading={isSubmitting} type="submit">
+                        Submit
+                    </Button>
+                )}
+            </PaymentForm>
+            {watch('payment') === 'stripe' && stripe && stripeData?.paymentIntent ? (
                 <Elements stripe={stripe} options={{ clientSecret: stripeData.paymentIntent }}>
                     <StripeForm activeOrder={activeOrder} onStripeSubmit={onStripeSubmit} />
                 </Elements>
-            )}
-            {przelewy24Method && (
-                <StyledP24Button onClick={przelewy24}>
-                    <P24Logo itemsCenter justifyCenter>
-                        <Przelewy24Logo />
-                    </P24Logo>
-                    <TP weight={500}>Przelewy24</TP>
-                </StyledP24Button>
-            )}
+            ) : null}
         </Stack>
     ) : null;
 };
 
+const StyledCreditCard = styled(CreditCard)<{ method: 'success' | 'decline' | 'error' }>`
+    color: ${({ theme, method }) => (method === 'success' ? theme.success : theme.error)};
+`;
+
 const P24Logo = styled(Stack)`
     width: 10rem;
     height: 6.5rem;
-    border-radius: 0.25rem;
-    padding: 0.5rem 1rem;
 `;
 
-const StyledP24Button = styled.button`
+const AbsoluteRadio = styled.input`
+    position: absolute;
+    opacity: 0;
+    width: 100%;
+    height: 100%;
+
+    cursor: pointer;
+`;
+
+const StyledP24Button = styled.button<{ active?: boolean }>`
+    position: relative;
     display: flex;
     gap: 3.5rem;
     align-items: center;
     justify-content: center;
-    background-color: #fff;
+    background-color: ${p => (p.active ? '#e5e5e5' : '#fff')};
     border: 1px solid #e5e5e5;
     border-radius: 0.25rem;
     padding: 1.5rem 3rem;
     cursor: pointer;
     transition: all 0.2s ease-in-out;
+
     &:hover {
         background-color: #e5e5e5;
     }
 `;
+
+const PaymentForm = styled.form`
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    gap: 2rem;
+`;
+
+type InputType = InputHTMLAttributes<HTMLInputElement> & {
+    label: string;
+    icon?: React.ReactNode;
+};
+
+const PaymentButton = forwardRef((props: InputType, ref: React.ForwardedRef<HTMLInputElement>) => {
+    const { label, icon, ...rest } = props;
+    return (
+        <Stack column itemsCenter gap="0.25rem">
+            <StyledP24Button active={rest.checked}>
+                {icon}
+                <AbsoluteRadio ref={ref} {...rest} type="radio" />
+                <label htmlFor={props.name}>{label}</label>
+            </StyledP24Button>
+        </Stack>
+    );
+});

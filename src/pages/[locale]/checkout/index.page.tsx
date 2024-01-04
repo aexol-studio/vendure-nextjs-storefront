@@ -34,9 +34,7 @@ const getServerSideProps = async (context: GetServerSidePropsContext) => {
     try {
         const [{ activeOrder }, { availableCountries }] = await Promise.all([
             SSRQuery(context)({ activeOrder: ActiveOrderSelector }),
-            SSRQuery(context)({
-                availableCountries: AvailableCountriesSelector,
-            }),
+            SSRQuery(context)({ availableCountries: AvailableCountriesSelector }),
         ]);
         const YMALProducts = await getYMALProducts();
 

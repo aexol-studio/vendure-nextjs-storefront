@@ -1,15 +1,16 @@
-import { Link } from '@/src/components/atoms/Link';
 import { Stack } from '@/src/components/atoms/Stack';
 import { TP } from '@/src/components/atoms/TypoGraphy';
+import { Button } from '@/src/components/molecules/Button';
 import { DiscountForm } from '@/src/components/molecules/DiscountForm';
 import { Discounts } from '@/src/components/molecules/Discounts';
 import { ActiveOrderType } from '@/src/graphql/selectors';
+import { usePush } from '@/src/lib/redirect';
 import { useCart } from '@/src/state/cart';
 import { priceFormatter } from '@/src/util/priceFomatter';
 import { CurrencyCode } from '@/src/zeus';
 import styled from '@emotion/styled';
 import { useTranslation } from 'next-i18next';
-import React from 'react';
+import React, { useState } from 'react';
 
 interface Props {
     activeOrder?: ActiveOrderType;
@@ -20,6 +21,8 @@ interface Props {
 export const CartFooter: React.FC<Props> = ({ activeOrder, currencyCode, discountsSum }) => {
     const { t } = useTranslation('common');
     const { close, applyCouponCode, removeCouponCode } = useCart();
+    const [loading, setLoading] = useState(false);
+    const push = usePush();
     return (
         <CartFooterWrapper column justifyBetween gap="2.5rem" haveItems={!!activeOrder?.totalQuantity}>
             {activeOrder && activeOrder?.totalQuantity > 0 ? (
@@ -59,7 +62,15 @@ export const CartFooter: React.FC<Props> = ({ activeOrder, currencyCode, discoun
                             />
                         </Stack>
                     </Stack>
-                    <StyledLink href="/checkout">{t('proceed-to-checkout')}</StyledLink>
+                    <StyledButton
+                        dark
+                        loading={loading}
+                        onClick={() => {
+                            setLoading(true);
+                            push('/checkout');
+                        }}>
+                        {t('proceed-to-checkout')}
+                    </StyledButton>
                 </>
             ) : (
                 <StyledButton onClick={close}>{t('continue-shopping')}</StyledButton>
@@ -74,7 +85,7 @@ const CartFooterWrapper = styled(Stack)<{ haveItems?: boolean }>`
     height: ${p => (p.haveItems ? '30%' : 'fit-content')};
 `;
 
-const StyledButton = styled.button<{ dark?: boolean }>`
+const StyledButton = styled(Button)<{ dark?: boolean }>`
     appearance: none;
     border: none;
     background: ${p => (p.dark ? p.theme.gray(1000) : p.theme.gray(0))};
@@ -93,15 +104,4 @@ const StyledButton = styled.button<{ dark?: boolean }>`
     font-size: 1.6rem;
     border: 1px solid ${p => p.theme.gray(1000)};
     border-radius: ${p => p.theme.borderRadius};
-`;
-
-const StyledLink = styled(Link)`
-    padding: 1.6rem 0.8rem;
-    background: ${p => p.theme.gray(1000)};
-
-    color: ${p => p.theme.gray(0)};
-    text-align: center;
-    text-transform: uppercase;
-    font-weight: 500;
-    font-size: 1.6rem;
 `;

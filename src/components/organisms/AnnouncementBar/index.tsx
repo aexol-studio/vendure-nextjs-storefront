@@ -4,7 +4,7 @@ import { Link, Stack, TP } from '../../atoms';
 import styled from '@emotion/styled';
 
 type AnnouncementBarType = {
-    message: string;
+    text: string;
     href: string;
     bgColor: string;
     textColor: string;
@@ -12,7 +12,7 @@ type AnnouncementBarType = {
     hoverBgColor: string;
 };
 
-type Omitted = Omit<Omit<AnnouncementBarType, 'message'>, 'href'>;
+type Omitted = Omit<Omit<AnnouncementBarType, 'text'>, 'href'>;
 export const AnnouncementBar: React.FC<{ entries: AnnouncementBarType[]; secondsBetween: number }> = ({
     entries,
     secondsBetween,
@@ -29,12 +29,12 @@ export const AnnouncementBar: React.FC<{ entries: AnnouncementBarType[]; seconds
             {jsEnabled ? (
                 <Stack w100 className="keen-slider" ref={ref}>
                     {entries.map((bar, idx) => {
-                        const { message, href, ...styles } = bar;
+                        const { text, href, ...styles } = bar;
                         return (
                             <Link key={idx} href={href}>
                                 <Entry {...styles} justifyCenter itemsCenter w100 className="keen-slider__slide">
                                     <TP size="1.25rem" weight={600}>
-                                        {message}
+                                        {text}
                                     </TP>
                                 </Entry>
                             </Link>
@@ -46,7 +46,7 @@ export const AnnouncementBar: React.FC<{ entries: AnnouncementBarType[]; seconds
                     <Link href={entries[0].href} style={{ width: '100%' }}>
                         <Entry {...entries[0]} justifyCenter itemsCenter w100>
                             <TP size="1.25rem" weight={600}>
-                                {entries[0].message}
+                                {entries[0].text}
                             </TP>
                         </Entry>
                     </Link>

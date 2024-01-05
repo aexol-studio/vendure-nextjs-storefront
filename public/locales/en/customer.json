@@ -1,7 +1,7 @@
 {
     "home": "Home",
     "signIn": "Sign in",
-    "signInTitle": "Sign in to your account", 
+    "signInTitle": "Sign in to your account",
     "signUp": "Sign up",
     "signUpTitle": "Create a new account",
     "signOut": "Sign out",
@@ -17,7 +17,7 @@
     "newPassword": "New password",
     "confirmNewPassword": "Confirm new password",
     "resetPassword": "Reset password",
-    "signUpSuccess":"You have successfully signed up, please check your email to verify your account",
+    "signUpSuccess": "You have successfully signed up, please check your email to verify your account",
     "forgotPasswordSuccess": "We have sent you an email with instructions to reset your password",
     "verify": {
         "success": "Your account has been verified",

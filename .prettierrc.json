@@ -6,6 +6,13 @@
     "printWidth": 120,
     "tabWidth": 4,
     "arrowParens": "avoid",
-    "jsxBracketSameLine": true
-
+    "jsxBracketSameLine": true,
+    "overrides": [
+        {
+            "files": ["*.json"],
+            "options": {
+                "parser": "json"
+            }
+        }
+    ]
 }

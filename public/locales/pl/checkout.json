@@ -1,6 +1,6 @@
 {
     "steps": {
-        "shipping":"Dane do wysyłki",
+        "shipping": "Dane do wysyłki",
         "payment": "Płatność",
         "confirmation": "Potwierdzenie"
     },

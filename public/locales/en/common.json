@@ -1,31 +1,31 @@
 {
     "home": "Home",
-    "shop":"Demo Shop",
-    "title":"Hello",
-    "search-products":"Search products",
-    "made-by":"Made by VendureAgency.com 2023",
-    "select-category":"Select category",
-    "filters":"Filters",
-    "sort-by":"Sort by",
-    "cart":"Cart",
-    "cart-summary":"Cart summary",
-    "your-cart":"Your cart",
-    "items":"items",
-    "proceed-to-checkout":"Proceed to checkout",
-    "continue-shopping":"Continue shopping",
+    "shop": "Demo Shop",
+    "title": "Hello",
+    "search-products": "Search products",
+    "made-by": "Made by VendureAgency.com 2023",
+    "select-category": "Select category",
+    "filters": "Filters",
+    "sort-by": "Sort by",
+    "cart": "Cart",
+    "cart-summary": "Cart summary",
+    "your-cart": "Your cart",
+    "items": "items",
+    "proceed-to-checkout": "Proceed to checkout",
+    "continue-shopping": "Continue shopping",
     "price": "Price",
     "discount": "Discount",
     "shipping": "Shipping",
-    "subtotal":"Subtotal",
-    "total":"Total",
-    "coupon-code":"Code:",
+    "subtotal": "Subtotal",
+    "total": "Total",
+    "coupon-code": "Code:",
     "empty-cart": "Your cart is empty",
     "remove": "Remove",
-    "add-to-cart":"Add to cart",
-    "buy-now":"Buy now",
-    "related-collections":"Related Collections", 
-    "newest-products":"Newest Products", 
-    "featured-products":"Featured Products",
+    "add-to-cart": "Add to cart",
+    "buy-now": "Buy now",
+    "related-collections": "Related Collections",
+    "newest-products": "Newest Products",
+    "featured-products": "Featured Products",
     "sort-keys": {
         "title": "Title",
         "price": "Price"
@@ -40,16 +40,16 @@
             "Authorized": "Authorized"
         }
     },
-    "stockLevel":{
-        "OUT_OF_STOCK":"Out of stock",
-        "IN_STOCK":"In stock",
-        "LOW_STOCK":"🔥 Make it quick only {{value}} left! 🔥"
+    "stockLevel": {
+        "OUT_OF_STOCK": "Out of stock",
+        "IN_STOCK": "In stock",
+        "LOW_STOCK": "🔥 Make it quick only {{value}} left! 🔥"
     },
-    "commonError":"Something wen't wrong",
-    "send":"Send",
-    "search-results":"Search results for:",
-    "cart-empty":"Your cart is empty",
-    "select-options":"Please select an options",
+    "commonError": "Something wen't wrong",
+    "send": "Send",
+    "search-results": "Search results for:",
+    "cart-empty": "Your cart is empty",
+    "select-options": "Please select an options",
     "shipping-protection": {
         "title": "Shipping Protection",
         "subtitle": "From Damage, Loss & Theft for {{value}}"
@@ -75,7 +75,11 @@
         "Modifying": "Modifying",
         "ArrangingAdditionalPayment": "Additional Payment"
     },
-    "notifyMe":{"invalidEmail":"Please enter valid email","backendError":"Couldnt't add you to notify list","placeholder":"Notify me"},
+    "notifyMe": {
+        "invalidEmail": "Please enter valid email",
+        "backendError": "Couldnt't add you to notify list",
+        "placeholder": "Notify me"
+    },
     "errors": {
         "clearErrors": "Clear errors",
         "backend": {
@@ -143,17 +147,36 @@
         "phoneNumber": {
             "required": "Phone number is required"
         }
-    },    
-    "bestOf":"Best of",
-    "shopNow":"Shop now",
-    "footer":{
-        "sections":[
-            {"header":"Best sellers","linksTitles":["Laptop","Tablet","Wireless Optical Mouse","USB Cable","Ethernet Cable"]},
-            {"header":"Promotions + Offers","linksTitles":["Refer a friend and Get 10% Off","Register and Get 20% Off","Text us and Get 25% Off","All Promotions + Offers"]},
-            {"header":"Contact us","contactInfo":["4-500-600-44332","Monday - Friday: 9 AM - 8 PM","Sobota: 10 AM - 4:40 PM","Sunday - CLOSED"]},
-            {"header":"Information","linksTitles":["Account","Order status","Returns","FAQ","Feedback"]},
-            {"header":"Company","linksTitles":["Our history","Blog"]}
-            ],
-            "law":["Privacy Policy", "Terms and Conditions","Cookie Policy"]
+    },
+    "bestOf": "Best of",
+    "shopNow": "Shop now",
+    "footer": {
+        "sections": [
+            {
+                "header": "Best sellers",
+                "linksTitles": ["Laptop", "Tablet", "Wireless Optical Mouse", "USB Cable", "Ethernet Cable"]
+            },
+            {
+                "header": "Promotions + Offers",
+                "linksTitles": [
+                    "Refer a friend and Get 10% Off",
+                    "Register and Get 20% Off",
+                    "Text us and Get 25% Off",
+                    "All Promotions + Offers"
+                ]
+            },
+            {
+                "header": "Contact us",
+                "contactInfo": [
+                    "4-500-600-44332",
+                    "Monday - Friday: 9 AM - 8 PM",
+                    "Saturday: 10 AM - 4:40 PM",
+                    "Sunday - CLOSED"
+                ]
+            },
+            { "header": "Information", "linksTitles": ["Account", "Order status", "Returns", "FAQ", "Feedback"] },
+            { "header": "Company", "linksTitles": ["Our history", "Blog"] }
+        ],
+        "law": ["Privacy Policy", "Terms and Conditions", "Cookie Policy"]
     }
 }

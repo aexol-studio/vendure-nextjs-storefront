@@ -47,7 +47,7 @@ In this project, we have integrated i18next to make it easy for you to create mu
 
 2. **Locale Configuration**: We configure i18next to load the appropriate translation files based on the user's selected locale.
 
-3. **Integration with React**: We use the `react-i18next` package to integrate i18next with React components, making it seamless to access translations in your React components.
+3. **Integration with React**: We use the `next-i18next` package to integrate i18next with React components, making it seamless to access translations in your React components.
 
 ## Icons
 
@@ -125,14 +125,14 @@ We are contributors to the GraphQL Ecosystem so far and we want to enter vendure
 ## Roadmap
 
 - [ ] Finish this starter
-- [ ] Deployment of the storefront connected to demo shop
-- [ ] Cart functionality
-- [ ] Checkout process
+- [X] Deployment of the storefront connected to demo shop
+- [X] Basic Cart functionality
+- [X] Basic Checkout process
 - [ ] Design implementation
-- [ ] Payment process
-- [ ] User Profile
-- [ ] Search products
-- [ ] Filters
+- [X] Basic Payment process
+- [X] Basic User Profile
+- [X] Search products
+- [X] Filters
 - [ ] Localization with devtranslate.app
 - [ ] Adding Static Git CMS MDTX
 - [ ] Configure SEO and schema.org for every site

@@ -50,7 +50,7 @@ export const Layout: React.FC<LayoutProps> = ({ pageTitle, children, categories,
     //TODO: it should be dynamic as plugin.
     const entries = [
         {
-            message: 'Next JS Storefront demo made by Aexol',
+            text: 'Next JS Storefront demo made by Aexol',
             href: 'https://aexol.com',
             bgColor: 'lch(50% 0 0)',
             textColor: 'lch(80% 0 0)',
@@ -58,7 +58,7 @@ export const Layout: React.FC<LayoutProps> = ({ pageTitle, children, categories,
             hoverBgColor: 'lch(50% 0 0)',
         },
         {
-            message: 'Best store ever',
+            text: 'Best store ever',
             href: '/',
             bgColor: 'lch(50% 0 0)',
             textColor: 'lch(80% 0 0)',
@@ -66,7 +66,7 @@ export const Layout: React.FC<LayoutProps> = ({ pageTitle, children, categories,
             hoverBgColor: 'lch(50% 0 0)',
         },
         {
-            message: 'See best products',
+            text: 'See best products',
             href: '/collections/all',
             bgColor: 'lch(50% 0 0)',
             textColor: 'lch(80% 0 0)',

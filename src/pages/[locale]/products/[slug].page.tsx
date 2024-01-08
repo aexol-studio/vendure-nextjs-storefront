@@ -1,14 +1,21 @@
 import React from 'react';
-import { ContentContainer } from '@/src/components/atoms/ContentContainer';
-import { Facet } from '@/src/components/atoms/Facet';
-
-import { Stack } from '@/src/components/atoms/Stack';
-import { TH1, TP, TPriceBig } from '@/src/components/atoms/TypoGraphy';
-import { FullWidthButton, FullWidthSecondaryButton } from '@/src/components/molecules/Button';
-import { NotifyMeForm } from '@/src/components/molecules/NotifyMeForm';
-import { NewestProducts } from '@/src/components/organisms/NewestProducts';
-import { ProductPhotosPreview } from '@/src/components/organisms/ProductPhotosPreview';
-import { RelatedProductCollections } from '@/src/components/organisms/RelatedProductCollections';
+import {
+    Facet,
+    Stack,
+    ContentContainer,
+    TH1,
+    TP,
+    TPriceBig,
+    NotifyMeForm,
+    FullWidthButton,
+    FullWidthSecondaryButton,
+    Breadcrumbs,
+    NewestProducts,
+    ProductPhotosPreview,
+    RelatedProductCollections,
+    ProductOptions,
+    // DesktopPhotoSwipe
+} from '@/src/components';
 import { DEFAULT_LANGUAGE, storefrontApiQuery } from '@/src/graphql/client';
 import { NewestProductSelector, ProductDetailSelector, ProductSlugSelector } from '@/src/graphql/selectors';
 import { getCollections } from '@/src/graphql/sharedQueries';
@@ -19,10 +26,7 @@ import { CurrencyCode, SortOrder } from '@/src/zeus';
 import styled from '@emotion/styled';
 import { Check, X } from 'lucide-react';
 import { InferGetStaticPropsType } from 'next';
-
 import { Trans, useTranslation } from 'next-i18next';
-import { ProductOptions } from '@/src/components/organisms/ProductOptions';
-import { Breadcrumbs } from '@/src/components/molecules/Breadcrumbs';
 import { useProduct } from '@/src/state/product';
 import { arrayToTree } from '@/src/util/arrayToTree';
 

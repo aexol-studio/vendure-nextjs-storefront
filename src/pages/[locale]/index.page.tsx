@@ -31,7 +31,7 @@ export const Index: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = p
                     link="/collections/electronics"
                     image={
                         props.products.find(p => p.slug.includes('laptop'))?.productAsset?.preview ??
-                        (props.products[0].productAsset?.preview || '')
+                        (props.products[0]?.productAsset?.preview || '')
                     }
                 />
                 <ContentContainer>

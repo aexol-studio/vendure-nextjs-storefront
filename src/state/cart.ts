@@ -6,7 +6,7 @@ import { createContainer } from 'unstated-next';
 
 const useCartContainer = createContainer(() => {
     const { query } = useRouter();
-    const language = query.locale as string;
+    const language = (query.locale ?? 'en') as string;
     const [activeOrder, setActiveOrder] = useState<ActiveOrderType>();
     const [isLogged, setIsLogged] = useState(false);
     const [isOpen, setOpen] = useState(false);
@@ -20,6 +20,7 @@ const useCartContainer = createContainer(() => {
                 storefrontApiQuery(language)({ activeCustomer: { id: true } }),
             ]);
             setActiveOrder(activeOrder);
+            console.log(language, activeOrder);
             setIsLogged(!!activeCustomer?.id);
             return activeOrder;
         } catch (e) {

@@ -14,7 +14,6 @@ import { CartBody } from './CartBody';
 
 export const CartDrawer = ({ activeOrder }: { activeOrder?: ActiveOrderType }) => {
     const { isOpen, open, close } = useCart();
-
     const currencyCode = activeOrder?.currencyCode || CurrencyCode.USD;
     const discountsSum = useMemo(() => {
         const discounts = activeOrder?.discounts?.reduce((acc, discount) => acc - discount.amountWithTax, 0) ?? 0;

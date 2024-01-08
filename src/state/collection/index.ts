@@ -18,6 +18,7 @@ const useCollectionContainer = createContainer<
         filters?: { [key: string]: string[] };
         sort?: Sort;
         page?: number;
+        language: string;
     }
 >(initialState => {
     if (!initialState?.collection) return collectionsEmptyState;
@@ -154,7 +155,7 @@ const useCollectionContainer = createContainer<
             term: q,
         };
 
-        const { search } = await storefrontApiQuery({
+        const { search } = await storefrontApiQuery(initialState.language)({
             search: [{ input }, SearchSelector],
         });
 

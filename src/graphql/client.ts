@@ -21,9 +21,7 @@ export const DEFAULT_LANGUAGE = 'en';
 export const DEFAULT_CHANNEL = 'default-channel';
 //use 'http://localhost:3000/shop-api/' in local .env file for localhost development and provide env to use on prod/dev envs
 
-export const VENDURE_HOST = `${
-    process.env.NEXT_PUBLIC_HOST || 'https://vendure-dev.aexol.com'
-}/shop-api?languageCode=${DEFAULT_LANGUAGE}`;
+export const VENDURE_HOST = `${process.env.NEXT_PUBLIC_HOST || 'https://vendure-dev.aexol.com'}/shop-api`;
 
 const apiFetchVendure =
     (options: fetchOptions) =>
@@ -67,37 +65,59 @@ const apiFetchVendure =
 
 export const VendureChain = (...options: chainOptions) => Thunder(apiFetchVendure(options));
 
-export const storefrontApiQuery = VendureChain(VENDURE_HOST, {
-    headers: {
-        'Content-Type': 'application/json',
-        'vendure-token': DEFAULT_CHANNEL,
-    },
-})('query', {
-    scalars,
-});
-export const storefrontApiMutation = VendureChain(VENDURE_HOST, {
-    headers: {
-        'Content-Type': 'application/json',
-        'vendure-token': DEFAULT_CHANNEL,
-    },
-})('mutation', {
-    scalars,
-});
+const i18nToVendure = {
+    en: 'default-channel',
+    pl: 'pl-channel',
+    fr: 'default-channel',
+    de: 'default-channel',
+    ja: 'default-channel',
+    es: 'default-channel',
+    nl: 'default-channel',
+    da: 'default-channel',
+};
+
+const getChannelByLanguage = (lang: string) => i18nToVendure[lang as keyof typeof i18nToVendure] || DEFAULT_CHANNEL;
+
+export const storefrontApiQuery = (language: string, channel?: string) => {
+    const HOST = `${VENDURE_HOST}?languageCode=${language}`;
+    const properChannel = channel || getChannelByLanguage(language);
+
+    return VendureChain(HOST, {
+        headers: {
+            'Content-Type': 'application/json',
+            'vendure-token': properChannel,
+        },
+    })('query', { scalars });
+};
+
+export const storefrontApiMutation = (language: string, channel?: string) => {
+    const HOST = `${VENDURE_HOST}?languageCode=${language}`;
+    const properChannel = channel || getChannelByLanguage(language);
+
+    return VendureChain(HOST, {
+        headers: {
+            'Content-Type': 'application/json',
+            'vendure-token': properChannel,
+        },
+    })('mutation', { scalars });
+};
 
 export const SSRQuery = (context: GetServerSidePropsContext) => {
     const authCookies = {
         session: context.req.cookies['session'],
         'session.sig': context.req.cookies['session.sig'],
     };
-    return VendureChain(VENDURE_HOST, {
+
+    const HOST = `${VENDURE_HOST}?languageCode=${context.locale || DEFAULT_LANGUAGE}`;
+    const properChannel = getChannelByLanguage(context.locale || DEFAULT_LANGUAGE);
+
+    return VendureChain(HOST, {
         headers: {
             Cookie: `session=${authCookies['session']}; session.sig=${authCookies['session.sig']}`,
             'Content-Type': 'application/json',
-            'vendure-token': DEFAULT_CHANNEL,
+            'vendure-token': properChannel,
         },
-    })('query', {
-        scalars,
-    });
+    })('query', { scalars });
 };
 
 export const SSRMutation = (context: GetServerSidePropsContext) => {
@@ -105,15 +125,17 @@ export const SSRMutation = (context: GetServerSidePropsContext) => {
         session: context.req.cookies['session'],
         'session.sig': context.req.cookies['session.sig'],
     };
-    return VendureChain(VENDURE_HOST, {
+
+    const HOST = `${VENDURE_HOST}?languageCode=${context.locale || DEFAULT_LANGUAGE}`;
+    const properChannel = getChannelByLanguage(context.locale || DEFAULT_LANGUAGE);
+
+    return VendureChain(HOST, {
         headers: {
             Cookie: `session=${authCookies['session']}; session.sig=${authCookies['session.sig']}`,
             'Content-Type': 'application/json',
-            'vendure-token': DEFAULT_CHANNEL,
+            'vendure-token': properChannel,
         },
-    })('mutation', {
-        scalars,
-    });
+    })('mutation', { scalars });
 };
 
 const handleFetchResponse = (response: Response): Promise<GraphQLResponse> => {

@@ -21,6 +21,7 @@ const STRIPE_PUBLIC_KEY = process.env.NEXT_PUBLIC_STRIPE_KEY;
 interface OrderPaymentProps {
     availablePaymentMethods?: AvailablePaymentMethodsType[];
     stripeData?: { paymentIntent: string | null };
+    language: string;
 }
 
 type FormValues = {
@@ -33,7 +34,7 @@ type StandardMethodMetadata = {
     shouldErrorOnSettle: boolean;
 };
 
-export const OrderPayment: React.FC<OrderPaymentProps> = ({ availablePaymentMethods, stripeData }) => {
+export const OrderPayment: React.FC<OrderPaymentProps> = ({ availablePaymentMethods, stripeData, language }) => {
     const { t } = useTranslation('common');
     const { activeOrder } = useCheckout();
     const push = usePush();
@@ -62,7 +63,7 @@ export const OrderPayment: React.FC<OrderPaymentProps> = ({ availablePaymentMeth
         // Add payment to order
         try {
             setError(null);
-            const { addPaymentToOrder } = await storefrontApiMutation({
+            const { addPaymentToOrder } = await storefrontApiMutation(language)({
                 addPaymentToOrder: [
                     { input: { method, metadata: JSON.stringify(metadata) } },
                     {
@@ -110,7 +111,6 @@ export const OrderPayment: React.FC<OrderPaymentProps> = ({ availablePaymentMeth
                 push(`/checkout/confirmation/${addPaymentToOrder.code}`);
             }
         } catch (e) {
-            console.log(e);
             setError(t(`errors.backend.UNKNOWN_ERROR`));
         }
     };
@@ -125,7 +125,7 @@ export const OrderPayment: React.FC<OrderPaymentProps> = ({ availablePaymentMeth
 
     const przelewy24 = async () => {
         try {
-            const { addPaymentToOrder } = await storefrontApiMutation({
+            const { addPaymentToOrder } = await storefrontApiMutation(language)({
                 addPaymentToOrder: [
                     { input: { method: 'przelewy-24', metadata: {} } },
                     {
@@ -219,8 +219,6 @@ export const OrderPayment: React.FC<OrderPaymentProps> = ({ availablePaymentMeth
             });
             return;
         }
-
-        console.log(data);
     };
 
     return activeOrder ? (

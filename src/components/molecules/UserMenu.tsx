@@ -19,11 +19,11 @@ const routes = [
 ];
 
 export const UserMenu: React.FC<{ isLogged: boolean }> = ({ isLogged }) => {
-    const { pathname } = useRouter();
+    const { pathname, query } = useRouter();
     const { t } = useTranslation('common');
-
+    const language = query.locale as string;
     const handleLogout = async () => {
-        await storefrontApiMutation({ logout: { success: true } });
+        await storefrontApiMutation(language)({ logout: { success: true } });
         window.location.reload();
     };
 

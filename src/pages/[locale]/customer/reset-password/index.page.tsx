@@ -50,7 +50,7 @@ const ResetPassword: React.FC<InferGetServerSidePropsType<typeof getServerSidePr
 
     const onSubmit: SubmitHandler<FormValues> = async data => {
         try {
-            const { resetPassword } = await storefrontApiMutation({
+            const { resetPassword } = await storefrontApiMutation(props.language)({
                 resetPassword: [
                     { password: data.password, token: props.token as string },
                     {
@@ -129,7 +129,8 @@ const ResetPassword: React.FC<InferGetServerSidePropsType<typeof getServerSidePr
 
 const getServerSideProps = async (context: GetServerSidePropsContext) => {
     const r = await makeServerSideProps(['common', 'customer'])(context);
-    const collections = await getCollections();
+    const language = r.props._nextI18Next?.initialLocale ?? 'en';
+    const collections = await getCollections(language);
     const navigation = arrayToTree(collections);
     const token = context.query.token as string;
     const homePageRedirect = prepareSSRRedirect('/')(context);
@@ -141,6 +142,7 @@ const getServerSideProps = async (context: GetServerSidePropsContext) => {
         collections,
         token,
         navigation,
+        language,
     };
 
     return { props: returnedStuff };

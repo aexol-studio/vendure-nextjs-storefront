@@ -11,9 +11,10 @@ import { AnimatePresence } from 'framer-motion';
 interface Props {
     initialCustomer: ActiveCustomerType;
     order: ActiveOrderType | null;
+    language: string;
 }
 
-export const CustomerForm: React.FC<Props> = ({ initialCustomer, order }) => {
+export const CustomerForm: React.FC<Props> = ({ initialCustomer, order, language }) => {
     const { t } = useTranslation('customer');
     const [view, setView] = useState<'details' | 'password'>('details');
     const handleView = (view: 'details' | 'password') => setView(view);
@@ -35,9 +36,9 @@ export const CustomerForm: React.FC<Props> = ({ initialCustomer, order }) => {
             </Stack>
             <AnimatePresence>
                 {view === 'details' ? (
-                    <CustomerDetailsForm order={order} initialCustomer={initialCustomer} />
+                    <CustomerDetailsForm order={order} initialCustomer={initialCustomer} language={language} />
                 ) : (
-                    <CustomerResetPasswordForm />
+                    <CustomerResetPasswordForm language={language} />
                 )}
             </AnimatePresence>
         </Stack>

@@ -20,12 +20,12 @@ const routes = [
     },
 ];
 
-export const CustomerNavigation: React.FC = () => {
+export const CustomerNavigation: React.FC<{ language: string }> = ({ language }) => {
     const { t } = useTranslation('customer');
     const { pathname } = useRouter();
     const push = usePush();
     const onClick = async () => {
-        await storefrontApiMutation({ logout: { success: true } });
+        await storefrontApiMutation(language)({ logout: { success: true } });
         push('/');
     };
 

@@ -9,7 +9,7 @@ import { NotifyMeForm } from '@/src/components/molecules/NotifyMeForm';
 import { NewestProducts } from '@/src/components/organisms/NewestProducts';
 import { ProductPhotosPreview } from '@/src/components/organisms/ProductPhotosPreview';
 import { RelatedProductCollections } from '@/src/components/organisms/RelatedProductCollections';
-import { storefrontApiQuery } from '@/src/graphql/client';
+import { DEFAULT_LANGUAGE, storefrontApiQuery } from '@/src/graphql/client';
 import { NewestProductSelector, ProductDetailSelector, ProductSlugSelector } from '@/src/graphql/selectors';
 import { getCollections } from '@/src/graphql/sharedQueries';
 import { Layout } from '@/src/layouts';
@@ -179,7 +179,7 @@ const Main = styled(Stack)`
 `;
 
 export const getStaticPaths = async () => {
-    const resp = await storefrontApiQuery({
+    const resp = await storefrontApiQuery(DEFAULT_LANGUAGE)({
         products: [{}, { items: ProductSlugSelector }],
     });
     const paths = localizeGetStaticPaths(
@@ -191,20 +191,21 @@ export const getStaticPaths = async () => {
 };
 
 export const getStaticProps = async (context: ContextModel<{ slug?: string }>) => {
+    const r = await makeStaticProps(['common'])(context);
+    const language = r.props._nextI18Next?.initialLocale || 'en';
     const { slug } = context.params || {};
     const response =
         typeof slug === 'string'
-            ? await storefrontApiQuery({
+            ? await storefrontApiQuery(language)({
                   product: [{ slug }, ProductDetailSelector],
               })
             : null;
     if (!response?.product) return { notFound: true };
-    const r = await makeStaticProps(['common'])(context);
 
-    const collections = await getCollections();
+    const collections = await getCollections(language);
     const navigation = arrayToTree(collections);
 
-    const newestProducts = await storefrontApiQuery({
+    const newestProducts = await storefrontApiQuery(language)({
         products: [{ options: { take: 10, sort: { createdAt: SortOrder.DESC } } }, { items: NewestProductSelector }],
     });
 

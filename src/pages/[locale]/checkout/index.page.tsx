@@ -18,7 +18,7 @@ const CheckoutPage: React.FC<InferGetServerSidePropsType<typeof getServerSidePro
         <CheckoutLayout pageTitle={`${t('seoTitles.checkout')}`}>
             <Content>
                 <Main w100 justifyBetween>
-                    <OrderForm availableCountries={availableCountries} />
+                    <OrderForm availableCountries={availableCountries} language={props.language ?? 'en'} />
                     <OrderSummary isForm YMALProducts={YMALProducts} />
                 </Main>
             </Content>
@@ -28,6 +28,7 @@ const CheckoutPage: React.FC<InferGetServerSidePropsType<typeof getServerSidePro
 
 const getServerSideProps = async (context: GetServerSidePropsContext) => {
     const r = await makeServerSideProps(['common', 'checkout'])(context);
+    const language = r.props._nextI18Next?.initialLocale ?? 'en';
     const homePageRedirect = prepareSSRRedirect('/')(context);
     const paymentRedirect = prepareSSRRedirect('/checkout/payment')(context);
 
@@ -36,7 +37,7 @@ const getServerSideProps = async (context: GetServerSidePropsContext) => {
             SSRQuery(context)({ activeOrder: ActiveOrderSelector }),
             SSRQuery(context)({ availableCountries: AvailableCountriesSelector }),
         ]);
-        const YMALProducts = await getYMALProducts();
+        const YMALProducts = await getYMALProducts(language);
 
         if (activeOrder?.state === 'ArrangingPayment') {
             return paymentRedirect;
@@ -51,6 +52,7 @@ const getServerSideProps = async (context: GetServerSidePropsContext) => {
             availableCountries,
             checkout: activeOrder,
             YMALProducts,
+            language,
         };
 
         return { props: returnedStuff };

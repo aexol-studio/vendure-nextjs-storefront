@@ -22,6 +22,7 @@ const PaymentPage: React.FC<InferGetServerSidePropsType<typeof getServerSideProp
                     <OrderPayment
                         availablePaymentMethods={props.eligiblePaymentMethods}
                         stripeData={props.stripeData}
+                        language={props.language}
                     />
                     <OrderSummary />
                 </Main>
@@ -32,6 +33,7 @@ const PaymentPage: React.FC<InferGetServerSidePropsType<typeof getServerSideProp
 
 const getServerSideProps = async (context: GetServerSidePropsContext) => {
     const r = await makeServerSideProps(['common', 'checkout'])(context);
+    const language = r.props._nextI18Next?.initialLocale ?? 'en';
     const homePageRedirect = prepareSSRRedirect('/')(context);
 
     try {
@@ -57,6 +59,7 @@ const getServerSideProps = async (context: GetServerSidePropsContext) => {
             checkout: activeOrder,
             eligiblePaymentMethods,
             stripeData: { paymentIntent: null },
+            language,
         };
 
         return { props: returnedStuff };

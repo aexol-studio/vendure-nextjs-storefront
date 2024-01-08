@@ -19,7 +19,7 @@ const App = ({ Component, pageProps }: AppProps) => {
             <Global styles={`body { font-family:${sans.style.fontFamily}; }`} />
             {/* ONLY CHECKOUT SHOULD HAVE checkout prop */}
             {'checkout' in pageProps ? (
-                <CheckoutProvider initialState={{ checkout: pageProps.checkout }}>
+                <CheckoutProvider initialState={{ checkout: pageProps.checkout, language: pageProps.language }}>
                     <Component {...pageProps} />
                 </CheckoutProvider>
             ) : (
@@ -35,6 +35,7 @@ const App = ({ Component, pageProps }: AppProps) => {
                                 searchQuery: 'searchQuery' in pageProps ? pageProps.searchQuery : undefined,
                                 page: 'page' in pageProps ? pageProps.page : undefined,
                                 sort: 'sort' in pageProps ? pageProps.sort : undefined,
+                                language: 'language' in pageProps ? pageProps.language : undefined,
                             }}>
                             <Component {...pageProps} />
                         </CollectionProvider>

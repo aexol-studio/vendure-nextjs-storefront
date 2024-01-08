@@ -195,14 +195,15 @@ export const getStaticProps = async (context: ContextModel<{ slug?: string }>) =
     const { slug } = context.params || {};
 
     const r = await makeStaticProps(['common'])(context);
-    const collections = await getCollections();
+    const language = r.props._nextI18Next?.initialLocale ?? 'en';
+    const collections = await getCollections(language);
     const navigation = arrayToTree(collections);
 
-    const { collection } = await storefrontApiQuery({
+    const { collection } = await storefrontApiQuery(language)({
         collection: [{ slug }, CollectionSelector],
     });
 
-    const productsQuery = await storefrontApiQuery({
+    const productsQuery = await storefrontApiQuery(language)({
         search: [
             {
                 input: {
@@ -226,6 +227,7 @@ export const getStaticProps = async (context: ContextModel<{ slug?: string }>) =
         totalProducts: productsQuery.search?.totalItems,
         collection,
         navigation,
+        language,
         ...r.props,
     };
 

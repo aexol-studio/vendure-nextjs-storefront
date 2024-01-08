@@ -20,7 +20,7 @@ import { CustomerWrap } from '../../components/shared';
 const Addresses: React.FC<InferGetServerSidePropsType<typeof getServerSideProps>> = props => {
     const { t } = useTranslation('customer');
     const { activeCustomer, addressToEdit, deleting, onDelete, onEdit, onModalClose, onSubmitCreate, onSubmitEdit } =
-        useAddresses(props.activeCustomer);
+        useAddresses(props.activeCustomer, props.language);
 
     const ref = useRef<HTMLDivElement>(null);
     useEffect(() => {
@@ -53,7 +53,7 @@ const Addresses: React.FC<InferGetServerSidePropsType<typeof getServerSideProps>
             </AnimatePresence>
             <ContentContainer>
                 <CustomerWrap w100 itemsStart gap="1.75rem">
-                    <CustomerNavigation />
+                    <CustomerNavigation language={props.language} />
                     <Wrapper w100 gap="1.5rem">
                         <Stack w100>
                             <AddressForm onSubmit={onSubmitCreate} availableCountries={props.availableCountries} />
@@ -135,7 +135,8 @@ const Modal = styled(motion.div)`
 
 const getServerSideProps = async (context: GetServerSidePropsContext) => {
     const r = await makeServerSideProps(['common', 'customer'])(context);
-    const collections = await getCollections();
+    const language = r.props._nextI18Next?.initialLocale ?? 'en';
+    const collections = await getCollections(language);
     const navigation = arrayToTree(collections);
     const homePageRedirect = prepareSSRRedirect('/')(context);
 
@@ -145,7 +146,7 @@ const getServerSideProps = async (context: GetServerSidePropsContext) => {
         });
         if (!activeCustomer) throw new Error('No active customer');
 
-        const { availableCountries } = await storefrontApiQuery({
+        const { availableCountries } = await storefrontApiQuery(language)({
             availableCountries: AvailableCountriesSelector,
         });
 
@@ -155,6 +156,7 @@ const getServerSideProps = async (context: GetServerSidePropsContext) => {
             activeCustomer,
             availableCountries,
             navigation,
+            language,
         };
 
         return { props: returnedStuff };

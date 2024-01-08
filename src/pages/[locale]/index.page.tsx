@@ -55,23 +55,24 @@ const Main = styled(Stack)`
 `;
 
 const getStaticProps = async (ctx: ContextModel) => {
-    const products = await storefrontApiQuery({
+    const r = await makeStaticProps(['common', 'homepage'])(ctx);
+    const language = r.props._nextI18Next?.initialLocale ?? 'en';
+    const products = await storefrontApiQuery(language)({
         search: [
             { input: { take: 24, groupByProduct: true, sort: { price: SortOrder.DESC } } },
             { items: ProductSearchSelector },
         ],
     });
 
-    const bestOf = await storefrontApiQuery({
+    const bestOf = await storefrontApiQuery(language)({
         search: [
             { input: { take: 4, groupByProduct: true, sort: { name: SortOrder.DESC } } },
             { items: ProductSearchSelector },
         ],
     });
 
-    const collections = await getCollections();
+    const collections = await getCollections(language);
     const navigation = arrayToTree(collections);
-    const r = await makeStaticProps(['common', 'homepage'])(ctx);
 
     const returnedStuff = {
         props: {

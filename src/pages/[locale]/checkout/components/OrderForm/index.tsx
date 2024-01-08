@@ -46,10 +46,11 @@ type Form = CreateCustomerType & {
 };
 
 interface OrderFormProps {
+    language: string;
     availableCountries?: AvailableCountriesType[];
 }
 
-export const OrderForm: React.FC<OrderFormProps> = ({ availableCountries }) => {
+export const OrderForm: React.FC<OrderFormProps> = ({ availableCountries, language }) => {
     const { activeOrder, changeShippingMethod } = useCheckout();
 
     const { t } = useTranslation('checkout');
@@ -63,8 +64,8 @@ export const OrderForm: React.FC<OrderFormProps> = ({ availableCountries }) => {
 
     useEffect(() => {
         Promise.all([
-            storefrontApiQuery({ activeCustomer: ActiveCustomerSelector }),
-            storefrontApiQuery({ eligibleShippingMethods: ShippingMethodsSelector }),
+            storefrontApiQuery(language)({ activeCustomer: ActiveCustomerSelector }),
+            storefrontApiQuery(language)({ eligibleShippingMethods: ShippingMethodsSelector }),
         ]).then(([{ activeCustomer }, { eligibleShippingMethods }]) => {
             if (activeCustomer) setActiveCustomer(activeCustomer);
             if (eligibleShippingMethods) setShippingMethods(eligibleShippingMethods);
@@ -127,7 +128,6 @@ export const OrderForm: React.FC<OrderFormProps> = ({ availableCountries }) => {
         resolver: zodResolver(schema),
     });
 
-    console.log(errors);
     const onSubmit: SubmitHandler<Form> = async ({
         emailAddress,
         firstName,
@@ -145,14 +145,14 @@ export const OrderForm: React.FC<OrderFormProps> = ({ availableCountries }) => {
             if (deliveryMethod && activeOrder?.shippingLines[0]?.shippingMethod.id !== deliveryMethod) {
                 await changeShippingMethod(deliveryMethod);
             }
-            const { nextOrderStates } = await storefrontApiQuery({ nextOrderStates: true });
+            const { nextOrderStates } = await storefrontApiQuery(language)({ nextOrderStates: true });
             if (!nextOrderStates.includes('ArrangingPayment')) {
                 //TODO: Handle error (no next order state)
                 setError('root', { message: tErrors(`errors.backend.UNKNOWN_ERROR`) });
                 return;
             }
             // Set the billing address for the order
-            const { setOrderBillingAddress } = await storefrontApiMutation({
+            const { setOrderBillingAddress } = await storefrontApiMutation(language)({
                 setOrderBillingAddress: [
                     {
                         input: {
@@ -178,7 +178,7 @@ export const OrderForm: React.FC<OrderFormProps> = ({ availableCountries }) => {
             // Set the shipping address for the order
             if (shippingDifferentThanBilling) {
                 // Set the shipping address for the order if it is different than billing
-                const { setOrderShippingAddress } = await storefrontApiMutation({
+                const { setOrderShippingAddress } = await storefrontApiMutation(language)({
                     setOrderShippingAddress: [
                         { input: { ...shipping, defaultBillingAddress: false, defaultShippingAddress: false } },
                         {
@@ -195,7 +195,7 @@ export const OrderForm: React.FC<OrderFormProps> = ({ availableCountries }) => {
                 }
             } else {
                 // Set the billing address for the order if it is the same as shipping
-                const { setOrderShippingAddress } = await storefrontApiMutation({
+                const { setOrderShippingAddress } = await storefrontApiMutation(language)({
                     setOrderShippingAddress: [
                         { input: { ...billing, defaultBillingAddress: false, defaultShippingAddress: false } },
                         {
@@ -213,7 +213,7 @@ export const OrderForm: React.FC<OrderFormProps> = ({ availableCountries }) => {
             }
 
             if (!activeCustomer) {
-                const { setCustomerForOrder } = await storefrontApiMutation({
+                const { setCustomerForOrder } = await storefrontApiMutation(language)({
                     setCustomerForOrder: [
                         { input: { emailAddress, firstName, lastName, phoneNumber } },
                         {
@@ -241,7 +241,7 @@ export const OrderForm: React.FC<OrderFormProps> = ({ availableCountries }) => {
             }
 
             // Set the order state to ArrangingPayment
-            const { transitionOrderToState } = await storefrontApiMutation({
+            const { transitionOrderToState } = await storefrontApiMutation(language)({
                 transitionOrderToState: [
                     { state: 'ArrangingPayment' },
                     {
@@ -260,7 +260,7 @@ export const OrderForm: React.FC<OrderFormProps> = ({ availableCountries }) => {
 
             // After all create account if needed and password is provided
             if (!activeCustomer && createAccount && password) {
-                await storefrontApiMutation({
+                await storefrontApiMutation(language)({
                     registerCustomerAccount: [
                         { input: { emailAddress, firstName, lastName, phoneNumber, password } },
                         {

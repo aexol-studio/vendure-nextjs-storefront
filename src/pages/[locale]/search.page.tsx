@@ -140,7 +140,8 @@ const FacetsFilters = styled(motion.div)`
 
 const getServerSideProps = async (context: GetServerSidePropsContext) => {
     const r = await makeServerSideProps(['common'])(context);
-    const collections = await getCollections();
+    const language = r.props._nextI18Next?.initialLocale ?? 'en';
+    const collections = await getCollections(language);
     const navigation = arrayToTree(collections);
     let page = 1;
     let q = '';
@@ -157,11 +158,11 @@ const getServerSideProps = async (context: GetServerSidePropsContext) => {
     }
 
     //we simulate a collection with the search slug + we skip this collection everywhere else
-    const { collection } = await storefrontApiQuery({
+    const { collection } = await storefrontApiQuery(language)({
         collection: [{ slug: 'search' }, CollectionSelector],
     });
     const filters: { [key: string]: string[] } = {};
-    const facetsQuery = await storefrontApiQuery({
+    const facetsQuery = await storefrontApiQuery(language)({
         search: [
             { input: { term: q, collectionSlug: 'search', groupByProduct: true, take: PER_PAGE } },
             { facetValues: { count: true, facetValue: { ...FacetSelector, facet: FacetSelector } } },
@@ -194,7 +195,7 @@ const getServerSideProps = async (context: GetServerSidePropsContext) => {
         facetValueFilters,
         sort: sort.key === 'title' ? { name: sort.direction } : { price: sort.direction },
     };
-    const productsQuery = await storefrontApiQuery({
+    const productsQuery = await storefrontApiQuery(language)({
         search: [{ input }, { items: ProductSearchSelector, totalItems: true }],
     });
     const returnedStuff = {
@@ -207,6 +208,7 @@ const getServerSideProps = async (context: GetServerSidePropsContext) => {
         filters,
         searchQuery: q,
         page,
+        language,
         ...r.props,
     };
 

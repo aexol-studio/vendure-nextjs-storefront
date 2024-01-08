@@ -23,7 +23,7 @@ const ConfirmationPage: React.FC<InferGetServerSidePropsType<typeof getServerSid
 
         const fetchOrder = async () => {
             try {
-                const { orderByCode } = await storefrontApiQuery({
+                const { orderByCode } = await storefrontApiQuery(props.language ?? 'en')({
                     orderByCode: [{ code: props.code }, OrderSelector],
                 });
                 if (orderByCode) {
@@ -39,7 +39,7 @@ const ConfirmationPage: React.FC<InferGetServerSidePropsType<typeof getServerSid
 
         if (!order && props.code) fetchOrder();
     }, []);
-    console.log('order', order);
+
     return (
         <Layout
             categories={props.collections}
@@ -63,8 +63,9 @@ const ConfirmationPage: React.FC<InferGetServerSidePropsType<typeof getServerSid
 const getServerSideProps = async (context: GetServerSidePropsContext) => {
     const r = await makeServerSideProps(['common', 'checkout'])(context);
     const homePageRedirect = prepareSSRRedirect('/')(context);
+    const language = r.props._nextI18Next?.initialLocale ?? 'en';
 
-    const collections = await getCollections();
+    const collections = await getCollections(language);
     const navigation = arrayToTree(collections);
     const code = context.params?.code as string;
     if (!code) return homePageRedirect;
@@ -82,11 +83,12 @@ const getServerSideProps = async (context: GetServerSidePropsContext) => {
             code,
             order: orderByCode,
             navigation,
+            language,
         };
 
         return { props: returnedStuff };
     } catch (e) {
-        return { props: { ...r.props, collections, code, navigation, order: null } };
+        return { props: { ...r.props, collections, code, navigation, order: null, language } };
     }
 };
 

@@ -56,7 +56,8 @@ const Verify: React.FC<InferGetServerSidePropsType<typeof getServerSideProps>> =
 
 const getServerSideProps = async (context: GetServerSidePropsContext) => {
     const r = await makeServerSideProps(['common', 'customer'])(context);
-    const collections = await getCollections();
+    const language = r.props._nextI18Next?.initialLocale ?? 'en';
+    const collections = await getCollections(language);
     const navigation = arrayToTree(collections);
 
     const token = context.query.token as string;
@@ -65,7 +66,7 @@ const getServerSideProps = async (context: GetServerSidePropsContext) => {
     if (!token) return homePageRedirect;
 
     try {
-        const { verifyCustomerAccount } = await storefrontApiMutation({
+        const { verifyCustomerAccount } = await storefrontApiMutation(language)({
             verifyCustomerAccount: [
                 { token },
                 {

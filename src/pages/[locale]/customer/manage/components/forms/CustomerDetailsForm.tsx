@@ -20,7 +20,8 @@ type CustomerDataForm = {
 export const CustomerDetailsForm: React.FC<{
     initialCustomer: ActiveCustomerType;
     order: ActiveOrderType | null;
-}> = ({ initialCustomer, order }) => {
+    language: string;
+}> = ({ initialCustomer, order, language }) => {
     const { t } = useTranslation('customer');
     const { t: tErrors } = useTranslation('common');
     const [activeCustomer, setActiveCustomer] = useState<ActiveCustomerType>(initialCustomer);
@@ -59,7 +60,7 @@ export const CustomerDetailsForm: React.FC<{
         if (isDirty) return;
 
         try {
-            const { updateCustomer } = await storefrontApiMutation({
+            const { updateCustomer } = await storefrontApiMutation(language)({
                 updateCustomer: [{ input: { firstName, lastName, phoneNumber } }, ActiveCustomerSelector],
             });
 

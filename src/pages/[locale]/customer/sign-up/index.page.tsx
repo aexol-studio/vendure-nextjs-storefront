@@ -55,7 +55,7 @@ const SignIn: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = props =
         const { emailAddress, password } = data;
 
         try {
-            const { registerCustomerAccount } = await storefrontApiMutation({
+            const { registerCustomerAccount } = await storefrontApiMutation(props.language)({
                 registerCustomerAccount: [
                     { input: { emailAddress, password } },
                     {
@@ -138,13 +138,15 @@ const SignIn: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = props =
 
 const getStaticProps = async (context: ContextModel) => {
     const r = await makeStaticProps(['common', 'customer'])(context);
-    const collections = await getCollections();
+    const language = r.props._nextI18Next?.initialLocale ?? 'en';
+    const collections = await getCollections(language);
     const navigation = arrayToTree(collections);
 
     const returnedStuff = {
         ...r.props,
         collections,
         navigation,
+        language,
     };
 
     return {

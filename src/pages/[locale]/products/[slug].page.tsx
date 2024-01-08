@@ -240,6 +240,7 @@ export const getStaticProps = async (context: ContextModel<{ slug?: string }>) =
         collections,
         newestProducts,
         navigation,
+        language,
         ...r.props,
     };
 

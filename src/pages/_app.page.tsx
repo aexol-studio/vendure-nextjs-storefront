@@ -24,7 +24,11 @@ const App = ({ Component, pageProps }: AppProps) => {
                 </CheckoutProvider>
             ) : (
                 <CartProvider>
-                    <ProductProvider initialState={{ product: 'product' in pageProps ? pageProps.product : undefined }}>
+                    <ProductProvider
+                        initialState={{
+                            product: 'product' in pageProps ? pageProps.product : undefined,
+                            language: 'language' in pageProps ? pageProps.language : undefined,
+                        }}>
                         <CollectionProvider
                             initialState={{
                                 collection: 'collection' in pageProps ? pageProps.collection : undefined,

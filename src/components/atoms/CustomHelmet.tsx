@@ -19,6 +19,8 @@ export const CustomHelmet: React.FC<{
     if (collection) {
         title = `${collection.name} | ${pageTitle}`;
     }
+    const u = new URL((process.env.NEXT_PUBLIC_DOMAIN || 'https://shop.aexol.com') + asPath);
+    const canonicalUrl = u.origin + u.pathname;
 
     const seo = {
         name: 'Aexol Demo Store',
@@ -52,7 +54,7 @@ export const CustomHelmet: React.FC<{
     return (
         <Head>
             <title>{title}</title>
-            <link rel="canonical" href={seo.pageUrl} />
+            <link rel="canonical" href={canonicalUrl} />
             <link rel="shortcut icon" href={seo.faviconUrl} type="image/png" />
             <meta name="description" content={seo.description} />
             <meta property="keywords" content={seo.keywords.join(',')} />

@@ -2,8 +2,6 @@ import { CollectionType, ProductDetailType } from '@/src/graphql/selectors';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 
-const SHOP_URL = 'http://localhost:3000';
-
 export const CustomHelmet: React.FC<{
     pageTitle: string;
     product?: ProductDetailType;
@@ -34,7 +32,7 @@ export const CustomHelmet: React.FC<{
     const seo = {
         name: 'Aexol Demo Store',
         description: metaDescription,
-        pageUrl: `${SHOP_URL}${asPath}`,
+        pageUrl: `${asPath}`,
         keywords: [
             'Aexol',
             'Shop',
@@ -48,14 +46,11 @@ export const CustomHelmet: React.FC<{
             'Boilerplate',
             product?.name as string,
         ],
-        faviconUrl: `${SHOP_URL}/public/favicon.ico`,
-        logo: `${SHOP_URL}/images/aexol_full_logo.png`,
+        faviconUrl: `/public/favicon.ico`,
+        logo: `/images/aexol_full_logo.png`,
         facebook: 'https://www.facebook.com/Aexol',
         twitter: 'https://twitter.com/aexol',
-        image:
-            product?.featuredAsset?.preview ||
-            collection?.featuredAsset?.preview ||
-            `${SHOP_URL}/images/aexol_full_logo.png`,
+        image: product?.featuredAsset?.preview || collection?.featuredAsset?.preview || `/images/aexol_full_logo.png`,
     };
     !seo.keywords.some(keyword => title.includes(keyword)) && console.log(`no keyword in title of ${seo.pageUrl}`);
     !seo.keywords.some(keyword => seo.description.includes(keyword)) &&

@@ -24,7 +24,19 @@ export const CustomHelmet: React.FC<{
         name: 'Aexol Demo Store',
         description: product?.description || collection?.description || 'Demo store made by Aexol',
         pageUrl: `${SHOP_URL}${asPath}`,
-        keywords: 'Aexol, Shop, E-commerce, React, Next.js, GraphQL, TypeScript, Demo, Example, Boilerplate',
+        keywords: [
+            'Aexol',
+            'Shop',
+            'E-commerce',
+            'React',
+            'Next.js',
+            'GraphQL',
+            'TypeScript',
+            'Demo',
+            'Example',
+            'Boilerplate',
+            product?.name as string,
+        ],
         faviconUrl: `favicon.ico`,
         logo: `${SHOP_URL}/images/aexol_full_logo.png`,
         facebook: 'https://www.facebook.com/Aexol',
@@ -34,14 +46,16 @@ export const CustomHelmet: React.FC<{
             collection?.featuredAsset?.preview ||
             `${SHOP_URL}/images/aexol_full_logo.png`,
     };
-
+    !seo.keywords.some(keyword => title.includes(keyword)) && console.log(`no keyword in title of ${seo.pageUrl}`);
+    !seo.keywords.some(keyword => seo.description.includes(keyword)) &&
+        console.log(`no keyword in desc of ${seo.pageUrl}`);
     return (
         <Head>
             <title>{title}</title>
             <link rel="canonical" href={seo.pageUrl} />
             <link rel="shortcut icon" href={seo.faviconUrl} type="image/png" />
             <meta name="description" content={seo.description} />
-            <meta property="keywords" content={seo.keywords} />
+            <meta property="keywords" content={seo.keywords.join(',')} />
             <meta property="og:image" content={seo.image} />
             <meta property="og:image:url" content={seo.image} />
 

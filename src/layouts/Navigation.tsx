@@ -4,7 +4,7 @@ import { UserMenu } from '@/src/components/molecules/UserMenu';
 
 import { Stack } from '@/src/components/atoms/Stack';
 import styled from '@emotion/styled';
-import { LanguageSwitcher } from '@/src/components';
+// import { LanguageSwitcher } from '@/src/components';
 import { Link } from '@/src/components/atoms/Link';
 import { useCart } from '@/src/state/cart';
 
@@ -16,6 +16,7 @@ import { DesktopNavigation } from '@/src/components/organisms/DesktopNavigation'
 import { SearchIcon } from 'lucide-react';
 import { useState } from 'react';
 import { IconButton } from '../components/molecules/Button';
+import { LanguagePicker } from '@/src/components';
 
 interface NavigationProps {
     navigation: RootNode<NavigationType> | null;
@@ -44,10 +45,11 @@ export const Navigation: React.FC<NavigationProps> = ({ navigation }) => {
                                 <IconButton onClick={() => setSearchOpen(p => !p)}>
                                     <SearchIcon />
                                 </IconButton>
-                                <LanguageSwitcher />
+                                {/* <LanguageSwitcher /> */}
                                 <UserMenu isLogged={isLogged} />
                                 {/* <Cart activeOrder={cart} /> */}
                                 <CartDrawer activeOrder={cart} />
+                                <LanguagePicker />
                             </Stack>
                         </>
                     )}

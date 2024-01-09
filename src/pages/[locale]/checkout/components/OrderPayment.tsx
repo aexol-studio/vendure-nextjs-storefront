@@ -1,6 +1,5 @@
 import { storefrontApiMutation } from '@/src/graphql/client';
 import { AvailablePaymentMethodsType } from '@/src/graphql/selectors';
-import { usePush } from '@/src/lib/redirect';
 import React, { InputHTMLAttributes, forwardRef, useEffect, useState } from 'react';
 import { Stack } from '@/src/components/atoms';
 
@@ -8,13 +7,15 @@ import { Elements } from '@stripe/react-stripe-js';
 import { loadStripe, Stripe, StripeError } from '@stripe/stripe-js';
 import { StripeForm } from './PaymentMethods/StripeForm';
 import { useCheckout } from '@/src/state/checkout';
-import { Banner } from '@/src/components/forms';
+import { Banner, Input } from '@/src/components/forms';
 import { useTranslation } from 'next-i18next';
 import { Przelewy24Logo } from '@/src/assets/svg/Przelewy24Logo';
 import styled from '@emotion/styled';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { Button } from '@/src/components/molecules/Button';
 import { CreditCard } from 'lucide-react';
+import { useRouter } from 'next/router';
+import { usePush } from '@/src/lib/redirect';
 
 const STRIPE_PUBLIC_KEY = process.env.NEXT_PUBLIC_STRIPE_KEY;
 
@@ -25,7 +26,14 @@ interface OrderPaymentProps {
 }
 
 type FormValues = {
-    payment: 'przelewy24' | 'stripe' | 'dummy-method-success' | 'dummy-method-error' | 'dummy-method-decline';
+    payment:
+        | 'przelewy24'
+        | 'przelewy24-blik'
+        | 'stripe'
+        | 'dummy-method-success'
+        | 'dummy-method-error'
+        | 'dummy-method-decline';
+    blikCode?: string;
 };
 
 type StandardMethodMetadata = {
@@ -37,6 +45,7 @@ type StandardMethodMetadata = {
 export const OrderPayment: React.FC<OrderPaymentProps> = ({ availablePaymentMethods, stripeData, language }) => {
     const { t } = useTranslation('common');
     const { activeOrder } = useCheckout();
+    const { push: routerPush } = useRouter();
     const push = usePush();
     //For stripe
     const [stripe, setStripe] = useState<Stripe | null>(null);
@@ -123,11 +132,11 @@ export const OrderPayment: React.FC<OrderPaymentProps> = ({ availablePaymentMeth
     const defaultMethod = availablePaymentMethods?.find(m => m.code === 'standard-payment');
     const przelewy24Method = availablePaymentMethods?.find(m => m.code === 'przelewy-24');
 
-    const przelewy24 = async () => {
+    const przelewy24 = async (blikCode?: string) => {
         try {
             const { addPaymentToOrder } = await storefrontApiMutation(language)({
                 addPaymentToOrder: [
-                    { input: { method: 'przelewy-24', metadata: {} } },
+                    { input: { method: 'przelewy-24', metadata: blikCode ? JSON.stringify({ blikCode }) : {} } },
                     {
                         __typename: true,
                         '...on Order': { state: true, code: true, payments: { metadata: true } },
@@ -177,8 +186,18 @@ export const OrderPayment: React.FC<OrderPaymentProps> = ({ availablePaymentMeth
                 return;
             }
 
+            if (
+                blikCode &&
+                addPaymentToOrder.__typename === 'Order' &&
+                addPaymentToOrder.state === 'PaymentAuthorized'
+            ) {
+                push('/checkout/confirmation/' + addPaymentToOrder.code);
+                return;
+            }
+
             if (addPaymentToOrder.payments[0].metadata.public.paymentUrl) {
-                push(addPaymentToOrder.payments[0].metadata.public.paymentUrl);
+                routerPush(addPaymentToOrder.payments[0].metadata.public.paymentUrl);
+                return;
             }
         } catch (e) {
             console.log(e);
@@ -189,6 +208,11 @@ export const OrderPayment: React.FC<OrderPaymentProps> = ({ availablePaymentMeth
         if (data.payment === 'stripe') return;
         if (data.payment === 'przelewy24') {
             await przelewy24();
+            return;
+        }
+
+        if (data.payment === 'przelewy24-blik') {
+            await przelewy24(data.blikCode);
             return;
         }
 
@@ -226,18 +250,53 @@ export const OrderPayment: React.FC<OrderPaymentProps> = ({ availablePaymentMeth
             <Banner error={{ message: error ?? undefined }} clearErrors={() => setError(null)} />
             <PaymentForm onSubmit={handleSubmit(onSubmit)}>
                 {przelewy24Method && (
-                    <PaymentButton
-                        id="przelewy24"
-                        value="przelewy24"
-                        label="Przelewy24"
-                        icon={
-                            <P24Logo itemsCenter justifyCenter>
-                                <Przelewy24Logo />
-                            </P24Logo>
-                        }
-                        checked={watch('payment') === 'przelewy24'}
-                        {...register('payment')}
-                    />
+                    <Stack itemsCenter>
+                        <PaymentButton
+                            id="przelewy24"
+                            value="przelewy24"
+                            label="Przelewy24"
+                            icon={
+                                <P24Logo itemsCenter justifyCenter>
+                                    <Przelewy24Logo />
+                                </P24Logo>
+                            }
+                            checked={watch('payment') === 'przelewy24'}
+                            {...register('payment')}
+                        />
+                    </Stack>
+                )}
+                {przelewy24Method && (
+                    <Stack itemsCenter column gap="1.5rem">
+                        <PaymentButton
+                            id="przelewy24-blik"
+                            value="przelewy24-blik"
+                            label="Przelewy24 + BLIK"
+                            icon={
+                                <P24Logo itemsCenter justifyCenter>
+                                    <Przelewy24Logo />
+                                </P24Logo>
+                            }
+                            checked={watch('payment') === 'przelewy24-blik'}
+                            {...register('payment')}
+                        />
+                        {watch('payment') === 'przelewy24-blik' ? (
+                            <Input
+                                {...register('blikCode', {
+                                    required: true,
+                                    minLength: 6,
+                                    maxLength: 6,
+                                    pattern: /^\d+$/,
+                                    onChange: e => {
+                                        if (e.target.value.length > 6)
+                                            e.target.value = e.target.value.slice(0, 6).replace(/\D/g, '');
+                                    },
+                                })}
+                                label="BLIK Code"
+                            />
+                        ) : (
+                            <></>
+                        )}
+                    </Stack>
                 )}
                 {stripe && stripeData?.paymentIntent && (
                     <PaymentButton

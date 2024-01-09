@@ -95,8 +95,8 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({ isForm, YMALProducts
 
 const SummaryContainer = styled(Stack)<{ isForm?: boolean }>`
     width: ${({ isForm }) => (isForm ? 'calc(50% - 2.5rem)' : '100%')};
-    position: sticky;
-    top: 9.5rem;
+    position: ${({ isForm }) => (isForm ? 'sticky' : 'relative')};
+    top: ${({ isForm }) => (isForm ? '9.5rem' : '0')};
     height: fit-content;
 
     @media (max-width: 1024px) {

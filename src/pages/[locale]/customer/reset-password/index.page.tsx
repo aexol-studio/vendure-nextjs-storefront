@@ -129,7 +129,8 @@ const ResetPassword: React.FC<InferGetServerSidePropsType<typeof getServerSidePr
 
 const getServerSideProps = async (context: GetServerSidePropsContext) => {
     const r = await makeServerSideProps(['common', 'customer'])(context);
-    const language = r.props._nextI18Next?.initialLocale ?? 'en';
+    const language = (context.params?.locale as string) ?? 'en';
+
     const collections = await getCollections(language);
     const navigation = arrayToTree(collections);
     const token = context.query.token as string;

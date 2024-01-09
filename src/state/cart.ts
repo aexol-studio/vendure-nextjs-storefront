@@ -3,6 +3,7 @@ import { ActiveOrderSelector, ActiveOrderType } from '@/src/graphql/selectors';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
 import { createContainer } from 'unstated-next';
+import { addAnimatedPayload } from '../util/animatedAddToCart';
 
 const useCartContainer = createContainer(() => {
     const { query } = useRouter();
@@ -20,7 +21,6 @@ const useCartContainer = createContainer(() => {
                 storefrontApiQuery(language)({ activeCustomer: { id: true } }),
             ]);
             setActiveOrder(activeOrder);
-            console.log(language, activeOrder);
             setIsLogged(!!activeCustomer?.id);
             return activeOrder;
         } catch (e) {
@@ -28,7 +28,7 @@ const useCartContainer = createContainer(() => {
         }
     };
 
-    const addToCart = async (id: string, q: number, o?: boolean) => {
+    const addToCart = async (id: string, q: number, o?: boolean, e?: React.MouseEvent<HTMLElement, MouseEvent>) => {
         setActiveOrder(c => {
             return c && { ...c, totalQuantity: c.totalQuantity + 1 };
         });
@@ -60,6 +60,7 @@ const useCartContainer = createContainer(() => {
             });
             if (addItemToOrder.__typename === 'Order') {
                 setActiveOrder(addItemToOrder);
+                if (e) await addAnimatedPayload(e, 'black', q, true);
                 if (o) open();
             }
         } catch (e) {

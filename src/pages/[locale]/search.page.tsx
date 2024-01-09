@@ -140,7 +140,8 @@ const FacetsFilters = styled(motion.div)`
 
 const getServerSideProps = async (context: GetServerSidePropsContext) => {
     const r = await makeServerSideProps(['common'])(context);
-    const language = r.props._nextI18Next?.initialLocale ?? 'en';
+    const language = (context.params?.locale as string) ?? 'en';
+
     const collections = await getCollections(language);
     const navigation = arrayToTree(collections);
     let page = 1;

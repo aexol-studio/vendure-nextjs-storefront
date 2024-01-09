@@ -107,9 +107,9 @@ export const SSRQuery = (context: GetServerSidePropsContext) => {
         session: context.req.cookies['session'],
         'session.sig': context.req.cookies['session.sig'],
     };
-
-    const HOST = `${VENDURE_HOST}?languageCode=${context.locale || DEFAULT_LANGUAGE}`;
-    const properChannel = getChannelByLanguage(context.locale || DEFAULT_LANGUAGE);
+    const locale = (context.params?.locale as string) || DEFAULT_LANGUAGE;
+    const HOST = `${VENDURE_HOST}?languageCode=${locale}`;
+    const properChannel = getChannelByLanguage(locale);
 
     return VendureChain(HOST, {
         headers: {
@@ -126,8 +126,9 @@ export const SSRMutation = (context: GetServerSidePropsContext) => {
         'session.sig': context.req.cookies['session.sig'],
     };
 
-    const HOST = `${VENDURE_HOST}?languageCode=${context.locale || DEFAULT_LANGUAGE}`;
-    const properChannel = getChannelByLanguage(context.locale || DEFAULT_LANGUAGE);
+    const locale = (context.params?.locale as string) || DEFAULT_LANGUAGE;
+    const HOST = `${VENDURE_HOST}?languageCode=${locale}`;
+    const properChannel = getChannelByLanguage(locale);
 
     return VendureChain(HOST, {
         headers: {

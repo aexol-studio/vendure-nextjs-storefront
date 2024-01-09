@@ -66,8 +66,19 @@ const getStaticProps = async (ctx: ContextModel) => {
 
     const bestOf = await storefrontApiQuery(language)({
         search: [
-            { input: { take: 4, groupByProduct: true, sort: { name: SortOrder.DESC } } },
-            { items: ProductSearchSelector },
+            { input: { take: 4, groupByProduct: false, sort: { name: SortOrder.DESC }, inStock: true } },
+            {
+                items: {
+                    ...ProductSearchSelector,
+                    productVariantId: true,
+                    productVariantName: true,
+                    price: {
+                        __typename: true,
+                        '...on SinglePrice': { value: true },
+                        '...on PriceRange': { min: true, max: true },
+                    },
+                },
+            },
         ],
     });
 

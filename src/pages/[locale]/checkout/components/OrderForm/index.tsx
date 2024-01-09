@@ -321,9 +321,13 @@ export const OrderForm: React.FC<OrderFormProps> = ({ availableCountries, langua
                 <Stack column gap="0.5rem">
                     <Stack column gap="2rem">
                         <Stack gap="0.75rem" itemsCenter>
-                            <BackButton href="/">
-                                <MoveLeft size={24} />
-                            </BackButton>
+                            <AnimatePresence>
+                                {!isSubmitting ? (
+                                    <BackButton href="/">
+                                        <MoveLeft size={24} />
+                                    </BackButton>
+                                ) : null}
+                            </AnimatePresence>
                             <TH2 size="2rem" weight={500}>
                                 {t('orderForm.contactInfo')}
                             </TH2>

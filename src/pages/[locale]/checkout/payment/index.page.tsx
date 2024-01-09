@@ -33,8 +33,8 @@ const PaymentPage: React.FC<InferGetServerSidePropsType<typeof getServerSideProp
 
 const getServerSideProps = async (context: GetServerSidePropsContext) => {
     const r = await makeServerSideProps(['common', 'checkout'])(context);
-    const language = r.props._nextI18Next?.initialLocale ?? 'en';
     const homePageRedirect = prepareSSRRedirect('/')(context);
+    const language = (context.params?.locale as string) ?? 'en';
 
     try {
         const [{ activeOrder }, { eligiblePaymentMethods }] = await Promise.all([

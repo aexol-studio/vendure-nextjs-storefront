@@ -28,7 +28,8 @@ const CheckoutPage: React.FC<InferGetServerSidePropsType<typeof getServerSidePro
 
 const getServerSideProps = async (context: GetServerSidePropsContext) => {
     const r = await makeServerSideProps(['common', 'checkout'])(context);
-    const language = r.props._nextI18Next?.initialLocale ?? 'en';
+    const language = (context.params?.locale as string) ?? 'en';
+
     const homePageRedirect = prepareSSRRedirect('/')(context);
     const paymentRedirect = prepareSSRRedirect('/checkout/payment')(context);
 

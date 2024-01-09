@@ -60,6 +60,6 @@ export const usePush = () => {
         (to?: string, as?: Url, options?: TransitionOptions) => {
             router.push(`${locale}${to}`, as, options);
         },
-        [lang],
+        [lang, router.query.locale],
     );
 };

@@ -13,6 +13,9 @@ import { CartDrawer } from '@/src/layouts/CartDrawer';
 import { NavigationType } from '@/src/graphql/selectors';
 import { RootNode } from '@/src/util/arrayToTree';
 import { DesktopNavigation } from '@/src/components/organisms/DesktopNavigation';
+import { SearchIcon } from 'lucide-react';
+import { useState } from 'react';
+import { IconButton } from '../components/molecules/Button';
 
 interface NavigationProps {
     navigation: RootNode<NavigationType> | null;
@@ -20,6 +23,8 @@ interface NavigationProps {
 
 export const Navigation: React.FC<NavigationProps> = ({ navigation }) => {
     const { isLogged, cart } = useCart();
+
+    const [searchOpen, setSearchOpen] = useState(false);
 
     return (
         <Main justifyCenter>
@@ -30,13 +35,22 @@ export const Navigation: React.FC<NavigationProps> = ({ navigation }) => {
                             <LogoAexol />
                         </Link>
                     </Stack>
-                    <DesktopNavigation navigation={navigation} />
-                    <Stack gap="1rem" itemsCenter>
-                        <LanguageSwitcher />
-                        <UserMenu isLogged={isLogged} />
-                        {/* <Cart activeOrder={cart} /> */}
-                        <CartDrawer activeOrder={cart} />
-                    </Stack>
+                    {searchOpen ? (
+                        <></>
+                    ) : (
+                        <>
+                            <DesktopNavigation navigation={navigation} />
+                            <Stack gap="1rem" itemsCenter>
+                                <IconButton onClick={() => setSearchOpen(p => !p)}>
+                                    <SearchIcon />
+                                </IconButton>
+                                <LanguageSwitcher />
+                                <UserMenu isLogged={isLogged} />
+                                {/* <Cart activeOrder={cart} /> */}
+                                <CartDrawer activeOrder={cart} />
+                            </Stack>
+                        </>
+                    )}
                 </Stack>
             </ContentContainer>
         </Main>

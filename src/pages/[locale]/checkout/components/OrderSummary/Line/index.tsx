@@ -50,7 +50,7 @@ export const Line: React.FC<LineProps> = ({
                                         {productVariant.name.replace(productVariant.product.name, '')}
                                     </TypoGraphy>
                                 )}
-                                <TypoGraphy size="1rem" weight={600}>
+                                <TypoGraphy size="1.25rem" weight={600}>
                                     {t('orderSummary.quantity')} {quantity}
                                 </TypoGraphy>
                             </Stack>
@@ -64,14 +64,14 @@ export const Line: React.FC<LineProps> = ({
                                 price={discountedLinePriceWithTax}
                                 // beforePrice={productVariant.customFields?.beforePrice}
                                 currencyCode={currencyCode}
-                                quantity={quantity}
+                                quantity={1}
                             />
                         ) : (
                             <Price
                                 price={unitPriceWithTax}
                                 // beforePrice={productVariant.customFields?.beforePrice}
                                 currencyCode={currencyCode}
-                                quantity={quantity}
+                                quantity={1}
                             />
                         )}
                     </Stack>

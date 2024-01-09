@@ -68,6 +68,14 @@ export const OrderPayment: React.FC<OrderPaymentProps> = ({ availablePaymentMeth
         if (stripeData?.paymentIntent) initStripe();
     }, []);
 
+    const onStripeSubmit = (result: { error: StripeError }) => {
+        if (!result.error) return;
+        setError(t(`errors.stripe.${result.error.type}`));
+    };
+
+    const defaultMethod = availablePaymentMethods?.find(m => m.code === 'standard-payment');
+    const przelewy24Method = availablePaymentMethods?.find(m => m.code === 'przelewy-24');
+
     const standardMethod = async (method: string, metadata: StandardMethodMetadata) => {
         // Add payment to order
         try {
@@ -124,16 +132,9 @@ export const OrderPayment: React.FC<OrderPaymentProps> = ({ availablePaymentMeth
         }
     };
 
-    const onStripeSubmit = (result: { error: StripeError }) => {
-        if (!result.error) return;
-        setError(t(`errors.stripe.${result.error.type}`));
-    };
-
-    const defaultMethod = availablePaymentMethods?.find(m => m.code === 'standard-payment');
-    const przelewy24Method = availablePaymentMethods?.find(m => m.code === 'przelewy-24');
-
     const przelewy24 = async (blikCode?: string) => {
         try {
+            setError(null);
             const { addPaymentToOrder } = await storefrontApiMutation(language)({
                 addPaymentToOrder: [
                     { input: { method: 'przelewy-24', metadata: blikCode ? JSON.stringify({ blikCode }) : {} } },
@@ -194,7 +195,7 @@ export const OrderPayment: React.FC<OrderPaymentProps> = ({ availablePaymentMeth
                 push('/checkout/confirmation/' + addPaymentToOrder.code);
                 return;
             }
-
+            console.log(addPaymentToOrder);
             if (addPaymentToOrder.payments[0].metadata.public.paymentUrl) {
                 routerPush(addPaymentToOrder.payments[0].metadata.public.paymentUrl);
                 return;
@@ -244,6 +245,7 @@ export const OrderPayment: React.FC<OrderPaymentProps> = ({ availablePaymentMeth
             return;
         }
     };
+    console.log(activeOrder);
 
     return activeOrder ? (
         <Stack w100 column itemsCenter gap="3.5rem">

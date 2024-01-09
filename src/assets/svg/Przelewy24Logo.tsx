@@ -16,15 +16,14 @@ export const Przelewy24Logo = () => {
             xmlSpace="preserve">
             <g>
                 <polygon
-                    fill-rule="evenodd"
-                    clip-rule="evenodd"
+                    fillRule="evenodd"
+                    clipRule="evenodd"
                     fill="#D13239"
-                    points="409.6,384.9 566,384.7 560.3,420.3 429.5,545.2 
-            539.3,545 532.9,583.4 371.2,583.5 378,543.8 503.4,423.7 403.3,423.7 409.6,384.9 	"
+                    points="409.6,384.9 566,384.7 560.3,420.3 429.5,545.2 539.3,545 532.9,583.4 371.2,583.5 378,543.8 503.4,423.7 403.3,423.7 409.6,384.9"
                 />
                 <path
-                    fill-rule="evenodd"
-                    clip-rule="evenodd"
+                    fillRule="evenodd"
+                    clipRule="evenodd"
                     fill="#D13239"
                     d="M238.5,324c-3.4-3.6-8.3-6.4-13.7-8.6c-5.7-2.2-12-3.8-18.2-4.9
             c-7.8-1.4-15.4-2-20.8-2.2c-5-0.2-8.2-0.2-8.2-0.2l-68.4,0l-50.9,0L12.7,583.5l42.6,0l16.8-102l82.6,0.4c0,0,32.2,1.3,55-10.8
@@ -34,15 +33,15 @@ export const Przelewy24Logo = () => {
             c2.1,2.6,2.9,6,3.2,9C206.4,368.6,205.7,372.3,205.7,372.6z"
                 />
                 <polygon
-                    fill-rule="evenodd"
-                    clip-rule="evenodd"
+                    fillRule="evenodd"
+                    clipRule="evenodd"
                     fill="#D13239"
                     points="778.1,308.1 819.1,308.1 773.2,583.5 732.1,583.4 
             778.1,308.1 	"
                 />
                 <polygon
-                    fill-rule="evenodd"
-                    clip-rule="evenodd"
+                    fillRule="evenodd"
+                    clipRule="evenodd"
                     fill="#D13239"
                     points="996.9,384.9 1036.2,384.8 1050.1,524.6 1110.6,384.6 
             1159.1,384.7 1173.4,525.1 1233.8,384.8 1274.6,384.8 1188,583.3 1139.6,583.3 1125.6,444.3 1064.5,583.3 1016.9,583.5 
@@ -73,16 +72,16 @@ export const Przelewy24Logo = () => {
                     />
                 </g>
                 <path
-                    fill-rule="evenodd"
-                    clip-rule="evenodd"
+                    fillRule="evenodd"
+                    clipRule="evenodd"
                     fill="#D13239"
                     d="M1321.8,384.9l26.3,145.2l74.3-145.3l41.8,0.4l-107.1,207.5
             c0,0-19.4,37.6-31.4,47.1c-12,9.5-19.4,13.8-29.2,14.8c-9.8,1-13.8,1.7-23.2,0l-10-1.8l6.2-37.1c0,0,16.6,3.1,26.4-0.8
             c9.9-3.9,17.8-20.7,17.8-20.7l5-8.4l-38.7-201L1321.8,384.9L1321.8,384.9z"
                 />
                 <path
-                    fill-rule="evenodd"
-                    clip-rule="evenodd"
+                    fillRule="evenodd"
+                    clipRule="evenodd"
                     fill="#B3B2B1"
                     d="M1479.4,404.6l43.1,0.1l2.6-16.7c0,0,4.6-30.2,14.9-36
             c3.3-1.9,8.6-3.6,14.7-4.7c11.3-2,25.6-2.2,37.3-1.8c17.9,0.6,24.7,0.8,42.9,2.9c18.2,2.1,13.6,19.7,13.6,19.7l-3.6,26.3
@@ -93,43 +92,43 @@ export const Przelewy24Logo = () => {
             c-18.8,6.9-29.7,19.5-36.6,37.3C1483.8,368.2,1479.4,404.6,1479.4,404.6L1479.4,404.6z"
                 />
                 <path
-                    fill-rule="evenodd"
-                    clip-rule="evenodd"
+                    fillRule="evenodd"
+                    clipRule="evenodd"
                     fill="#B3B2B1"
                     d="M1867.6,481.2l28.9-173.2l-51.2,0l-159.4,171.2l-7.2,43.4l139.4,0
             l-10.2,60.8l42.8,0.1l10.1-60.9l39.5,0.1l7.1-41.5L1867.6,481.2z M1825,481.3l-90.1-0.1l109.7-116.9L1825,481.3z"
                 />
                 <path
-                    fill-rule="evenodd"
-                    clip-rule="evenodd"
+                    fillRule="evenodd"
+                    clipRule="evenodd"
                     fill="#B3B2B1"
                     d="M328.9,330.8h131.3c0,0,29.4-23.8,50.3-39.1
             c20.9-15.3,58.9-39.4,58.9-39.4l-74.2-34.7c0,0-62.7,38.8-89.3,57.1C380.1,291.6,328.9,330.8,328.9,330.8L328.9,330.8z"
                 />
                 <path
-                    fill-rule="evenodd"
-                    clip-rule="evenodd"
+                    fillRule="evenodd"
+                    clipRule="evenodd"
                     fill="#B3B2B1"
                     d="M611.1,227.8l-60.9-41c0,0,55.1-31.3,128.4-60.5
             c73.2-29.2,112.3-41.4,112.3-41.4l12.4,58.1c0,0-70.5,23.6-110.9,42.7C650.6,203.5,611.1,227.8,611.1,227.8L611.1,227.8z"
                 />
                 <path
-                    fill-rule="evenodd"
-                    clip-rule="evenodd"
+                    fillRule="evenodd"
+                    clipRule="evenodd"
                     fill="#B3B2B1"
                     d="M848.3,130.3l-10.6-59.5c0,0,75.2-20,144-32.8
             c68.9-12.8,160.2-18.9,160.2-18.9l-30.2,91.9c0,0-80.3-11-155.7-0.7C897.3,117.3,848.3,130.3,848.3,130.3L848.3,130.3z"
                 />
                 <path
-                    fill-rule="evenodd"
-                    clip-rule="evenodd"
+                    fillRule="evenodd"
+                    clipRule="evenodd"
                     fill="#B3B2B1"
                     d="M1159.5,118.8l50.8-102.1c0,0,111.3-2.2,207.3,12.7
             c96,14.8,183.8,37.6,181.9,38.6l-243.4,127.3c0,0-56.9-36-127.5-58.1C1188.6,125.4,1159.5,118.8,1159.5,118.8L1159.5,118.8z"
                 />
                 <path
-                    fill-rule="evenodd"
-                    clip-rule="evenodd"
+                    fillRule="evenodd"
+                    clipRule="evenodd"
                     fill="#B3B2B1"
                     d="M1399.7,223l53.5,40.6h439.7c0,0-0.9-14.2-12.6-34.4
             c-7.3-12.6-20.6-26-34.5-39.9c-5.1-5-25.3-20.8-40.5-30.7c-38.8-25.2-60.5-34.9-100.8-53.2L1399.7,223L1399.7,223z"

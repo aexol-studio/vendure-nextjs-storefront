@@ -48,6 +48,8 @@ export const ProductSearchSelector = Selector('SearchResult')({
     slug: true,
     collectionIds: true,
     currencyCode: true,
+    productVariantId: true,
+    productVariantName: true,
     priceWithTax: {
         '...on PriceRange': {
             max: true,

@@ -106,7 +106,7 @@ export const addAnimatedPayload = async (
 ) => {
     const realVariant = variant || 'default';
     const circleProperties = iconBuilder(realVariant);
-    console.log(variant);
+
     return new Promise<void>(resolve => {
         const { time, ...settableProperties } = circleProperties;
         const quantityElement = document.getElementById('header-cart-quantity');

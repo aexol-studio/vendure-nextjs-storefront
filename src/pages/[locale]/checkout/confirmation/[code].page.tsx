@@ -23,7 +23,7 @@ const ConfirmationPage: React.FC<InferGetServerSidePropsType<typeof getServerSid
 
         const fetchOrder = async () => {
             try {
-                const { orderByCode } = await storefrontApiQuery(props.language ?? 'en')({
+                const { orderByCode } = await storefrontApiQuery(props.language)({
                     orderByCode: [{ code: props.code }, OrderSelector],
                 });
                 if (orderByCode) {

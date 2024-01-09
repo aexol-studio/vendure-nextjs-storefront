@@ -8,7 +8,7 @@ import { ProductImage } from '@/src/components/atoms/ProductImage';
 import { CheckCircle2, X } from 'lucide-react';
 import { priceFormatter } from '@/src/util/priceFomatter';
 import { CurrencyCode } from '@/src/zeus';
-import { OrderType } from '@/src/graphql/selectors';
+import { OrderStateType, OrderType } from '@/src/graphql/selectors';
 import { Trans, useTranslation } from 'next-i18next';
 import { Discounts } from '@/src/components/molecules/Discounts';
 
@@ -18,7 +18,7 @@ export const OrderConfirmation: React.FC<{ code: string; order?: OrderType }> = 
     const currencyCode = order?.currencyCode || CurrencyCode.USD;
     const discounts = order?.discounts?.reduce((acc, discount) => acc - discount.amountWithTax, 0) ?? 0;
 
-    const orderState = order?.state;
+    const orderState = order?.state as OrderStateType;
     //TODO: Add all possible payment states
     // const paymentState = order?.payments?.[0]?.state;
 

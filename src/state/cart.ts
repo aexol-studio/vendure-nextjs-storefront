@@ -33,6 +33,7 @@ const useCartContainer = createContainer(() => {
             return c && { ...c, totalQuantity: c.totalQuantity + 1 };
         });
         try {
+            if (e) addAnimatedPayload(e, 'black', q, true);
             const { addItemToOrder } = await storefrontApiMutation(language)({
                 addItemToOrder: [
                     { productVariantId: id, quantity: q },
@@ -60,7 +61,6 @@ const useCartContainer = createContainer(() => {
             });
             if (addItemToOrder.__typename === 'Order') {
                 setActiveOrder(addItemToOrder);
-                if (e) await addAnimatedPayload(e, 'black', q, true);
                 if (o) open();
             }
         } catch (e) {

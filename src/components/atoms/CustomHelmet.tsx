@@ -19,12 +19,21 @@ export const CustomHelmet: React.FC<{
     if (collection) {
         title = `${collection.name} | ${pageTitle}`;
     }
+    if (title.length > 60) {
+        title = pageTitle.slice(0, 60 - 3) + '...';
+        console.log(`title of ${asPath} is too long`);
+    }
     const u = new URL((process.env.NEXT_PUBLIC_DOMAIN || 'https://shop.aexol.com') + asPath);
     const canonicalUrl = u.origin + u.pathname;
+    const metaDescription = product?.description || collection?.description || 'Demo store made by Aexol';
+    if (metaDescription.length > 160) {
+        metaDescription.slice(0, 160 - 3) + '...';
+        console.log(`description of ${asPath} is too long`);
+    }
 
     const seo = {
         name: 'Aexol Demo Store',
-        description: product?.description || collection?.description || 'Demo store made by Aexol',
+        description: metaDescription,
         pageUrl: `${SHOP_URL}${asPath}`,
         keywords: [
             'Aexol',
@@ -61,7 +70,7 @@ export const CustomHelmet: React.FC<{
             <meta property="og:image" content={seo.image} />
             <meta property="og:image:url" content={seo.image} />
 
-            <meta name="og:title" content={seo.name} />
+            <meta name="og:title" content={title} />
             <meta property="og:site_name" content={seo.name} />
             <meta property="og:type" content="website" />
             <meta property="og:description" content={seo.description} />

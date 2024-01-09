@@ -7,7 +7,7 @@ import { TH1, TP, TPriceBig } from '@/src/components/atoms/TypoGraphy';
 import { FullWidthButton, FullWidthSecondaryButton } from '@/src/components/molecules/Button';
 import { NotifyMeForm } from '@/src/components/molecules/NotifyMeForm';
 import { NewestProducts } from '@/src/components/organisms/NewestProducts';
-import { ProductPhotosPreview } from '@/src/components/organisms/ProductPhotosPreview';
+// import { ProductPhotosPreview } from '@/src/components/organisms/ProductPhotosPreview';
 import { RelatedProductCollections } from '@/src/components/organisms/RelatedProductCollections';
 import { DEFAULT_LANGUAGE, storefrontApiQuery } from '@/src/graphql/client';
 import { NewestProductSelector, ProductDetailSelector, ProductSlugSelector } from '@/src/graphql/selectors';
@@ -25,6 +25,7 @@ import { ProductOptions } from '@/src/components/organisms/ProductOptions';
 import { Breadcrumbs } from '@/src/components/molecules/Breadcrumbs';
 import { useProduct } from '@/src/state/product';
 import { arrayToTree } from '@/src/util/arrayToTree';
+import { DesktopPhotoSwipe } from '@/src/components/organisms/DesktopPhotoSwipe';
 
 const ProductPage: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = props => {
     const { product, variant, addingError, handleVariant, handleBuyNow, handleAddToCart } = useProduct();
@@ -42,18 +43,18 @@ const ProductPage: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = pr
                     <Breadcrumbs breadcrumbs={breadcrumbs} />
                     <Main gap="5rem">
                         <StickyLeft w100 itemsCenter justifyCenter gap="2.5rem">
-                            {/* <DesktopPhotoSwipe
+                            <DesktopPhotoSwipe
                                 galleryID="product"
                                 images={
-                                    product?.assets.map(a => ({
-                                        src: a.preview,
-                                        width: a.width,
-                                        height: a.height,
-                                        alt: product.name,
+                                    [product?.featuredAsset, ...(product?.assets ? product.assets : [])].map(a => ({
+                                        src: a?.preview || '',
+                                        width: 300,
+                                        height: 600,
+                                        alt: product?.name || '',
                                     })) || []
                                 }
-                            /> */}
-                            <ProductPhotosPreview featuredAsset={product?.featuredAsset} images={product?.assets} />
+                            />
+                            {/* <ProductPhotosPreview featuredAsset={product?.featuredAsset} images={product?.assets} /> */}
                         </StickyLeft>
                         <StyledStack column gap="2.5rem">
                             <TH1>{product?.name}</TH1>

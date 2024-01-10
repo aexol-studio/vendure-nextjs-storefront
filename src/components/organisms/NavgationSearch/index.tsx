@@ -1,12 +1,16 @@
 import React, { useRef, useEffect, useState } from 'react';
 import { SearchIcon, X } from 'lucide-react';
 import styled from '@emotion/styled';
-import { Link, Stack, TP } from '@/src/components/atoms';
+import { Link, Stack, TP, TypoGraphy } from '@/src/components/atoms';
 import { storefrontApiQuery } from '@/src/graphql/client';
 import { ProductSearchType, ProductSearchSelector } from '@/src/graphql/selectors';
 import { usePush } from '@/src/lib/redirect';
 import { useRouter } from 'next/router';
 import { ProductImageWithInfo } from '../../molecules/ProductImageWithInfo';
+import { Slider } from '../Slider';
+import { SortOrder } from '@/src/zeus';
+import { useTranslation, Trans } from 'react-i18next';
+import { Chevron } from '@/src/assets';
 
 const useDebounce = (value: string, delay: number) => {
     const [debouncedValue, setDebouncedValue] = useState(value);
@@ -23,14 +27,15 @@ const useDebounce = (value: string, delay: number) => {
 export const NavigationSearch: React.FC<{ searchOpen: boolean; toggleSearch: () => void }> = ({ toggleSearch }) => {
     const inputRef = useRef<HTMLInputElement>(null);
     const { query } = useRouter();
-
+    const { t } = useTranslation('common');
     const push = usePush();
     const language = query?.locale as string;
-
     const [loading, setLoading] = useState(false);
     const [searchQuery, setSearchQuery] = useState(query.q ? query.q.toString() : '');
     const [searchResults, setSearchResult] = useState<ProductSearchType[]>([]);
     const debouncedSearch = useDebounce(searchQuery, 200);
+    const [mostWanted, setMostWanted] = useState<ProductSearchType[]>([]);
+    const [totalItems, setTotalItems] = useState(0);
 
     const handleSearch = () => {
         toggleSearch();
@@ -55,12 +60,20 @@ export const NavigationSearch: React.FC<{ searchOpen: boolean; toggleSearch: () 
                 setLoading(true);
                 const results = await storefrontApiQuery(language)({
                     search: [
-                        { input: { term: debouncedSearch, take: 8, groupByProduct: true } },
+                        {
+                            input: {
+                                term: debouncedSearch,
+                                take: 8,
+                                groupByProduct: true,
+                                sort: { price: SortOrder.DESC },
+                            },
+                        },
                         { items: ProductSearchSelector, totalItems: true },
                     ],
                 });
                 setSearchResult(results.search.items);
                 setLoading(false);
+                setTotalItems(results.search.totalItems);
             } catch (error) {
                 console.error(error);
                 setSearchResult([]);
@@ -76,6 +89,33 @@ export const NavigationSearch: React.FC<{ searchOpen: boolean; toggleSearch: () 
             inputRef.current?.focus();
         }, 200);
     }, []);
+
+    useEffect(() => {
+        const getBestOf = async () => {
+            try {
+                const bestOf = await storefrontApiQuery(language)({
+                    search: [
+                        { input: { take: 2, groupByProduct: false, sort: { name: SortOrder.DESC }, inStock: true } },
+                        { items: ProductSearchSelector },
+                    ],
+                });
+                setMostWanted(bestOf.search.items);
+            } catch (error) {
+                console.error(error);
+            }
+        };
+        getBestOf();
+    }, []);
+
+    const slides = searchResults.map(result => (
+        <ProductImageWithInfo
+            key={result.slug}
+            size="thumbnail-big"
+            imageSrc={result.productAsset?.preview}
+            href={`/products/${result.slug}`}
+            text={result.productName}
+        />
+    ));
 
     return (
         <Stack w100 itemsCenter style={{ position: 'relative' }}>
@@ -108,17 +148,51 @@ export const NavigationSearch: React.FC<{ searchOpen: boolean; toggleSearch: () 
                                 No results for <strong>{debouncedSearch}</strong>
                             </TP>
                         ) : (
-                            searchResults.map(result => (
-                                <Stack justifyCenter gap="0.5rem" column w100 key={result.slug}>
-                                    <ProductImageWithInfo
-                                        href={`/products/${result.slug}`}
-                                        size="thumbnail-big"
-                                        imageSrc={result.productAsset?.preview}
-                                    />
-                                    <Link href={`/products/${result.slug}`}></Link>
-                                    <TP>{result.productName}</TP>
-                                </Stack>
-                            ))
+                            <Wrapper column w100 gap={'2rem'}>
+                                <Container>
+                                    <MaxWidth>
+                                        <Stack column gap={'2rem'}>
+                                            <TypoGraphy size={'2rem'} weight={400}>
+                                                {t('search-results-header')}
+                                            </TypoGraphy>
+                                            <Slider slides={slides} withArrows spacing={16} />
+                                        </Stack>
+                                    </MaxWidth>
+                                    <Divider />
+                                    <Stack column gap={'1.5rem'}>
+                                        <TypoGraphy size={'2rem'} weight={400}>
+                                            Most Wanted
+                                        </TypoGraphy>
+                                        <MostWanted>
+                                            {mostWanted.map(product => (
+                                                <Stack column key={product.slug} gap={'0.5rem'}>
+                                                    <ProductImageWithInfo
+                                                        size="thumbnail"
+                                                        imageSrc={product.productAsset?.preview}
+                                                        href={`/products/${product.slug}`}
+                                                    />
+                                                    <Link href={`/products/${product.slug}`}></Link>
+                                                    <TypoGraphy
+                                                        style={{ textAlign: 'center' }}
+                                                        size={'1rem'}
+                                                        weight={400}>
+                                                        {product.productName}
+                                                    </TypoGraphy>
+                                                </Stack>
+                                            ))}
+                                        </MostWanted>
+                                    </Stack>
+                                </Container>
+                                <TotalResults
+                                    onClick={() => {
+                                        push(`/search?q=${searchQuery}`);
+                                    }}>
+                                    <Trans i18nKey="search-results-total" values={{ totalItems, searchQuery }} />
+                                    <IconWrapper>
+                                        <Chevron />
+                                    </IconWrapper>
+                                </TotalResults>
+                            </Wrapper>
                         )}
                     </SearchContent>
                 </SearchPosition>
@@ -146,6 +220,7 @@ const SearchContent = styled(Stack)`
     color: ${p => p.theme.gray(1000)};
     background: ${p => p.theme.gray(0)};
     transition: all 0.2s ease-in-out;
+    overflow: hidden;
 `;
 
 const Form = styled.form`
@@ -189,4 +264,54 @@ const SearchButton = styled.button`
     cursor: pointer;
     padding: 0;
     margin: 0;
+`;
+
+const Container = styled(Stack)`
+    display: flex;
+    width: 100%;
+    flex-direction: column;
+    gap: 2rem;
+    @media (min-width: ${p => p.theme.breakpoints.lg}) {
+        flex-direction: row;
+        gap: unset;
+        justify-content: space-between;
+        align-items: center;
+    }
+`;
+
+const MostWanted = styled(Stack)`
+    flex-direction: row;
+    gap: 2rem;
+`;
+
+const MaxWidth = styled.div`
+    max-width: 32rem;
+`;
+
+const TotalResults = styled(Stack)`
+    align-items: center;
+    cursor: pointer;
+    gap: 0.5rem;
+    svg {
+        width: 0.8rem;
+        transform: rotate(-90deg);
+    }
+`;
+
+const IconWrapper = styled.div`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+`;
+
+const Wrapper = styled(Stack)``;
+
+const Divider = styled.div`
+    display: none;
+    @media (min-width: ${p => p.theme.breakpoints.md}) {
+        display: block;
+    }
+    height: 100%;
+    width: 1px;
+    background-color: ${p => p.theme.gray(100)};
 `;

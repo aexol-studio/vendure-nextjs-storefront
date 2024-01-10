@@ -119,11 +119,11 @@ const CollectionPage: React.FC<InferGetStaticPropsType<typeof getStaticProps>> =
                             </Stack>
                         </Stack>
                     ) : null}
-                    <Stack justifyBetween itemsCenter>
+                    <Wrapper justifyBetween>
                         <Stack itemsEnd>
                             <TH1>{collection?.name}</TH1>
                         </Stack>
-                        <Stack itemsCenter gap="2.5rem">
+                        <Stack justifyEnd itemsCenter gap="2.5rem">
                             <SortBy sort={sort} handleSort={handleSort} />
                             <Filters onClick={() => setFiltersOpen(true)}>
                                 <TP>{t('filters')}</TP>
@@ -132,7 +132,7 @@ const CollectionPage: React.FC<InferGetStaticPropsType<typeof getStaticProps>> =
                                 </IconButton>
                             </Filters>
                         </Stack>
-                    </Stack>
+                    </Wrapper>
                     <MainGrid>
                         {products?.map(p => <ProductTile collections={props.collections} product={p} key={p.slug} />)}
                     </MainGrid>
@@ -146,6 +146,14 @@ const CollectionPage: React.FC<InferGetStaticPropsType<typeof getStaticProps>> =
         </Layout>
     );
 };
+
+const Wrapper = styled(Stack)`
+    flex-direction: column;
+    gap: 2rem;
+    @media (min-width: ${p => p.theme.breakpoints.xl}) {
+        flex-direction: row;
+    }
+`;
 
 const RelativeStack = styled(Stack)`
     position: relative;
@@ -166,12 +174,15 @@ const Filters = styled(Stack)`
 `;
 
 const Facets = styled(motion.div)`
+    width: 100%;
     background: ${p => p.theme.grayAlpha(900, 0.5)};
     position: fixed;
     inset: 0;
     z-index: 2138;
 `;
 const FacetsFilters = styled(motion.div)`
+    max-width: fit-content;
+    width: 100%;
     background: ${p => p.theme.gray(0)};
     position: absolute;
     top: 0;

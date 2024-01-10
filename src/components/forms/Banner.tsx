@@ -38,7 +38,7 @@ export const Banner = forwardRef((props: BannerType, ref: React.ForwardedRef<HTM
                                 <X size={'1.5rem'} />
                             </HideBannerButton>
                         )}
-                        <BannerContent column>
+                        <BannerContent w100 column>
                             {prop?.type && <FormError>{prop?.type}</FormError>}
                             <FormError status={type}>
                                 <IconWrapper justifyCenter itemsCenter type={type}>
@@ -70,8 +70,8 @@ const BannerWrapper = styled(Stack)`
 
 const HideBannerButton = styled.div`
     position: absolute;
-    top: 0rem;
-    right: 0.6rem;
+    top: 0.2rem;
+    right: 0.4rem;
     cursor: pointer;
 `;
 
@@ -89,7 +89,7 @@ const BannerBox = styled(motion.div)<{ status?: 'success' | 'error' }>`
     border: 1px solid ${p => (p.status === 'success' ? p.theme.success : p.theme.error)};
     background-color: ${p => p.theme.background.main};
     font-size: 1.5rem;
-    box-shadow: 0 0 0.5rem 0.5rem ${({ theme }) => theme.shadow};
+    box-shadow: 0.3rem 0.2rem 0.3rem 0.1rem ${({ theme }) => theme.shadow};
 `;
 
 const BannerContent = styled(Stack)``;

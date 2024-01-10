@@ -34,7 +34,15 @@ const StyledLink = styled(Link)<{ withHover?: boolean; size: string }>`
         return `align-items: center;`;
     }}
 
-    ${({ withHover }) => withHover && `:hover p { display: block; }`}
+    ${({ withHover, theme }) =>
+        withHover &&
+        `
+        p { display: block; }
+        @media (min-width: ${theme.breakpoints.sm}) {
+            p { display: none; }
+            :hover p { display: block; }
+        }
+    `}
 `;
 
 const AbsoluteStyledTP = styled(TP)`

@@ -167,7 +167,7 @@ export const OrderPayment: React.FC<OrderPaymentProps> = ({ availablePaymentMeth
                                     <PaymentButton
                                         id="dummy-method-success"
                                         value="dummy-method-success"
-                                        label="Dummy method - success"
+                                        label={t('paymentMethod.dummyMethods.success')}
                                         icon={<StyledCreditCard method="success" />}
                                         checked={watch('payment') === 'dummy-method-success'}
                                         {...register('payment', { required: true })}
@@ -175,7 +175,7 @@ export const OrderPayment: React.FC<OrderPaymentProps> = ({ availablePaymentMeth
                                     <PaymentButton
                                         id="dummy-method-error"
                                         value="dummy-method-error"
-                                        label="Dummy method - error"
+                                        label={t('paymentMethod.dummyMethods.error')}
                                         icon={<StyledCreditCard method="error" />}
                                         checked={watch('payment') === 'dummy-method-error'}
                                         {...register('payment', { required: true })}
@@ -183,7 +183,7 @@ export const OrderPayment: React.FC<OrderPaymentProps> = ({ availablePaymentMeth
                                     <PaymentButton
                                         id="dummy-method-decline"
                                         value="dummy-method-decline"
-                                        label="Dummy method - decline"
+                                        label={t('paymentMethod.dummyMethods.decline')}
                                         icon={<StyledCreditCard method="decline" />}
                                         checked={watch('payment') === 'dummy-method-decline'}
                                         {...register('payment', { required: true })}

@@ -16,11 +16,16 @@ import { useAddresses } from './useAddresses';
 import { arrayToTree } from '@/src/util/arrayToTree';
 import { useTranslation } from 'next-i18next';
 import { CustomerWrap } from '../../components/shared';
+import { baseCountryFromLanguage } from '@/src/util/baseCountryFromLanguage';
 
 const Addresses: React.FC<InferGetServerSidePropsType<typeof getServerSideProps>> = props => {
     const { t } = useTranslation('customer');
     const { activeCustomer, addressToEdit, deleting, onDelete, onEdit, onModalClose, onSubmitCreate, onSubmitEdit } =
         useAddresses(props.activeCustomer, props.language);
+
+    const country =
+        activeCustomer.addresses?.find(a => a.defaultBillingAddress || a.defaultShippingAddress)?.country?.code ??
+        baseCountryFromLanguage(props.language);
 
     const ref = useRef<HTMLDivElement>(null);
     useEffect(() => {
@@ -46,6 +51,7 @@ const Addresses: React.FC<InferGetServerSidePropsType<typeof getServerSideProps>
                                 availableCountries={props.availableCountries}
                                 addressToEdit={addressToEdit}
                                 onModalClose={onModalClose}
+                                country={country}
                             />
                         </ModalContent>
                     </Modal>
@@ -56,7 +62,11 @@ const Addresses: React.FC<InferGetServerSidePropsType<typeof getServerSideProps>
                     <CustomerNavigation language={props.language} />
                     <Wrapper w100 gap="1.5rem">
                         <Stack w100>
-                            <AddressForm onSubmit={onSubmitCreate} availableCountries={props.availableCountries} />
+                            <AddressForm
+                                country={country}
+                                onSubmit={onSubmitCreate}
+                                availableCountries={props.availableCountries}
+                            />
                         </Stack>
                         <Wrap w100 itemsCenter gap="2.5rem">
                             {activeCustomer?.addresses?.map(address => (
@@ -122,7 +132,7 @@ const Modal = styled(motion.div)`
     position: fixed;
     top: 0;
     left: 0;
-    z-index: 1000;
+    z-index: 2139;
     width: 100vw;
     height: 100vh;
 

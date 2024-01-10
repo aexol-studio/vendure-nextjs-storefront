@@ -46,7 +46,7 @@ export const CustomHelmet: React.FC<{
             'Boilerplate',
             product?.name as string,
         ],
-        faviconUrl: `/public/favicon.ico`,
+        faviconUrl: `/favicon.ico`,
         logo: `/images/aexol_full_logo.png`,
         facebook: 'https://www.facebook.com/Aexol',
         twitter: 'https://twitter.com/aexol',

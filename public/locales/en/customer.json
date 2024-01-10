@@ -1,28 +1,61 @@
 {
     "home": "Home",
-    "signIn": "Sign in",
-    "signInTitle": "Sign in to your account",
-    "signUp": "Sign up",
-    "signUpTitle": "Create a new account",
-    "signOut": "Sign out",
-    "resetPasswordTitle": "Reset your password",
-    "addressesPageTitle": "Addresses",
-    "username": "Username",
-    "password": "Password",
-    "rememberMe": "Remember me",
-    "confirmPassword": "Confirm password",
-    "forgotPassword": "Forgot password?",
-    "forgotPasswordTitle": "Reset your password",
-    "email": "Email address",
-    "newPassword": "New password",
-    "confirmNewPassword": "Confirm new password",
-    "resetPassword": "Reset password",
-    "signUpSuccess": "You have successfully signed up, please check your email to verify your account",
-    "forgotPasswordSuccess": "We have sent you an email with instructions to reset your password",
-    "verify": {
-        "success": "Your account has been verified",
-        "fail": "Your account could not be verified",
-        "title": "Verify your account"
+    "shop": "Demo Shop",
+    "title": "Hello",
+    "search-products": "Search products",
+    "made-by": "Made by VendureAgency.com 2024",
+    "select-category": "Select category",
+    "filters": "Filters",
+    "sort-by": "Sort by",
+    "cart": "Cart",
+    "cart-summary": "Cart summary",
+    "your-cart": "Your cart",
+    "items": "items",
+    "proceed-to-checkout": "Proceed to checkout",
+    "continue-shopping": "Continue shopping",
+    "price": "Price",
+    "discount": "Discount",
+    "shipping": "Shipping",
+    "subtotal": "Subtotal",
+    "total": "Total",
+    "coupon-code": "Code:",
+    "empty-cart": "Your cart is empty",
+    "remove": "Remove",
+    "add-to-cart": "Add to cart",
+    "buy-now": "Buy now",
+    "related-collections": "Related Collections",
+    "newest-products": "Newest Products",
+    "featured-products": "Featured Products",
+    "sort-keys": {
+        "title": "Title",
+        "price": "Price"
+    },
+    "sort-directions": {
+        "ASC": "Ascending",
+        "DESC": "Descending"
+    },
+    "payments": {
+        "dummy-method": "Dummy Payment Method",
+        "states": {
+            "Authorized": "Authorized"
+        }
+    },
+    "stockLevel": {
+        "OUT_OF_STOCK": "Out of stock",
+        "IN_STOCK": "In stock",
+        "LOW_STOCK": "🔥 Make it quick only {{value}} left! 🔥",
+        "COMING_SOON": "Coming soon"
+    },
+    "commonError": "Something wen't wrong",
+    "send": "Send",
+    "search-results": "Search results for:",
+    "search-results-header": "Search results",
+    "search-results-total": "See {{totalItems}} results for {{searchQuery}}",
+    "cart-empty": "Your cart is empty",
+    "select-options": "Please select an options",
+    "shipping-protection": {
+        "title": "Shipping Protection",
+        "subtitle": "From Damage, Loss & Theft for {{value}}"
     },
     "navigation": {
         "manageAccount": "Manage account",
@@ -30,111 +63,122 @@
         "manageOrders": "Manage orders",
         "logout": "Logout"
     },
-    "accountPage": {
-        "title": "My Account",
-        "lastOrder": {
-            "title": "Last Order",
-            "noOrders": "You have no orders yet",
-            "viewOrder": "View Order",
-            "totalQuantity": "Total Quantity",
-            "totalProducts": "Total Products",
-            "totalPrice": "Total Price",
-            "orderNumber": "Order Number",
-            "orderDate": "Order Date"
+    "orderStates": {
+        "Created": "Created",
+        "Draft": "Draft",
+        "AddingItems": "Adding Items",
+        "Cancelled": "Cancelled",
+        "ArrangingPayment": "Arranging Payment",
+        "PaymentAuthorized": "Payment Authorized",
+        "PaymentSettled": "Payment Settled",
+        "PartiallyShipped": "Partially Shipped",
+        "Shipped": "Shipped",
+        "PartiallyDelivered": "Partially Delivered",
+        "Delivered": "Delivered",
+        "Modifying": "Modifying",
+        "ArrangingAdditionalPayment": "Additional Payment"
+    },
+    "notifyMe": {
+        "invalidEmail": "Please enter valid email",
+        "backendError": "Couldnt't add you to notify list",
+        "placeholder": "Notify me"
+    },
+    "errors": {
+        "clearErrors": "Clear errors",
+        "backend": {
+            "UNKNOWN_ERROR": "Unknown error",
+            "NATIVE_AUTH_STRATEGY_ERROR": "Native auth strategy error",
+            "INVALID_CREDENTIALS_ERROR": "Invalid credentials",
+            "ORDER_STATE_TRANSITION_ERROR": "Order state transition error",
+            "EMAIL_ADDRESS_CONFLICT_ERROR": "Email address conflict error",
+            "GUEST_CHECKOUT_ERROR": "Guest checkout error",
+            "ORDER_LIMIT_ERROR": "Order limit error",
+            "NEGATIVE_QUANTITY_ERROR": "Negative quantity error",
+            "INSUFFICIENT_STOCK_ERROR": "Insufficient stock error",
+            "COUPON_CODE_INVALID_ERROR": "Coupon code invalid error",
+            "COUPON_CODE_EXPIRED_ERROR": "Coupon code expired error",
+            "COUPON_CODE_LIMIT_ERROR": "Coupon code limit error",
+            "ORDER_MODIFICATION_ERROR": "Order modification error",
+            "INELIGIBLE_SHIPPING_METHOD_ERROR": "Ineligible shipping method error",
+            "NO_ACTIVE_ORDER_ERROR": "No active order error",
+            "ORDER_PAYMENT_STATE_ERROR": "Order payment state error",
+            "INELIGIBLE_PAYMENT_METHOD_ERROR": "Ineligible payment method error",
+            "PAYMENT_FAILED_ERROR": "Payment failed error",
+            "PAYMENT_DECLINED_ERROR": "Payment declined error",
+            "ALREADY_LOGGED_IN_ERROR": "Already logged in error",
+            "MISSING_PASSWORD_ERROR": "Missing password error",
+            "PASSWORD_VALIDATION_ERROR": "Password validation error",
+            "PASSWORD_ALREADY_SET_ERROR": "Password already set error",
+            "VERIFICATION_TOKEN_INVALID_ERROR": "Verification token invalid error",
+            "VERIFICATION_TOKEN_EXPIRED_ERROR": "Verification token expired error",
+            "IDENTIFIER_CHANGE_TOKEN_INVALID_ERROR": "Identifier change token invalid error",
+            "IDENTIFIER_CHANGE_TOKEN_EXPIRED_ERROR": "Identifier change token expired error",
+            "PASSWORD_RESET_TOKEN_INVALID_ERROR": "Password reset token invalid error",
+            "PASSWORD_RESET_TOKEN_EXPIRED_ERROR": "Password reset token expired error",
+            "NOT_VERIFIED_ERROR": "Not verified error"
         },
-        "detailsForm": {
-            "title": "Account Details",
-            "changeDetails": "Change Details",
-            "addressEmail": "Address email",
-            "firstName": "First name",
-            "lastName": "Last name",
-            "phoneNumber": "Phone number",
-            "successMessage": "Your account details have been updated successfully"
+        "stripe": {
+            "api_connection_error": "Stripe API connection error",
+            "api_error": "Stripe API error",
+            "authentication_error": "Stripe authentication error",
+            "card_error": "Stripe card error",
+            "idempotency_error": "Stripe idempotency error",
+            "invalid_request_error": "Stripe invalid request error",
+            "rate_limit_error": "Stripe rate limit error",
+            "validation_error": "Stripe validation error"
         },
-        "passwordForm": {
-            "title": "Change Password",
-            "confirmPassword": "Confirm Password",
-            "oldPassword": "Old Password",
-            "newPassword": "New Password",
-            "newPasswordConfirm": "Confirm New Password"
+        "email": {
+            "required": "Email is required",
+            "invalid": "Email is invalid"
+        },
+        "password": {
+            "required": "Password is required",
+            "minLength": "Password must be at least 8 characters long",
+            "maxLength": "Password cannot be more than 25 characters long",
+            "mustDifferent": "Password must be different from current one"
+        },
+        "confirmPassword": {
+            "required": "Confirm password is required",
+            "mustMatch": "Passwords must match"
+        },
+        "firstName": {
+            "required": "First name is required"
+        },
+        "lastName": {
+            "required": "Last name is required"
+        },
+        "phoneNumber": {
+            "required": "Phone number is required"
         }
     },
-    "orderPage": {
-        "title": "Order",
-        "backToOrders": "Go to My Orders",
-        "orderCode": "Order Code",
-        "items": "Items",
-        "shippingAddress": "Shipping Address",
-        "billingAddress": "Billing Address",
-        "shippingMethod": "Shipping Method",
-        "discounts": "Discounts",
-        "totalPrice": "Total Price",
-        "quantity": "Quantity",
-        "customerName": "Customer Name",
-        "email": "Email",
-        "phone": "Phone"
-    },
-    "ordersPage": {
-        "title": "My Orders",
-        "loading": "Loading orders...",
-        "orderDate": "Order Date",
-        "orderCode": "Order Code",
-        "totalQuantity": "Total Quantity",
-        "totalItems": "Total Items",
-        "totalPrice": "Total Price",
-        "loadMore": "Load More",
-        "viewOrder": "View Order"
-    },
-    "addressForm": {
-        "title": "My Addresses",
-        "phone": "Phone",
-        "fullName": "Full Name",
-        "company": "Company",
-        "streetLine1": "Address",
-        "streetLine2": "Apartment, suite, etc.",
-        "city": "City",
-        "countryCode": "Country",
-        "province": "State / Province",
-        "postalCode": "Postal Code",
-        "defaultShippingAddress": "Default Shipping Address",
-        "defaultBillingAddress": "Default Billing Address",
-        "cancel": "Cancel",
-        "update": "Update Address",
-        "add": "Add Address",
-        "edit": "Edit Address",
-        "delete": "Delete Address",
-        "errors": {
-            "root": {
-                "invalid": "An errors occurred while sending the form. Please correct the errors below",
-                "closeButton": "Close"
+    "bestOf": "Best of",
+    "footer": {
+        "sections": [
+            {
+                "header": "Best sellers",
+                "linksTitles": ["Laptop", "Tablet", "Wireless Optical Mouse", "USB Cable", "Ethernet Cable"]
             },
-            "phone": {
-                "required": "Phone is required"
+            {
+                "header": "Promotions + Offers",
+                "linksTitles": [
+                    "Refer a friend and Get 10% Off",
+                    "Register and Get 20% Off",
+                    "Text us and Get 25% Off",
+                    "All Promotions + Offers"
+                ]
             },
-            "fullName": {
-                "required": "Full name is required"
+            {
+                "header": "Contact us",
+                "contactInfo": [
+                    "4-500-600-44332",
+                    "Monday - Friday: 9 AM - 8 PM",
+                    "Saturday: 10 AM - 4:40 PM",
+                    "Sunday - CLOSED"
+                ]
             },
-            "company": {
-                "required": "Company is required"
-            },
-            "streetLine1": {
-                "required": "Address is required"
-            },
-            "streetLine2": {
-                "required": "Apartment, suite, etc. is required"
-            },
-            "city": {
-                "required": "City is required"
-            },
-            "countryCode": {
-                "required": "Country is required"
-            },
-            "province": {
-                "required": "State / Province is required"
-            },
-            "postalCode": {
-                "required": "Postal code is required"
-            }
-        }
+            { "header": "Information", "linksTitles": ["Account", "Order status", "Returns", "FAQ", "Feedback"] },
+            { "header": "Company", "linksTitles": ["Our history", "Blog"] }
+        ],
+        "law": ["Privacy Policy", "Terms and Conditions", "Cookie Policy"]
     }
 }

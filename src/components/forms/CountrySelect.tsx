@@ -21,8 +21,8 @@ export const CountrySelect = forwardRef((props: CountrySelectType, ref: React.Fo
                 {required && <FormRequired>&nbsp;*</FormRequired>}
             </Label>
             <StyledSelect ref={ref} {...rest}>
-                {options?.map(({ name, code }) => (
-                    <option key={code} value={code}>
+                {options?.map(({ name, code }, idx) => (
+                    <option key={code + idx} value={code}>
                         {name}
                     </option>
                 ))}

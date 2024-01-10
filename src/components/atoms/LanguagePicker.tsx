@@ -35,7 +35,6 @@ export const LanguagePicker = () => {
                     className="language"
                     onClick={() => {
                         languageDetector.cache && languageDetector.cache(newLang);
-                        //TODO: think about better solution [locale] [slug] [code]
                         const correctPathname = pathname
                             .replace('[locale]', newLang === 'en' ? '' : newLang)
                             .replace('[slug]', query.slug as string)
@@ -91,7 +90,7 @@ const Language = styled.div`
     cursor: pointer;
 
     &:hover {
-        background-color: ${({ theme }) => theme.gray(100)};
+        background-color: ${({ theme }) => theme.gray(200)};
     }
     transition: all 0.3s ease;
 `;
@@ -102,12 +101,13 @@ const Menu = styled.div<{ isOpen: boolean }>`
     visibility: ${({ isOpen }) => (isOpen ? 'visible' : 'hidden')};
     position: absolute;
     z-index: 3;
-    background-color: ${({ theme }) => theme.background.main};
+    background-color: ${({ theme }) => theme.gray(100)};
     color: ${({ theme }) => theme.text.main};
     transition: all 0.4s ease-in-out;
     width: max-content;
-    border-radius: 0.6rem;
+    border-radius: ${({ theme }) => theme.borderRadius};
     border: 1px solid ${({ theme }) => theme.gray(100)};
+    box-shadow: 0.1rem 0.1rem 0.2rem ${({ theme }) => theme.shadow};
     left: 50%;
     top: 2.2rem;
     transform: translate(-60%, 1rem);

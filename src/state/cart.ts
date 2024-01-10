@@ -3,8 +3,6 @@ import { ActiveOrderSelector, ActiveOrderType } from '@/src/graphql/selectors';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
 import { createContainer } from 'unstated-next';
-import { addAnimatedPayload } from '../util/animatedAddToCart';
-
 const useCartContainer = createContainer(() => {
     const { query } = useRouter();
     const language = (query.locale ?? 'en') as string;
@@ -28,12 +26,11 @@ const useCartContainer = createContainer(() => {
         }
     };
 
-    const addToCart = async (id: string, q: number, o?: boolean, e?: React.MouseEvent<HTMLElement, MouseEvent>) => {
+    const addToCart = async (id: string, q: number, o?: boolean) => {
         setActiveOrder(c => {
             return c && { ...c, totalQuantity: c.totalQuantity + 1 };
         });
         try {
-            if (e) addAnimatedPayload(e, 'black', q, true);
             const { addItemToOrder } = await storefrontApiMutation(language)({
                 addItemToOrder: [
                     { productVariantId: id, quantity: q },

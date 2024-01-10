@@ -10,33 +10,40 @@ import { Button } from '@/src/components/molecules/Button';
 interface Props {
     address: ActiveAddressType;
     selected?: boolean;
-    onSelect?: (id: string) => void;
     onEdit?: (id: string) => void;
     onDelete?: (id: string) => void;
     deleting?: string;
 }
 
-export const AddressBox: React.FC<Props> = ({ address, selected, onSelect, onEdit, onDelete, deleting }) => {
+export const AddressBox: React.FC<Props> = ({ address, selected, onEdit, onDelete, deleting }) => {
     const { t } = useTranslation('customer');
+    const showProvince = address.city === address.province;
     return (
-        <CustomerAddress onClick={() => onSelect?.(address.id)} column selected={selected} canBeSelected={!!onSelect}>
+        <CustomerAddress itemsStart gap="1.5rem" selected={selected} column>
+            <Stack w100 justifyBetween itemsStart>
+                <Stack column gap="1rem">
+                    <TP>{address.fullName}</TP>
+                    <TP>{address.company}</TP>
+                    <TP>
+                        {address.streetLine1} {address.streetLine2}
+                    </TP>
+                    <TP>
+                        {address.city}, {showProvince ? address.province : undefined} {address.postalCode}
+                    </TP>
+                    <TP>{address.phoneNumber}</TP>
+                </Stack>
+                <Stack column itemsEnd gap="0.5rem">
+                    {(onEdit || onDelete) && (
+                        <DefaultMethodsWrapper gap="1rem" justifyEnd>
+                            <DefaultBilling active={address.defaultBillingAddress} />
+                            <DefaultShipping active={address.defaultShippingAddress} />
+                        </DefaultMethodsWrapper>
+                    )}
+                    <TP>{address.country.code}</TP>
+                </Stack>
+            </Stack>
             {(onEdit || onDelete) && (
-                <DefaultMethodsWrapper gap="1rem" justifyEnd>
-                    <DefaultBilling active={address.defaultBillingAddress} />
-                    <DefaultShipping active={address.defaultShippingAddress} />
-                </DefaultMethodsWrapper>
-            )}
-            <TP>{address.fullName}</TP>
-            <TP>{address.company}</TP>
-            <TP>{address.streetLine1}</TP>
-            <TP>{address.streetLine2}</TP>
-            <TP>{address.city}</TP>
-            <TP>{address.province}</TP>
-            <TP>{address.postalCode}</TP>
-            <TP>{address.country.code}</TP>
-            <TP>{address.phoneNumber}</TP>
-            {(onEdit || onDelete) && (
-                <Wrapper itemsCenter gap="2.5rem">
+                <Wrapper w100 itemsCenter gap="2.5rem">
                     {onEdit && (
                         <Option onClick={() => onEdit(address.id)}>
                             <TP size="1.25rem">{t('addressForm.edit')}</TP>
@@ -89,7 +96,7 @@ const Edit = styled(Pen)`
     cursor: pointer;
 `;
 
-const CustomerAddress = styled(Stack)<{ selected?: boolean; canBeSelected?: boolean }>`
+const CustomerAddress = styled(Stack)<{ selected?: boolean }>`
     min-width: 42rem;
     position: relative;
     padding: 3rem 2.5rem;
@@ -99,6 +106,4 @@ const CustomerAddress = styled(Stack)<{ selected?: boolean; canBeSelected?: bool
 
     outline: ${p => (p.selected ? `1px solid ${p.theme.accent(700)}` : `1px solid ${p.theme.gray(200)}`)};
     transition: outline 0.2s ease-in-out;
-
-    cursor: ${p => (p.canBeSelected ? 'pointer' : 'default')};
 `;

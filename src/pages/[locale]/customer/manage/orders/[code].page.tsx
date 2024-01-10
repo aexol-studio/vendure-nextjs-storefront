@@ -28,7 +28,6 @@ const Order: React.FC<InferGetServerSidePropsType<typeof getServerSideProps>> = 
     const order = props.activeCustomer?.orders.items?.[0];
     const currencyCode = order?.currencyCode;
 
-    //TODO: Now we will display only one method
     const paymentMethod = order?.payments?.[0];
     const shippingMethod = order?.shippingLines?.[0];
 

@@ -6,7 +6,7 @@ import { PhotoSwipeImage } from './types';
 import styled from '@emotion/styled';
 
 export function DesktopPhotoSwipe({ galleryID, images }: { galleryID: string; images: PhotoSwipeImage[] }) {
-    //TODO refactor useDesktopPhotoSwipe
+    //TODO: not working - need better use cases
     const { remove, set, open } = useDesktopPhotoSwipe(galleryID, images);
 
     return (

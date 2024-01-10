@@ -51,6 +51,9 @@
     "search-results": "Search results for:",
     "search-results-header": "Search results",
     "search-results-total": "See {{totalItems}} results for {{searchQuery}}",
+    "search-query-to-short": "Search query must be at least 3 characters long",
+    "search-results-no-results": "No results for <1>{{searchQuery}}</1>",
+    "search-results-loading": "Loading search results...",
     "cart-empty": "Your cart is empty",
     "select-options": "Please select an options",
     "shipping-protection": {

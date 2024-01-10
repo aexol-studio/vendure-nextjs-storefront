@@ -29,7 +29,6 @@ export const ProductsSellout: React.FC<{ collection: RootNode<NavigationType>['c
     const { addToCart } = useCart();
     const { t } = useTranslation('common');
 
-    //TODO: move it into static props
     const slides = collection.children
         .reduce((acc, children) => {
             if ('productVariants' in children) {

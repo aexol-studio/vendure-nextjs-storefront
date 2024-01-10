@@ -78,6 +78,7 @@ export const Button = styled(_Button)`
     font-weight: 600;
     outline: 0;
     min-width: 12rem;
+    border: 1px solid ${thv.button.back};
     :hover {
         color: ${p => p.theme.button.hover?.front || p.theme.button.front};
         background: ${p => p.theme.button.hover?.back || p.theme.button.back};

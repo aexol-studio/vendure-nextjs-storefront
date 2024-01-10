@@ -17,7 +17,7 @@ import { ContextModel, localizeGetStaticPaths, makeStaticProps } from '@/src/lib
 import { priceFormatter } from '@/src/util/priceFomatter';
 import { CurrencyCode, SortOrder } from '@/src/zeus';
 import styled from '@emotion/styled';
-import { Check, Truck, X } from 'lucide-react';
+import { Check, X } from 'lucide-react';
 import { InferGetStaticPropsType } from 'next';
 
 import { Trans, useTranslation } from 'next-i18next';
@@ -25,7 +25,6 @@ import { ProductOptions } from '@/src/components/organisms/ProductOptions';
 import { Breadcrumbs } from '@/src/components/molecules/Breadcrumbs';
 import { useProduct } from '@/src/state/product';
 import { arrayToTree } from '@/src/util/arrayToTree';
-// import { DesktopPhotoSwipe } from '@/src/components/organisms/DesktopPhotoSwipe';
 import { ProductPhotosPreview } from '@/src/components/organisms/ProductPhotosPreview';
 
 const ProductPage: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = props => {
@@ -44,17 +43,6 @@ const ProductPage: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = pr
                     <Breadcrumbs breadcrumbs={breadcrumbs} />
                     <Main gap="5rem">
                         <StickyLeft w100 itemsCenter justifyCenter gap="2.5rem">
-                            {/* <DesktopPhotoSwipe
-                                galleryID="product"
-                                images={
-                                    [product?.featuredAsset, ...(product?.assets ? product.assets : [])].map(a => ({
-                                        src: a?.preview || '',
-                                        width: 300,
-                                        height: 600,
-                                        alt: product?.name || '',
-                                    })) || []
-                                }
-                            /> */}
                             <ProductPhotosPreview featuredAsset={product?.featuredAsset} images={product?.assets} />
                         </StickyLeft>
                         <StyledStack column gap="2.5rem">
@@ -102,16 +90,14 @@ const ProductPage: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = pr
                                     outOfStock={Number(variant?.stockLevel) <= 0}
                                     itemsCenter
                                     gap="0.25rem">
-                                    {!variant ? (
-                                        <Truck size="1.75rem" />
-                                    ) : Number(variant.stockLevel) > 0 ? (
+                                    {!variant ? null : Number(variant.stockLevel) > 0 ? (
                                         <Check size="1.75rem" />
                                     ) : (
                                         <X />
                                     )}
                                     <TP>
                                         {!variant
-                                            ? t('stockLevel.COMING_SOON')
+                                            ? null
                                             : Number(variant.stockLevel) > 0
                                               ? t('stockLevel.IN_STOCK')
                                               : t('stockLevel.OUT_OF_STOCK')}
@@ -119,7 +105,7 @@ const ProductPage: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = pr
                                 </StockInfo>
                             </Stack>
                             <TP>{product?.description}</TP>
-                            {!variant || Number(variant.stockLevel) <= 0 ? (
+                            {!variant ? null : Number(variant.stockLevel) <= 0 ? (
                                 <NotifyMeForm />
                             ) : (
                                 <Stack w100 gap="2.5rem" justifyBetween column>
@@ -241,19 +227,18 @@ export const getStaticProps = async (context: ContextModel<{ slug?: string }>) =
     //     })),
     // }));
 
-    const optionGroups = _optionGroups.map(og => ({
-        ...og,
-        options: og.options.map(o => {
-            const name = notInDemoStore.find(v => v.name.toLowerCase() === o.code.toLowerCase())?.code || o.name;
-            return { ...o, name };
-        }),
-    }));
-
-    // filter options groups with no full options in variants
-    // there are options groups with no options in variants
-    // i have 16 variants and 3 option groups with [3, 4, 3] options
-    // it gives me 36 options in total, but only 16 are valid
-    // so i need to filter out the other 20
+    const optionGroups = _optionGroups.map(og => {
+        return {
+            ...og,
+            options: og.options
+                .sort((a, b) => a.name.length - b.name.length || a.name.localeCompare(b.name))
+                .map(o => {
+                    const name =
+                        notInDemoStore.find(v => v.name.toLowerCase() === o.code.toLowerCase())?.code || o.name;
+                    return { ...o, name };
+                }),
+        };
+    });
 
     const returnedStuff = {
         slug: context.params?.slug,

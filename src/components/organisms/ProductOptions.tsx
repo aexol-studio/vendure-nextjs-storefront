@@ -1,6 +1,6 @@
 import { ProductDetailType } from '@/src/graphql/selectors';
 import styled from '@emotion/styled';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Button } from '@/src/components/molecules/Button';
 import { TP, Stack } from '@/src/components/atoms';
 import { AnimatePresence, motion } from 'framer-motion';
@@ -41,9 +41,17 @@ export const ProductOptions: React.FC<{
         else setVariant(undefined);
     };
 
+    const groups = useMemo(() => {
+        if (Object.keys(selectedOptions).length <= optionGroups.length - 1) {
+            return optionGroups;
+        }
+        const filteredGroups = optionGroups.filter(og => og.options.some(o => selectedOptions[og.id] === o.id));
+        return filteredGroups;
+    }, [selectedOptions]);
+
     return (
         <Stack column gap="2.5rem">
-            {optionGroups?.map((og, i) => {
+            {groups?.map((og, i) => {
                 const variantsInGroup = variants
                     .filter(v => v.options.some(o => o.groupId === og.id))
                     .filter(v => Number(v.stockLevel) > 0);

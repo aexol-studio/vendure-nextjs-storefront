@@ -11,7 +11,7 @@ export const ProductImage = forwardRef((props: ImageType, ref: React.ForwardedRe
     let better_src = src;
     switch (size) {
         case 'thumbnail':
-            better_src = src + '?w=200&h=200&mode=resize&format=webp';
+            better_src = src + '?w=200&h=200&mode=crop&format=webp';
             break;
         case 'thumbnail-big':
             better_src = src + '?w=400&h=400&mode=resize&format=webp';

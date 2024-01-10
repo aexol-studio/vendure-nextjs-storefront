@@ -32,8 +32,8 @@ export const AnnouncementBar: React.FC<{ entries: AnnouncementBarType[]; seconds
                         const { text, href, ...styles } = bar;
                         return (
                             <Link key={idx} href={href}>
-                                <Entry {...styles} justifyCenter itemsCenter w100 className="keen-slider__slide">
-                                    <TP size="1.25rem" weight={600}>
+                                <Entry {...styles} justifyCenter itemsCenter className="keen-slider__slide">
+                                    <TP size="1.25rem" weight={500}>
                                         {text}
                                     </TP>
                                 </Entry>

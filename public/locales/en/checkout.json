@@ -126,7 +126,12 @@
         "success": "Return success",
         "error": "Return error",
         "selectToContinue": "Select payment method to continue",
-        "decline": "Return declined"
+        "decline": "Return declined",
+        "dummyMethods": {
+            "success": "Dummy payment success",
+            "error": "Dummy payment error",
+            "decline": "Dummy payment decline"
+        }
     },
     "confirmation": {
         "orderReceived": "Your order <1>{{code}}</1> has been received",

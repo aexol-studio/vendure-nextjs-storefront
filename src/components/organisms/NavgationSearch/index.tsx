@@ -1,13 +1,12 @@
 import React, { useRef, useEffect, useState } from 'react';
 import { SearchIcon, X } from 'lucide-react';
 import styled from '@emotion/styled';
-import { Link, Stack, TP, TypoGraphy } from '@/src/components/atoms';
+import { Stack, TP, TypoGraphy } from '@/src/components/atoms';
 import { storefrontApiQuery } from '@/src/graphql/client';
 import { ProductSearchType, ProductSearchSelector } from '@/src/graphql/selectors';
 import { usePush } from '@/src/lib/redirect';
 import { useRouter } from 'next/router';
 import { ProductImageWithInfo } from '../../molecules/ProductImageWithInfo';
-import { Slider } from '../Slider';
 import { SortOrder } from '@/src/zeus';
 import { useTranslation, Trans } from 'react-i18next';
 import { Chevron } from '@/src/assets';
@@ -34,7 +33,6 @@ export const NavigationSearch: React.FC<{ searchOpen: boolean; toggleSearch: () 
     const [searchQuery, setSearchQuery] = useState(query.q ? query.q.toString() : '');
     const [searchResults, setSearchResult] = useState<ProductSearchType[]>([]);
     const debouncedSearch = useDebounce(searchQuery, 200);
-    const [mostWanted, setMostWanted] = useState<ProductSearchType[]>([]);
     const [totalItems, setTotalItems] = useState(0);
 
     const handleSearch = () => {
@@ -90,33 +88,6 @@ export const NavigationSearch: React.FC<{ searchOpen: boolean; toggleSearch: () 
         }, 200);
     }, []);
 
-    useEffect(() => {
-        const getBestOf = async () => {
-            try {
-                const bestOf = await storefrontApiQuery(language)({
-                    search: [
-                        { input: { take: 2, groupByProduct: false, sort: { name: SortOrder.DESC }, inStock: true } },
-                        { items: ProductSearchSelector },
-                    ],
-                });
-                setMostWanted(bestOf.search.items);
-            } catch (error) {
-                console.error(error);
-            }
-        };
-        getBestOf();
-    }, []);
-
-    const slides = searchResults.map(result => (
-        <ProductImageWithInfo
-            key={result.slug}
-            size="thumbnail-big"
-            imageSrc={result.productAsset?.preview}
-            href={`/products/${result.slug}`}
-            text={result.productName}
-        />
-    ));
-
     return (
         <Stack w100 itemsCenter style={{ position: 'relative' }}>
             <Stack w100 itemsCenter gap="1rem">
@@ -140,47 +111,53 @@ export const NavigationSearch: React.FC<{ searchOpen: boolean; toggleSearch: () 
                 <SearchPosition w100>
                     <SearchContent w100>
                         {debouncedSearch.length < 3 ? (
-                            <TP>Search query must be at least 3 characters long</TP>
+                            <TP>{t('search-query-to-short')}</TP>
                         ) : loading ? (
-                            <TP>Loading...</TP>
+                            <TP>{t('search-results-loading')}</TP>
                         ) : searchResults.length === 0 ? (
                             <TP>
-                                No results for <strong>{debouncedSearch}</strong>
+                                <Trans
+                                    i18nKey="search-results-no-results"
+                                    values={{ searchQuery }}
+                                    components={{ 1: <strong></strong> }}
+                                />
                             </TP>
                         ) : (
                             <Wrapper column w100 gap={'2rem'}>
                                 <Container>
-                                    <MaxWidth>
-                                        <Stack column gap={'2rem'}>
-                                            <TypoGraphy size={'2rem'} weight={400}>
-                                                {t('search-results-header')}
-                                            </TypoGraphy>
-                                            <Slider slides={slides} withArrows spacing={16} />
-                                        </Stack>
-                                    </MaxWidth>
-                                    <Divider />
-                                    <Stack column gap={'1.5rem'}>
+                                    <Stack column gap={'2rem'}>
                                         <TypoGraphy size={'2rem'} weight={400}>
-                                            Most Wanted
+                                            {t('search-results-header')}
                                         </TypoGraphy>
-                                        <MostWanted>
-                                            {mostWanted.map(product => (
-                                                <Stack column key={product.slug} gap={'0.5rem'}>
-                                                    <ProductImageWithInfo
-                                                        size="thumbnail"
-                                                        imageSrc={product.productAsset?.preview}
-                                                        href={`/products/${product.slug}`}
-                                                    />
-                                                    <Link href={`/products/${product.slug}`}></Link>
-                                                    <TypoGraphy
-                                                        style={{ textAlign: 'center' }}
-                                                        size={'1rem'}
-                                                        weight={400}>
-                                                        {product.productName}
-                                                    </TypoGraphy>
-                                                </Stack>
-                                            ))}
-                                        </MostWanted>
+                                        <Stack flexWrap gap="2rem">
+                                            {searchResults.map(result => {
+                                                const optionInName =
+                                                    result.productVariantName.replace(result.productName, '') !== '';
+
+                                                return (
+                                                    <Stack gap="0.5rem" itemsCenter column key={result.slug}>
+                                                        <ProductImageWithInfo
+                                                            size="thumbnail-big"
+                                                            imageSrc={result.productAsset?.preview}
+                                                            href={`/products/${result.slug}`}
+                                                        />
+                                                        <Stack itemsCenter column gap="0.5rem">
+                                                            <TP size="1.5rem" weight={500}>
+                                                                {result.productName}
+                                                            </TP>
+                                                            {optionInName && (
+                                                                <TP size="1.25rem" weight={400}>
+                                                                    {result.productVariantName.replace(
+                                                                        result.productName,
+                                                                        '',
+                                                                    )}
+                                                                </TP>
+                                                            )}
+                                                        </Stack>
+                                                    </Stack>
+                                                );
+                                            })}
+                                        </Stack>
                                     </Stack>
                                 </Container>
                                 <TotalResults
@@ -205,8 +182,8 @@ const SearchPosition = styled(Stack)`
     width: calc(100% - 3rem);
     top: calc(100% + 1rem);
     position: absolute;
-    right: 0;
-    z-index: 2137;
+    right: 0rem;
+    z-index: 2136;
 `;
 
 const SearchContent = styled(Stack)`
@@ -279,16 +256,8 @@ const Container = styled(Stack)`
     }
 `;
 
-const MostWanted = styled(Stack)`
-    flex-direction: row;
-    gap: 2rem;
-`;
-
-const MaxWidth = styled.div`
-    max-width: 32rem;
-`;
-
 const TotalResults = styled(Stack)`
+    justify-content: end;
     align-items: center;
     cursor: pointer;
     gap: 0.5rem;
@@ -305,13 +274,3 @@ const IconWrapper = styled.div`
 `;
 
 const Wrapper = styled(Stack)``;
-
-const Divider = styled.div`
-    display: none;
-    @media (min-width: ${p => p.theme.breakpoints.md}) {
-        display: block;
-    }
-    height: 100%;
-    width: 1px;
-    background-color: ${p => p.theme.gray(100)};
-`;

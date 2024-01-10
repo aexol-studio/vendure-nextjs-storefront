@@ -30,6 +30,7 @@ import { useValidationSchema } from './useValidationSchema';
 import { Link } from '@/src/components/atoms/Link';
 import { useCheckout } from '@/src/state/checkout';
 import { MoveLeft } from 'lucide-react';
+import { baseCountryFromLanguage } from '@/src/util/baseCountryFromLanguage';
 
 type Form = CreateCustomerType & {
     deliveryMethod?: string;
@@ -83,12 +84,11 @@ export const OrderForm: React.FC<OrderFormProps> = ({ availableCountries, langua
     const defaultShippingAddress = activeCustomer?.addresses?.find(address => address.defaultShippingAddress);
     const defaultBillingAddress = activeCustomer?.addresses?.find(address => address.defaultBillingAddress);
 
-    //TODO: Verify what country we will use
     const countryCode =
         defaultBillingAddress?.country.code ??
         defaultShippingAddress?.country.code ??
         availableCountries?.find(country => country.name === 'Poland')?.code ??
-        'PL';
+        baseCountryFromLanguage(language);
 
     const {
         register,
@@ -155,7 +155,6 @@ export const OrderForm: React.FC<OrderFormProps> = ({ availableCountries, langua
             }
             const { nextOrderStates } = await storefrontApiQuery(language)({ nextOrderStates: true });
             if (!nextOrderStates.includes('ArrangingPayment')) {
-                //TODO: Handle error (no next order state)
                 setError('root', { message: tErrors(`errors.backend.UNKNOWN_ERROR`) });
                 return;
             }

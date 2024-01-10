@@ -9,10 +9,10 @@ import { useTranslation } from 'next-i18next';
 import { ContentContainer } from '@/src/components/atoms/ContentContainer';
 import { Stack } from '@/src/components/atoms/Stack';
 import { Banner } from '@/src/components/forms';
-import { TH2 } from '@/src/components/atoms/TypoGraphy';
+import { TP } from '@/src/components/atoms/TypoGraphy';
 import { arrayToTree } from '@/src/util/arrayToTree';
 
-import { Absolute, FormContainer, FormContent, FormWrapper } from '../components/shared';
+import { Absolute, FormContainer, FormWrapper } from '../components/shared';
 
 const Verify: React.FC<InferGetServerSidePropsType<typeof getServerSideProps>> = props => {
     const { t } = useTranslation('customer');
@@ -22,31 +22,29 @@ const Verify: React.FC<InferGetServerSidePropsType<typeof getServerSideProps>> =
             <ContentContainer>
                 <FormContainer>
                     <FormWrapper column itemsCenter gap="3.5rem">
-                        <FormContent w100 column itemsCenter gap="1.75rem">
-                            {props.status.verifyCustomerAccount.__typename !== 'CurrentUser' ? (
-                                <>
-                                    <Absolute w100>
-                                        <Banner
-                                            initial={{ opacity: 1 }}
-                                            error={{
-                                                message: tError(
-                                                    `errors.backend.${props.status.verifyCustomerAccount.errorCode}`,
-                                                ),
-                                            }}
-                                        />
-                                    </Absolute>
-                                    <Stack>
-                                        <TH2>{t('verify.fail')}</TH2>
-                                        <Link href="/">{t('home')}</Link>
-                                    </Stack>
-                                </>
-                            ) : (
-                                <Stack>
-                                    <TH2>{t('verify.success')}</TH2>
-                                    <Link href="/customer/sign-in">{t('signIn')}</Link>
+                        {props.status.verifyCustomerAccount.__typename !== 'CurrentUser' ? (
+                            <>
+                                <Absolute w100>
+                                    <Banner
+                                        initial={{ opacity: 1 }}
+                                        error={{
+                                            message: tError(
+                                                `errors.backend.${props.status.verifyCustomerAccount.errorCode}`,
+                                            ),
+                                        }}
+                                    />
+                                </Absolute>
+                                <Stack justifyCenter itemsCenter column gap="2rem">
+                                    <TP>{t('verify.fail')}</TP>
+                                    <Link href="/">{t('home')}</Link>
                                 </Stack>
-                            )}
-                        </FormContent>
+                            </>
+                        ) : (
+                            <Stack justifyCenter itemsCenter column gap="2rem">
+                                <TP>{t('verify.success')}</TP>
+                                <Link href="/customer/sign-in">{t('signIn')}</Link>
+                            </Stack>
+                        )}
                     </FormWrapper>
                 </FormContainer>
             </ContentContainer>

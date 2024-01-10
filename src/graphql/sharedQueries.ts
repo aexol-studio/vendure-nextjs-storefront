@@ -30,7 +30,7 @@ export const getCollections = async (language: string) => {
                         { slug: c.slug },
                         {
                             productVariants: [
-                                { options: { take: 2, filter: { priceWithTax: { lte: 5000 } } } },
+                                { options: { take: 2, sort: { createdAt: SortOrder.ASC } } },
                                 { totalItems: true, items: CollectionTileProductVariantSelector },
                             ],
                         },

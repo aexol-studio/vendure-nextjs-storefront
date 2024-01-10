@@ -32,7 +32,7 @@ export const Navigation: React.FC<NavigationProps> = ({ navigation, categories }
 
     const entries = [
         {
-            text: 'Next JS Storefront demo made by Aexol',
+            text: 'NextJS Storefront demo made by Aexol 🚀',
             href: 'https://aexol.com',
             bgColor: 'lch(50% 0 0)',
             textColor: 'lch(80% 0 0)',
@@ -40,15 +40,15 @@ export const Navigation: React.FC<NavigationProps> = ({ navigation, categories }
             hoverBgColor: 'lch(50% 0 0)',
         },
         {
-            text: 'Best store ever',
-            href: '/',
+            text: '🔥 BEST STORE EVER 🔥',
+            href: 'https://aexol.com',
             bgColor: 'lch(50% 0 0)',
             textColor: 'lch(80% 0 0)',
             hoverTextColor: 'lch(100% 0 0)',
             hoverBgColor: 'lch(50% 0 0)',
         },
         {
-            text: 'See best products',
+            text: 'See best products here 👀',
             href: '/collections/all',
             bgColor: 'lch(50% 0 0)',
             textColor: 'lch(80% 0 0)',

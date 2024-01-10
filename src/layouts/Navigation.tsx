@@ -97,12 +97,12 @@ export const Navigation: React.FC<NavigationProps> = ({ navigation, categories }
                         </Stack>
                     </Stack>
                 </ContentContainer>
+                {searchOpen && (
+                    <MobileNavigationContainer>
+                        <NavigationSearch searchOpen={searchOpen} toggleSearch={() => setSearchOpen(p => !p)} />
+                    </MobileNavigationContainer>
+                )}
             </StickyContainer>
-            {searchOpen && (
-                <MobileNavigationContainer>
-                    <NavigationSearch searchOpen={searchOpen} toggleSearch={() => setSearchOpen(p => !p)} />
-                </MobileNavigationContainer>
-            )}
 
             {categories?.length > 0 ? <CategoryBar collections={categories} /> : null}
         </>
@@ -111,6 +111,7 @@ export const Navigation: React.FC<NavigationProps> = ({ navigation, categories }
 
 const StickyContainer = styled.nav`
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
 
@@ -129,6 +130,7 @@ const StickyContainer = styled.nav`
 const MobileNavigationContainer = styled.div`
     display: block;
     padding: 2.5rem 2rem 0 2rem;
+    width: 100%;
     @media (min-width: ${p => p.theme.breakpoints.md}) {
         display: none;
     }

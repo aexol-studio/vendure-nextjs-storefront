@@ -54,6 +54,8 @@
     "search-query-to-short": "Search query must be at least 3 characters long",
     "search-results-no-results": "No results for <1>{{searchQuery}}</1>",
     "search-results-loading": "Loading search results...",
+    "popular-searches": ["Computer", "Tablet", "Plant", "Gloves", "Mouse"],
+    "popular-searches-heading": "Popular searches",
     "cart-empty": "Your cart is empty",
     "select-options": "Please select an options",
     "shipping-protection": {

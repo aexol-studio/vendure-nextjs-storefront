@@ -34,6 +34,7 @@ export const NavigationSearch: React.FC<{ searchOpen: boolean; toggleSearch: () 
     const [searchResults, setSearchResult] = useState<ProductSearchType[]>([]);
     const debouncedSearch = useDebounce(searchQuery, 200);
     const [totalItems, setTotalItems] = useState(0);
+    const popularSearches = t('popular-searches', { returnObjects: true });
 
     const handleSearch = () => {
         toggleSearch();
@@ -159,6 +160,21 @@ export const NavigationSearch: React.FC<{ searchOpen: boolean; toggleSearch: () 
                                             })}
                                         </Stack>
                                     </Stack>
+                                    <Stack column gap={'1rem'}>
+                                        <TypoGraphy size={'2rem'} weight={400}>
+                                            {t('popular-searches-heading')}
+                                        </TypoGraphy>
+                                        {popularSearches.map(item => (
+                                            <TypoGraphy
+                                                key={item}
+                                                size={'1.5rem'}
+                                                weight={400}
+                                                onClick={() => setSearchQuery(item)}
+                                                style={{ cursor: 'pointer' }}>
+                                                {item}
+                                            </TypoGraphy>
+                                        ))}
+                                    </Stack>
                                 </Container>
                                 <TotalResults
                                     onClick={() => {
@@ -252,7 +268,6 @@ const Container = styled(Stack)`
         flex-direction: row;
         gap: unset;
         justify-content: space-between;
-        align-items: center;
     }
 `;
 

@@ -18,7 +18,7 @@ export const BestOfTile: React.FC<BestOfTileI> = ({ desc, imgSrc, productName, s
     return (
         <Stack column itemsCenter gap="1rem">
             <ImageWrapper>
-                <Image src={imgSrc} />
+                <Image src={imgSrc} alt={productName} title={productName} />
             </ImageWrapper>
             <TP size="2rem">{productName}</TP>
             <Description>{desc}</Description>

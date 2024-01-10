@@ -5,16 +5,24 @@ import { TP, ProductImage } from '@/src/components/atoms';
 
 interface ProductImageWithInfoProps {
     size: 'thumbnail' | 'tile' | 'popup' | 'detail' | 'full' | 'thumbnail-big';
-
+    alt?: string;
+    title?: string;
     href: string;
     text?: string;
     imageSrc?: string;
 }
 
-export const ProductImageWithInfo: React.FC<ProductImageWithInfoProps> = ({ href, text, size, imageSrc }) => {
+export const ProductImageWithInfo: React.FC<ProductImageWithInfoProps> = ({
+    href,
+    text,
+    alt,
+    title,
+    size,
+    imageSrc,
+}) => {
     return (
         <StyledLink size={size} withHover={!!text} href={href}>
-            <ProductImage src={imageSrc} size={size} />
+            <ProductImage src={imageSrc} size={size} alt={alt} title={title} />
             <AbsoluteStyledTP upperCase size="2rem">
                 {text}
             </AbsoluteStyledTP>

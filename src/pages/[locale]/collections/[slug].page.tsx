@@ -114,6 +114,8 @@ const CollectionPage: React.FC<InferGetStaticPropsType<typeof getStaticProps>> =
                                         imageSrc={col.featuredAsset?.preview}
                                         size="tile"
                                         text={col.name}
+                                        alt={col.name}
+                                        title={col.name}
                                     />
                                 ))}
                             </Stack>

@@ -53,7 +53,13 @@ export const ProductsSellout: React.FC<{ collection: RootNode<NavigationType>['c
             <Stack w100 column key={index} gap="2rem">
                 <Stack w100 column gap="0.5rem">
                     <Relative>
-                        <ProductImageWithInfo size="thumbnail-big" href={val.href} imageSrc={val.image} />
+                        <ProductImageWithInfo
+                            size="thumbnail-big"
+                            href={val.href}
+                            imageSrc={val.image}
+                            alt={val.title}
+                            title={val.title}
+                        />
                         {val.variant && (
                             <Absolute w100 itemsCenter justifyCenter>
                                 <TP size="1.25rem" weight={400}>

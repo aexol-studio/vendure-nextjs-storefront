@@ -25,7 +25,7 @@ export const Hero: React.FC<{
                             <Button>{cta}</Button>
                         </Link>
                     </Stack>
-                    <HeroImage src={image} />
+                    <HeroImage src={image} alt="Aexol shop demo" title="Aexol shop demo" />
                 </Content>
             </ContentContainer>
         </Main>

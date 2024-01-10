@@ -50,6 +50,14 @@ interface OrderFormProps {
     availableCountries?: AvailableCountriesType[];
 }
 
+const isAddressesEqual = (a: object, b?: object) => {
+    try {
+        return JSON.stringify(a) === JSON.stringify(b ?? {});
+    } catch (e) {
+        return false;
+    }
+};
+
 export const OrderForm: React.FC<OrderFormProps> = ({ availableCountries, language }) => {
     const { activeOrder, changeShippingMethod } = useCheckout();
 
@@ -95,7 +103,7 @@ export const OrderForm: React.FC<OrderFormProps> = ({ availableCountries, langua
         delayError: 100,
         defaultValues: {
             shippingDifferentThanBilling: defaultShippingAddress
-                ? JSON.stringify(defaultBillingAddress) !== JSON.stringify(defaultShippingAddress)
+                ? !isAddressesEqual(defaultShippingAddress, defaultBillingAddress)
                 : false,
             billing: { countryCode },
             // NIP: defaultBillingAddress?.customFields?.NIP ?? '',
@@ -111,7 +119,7 @@ export const OrderForm: React.FC<OrderFormProps> = ({ availableCountries, langua
                   //   NIP: defaultBillingAddress?.customFields?.NIP ?? '',
                   //   userNeedInvoice: defaultBillingAddress?.customFields?.NIP ? true : false,
                   shippingDifferentThanBilling: defaultShippingAddress
-                      ? JSON.stringify(defaultBillingAddress) !== JSON.stringify(defaultShippingAddress)
+                      ? !isAddressesEqual(defaultShippingAddress, defaultBillingAddress)
                       : false,
                   shipping: {
                       ...defaultShippingAddress,
@@ -595,7 +603,9 @@ export const OrderForm: React.FC<OrderFormProps> = ({ availableCountries, langua
                                 <Trans
                                     i18nKey="orderForm.regulations"
                                     t={t}
-                                    components={{ 1: <Link href="/regulations"></Link> }}
+                                    components={{
+                                        1: <Link style={{ zIndex: 2, position: 'relative' }} href="/checkout" />,
+                                    }}
                                 />
                             }
                             required
@@ -607,7 +617,9 @@ export const OrderForm: React.FC<OrderFormProps> = ({ availableCountries, langua
                                 <Trans
                                     i18nKey="orderForm.terms"
                                     t={t}
-                                    components={{ 1: <Link href="/terms"></Link> }}
+                                    components={{
+                                        1: <Link style={{ zIndex: 2, position: 'relative' }} href="/checkout" />,
+                                    }}
                                 />
                             }
                             required

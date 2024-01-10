@@ -14,7 +14,7 @@ interface ProductImageWithInfoProps {
 export const ProductImageWithInfo: React.FC<ProductImageWithInfoProps> = ({ href, text, size, imageSrc }) => {
     return (
         <StyledLink size={size} withHover={!!text} href={href}>
-            <ProductImage src={imageSrc} size={size} />
+            <ProductImage src={imageSrc} size={size} alt={text} />
             <AbsoluteStyledTP upperCase size="2rem">
                 {text}
             </AbsoluteStyledTP>

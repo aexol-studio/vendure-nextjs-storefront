@@ -12,11 +12,12 @@ import { TP, Stack } from '@/src/components/atoms';
 import { useTranslation } from 'next-i18next';
 import { arrayToTree } from '@/src/util/arrayToTree';
 
+const MAX_RETRIES = 3;
+
 const ConfirmationPage: React.FC<InferGetServerSidePropsType<typeof getServerSideProps>> = props => {
     const { t } = useTranslation('checkout');
-    const [order, setOrder] = useState<OrderType | null>(props.order);
+    const [order, setOrder] = useState<OrderType | null>(props.orderByCode);
     const push = usePush();
-    const maxRetries = 3;
 
     useEffect(() => {
         let retries = 0;
@@ -26,14 +27,12 @@ const ConfirmationPage: React.FC<InferGetServerSidePropsType<typeof getServerSid
                 const { orderByCode } = await storefrontApiQuery(props.language)({
                     orderByCode: [{ code: props.code }, OrderSelector],
                 });
-                if (orderByCode) {
-                    setOrder(orderByCode);
-                } else throw new Error('Order not found');
+                if (orderByCode && !orderByCode.active) setOrder(orderByCode);
+                else throw new Error('Order not found');
             } catch (error) {
                 retries++;
-                if (retries <= maxRetries) {
-                    setTimeout(fetchOrder, 1000);
-                } else push('/');
+                if (retries <= MAX_RETRIES) setTimeout(fetchOrder, 1000);
+                else push('/');
             }
         };
 
@@ -75,20 +74,20 @@ const getServerSideProps = async (context: GetServerSidePropsContext) => {
             orderByCode: [{ code }, OrderSelector],
         });
 
-        if (!orderByCode) throw new Error(`Order not ready yet ${code}`);
+        if (!orderByCode || orderByCode.active) throw new Error(`Order not ready yet ${code}`);
 
         const returnedStuff = {
             ...r.props,
             collections,
             code,
-            order: orderByCode,
+            orderByCode,
             navigation,
             language,
         };
 
         return { props: returnedStuff };
     } catch (e) {
-        return { props: { ...r.props, collections, code, navigation, order: null, language } };
+        return { props: { ...r.props, collections, code, navigation, orderByCode: null, language } };
     }
 };
 

@@ -61,7 +61,7 @@ export const BestOfTile: React.FC<BestOfTileI> = ({
             </Stack>
             <Description>{desc}</Description>
             <Stack style={{ flexGrow: 1, width: '100%' }} itemsEnd>
-                <Button onClick={async () => await addToCart(productVariantId, 1, true)}>{t('shopNow')}</Button>
+                <Button onClick={async () => await addToCart(productVariantId, 1, true)}>{t('add-to-cart')}</Button>
             </Stack>
         </Stack>
     );

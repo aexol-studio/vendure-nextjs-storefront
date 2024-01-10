@@ -1,6 +1,7 @@
 import { Price } from '@/src/components/atoms/Price';
 import { Stack } from '@/src/components/atoms/Stack';
 import { TP } from '@/src/components/atoms/TypoGraphy';
+import { ProductImageWithInfo } from '@/src/components/molecules/ProductImageWithInfo';
 import { QuantityCounter } from '@/src/components/molecules/QuantityCounter';
 import { ActiveOrderType } from '@/src/graphql/selectors';
 import { useCart } from '@/src/state/cart';
@@ -22,12 +23,16 @@ export const CartBody: React.FC<Props> = ({ currencyCode, activeOrder }) => {
         <CartList w100 column>
             {activeOrder && activeOrder.totalQuantity > 0 ? (
                 activeOrder.lines.map(
-                    ({ productVariant, id, featuredAsset, quantity, linePriceWithTax, discountedLinePriceWithTax }) => {
+                    ({ productVariant, id, featuredAsset, quantity, unitPriceWithTax, discountedLinePriceWithTax }) => {
                         const optionInName = productVariant.name.replace(productVariant.product.name, '') !== '';
                         return (
                             <CartRow w100 justifyBetween key={id}>
                                 <Stack gap="2rem">
-                                    <CartImage src={featuredAsset?.preview} />
+                                    <ProductImageWithInfo
+                                        size="thumbnail-big"
+                                        href={`/products/${productVariant.product.slug}`}
+                                        imageSrc={featuredAsset?.preview}
+                                    />
                                     <Stack column gap="2rem">
                                         <Stack column>
                                             <TP size="1.75rem" weight={500} style={{ whiteSpace: 'nowrap' }}>
@@ -50,8 +55,8 @@ export const CartBody: React.FC<Props> = ({ currencyCode, activeOrder }) => {
                                 </Stack>
                                 <Price
                                     currencyCode={currencyCode}
-                                    price={linePriceWithTax}
-                                    discountPrice={discountedLinePriceWithTax}
+                                    price={unitPriceWithTax}
+                                    discountPrice={discountedLinePriceWithTax / quantity}
                                     // quantity={quantity}
                                 />
                             </CartRow>
@@ -91,13 +96,6 @@ const CartList = styled(Stack)`
 const CartRow = styled(Stack)`
     padding: 2rem 0;
     border-bottom: 1px solid ${p => p.theme.gray(50)};
-`;
-
-const CartImage = styled.img`
-    object-fit: cover;
-    width: 12.6rem;
-    height: 17.5rem;
-    border: 1px solid ${p => p.theme.gray(200)};
 `;
 
 const Remove = styled.button`

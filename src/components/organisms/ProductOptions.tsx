@@ -19,12 +19,12 @@ export const ProductOptions: React.FC<{
     useEffect(() => {
         const newState = selectedVariant?.options.reduce(
             (acc, option) => {
-                acc[option.group.id] = option.id;
+                acc[option.groupId] = option.id;
                 return acc;
             },
             {} as { [key: string]: string },
         );
-        setSelectedOptions(newState ? newState : {});
+        if (newState) setSelectedOptions(newState);
     }, [selectedVariant]);
 
     const handleClick = (groupId: string, id: string) => {
@@ -35,7 +35,8 @@ export const ProductOptions: React.FC<{
         } else {
             newState = { ...selectedOptions, [groupId]: id };
         }
-        const variant = variants.find(v => v.options.every(ov => ov.id === newState[ov.group.id]));
+        setSelectedOptions(newState);
+        const variant = variants.find(v => v.options.every(ov => ov.id === newState[ov.groupId]));
         if (variant && variant !== selectedVariant) setVariant(variant);
         else setVariant(undefined);
     };
@@ -44,7 +45,7 @@ export const ProductOptions: React.FC<{
         <Stack column gap="2.5rem">
             {optionGroups?.map((og, i) => {
                 const variantsInGroup = variants
-                    .filter(v => v.options.some(o => o.group.id === og.id))
+                    .filter(v => v.options.some(o => o.groupId === og.id))
                     .filter(v => Number(v.stockLevel) > 0);
 
                 return (
@@ -52,8 +53,9 @@ export const ProductOptions: React.FC<{
                         <TP capitalize>{og.name}</TP>
                         <StyledStack gap="1rem">
                             {og.options.map((o, j) => {
-                                const handleSwatchClick = () => handleClick(og.id, o.id);
                                 const totallyOOS = !variantsInGroup.some(v => v.options.some(vo => vo.id === o.id));
+                                const handleSwatchClick = () => handleClick(og.id, o.id);
+
                                 if (og.name.toLowerCase() === 'color') {
                                     return (
                                         <ColorSwatch
@@ -104,7 +106,7 @@ const ColorSwatch = styled.div<{ color: string; selectable: boolean; selected: b
     width: 3.2rem;
     height: 3.2rem;
     background-color: ${p => p.color};
-    border: 1px solid black;
+    outline: 1px solid ${p => p.theme.gray(500)};
     cursor: pointer;
     ${p =>
         p.selectable &&
@@ -114,7 +116,7 @@ const ColorSwatch = styled.div<{ color: string; selectable: boolean; selected: b
     ${p =>
         p.selected &&
         `
-        border: 2px solid black;
+        outline: 2px solid ${p.theme.gray(1000)};
     `}
 `;
 

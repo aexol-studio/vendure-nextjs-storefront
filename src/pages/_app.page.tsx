@@ -26,11 +26,12 @@ const App = ({ Component, pageProps }: AppProps) => {
                 <CartProvider>
                     <ProductProvider
                         initialState={{
-                            product: 'product' in pageProps ? pageProps.product : undefined,
                             language: 'language' in pageProps ? pageProps.language : undefined,
+                            product: 'product' in pageProps ? pageProps.product : undefined,
                         }}>
                         <CollectionProvider
                             initialState={{
+                                language: 'language' in pageProps ? pageProps.language : undefined,
                                 collection: 'collection' in pageProps ? pageProps.collection : undefined,
                                 products: 'products' in pageProps ? pageProps.products : undefined,
                                 facets: 'facets' in pageProps ? pageProps.facets : undefined,
@@ -39,7 +40,6 @@ const App = ({ Component, pageProps }: AppProps) => {
                                 searchQuery: 'searchQuery' in pageProps ? pageProps.searchQuery : undefined,
                                 page: 'page' in pageProps ? pageProps.page : undefined,
                                 sort: 'sort' in pageProps ? pageProps.sort : undefined,
-                                language: 'language' in pageProps ? pageProps.language : undefined,
                             }}>
                             <Component {...pageProps} />
                         </CollectionProvider>

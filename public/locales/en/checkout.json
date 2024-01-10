@@ -121,10 +121,11 @@
     },
     "paymentMethod": {
         "title": "This is a dummy payment for demonstration purposes only",
-        "submit": "Pay with Standard Payment",
+        "submit": "Submit payment",
         "notAvailable": "Default payment method is not available",
         "success": "Return success",
         "error": "Return error",
+        "selectToContinue": "Select payment method to continue",
         "decline": "Return declined"
     },
     "confirmation": {

@@ -12,13 +12,13 @@ import { useTranslation } from 'next-i18next';
 
 const CheckoutPage: React.FC<InferGetServerSidePropsType<typeof getServerSideProps>> = props => {
     const { t } = useTranslation('checkout');
-    const { availableCountries, YMALProducts } = props;
+    const { availableCountries, YMALProducts, language } = props;
 
     return (
         <CheckoutLayout pageTitle={`${t('seoTitles.checkout')}`}>
             <Content>
                 <Main w100 justifyBetween>
-                    <OrderForm availableCountries={availableCountries} language={props.language ?? 'en'} />
+                    <OrderForm availableCountries={availableCountries} language={language} />
                     <OrderSummary isForm YMALProducts={YMALProducts} />
                 </Main>
             </Content>
@@ -34,24 +34,24 @@ const getServerSideProps = async (context: GetServerSidePropsContext) => {
     const paymentRedirect = prepareSSRRedirect('/checkout/payment')(context);
 
     try {
-        const [{ activeOrder }, { availableCountries }] = await Promise.all([
+        const [{ activeOrder: checkout }, { availableCountries }] = await Promise.all([
             SSRQuery(context)({ activeOrder: ActiveOrderSelector }),
             SSRQuery(context)({ availableCountries: AvailableCountriesSelector }),
         ]);
         const YMALProducts = await getYMALProducts(language);
 
-        if (activeOrder?.state === 'ArrangingPayment') {
+        if (checkout?.state === 'ArrangingPayment') {
             return paymentRedirect;
         }
 
-        if (!activeOrder || activeOrder.lines.length === 0) {
+        if (!checkout || checkout.lines.length === 0) {
             return homePageRedirect;
         }
-        //MOST IMPORTANT PART WE HAVE TO RETURN `checkout` BECAUSE WE LOOK FOR IT IN _app.tsx
+
         const returnedStuff = {
             ...r.props,
             availableCountries,
-            checkout: activeOrder,
+            checkout,
             YMALProducts,
             language,
         };

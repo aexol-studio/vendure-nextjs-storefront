@@ -43,7 +43,8 @@
     "stockLevel": {
         "OUT_OF_STOCK": "Out of stock",
         "IN_STOCK": "In stock",
-        "LOW_STOCK": "🔥 Make it quick only {{value}} left! 🔥"
+        "LOW_STOCK": "🔥 Make it quick only {{value}} left! 🔥",
+        "COMING_SOON": "Coming soon"
     },
     "commonError": "Something wen't wrong",
     "send": "Send",
@@ -149,7 +150,6 @@
         }
     },
     "bestOf": "Best of",
-    "shopNow": "Shop now",
     "footer": {
         "sections": [
             {

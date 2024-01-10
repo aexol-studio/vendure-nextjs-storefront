@@ -179,7 +179,6 @@ export const ProductDetailSelector = Selector('Product')({
         options: {
             id: true,
             groupId: true,
-            group: { id: true },
             code: true,
             name: true,
         },
@@ -328,11 +327,20 @@ export const ActiveOrderSelector = Selector('Order')({
     createdAt: true,
     updatedAt: true,
     totalQuantity: true,
+    couponCodes: true,
+    code: true,
+    customer: { id: true, emailAddress: true, firstName: true, lastName: true, phoneNumber: true },
+
     shippingWithTax: true,
     totalWithTax: true,
     subTotalWithTax: true,
     discounts: discountsSelector,
+    state: true,
     active: true,
+    payments: paymentSelector,
+    currencyCode: true,
+    shippingLines: shippingLineSelector,
+
     lines: {
         id: true,
         quantity: true,
@@ -355,30 +363,27 @@ export const ActiveOrderSelector = Selector('Order')({
             stockLevel: true,
             product: {
                 name: true,
+                slug: true,
             },
         },
     },
-    shippingLines: shippingLineSelector,
-    state: true,
-    couponCodes: true,
-    currencyCode: true,
-    code: true,
-    payments: paymentSelector,
-    customer: { id: true, emailAddress: true, firstName: true, lastName: true, phoneNumber: true },
 });
 
 export type ActiveOrderType = FromSelector<typeof ActiveOrderSelector, 'Order', typeof scalars>;
 
 export const OrderSelector = Selector('Order')({
+    type: true,
+
+    shippingWithTax: true,
+    totalWithTax: true,
+    subTotalWithTax: true,
+    discounts: discountsSelector,
     state: true,
     active: true,
-    type: true,
     payments: paymentSelector,
-    subTotalWithTax: true,
-    shippingWithTax: true,
     currencyCode: true,
-    totalWithTax: true,
-    discounts: discountsSelector,
+    shippingLines: shippingLineSelector,
+
     lines: {
         id: true,
         quantity: true,
@@ -397,16 +402,10 @@ export const OrderSelector = Selector('Order')({
                 source: true,
             },
             product: {
+                slug: true,
                 name: true,
             },
         },
-    },
-    shippingLines: {
-        shippingMethod: {
-            id: true,
-            description: true,
-        },
-        priceWithTax: true,
     },
 });
 export type OrderType = FromSelector<typeof OrderSelector, 'Order', typeof scalars>;

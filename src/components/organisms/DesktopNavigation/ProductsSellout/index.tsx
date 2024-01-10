@@ -67,7 +67,6 @@ export const ProductsSellout: React.FC<{ collection: RootNode<NavigationType>['c
                             {val.title}
                         </TP>
                     )}
-
                     {val.price && val.currencyCode && <Price currencyCode={val.currencyCode} price={val.price} />}
                 </Stack>
                 <Button onClick={async () => await addToCart(val.id, 1, true)}>{t('add-to-cart')}</Button>
@@ -91,7 +90,7 @@ const Relative = styled.div`
 `;
 
 const MaxWidth = styled.div`
-    max-width: 42rem;
+    max-width: 48rem;
 `;
 
 const Absolute = styled(Stack)`
@@ -100,4 +99,5 @@ const Absolute = styled(Stack)`
     left: 0;
     background: ${p => p.theme.grayAlpha(700, 0.4)};
     padding: 0.5rem 0;
+    color: ${p => p.theme.gray(0)};
 `;

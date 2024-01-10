@@ -8,7 +8,7 @@ export const scalars = ZeusScalars({
         decode: e => e as number,
     },
     JSON: {
-        encode: (e: unknown) => JSON.stringify(e),
+        encode: (e: unknown) => JSON.stringify(JSON.stringify(e)),
         decode: (e: unknown) => JSON.parse(e as string),
     },
     DateTime: {

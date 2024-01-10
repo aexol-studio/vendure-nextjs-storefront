@@ -15,9 +15,8 @@ export const Footer = () => {
     const footerSections = t('footer.sections', { returnObjects: true });
     const footerLaw = t('footer.law', { returnObjects: true });
 
-    const mode = 'light';
     return (
-        <Main mode={mode}>
+        <Main>
             <ContentContainer>
                 <UpperPart column justifyBetween>
                     <LinksGrid>
@@ -46,11 +45,11 @@ export const Footer = () => {
     );
 };
 
-const Main = styled.footer<{ mode?: string }>`
+const Main = styled.footer`
     margin-top: 4rem;
     border-top: 1px solid ${p => p.theme.gray(100)};
-    background-color: ${({ mode, theme }) => (mode === 'light' ? theme.background.main : theme.gray(800))};
-    color: ${({ mode, theme }) => (mode === 'light' ? theme.gray(800) : theme.gray(200))};
+    background-color: ${({ theme }) => theme.background.main};
+    color: ${({ theme }) => theme.gray(800)};
     width: 100%;
 `;
 

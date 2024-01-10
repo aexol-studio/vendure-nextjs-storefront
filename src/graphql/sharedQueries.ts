@@ -36,7 +36,6 @@ export const getCollections = async (language: string) => {
                         },
                     ],
                 });
-
                 return { ...c, productVariants: products.collection?.productVariants };
             }),
         );

@@ -10,7 +10,6 @@ type ButtonType = ButtonHTMLAttributes<HTMLButtonElement> & {
 
 export const _Button = forwardRef((props: ButtonType, ref: React.ForwardedRef<HTMLButtonElement>) => {
     const { loading, ...rest } = props;
-
     return (
         <FakeButton disabled={loading || props.disabled} ref={ref} {...rest}>
             <AnimatePresence>
@@ -82,6 +81,11 @@ export const Button = styled(_Button)`
     :hover {
         color: ${p => p.theme.button.hover?.front || p.theme.button.front};
         background: ${p => p.theme.button.hover?.back || p.theme.button.back};
+    }
+
+    :disabled {
+        background: ${p => p.theme.gray(800)};
+        color: ${p => p.theme.gray(200)};
     }
 `;
 

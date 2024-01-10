@@ -2,8 +2,6 @@ import { CollectionType, ProductDetailType } from '@/src/graphql/selectors';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 
-const SHOP_URL = 'http://localhost:3000';
-
 export const CustomHelmet: React.FC<{
     pageTitle: string;
     product?: ProductDetailType;
@@ -19,33 +17,55 @@ export const CustomHelmet: React.FC<{
     if (collection) {
         title = `${collection.name} | ${pageTitle}`;
     }
+    if (title.length > 60) {
+        title = pageTitle.slice(0, 60 - 3) + '...';
+        console.log(`title of ${asPath} is too long`);
+    }
+    const u = new URL((process.env.NEXT_PUBLIC_DOMAIN || 'https://shop.aexol.com') + asPath);
+    const canonicalUrl = u.origin + u.pathname;
+    const metaDescription = product?.description || collection?.description || 'Demo store made by Aexol';
+    if (metaDescription.length > 160) {
+        metaDescription.slice(0, 160 - 3) + '...';
+        console.log(`description of ${asPath} is too long`);
+    }
 
     const seo = {
         name: 'Aexol Demo Store',
-        description: product?.description || collection?.description || 'Demo store made by Aexol',
-        pageUrl: `${SHOP_URL}${asPath}`,
-        keywords: 'Aexol, Shop, E-commerce, React, Next.js, GraphQL, TypeScript, Demo, Example, Boilerplate',
-        faviconUrl: `favicon.ico`,
-        logo: `${SHOP_URL}/images/aexol_full_logo.png`,
+        description: metaDescription,
+        pageUrl: `${asPath}`,
+        keywords: [
+            'Aexol',
+            'Shop',
+            'E-commerce',
+            'React',
+            'Next.js',
+            'GraphQL',
+            'TypeScript',
+            'Demo',
+            'Example',
+            'Boilerplate',
+            product?.name as string,
+        ],
+        faviconUrl: `/public/favicon.ico`,
+        logo: `/images/aexol_full_logo.png`,
         facebook: 'https://www.facebook.com/Aexol',
         twitter: 'https://twitter.com/aexol',
-        image:
-            product?.featuredAsset?.preview ||
-            collection?.featuredAsset?.preview ||
-            `${SHOP_URL}/images/aexol_full_logo.png`,
+        image: product?.featuredAsset?.preview || collection?.featuredAsset?.preview || `/images/aexol_full_logo.png`,
     };
-
+    !seo.keywords.some(keyword => title.includes(keyword)) && console.log(`no keyword in title of ${seo.pageUrl}`);
+    !seo.keywords.some(keyword => seo.description.includes(keyword)) &&
+        console.log(`no keyword in desc of ${seo.pageUrl}`);
     return (
         <Head>
             <title>{title}</title>
-            <link rel="canonical" href={seo.pageUrl} />
+            <link rel="canonical" href={canonicalUrl} />
             <link rel="shortcut icon" href={seo.faviconUrl} type="image/png" />
             <meta name="description" content={seo.description} />
-            <meta property="keywords" content={seo.keywords} />
+            <meta property="keywords" content={seo.keywords.join(',')} />
             <meta property="og:image" content={seo.image} />
             <meta property="og:image:url" content={seo.image} />
 
-            <meta name="og:title" content={seo.name} />
+            <meta name="og:title" content={title} />
             <meta property="og:site_name" content={seo.name} />
             <meta property="og:type" content="website" />
             <meta property="og:description" content={seo.description} />

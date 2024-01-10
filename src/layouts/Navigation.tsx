@@ -71,7 +71,7 @@ export const Navigation: React.FC<NavigationProps> = ({ navigation, categories }
                         </Stack>
                         <AnimatePresence>
                             {searchOpen ? (
-                                <motion.div
+                                <DesktopNavigationContainer
                                     style={{ width: '100%' }}
                                     initial={{ opacity: 0 }}
                                     animate={{ opacity: 1 }}
@@ -81,7 +81,7 @@ export const Navigation: React.FC<NavigationProps> = ({ navigation, categories }
                                         searchOpen={searchOpen}
                                         toggleSearch={() => setSearchOpen(p => !p)}
                                     />
-                                </motion.div>
+                                </DesktopNavigationContainer>
                             ) : (
                                 <DesktopNavigation navigation={navigation} />
                             )}
@@ -98,6 +98,12 @@ export const Navigation: React.FC<NavigationProps> = ({ navigation, categories }
                     </Stack>
                 </ContentContainer>
             </StickyContainer>
+            {searchOpen && (
+                <MobileNavigationContainer>
+                    <NavigationSearch searchOpen={searchOpen} toggleSearch={() => setSearchOpen(p => !p)} />
+                </MobileNavigationContainer>
+            )}
+
             {categories?.length > 0 ? <CategoryBar collections={categories} /> : null}
         </>
     );
@@ -117,5 +123,20 @@ const StickyContainer = styled.nav`
     border-bottom: 1px solid ${p => p.theme.gray(100)};
     svg {
         max-height: 4rem;
+    }
+`;
+
+const MobileNavigationContainer = styled.div`
+    display: block;
+    padding: 2.5rem 2rem 0 2rem;
+    @media (min-width: ${p => p.theme.breakpoints.md}) {
+        display: none;
+    }
+`;
+
+const DesktopNavigationContainer = styled(motion.div)`
+    display: none;
+    @media (min-width: ${p => p.theme.breakpoints.md}) {
+        display: block;
     }
 `;

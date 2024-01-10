@@ -1,93 +1,48 @@
-import { ProductDetailType } from '@/src/graphql/selectors';
 import styled from '@emotion/styled';
-import { useEffect, useMemo, useState } from 'react';
 import { Button } from '@/src/components/molecules/Button';
 import { TP, Stack } from '@/src/components/atoms';
 import { AnimatePresence, motion } from 'framer-motion';
+import { ProductOptionsGroup } from '@/src/state/product/types';
 
-export const ProductOptions: React.FC<{
-    variants: ProductDetailType['variants'];
-    optionGroups: ProductDetailType['optionGroups'];
-    selectedVariant?: ProductDetailType['variants'][number];
-    setVariant: (variant?: ProductDetailType['variants'][number]) => void;
+interface ProductOptionsProps {
+    productOptionsGroups: ProductOptionsGroup[];
+    handleClick: (groupId: string, optionId: string) => void;
     addingError?: string;
-}> = ({ variants, optionGroups, selectedVariant, setVariant, addingError }) => {
-    const [selectedOptions, setSelectedOptions] = useState<{
-        [key: string]: string;
-    }>({});
+}
 
-    useEffect(() => {
-        const newState = selectedVariant?.options.reduce(
-            (acc, option) => {
-                acc[option.groupId] = option.id;
-                return acc;
-            },
-            {} as { [key: string]: string },
-        );
-        if (newState) setSelectedOptions(newState);
-    }, [selectedVariant]);
-
-    const handleClick = (groupId: string, id: string) => {
-        let newState: { [key: string]: string };
-        if (selectedOptions[groupId] === id) {
-            newState = { ...selectedOptions };
-            delete newState[groupId];
-        } else {
-            newState = { ...selectedOptions, [groupId]: id };
-        }
-        setSelectedOptions(newState);
-        const variant = variants.find(v => v.options.every(ov => ov.id === newState[ov.groupId]));
-        if (variant && variant !== selectedVariant) setVariant(variant);
-        else setVariant(undefined);
-    };
-
-    const groups = useMemo(() => {
-        if (Object.keys(selectedOptions).length <= optionGroups.length - 1) {
-            return optionGroups;
-        }
-        const filteredGroups = optionGroups.filter(og => og.options.some(o => selectedOptions[og.id] === o.id));
-        return filteredGroups;
-    }, [selectedOptions]);
-
+export const ProductOptions: React.FC<ProductOptionsProps> = ({ productOptionsGroups, handleClick, addingError }) => {
     return (
         <Stack column gap="2.5rem">
-            {groups?.map((og, i) => {
-                const variantsInGroup = variants
-                    .filter(v => v.options.some(o => o.groupId === og.id))
-                    .filter(v => Number(v.stockLevel) > 0);
-
-                return (
+            {productOptionsGroups?.map((og, i) => {
+                return og.options.length ? (
                     <StyledStack key={i} column gap="0.5rem">
                         <TP capitalize>{og.name}</TP>
                         <StyledStack gap="1rem">
                             {og.options.map((o, j) => {
-                                const totallyOOS = !variantsInGroup.some(v => v.options.some(vo => vo.id === o.id));
-                                const handleSwatchClick = () => handleClick(og.id, o.id);
-
                                 if (og.name.toLowerCase() === 'color') {
                                     return (
                                         <ColorSwatch
+                                            outOfStock={!(o.stockLevel > 0)}
                                             key={o.name + j}
-                                            onClick={handleSwatchClick}
+                                            onClick={() => handleClick(og.id, o.id)}
                                             color={o.name}
-                                            selected={selectedOptions[og.id] === o.id}
-                                            selectable={totallyOOS}
+                                            selected={o.isSelected}
                                         />
                                     );
                                 }
                                 return (
                                     <SizeSelector
+                                        outOfStock={!(o.stockLevel > 0)}
                                         key={o.name + j}
-                                        onClick={handleSwatchClick}
-                                        selectable={totallyOOS}
-                                        selected={selectedOptions[og.id] === o.id}>
+                                        onClick={() => handleClick(og.id, o.id)}
+                                        selected={o.isSelected}>
                                         {o.name}
                                     </SizeSelector>
                                 );
                             })}
                         </StyledStack>
                     </StyledStack>
-                );
+                ) : null;
             })}
             <AnimatePresence>
                 {addingError && (
@@ -110,25 +65,17 @@ const Error = styled(TP)`
 
 const NoVariantInfo = styled(motion.div)``;
 
-const ColorSwatch = styled.div<{ color: string; selectable: boolean; selected: boolean }>`
+const ColorSwatch = styled.div<{ color: string; outOfStock: boolean; selected: boolean }>`
     width: 3.2rem;
     height: 3.2rem;
     background-color: ${p => p.color};
     outline: 1px solid ${p => p.theme.gray(500)};
     cursor: pointer;
-    ${p =>
-        p.selectable &&
-        `
-        opacity: 0.5;
-    `}
-    ${p =>
-        p.selected &&
-        `
-        outline: 2px solid ${p.theme.gray(1000)};
-    `}
+    ${p => p.outOfStock && `opacity: 0.5;`}
+    ${p => p.selected && `outline: 2px solid ${p.theme.gray(1000)};`}
 `;
 
-const SizeSelector = styled(Button)<{ selected: boolean; selectable: boolean }>`
+const SizeSelector = styled(Button)<{ selected: boolean; outOfStock: boolean }>`
     border: 1px solid ${p => p.theme.gray(500)};
     background: ${p => p.theme.gray(0)};
     color: ${p => p.theme.gray(900)};
@@ -137,18 +84,7 @@ const SizeSelector = styled(Button)<{ selected: boolean; selectable: boolean }>`
         color: ${p => p.theme.gray(0)};
     }
     ${p =>
-        p.selected &&
-        `
-        background: ${p.theme.gray(1000)};
-        color: ${p.theme.gray(0)};
-    `}
-
-    ${p =>
-        p.selectable &&
-        `
-        background: ${p.theme.gray(500)};
-        color: ${p.theme.gray(0)};
-    `}
+        p.selected ? `background: ${p.theme.gray(1000)}; color: ${p.theme.gray(0)};` : p.outOfStock && `opacity: 0.5;`}
 `;
 
 const StyledStack = styled(Stack)`

@@ -34,12 +34,6 @@
         "ASC": "Ascending",
         "DESC": "Descending"
     },
-    "payments": {
-        "dummy-method": "Dummy Payment Method",
-        "states": {
-            "Authorized": "Authorized"
-        }
-    },
     "stockLevel": {
         "OUT_OF_STOCK": "Out of stock",
         "IN_STOCK": "In stock",
@@ -50,7 +44,7 @@
     "send": "Send",
     "search-results": "Search results for:",
     "search-results-header": "Search results",
-    "search-results-total": "See {{totalItems}} results for {{searchQuery}}",
+    "search-results-total": "See {{totalItems}} results for <1>{{searchQuery}}</1>",
     "search-query-to-short": "Search query must be at least 3 characters long",
     "search-results-no-results": "No results for <1>{{searchQuery}}</1>",
     "search-results-loading": "Loading search results...",
@@ -82,6 +76,11 @@
         "Delivered": "Delivered",
         "Modifying": "Modifying",
         "ArrangingAdditionalPayment": "Additional Payment"
+    },
+    "paymentStates": {
+        "Authorized": "Authorized",
+        "Settled": "Settled",
+        "Declined": "Declined"
     },
     "notifyMe": {
         "invalidEmail": "Please enter valid email",

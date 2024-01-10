@@ -16,7 +16,7 @@ export const ProductCard: React.FC<{ variant: CollectionTileProductVariantType }
     return (
         <Stack column gap="1rem">
             <Link href={`/products/${variant.product.slug}?variant=${variant.id}`}>
-                <ProductImage src={asset} size="thumbnail-big" />
+                <ProductImage src={asset} size="thumbnail-big" alt={variant.name} title={variant.name} />
             </Link>
             <Stack gap="0.5rem" justifyBetween>
                 <Stack column w100>

@@ -23,6 +23,7 @@ export const OrderBox: React.FC<{ order: ActiveOrderType }> = ({ order }) => {
                                 size="thumbnail"
                                 src={order.lines[0].featuredAsset?.preview}
                                 alt={order.lines[0].productVariant.product.name}
+                                title={order.lines[0].productVariant.product.name}
                             />
                             <Stack column>
                                 <Stack w100 column>

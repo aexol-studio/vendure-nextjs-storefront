@@ -38,7 +38,7 @@ export const BestOfTile: React.FC<BestOfTileI> = ({
     return (
         <Stack column itemsCenter gap="1rem">
             <ImageWrapper href={`/products/${slug}`}>
-                <Image src={imgSrc} />
+                <Image src={imgSrc} alt={productName} title={productName} />
             </ImageWrapper>
             <Stack w100>
                 <TP

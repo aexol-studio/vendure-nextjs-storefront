@@ -19,14 +19,14 @@ export const CustomHelmet: React.FC<{
     }
     if (title.length > 60) {
         title = pageTitle.slice(0, 60 - 3) + '...';
-        console.log(`title of ${asPath} is too long`);
+        // console.log(`title of ${asPath} is too long`);
     }
     const u = new URL((process.env.NEXT_PUBLIC_DOMAIN || 'https://shop.aexol.com') + asPath);
     const canonicalUrl = u.origin + u.pathname;
-    const metaDescription = product?.description || collection?.description || 'Demo store made by Aexol';
+    let metaDescription = product?.description || collection?.description || 'Demo store made by Aexol';
     if (metaDescription.length > 160) {
-        metaDescription.slice(0, 160 - 3) + '...';
-        console.log(`description of ${asPath} is too long`);
+        metaDescription = metaDescription.slice(0, 160 - 3) + '...';
+        // console.log(`description of ${asPath} is too long`);
     }
 
     const seo = {
@@ -52,9 +52,9 @@ export const CustomHelmet: React.FC<{
         twitter: 'https://twitter.com/aexol',
         image: product?.featuredAsset?.preview || collection?.featuredAsset?.preview || `/images/aexol_full_logo.png`,
     };
-    !seo.keywords.some(keyword => title.includes(keyword)) && console.log(`no keyword in title of ${seo.pageUrl}`);
-    !seo.keywords.some(keyword => seo.description.includes(keyword)) &&
-        console.log(`no keyword in desc of ${seo.pageUrl}`);
+    // !seo.keywords.some(keyword => title.includes(keyword)) && console.log(`no keyword in title of ${seo.pageUrl}`);
+    // !seo.keywords.some(keyword => seo.description.includes(keyword)) &&
+    //     console.log(`no keyword in desc of ${seo.pageUrl}`);
     return (
         <Head>
             <title>{title}</title>
@@ -131,6 +131,20 @@ const doCollectionLD = (collection: CollectionType) => {
         image: collection.featuredAsset?.preview,
     };
 };
+const doStoreLD = () => {
+    return {
+        '@context': 'https://schema.org/',
+        '@type': 'OnlineStore',
+        name: 'Aexol demo shop',
+        description: 'Aexol demo shop is for demonstration purposes, change des to fit your usecase',
+        image: '/images/aexol_full_logo.png',
+        parentOrganization: {
+            '@type': 'OnlineBusiness',
+            name: 'Aexol',
+            url: 'http://aexol.com/',
+        },
+    };
+};
 const generateJSONLD = ({
     product,
     collection,
@@ -140,10 +154,15 @@ const generateJSONLD = ({
     collection?: CollectionType;
     variant?: ProductDetailType['variants'][number];
 }) => {
-    let __html = '';
+    let __html = JSON.stringify(doStoreLD);
     try {
-        if (product && variant) __html = JSON.stringify(doProductLD(product));
-        if (collection) __html = JSON.stringify(doCollectionLD(collection));
+        if (product && variant) {
+            __html = JSON.stringify(doProductLD(product));
+        } else if (collection) {
+            __html = JSON.stringify(doCollectionLD(collection));
+        } else {
+            __html = JSON.stringify(doStoreLD());
+        }
     } catch (err) {
         console.error(err);
     }

@@ -19,44 +19,45 @@ import { IconButton } from '@/src/components/molecules/Button';
 import { AnnouncementBar } from '@/src/components/organisms/AnnouncementBar';
 import { CategoryBar } from './CategoryBar';
 import { NavigationSearch } from '../components/organisms/NavgationSearch';
-import { useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
+import { useNavigationSearch } from '../components/organisms/NavgationSearch/hooks';
 
 interface NavigationProps {
     navigation: RootNode<NavigationType> | null;
     categories: CollectionTileType[];
 }
 
+// IT SHOULD BE MOVED TO VENDURE AS PLUGIN FOR EXAMPLE
+const entries = [
+    {
+        text: 'NextJS Storefront demo made by Aexol 🚀',
+        href: 'https://aexol.com',
+        bgColor: 'lch(50% 0 0)',
+        textColor: 'lch(80% 0 0)',
+        hoverTextColor: 'lch(100% 0 0)',
+        hoverBgColor: 'lch(50% 0 0)',
+    },
+    {
+        text: '🔥 BEST STORE EVER 🔥',
+        href: 'https://aexol.com',
+        bgColor: 'lch(50% 0 0)',
+        textColor: 'lch(80% 0 0)',
+        hoverTextColor: 'lch(100% 0 0)',
+        hoverBgColor: 'lch(50% 0 0)',
+    },
+    {
+        text: 'See best products here 👀',
+        href: '/collections/all',
+        bgColor: 'lch(50% 0 0)',
+        textColor: 'lch(80% 0 0)',
+        hoverTextColor: 'lch(100% 0 0)',
+        hoverBgColor: 'lch(50% 0 0)',
+    },
+];
+
 export const Navigation: React.FC<NavigationProps> = ({ navigation, categories }) => {
     const { isLogged, cart } = useCart();
-
-    const entries = [
-        {
-            text: 'NextJS Storefront demo made by Aexol 🚀',
-            href: 'https://aexol.com',
-            bgColor: 'lch(50% 0 0)',
-            textColor: 'lch(80% 0 0)',
-            hoverTextColor: 'lch(100% 0 0)',
-            hoverBgColor: 'lch(50% 0 0)',
-        },
-        {
-            text: '🔥 BEST STORE EVER 🔥',
-            href: 'https://aexol.com',
-            bgColor: 'lch(50% 0 0)',
-            textColor: 'lch(80% 0 0)',
-            hoverTextColor: 'lch(100% 0 0)',
-            hoverBgColor: 'lch(50% 0 0)',
-        },
-        {
-            text: 'See best products here 👀',
-            href: '/collections/all',
-            bgColor: 'lch(50% 0 0)',
-            textColor: 'lch(80% 0 0)',
-            hoverTextColor: 'lch(100% 0 0)',
-            hoverBgColor: 'lch(50% 0 0)',
-        },
-    ];
-    const [searchOpen, setSearchOpen] = useState(false);
+    const navigationSearch = useNavigationSearch();
 
     return (
         <>
@@ -70,36 +71,32 @@ export const Navigation: React.FC<NavigationProps> = ({ navigation, categories }
                             </Link>
                         </Stack>
                         <AnimatePresence>
-                            {searchOpen ? (
+                            {navigationSearch.searchOpen ? (
                                 <DesktopNavigationContainer
                                     style={{ width: '100%' }}
                                     initial={{ opacity: 0 }}
                                     animate={{ opacity: 1 }}
                                     exit={{ opacity: 0 }}
                                     transition={{ duration: 0.2 }}>
-                                    <NavigationSearch
-                                        searchOpen={searchOpen}
-                                        toggleSearch={() => setSearchOpen(p => !p)}
-                                    />
+                                    <NavigationSearch {...navigationSearch} />
                                 </DesktopNavigationContainer>
                             ) : (
                                 <DesktopNavigation navigation={navigation} />
                             )}
                         </AnimatePresence>
                         <Stack gap="1rem" itemsCenter>
-                            <IconButton onClick={() => setSearchOpen(p => !p)}>
+                            <IconButton onClick={navigationSearch.toggleSearch}>
                                 <SearchIcon />
                             </IconButton>
                             <LanguagePicker />
                             <UserMenu isLogged={isLogged} />
-                            {/* <Cart activeOrder={cart} /> */}
                             <CartDrawer activeOrder={cart} />
                         </Stack>
                     </Stack>
                 </ContentContainer>
-                {searchOpen && (
+                {navigationSearch.searchOpen && (
                     <MobileNavigationContainer>
-                        <NavigationSearch searchOpen={searchOpen} toggleSearch={() => setSearchOpen(p => !p)} />
+                        <NavigationSearch {...navigationSearch} />
                     </MobileNavigationContainer>
                 )}
             </StickyContainer>

@@ -19,6 +19,8 @@ export const NewestProducts: React.FC<NewestProductsProps> = ({ products }) => {
                 size="tile"
                 href={`/products/${product.slug}`}
                 imageSrc={product.featuredAsset?.preview || ''}
+                alt={product.name}
+                title={product.name}
             />
             <TP>{product.name}</TP>
         </Stack>

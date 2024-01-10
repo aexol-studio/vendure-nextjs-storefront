@@ -1,88 +1,24 @@
-import React, { useRef, useEffect, useState } from 'react';
-import { SearchIcon, X } from 'lucide-react';
+import React, { useEffect, useRef } from 'react';
+import { ArrowRight, SearchIcon, X } from 'lucide-react';
 import styled from '@emotion/styled';
-import { Stack, TP, TypoGraphy } from '@/src/components/atoms';
-import { storefrontApiQuery } from '@/src/graphql/client';
-import { ProductSearchType, ProductSearchSelector } from '@/src/graphql/selectors';
-import { usePush } from '@/src/lib/redirect';
-import { useRouter } from 'next/router';
+import { Link, Stack, TP, TypoGraphy } from '@/src/components/atoms';
 import { ProductImageWithInfo } from '../../molecules/ProductImageWithInfo';
-import { SortOrder } from '@/src/zeus';
 import { useTranslation, Trans } from 'react-i18next';
-import { Chevron } from '@/src/assets';
+import { useNavigationSearch } from './hooks';
 
-const useDebounce = (value: string, delay: number) => {
-    const [debouncedValue, setDebouncedValue] = useState(value);
-    useEffect(() => {
-        const handler = setTimeout(() => {
-            setDebouncedValue(value);
-        }, delay);
-
-        return () => clearTimeout(handler);
-    }, [value, delay]);
-    return debouncedValue;
-};
-
-export const NavigationSearch: React.FC<{ searchOpen: boolean; toggleSearch: () => void }> = ({ toggleSearch }) => {
-    const inputRef = useRef<HTMLInputElement>(null);
-    const { query } = useRouter();
+export const NavigationSearch: React.FC<ReturnType<typeof useNavigationSearch>> = ({
+    loading,
+    searchQuery,
+    searchResults,
+    totalItems,
+    setSearchQuery,
+    closeSearch,
+    onSubmit,
+}) => {
     const { t } = useTranslation('common');
-    const push = usePush();
-    const language = query?.locale as string;
-    const [loading, setLoading] = useState(false);
-    const [searchQuery, setSearchQuery] = useState(query.q ? query.q.toString() : '');
-    const [searchResults, setSearchResult] = useState<ProductSearchType[]>([]);
-    const debouncedSearch = useDebounce(searchQuery, 200);
-    const [totalItems, setTotalItems] = useState(0);
     const popularSearches = t('popular-searches', { returnObjects: true });
 
-    const handleSearch = () => {
-        toggleSearch();
-        setSearchQuery('');
-        setSearchResult([]);
-    };
-
-    const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
-        if (searchQuery.length < 3) return;
-        push(`/search?q=${searchQuery}`);
-    };
-
-    useEffect(() => {
-        if (!debouncedSearch || debouncedSearch.length < 3) {
-            setSearchResult([]);
-            return;
-        }
-
-        const getResults = async () => {
-            try {
-                setLoading(true);
-                const results = await storefrontApiQuery(language)({
-                    search: [
-                        {
-                            input: {
-                                term: debouncedSearch,
-                                take: 8,
-                                groupByProduct: true,
-                                sort: { price: SortOrder.DESC },
-                            },
-                        },
-                        { items: ProductSearchSelector, totalItems: true },
-                    ],
-                });
-                setSearchResult(results.search.items);
-                setLoading(false);
-                setTotalItems(results.search.totalItems);
-            } catch (error) {
-                console.error(error);
-                setSearchResult([]);
-                setLoading(false);
-            }
-        };
-
-        getResults();
-    }, [debouncedSearch]);
-
+    const inputRef = useRef<HTMLInputElement>(null);
     useEffect(() => {
         setTimeout(() => {
             inputRef.current?.focus();
@@ -92,7 +28,7 @@ export const NavigationSearch: React.FC<{ searchOpen: boolean; toggleSearch: () 
     return (
         <Stack w100 itemsCenter style={{ position: 'relative' }}>
             <Stack w100 itemsCenter gap="1rem">
-                <CrossButton onClick={handleSearch}>
+                <CrossButton onClick={closeSearch}>
                     <X size="2rem" />
                 </CrossButton>
                 <Form onSubmit={onSubmit}>
@@ -108,62 +44,62 @@ export const NavigationSearch: React.FC<{ searchOpen: boolean; toggleSearch: () 
                     </SearchButton>
                 </Form>
             </Stack>
-            {searchQuery.length > 0 ? (
-                <SearchPosition w100>
-                    <SearchContent w100>
-                        {debouncedSearch.length < 3 ? (
-                            <TP>{t('search-query-to-short')}</TP>
-                        ) : loading ? (
-                            <TP>{t('search-results-loading')}</TP>
-                        ) : searchResults.length === 0 ? (
-                            <TP>
-                                <Trans
-                                    i18nKey="search-results-no-results"
-                                    values={{ searchQuery }}
-                                    components={{ 1: <strong></strong> }}
-                                />
-                            </TP>
-                        ) : (
-                            <Wrapper column w100 gap={'2rem'}>
-                                <Container>
-                                    <Stack column gap={'2rem'}>
-                                        <TypoGraphy size={'2rem'} weight={400}>
-                                            {t('search-results-header')}
-                                        </TypoGraphy>
-                                        <Stack flexWrap gap="2rem">
-                                            {searchResults.map(result => {
-                                                const optionInName =
-                                                    result.productVariantName.replace(result.productName, '') !== '';
+            <SearchPosition w100>
+                <SearchContent w100>
+                    {searchQuery.length < 3 ? (
+                        <TP>{t('search-query-to-short')}</TP>
+                    ) : loading ? (
+                        <TP>{t('search-results-loading')}</TP>
+                    ) : searchResults.length === 0 ? (
+                        <TP>
+                            <Trans
+                                i18nKey="search-results-no-results"
+                                values={{ searchQuery }}
+                                components={{ 1: <strong></strong> }}
+                            />
+                        </TP>
+                    ) : (
+                        <Wrapper column w100 gap={'2rem'}>
+                            <Container>
+                                <Stack column w100 gap={'2rem'}>
+                                    <TypoGraphy size={'2rem'} weight={400}>
+                                        {t('search-results-header')}
+                                    </TypoGraphy>
+                                    <Results w100 flexWrap>
+                                        {searchResults.slice(0, 6).map(result => {
+                                            const optionInName =
+                                                result.productVariantName.replace(result.productName, '') !== '';
 
-                                                return (
-                                                    <Stack gap="0.5rem" itemsCenter column key={result.slug}>
-                                                        <ProductImageWithInfo
-                                                            size="thumbnail-big"
-                                                            imageSrc={result.productAsset?.preview}
-                                                            href={`/products/${result.slug}`}
-                                                        />
-                                                        <Stack itemsCenter column gap="0.5rem">
-                                                            <TP size="1.5rem" weight={500}>
-                                                                {result.productName}
+                                            return (
+                                                <ResultCard gap="0.5rem" itemsCenter column key={result.slug}>
+                                                    <ProductImageWithInfo
+                                                        size="thumbnail-big"
+                                                        imageSrc={result.productAsset?.preview}
+                                                        href={`/products/${result.slug}`}
+                                                    />
+                                                    <Stack itemsCenter column gap="0.5rem">
+                                                        <TP size="1.5rem" weight={500}>
+                                                            {result.productName}
+                                                        </TP>
+                                                        {optionInName && (
+                                                            <TP size="1.25rem" weight={400}>
+                                                                {result.productVariantName.replace(
+                                                                    result.productName,
+                                                                    '',
+                                                                )}
                                                             </TP>
-                                                            {optionInName && (
-                                                                <TP size="1.25rem" weight={400}>
-                                                                    {result.productVariantName.replace(
-                                                                        result.productName,
-                                                                        '',
-                                                                    )}
-                                                                </TP>
-                                                            )}
-                                                        </Stack>
+                                                        )}
                                                     </Stack>
-                                                );
-                                            })}
-                                        </Stack>
-                                    </Stack>
-                                    <Stack column gap={'1rem'}>
-                                        <TypoGraphy size={'2rem'} weight={400}>
-                                            {t('popular-searches-heading')}
-                                        </TypoGraphy>
+                                                </ResultCard>
+                                            );
+                                        })}
+                                    </Results>
+                                </Stack>
+                                <PopularSearches column gap="1rem">
+                                    <TypoGraphy size="2rem" weight={400} style={{ whiteSpace: 'nowrap' }}>
+                                        {t('popular-searches-heading')}
+                                    </TypoGraphy>
+                                    <PopularSearchesWrapper gap="1rem">
                                         {popularSearches.map(item => (
                                             <TypoGraphy
                                                 key={item}
@@ -174,38 +110,81 @@ export const NavigationSearch: React.FC<{ searchOpen: boolean; toggleSearch: () 
                                                 {item}
                                             </TypoGraphy>
                                         ))}
-                                    </Stack>
-                                </Container>
-                                <TotalResults
-                                    onClick={() => {
-                                        push(`/search?q=${searchQuery}`);
-                                    }}>
-                                    <Trans i18nKey="search-results-total" values={{ totalItems, searchQuery }} />
-                                    <IconWrapper>
-                                        <Chevron />
-                                    </IconWrapper>
-                                </TotalResults>
-                            </Wrapper>
-                        )}
-                    </SearchContent>
-                </SearchPosition>
-            ) : null}
+                                    </PopularSearchesWrapper>
+                                </PopularSearches>
+                            </Container>
+                            <StyledLink href={`/search?q=${searchQuery}`}>
+                                <Trans
+                                    i18nKey="search-results-total"
+                                    components={{ 1: <strong></strong> }}
+                                    values={{ totalItems, searchQuery }}
+                                />
+                                <IconWrapper>
+                                    <ArrowRight size="1.5rem" />
+                                </IconWrapper>
+                            </StyledLink>
+                        </Wrapper>
+                    )}
+                </SearchContent>
+            </SearchPosition>
         </Stack>
     );
 };
 
+const StyledLink = styled(Link)`
+    display: flex;
+    align-items: center;
+    align-self: flex-end;
+    gap: 0.5rem;
+
+    width: fit-content;
+    color: ${p => p.theme.gray(1000)};
+    font-size: 1.5rem;
+`;
+
+const Results = styled(Stack)`
+    row-gap: 2rem;
+    @media (min-width: ${p => p.theme.breakpoints.md}) {
+        flex-direction: row;
+    }
+`;
+
+const ResultCard = styled(Stack)`
+    flex-basis: calc(100% / 2);
+    @media (min-width: ${p => p.theme.breakpoints.ssm}) {
+        flex-basis: calc(100% / 3);
+    }
+`;
+
+const PopularSearchesWrapper = styled(Stack)`
+    flex-direction: row;
+
+    @media (min-width: ${p => p.theme.breakpoints.lg}) {
+        flex-direction: column;
+    }
+`;
+
+const PopularSearches = styled(Stack)`
+    padding-right: 12rem;
+`;
+
 const SearchPosition = styled(Stack)`
-    width: calc(100% - 3rem);
+    width: 100%;
     top: calc(100% + 1rem);
     position: absolute;
     right: 0rem;
     z-index: 2136;
+
+    @media (min-width: ${p => p.theme.breakpoints.md}) {
+        width: calc(100% + 20rem);
+        right: -10rem;
+    }
 `;
 
 const SearchContent = styled(Stack)`
     position: relative;
     width: 100%;
-    padding: 1rem 2rem;
+    padding: 3rem 4rem;
     border: 1px solid ${p => p.theme.gray(100)};
     border-radius: ${({ theme }) => theme.borderRadius};
     outline: none;
@@ -262,7 +241,7 @@ const SearchButton = styled.button`
 const Container = styled(Stack)`
     display: flex;
     width: 100%;
-    flex-direction: column;
+    flex-direction: column-reverse;
     gap: 2rem;
     @media (min-width: ${p => p.theme.breakpoints.lg}) {
         flex-direction: row;
@@ -271,21 +250,12 @@ const Container = styled(Stack)`
     }
 `;
 
-const TotalResults = styled(Stack)`
-    justify-content: end;
-    align-items: center;
-    cursor: pointer;
-    gap: 0.5rem;
-    svg {
-        width: 0.8rem;
-        transform: rotate(-90deg);
-    }
-`;
-
 const IconWrapper = styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
+
+    margin-top: 0.25rem;
 `;
 
 const Wrapper = styled(Stack)``;

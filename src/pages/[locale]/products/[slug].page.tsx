@@ -28,7 +28,8 @@ import { arrayToTree } from '@/src/util/arrayToTree';
 import { ProductPhotosPreview } from '@/src/components/organisms/ProductPhotosPreview';
 
 const ProductPage: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = props => {
-    const { product, variant, addingError, handleVariant, handleBuyNow, handleAddToCart } = useProduct();
+    const { product, variant, addingError, productOptionsGroups, handleOptionClick, handleBuyNow, handleAddToCart } =
+        useProduct();
     const { t } = useTranslation('common');
 
     const breadcrumbs = [
@@ -43,16 +44,18 @@ const ProductPage: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = pr
                     <Breadcrumbs breadcrumbs={breadcrumbs} />
                     <Main gap="5rem">
                         <StickyLeft w100 itemsCenter justifyCenter gap="2.5rem">
-                            <ProductPhotosPreview featuredAsset={product?.featuredAsset} images={product?.assets} />
+                            <ProductPhotosPreview
+                                featuredAsset={product?.featuredAsset}
+                                images={product?.assets}
+                                name={product?.name}
+                            />
                         </StickyLeft>
                         <StyledStack column gap="2.5rem">
                             <TH1>{product?.name}</TH1>
                             {product && product.variants.length > 1 ? (
                                 <ProductOptions
-                                    optionGroups={props.optionGroups}
-                                    variants={product.variants}
-                                    selectedVariant={variant}
-                                    setVariant={handleVariant}
+                                    productOptionsGroups={productOptionsGroups}
+                                    handleClick={handleOptionClick}
                                     addingError={addingError}
                                 />
                             ) : (
@@ -239,11 +242,12 @@ export const getStaticProps = async (context: ContextModel<{ slug?: string }>) =
                 }),
         };
     });
-
     const returnedStuff = {
         slug: context.params?.slug,
-        optionGroups,
-        product,
+        product: {
+            ...product,
+            optionGroups,
+        },
         collections,
         newestProducts,
         navigation,
@@ -271,4 +275,7 @@ const notInDemoStore = [
     { name: 'green', code: '#008000' },
     { name: 'white', code: '#FFFFFF' },
     { name: 'red', code: '#FF0000' },
+    { name: 'mustard', code: '#FFDB58' },
+    { name: 'mint', code: '#98FF98' },
+    { name: 'pearl', code: '#FDEEF4' },
 ];

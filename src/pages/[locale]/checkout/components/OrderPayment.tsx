@@ -153,7 +153,7 @@ export const OrderPayment: React.FC<OrderPaymentProps> = ({ availablePaymentMeth
         <Stack w100 column itemsCenter gap="3.5rem">
             <Banner error={{ message: error ?? undefined }} clearErrors={() => setError(null)} />
             <PaymentForm onSubmit={handleSubmit(onSubmit)} noValidate>
-                <Stack column style={{ position: 'relative' }}>
+                <Stack w100 column style={{ position: 'relative' }}>
                     <CheckBox defaultChecked={true} type="checkbox" />
                     <GridTitle>
                         <TP size="1.5rem" weight={600}>

@@ -5,16 +5,24 @@ import { TP, ProductImage } from '@/src/components/atoms';
 
 interface ProductImageWithInfoProps {
     size: 'thumbnail' | 'tile' | 'popup' | 'detail' | 'full' | 'thumbnail-big';
-
+    alt?: string;
+    title?: string;
     href: string;
     text?: string;
     imageSrc?: string;
 }
 
-export const ProductImageWithInfo: React.FC<ProductImageWithInfoProps> = ({ href, text, size, imageSrc }) => {
+export const ProductImageWithInfo: React.FC<ProductImageWithInfoProps> = ({
+    href,
+    text,
+    alt,
+    title,
+    size,
+    imageSrc,
+}) => {
     return (
-        <StyledLink size={size} withHover={!!text} href={href}>
-            <ProductImage src={imageSrc} size={size} alt={text} />
+        <StyledLink size={size} hover={text ? 1 : 0} href={href}>
+            <ProductImage src={imageSrc} size={size} alt={alt} title={title} />
             <AbsoluteStyledTP upperCase size="2rem">
                 {text}
             </AbsoluteStyledTP>
@@ -22,7 +30,7 @@ export const ProductImageWithInfo: React.FC<ProductImageWithInfoProps> = ({ href
     );
 };
 
-const StyledLink = styled(Link)<{ withHover?: boolean; size: string }>`
+const StyledLink = styled(Link)<{ hover?: number; size: string }>`
     position: relative;
     display: flex;
     flex-direction: column;
@@ -34,8 +42,8 @@ const StyledLink = styled(Link)<{ withHover?: boolean; size: string }>`
         return `align-items: center;`;
     }}
 
-    ${({ withHover, theme }) =>
-        withHover &&
+    ${({ hover, theme }) =>
+        hover === 1 &&
         `
         p { display: block; }
         @media (min-width: ${theme.breakpoints.sm}) {

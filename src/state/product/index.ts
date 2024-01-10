@@ -1,12 +1,12 @@
 import { createContainer } from 'unstated-next';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'next-i18next';
 import { useRouter } from 'next/router';
 import { ProductDetailType } from '@/src/graphql/selectors';
 import { usePush } from '@/src/lib/redirect';
 import { useCart } from '@/src/state/cart';
-import { ProductContainerType, Variant } from './types';
-import { productEmptyState } from './utils';
+import { OptionGroupWithStock, ProductContainerType, Variant } from './types';
+import { findRelatedVariant, productEmptyState } from './utils';
 
 const useProductContainer = createContainer<ProductContainerType, { product: ProductDetailType; language: string }>(
     initialState => {
@@ -14,6 +14,9 @@ const useProductContainer = createContainer<ProductContainerType, { product: Pro
         const { t } = useTranslation('common');
         const push = usePush();
         const { addToCart } = useCart();
+        const [selectedOptions, setSelectedOptions] = useState<{
+            [key: string]: string;
+        }>({});
         const [variant, setVariant] = useState<Variant | undefined>(initialState.product?.variants[0]);
         const [addingError, setAddingError] = useState<string | undefined>();
         const { query } = useRouter();
@@ -59,6 +62,52 @@ const useProductContainer = createContainer<ProductContainerType, { product: Pro
             } else setAddingError(t('select-options'));
         };
 
+        useEffect(() => {
+            const newState = variant?.options.reduce(
+                (acc, option) => {
+                    acc[option.groupId] = option.id;
+                    return acc;
+                },
+                {} as { [key: string]: string },
+            );
+            if (newState) setSelectedOptions(newState);
+        }, [variant]);
+
+        const handleOptionClick = (groupId: string, id: string) => {
+            let newState: { [key: string]: string };
+            if (selectedOptions[groupId] === id) {
+                return;
+            } else {
+                newState = { ...selectedOptions, [groupId]: id };
+            }
+            setSelectedOptions(newState);
+            const newVariant = initialState.product.variants.find(v =>
+                v.options.every(ov => ov.id === newState[ov.groupId]),
+            );
+            if (newVariant && newVariant !== variant) handleVariant(newVariant);
+            else handleVariant(undefined);
+        };
+
+        const productOptionsGroups = useMemo(() => {
+            return initialState.product.optionGroups.map(group => {
+                const options = group.options
+                    .map(option => {
+                        const relatedVariant = findRelatedVariant(initialState.product, group, option, selectedOptions);
+                        return relatedVariant
+                            ? {
+                                  ...option,
+                                  //HERE WE CAN COPY SOME VALUES FROM VARIANT
+                                  stockLevel: Number(relatedVariant.stockLevel),
+                                  isSelected: option.id === selectedOptions[group.id],
+                              }
+                            : undefined;
+                    })
+                    .filter(Boolean) as OptionGroupWithStock[];
+
+                return { ...group, options };
+            });
+        }, [selectedOptions]);
+
         return {
             product: initialState.product,
             variant,
@@ -68,6 +117,8 @@ const useProductContainer = createContainer<ProductContainerType, { product: Pro
             setAddingError,
             handleAddToCart,
             handleBuyNow,
+            handleOptionClick,
+            productOptionsGroups,
         };
     },
 );

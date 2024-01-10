@@ -38,7 +38,12 @@ export const Line: React.FC<LineProps> = ({
         <Stack column style={{ paddingBottom: '2rem' }}>
             <Stack justifyBetween>
                 <Stack gap="1.75rem" itemsStart>
-                    <ProductImage src={featuredAsset?.preview} size="thumbnail" />
+                    <ProductImage
+                        src={featuredAsset?.preview}
+                        size="thumbnail"
+                        alt={productVariant.product.name}
+                        title={productVariant.product.name}
+                    />
                     <Stack column gap="0.75rem" justifyBetween style={{ height: '100%' }}>
                         <Stack gap="1.25rem">
                             <Stack column gap="0.5rem">

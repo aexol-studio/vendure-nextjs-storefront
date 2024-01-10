@@ -59,6 +59,10 @@ const LinksGrid = styled.div`
     column-gap: 3rem;
     display: grid;
     grid-template-columns: auto auto auto;
+
+    @media (max-width: ${({ theme }) => theme.breakpoints.md}) {
+        grid-template-columns: auto auto;
+    }
 `;
 const UpperPart = styled(Stack)`
     padding-block: 4rem;

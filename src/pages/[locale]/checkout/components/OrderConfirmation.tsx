@@ -90,7 +90,12 @@ export const OrderConfirmation: React.FC<{ code: string; order?: OrderType }> = 
                         <Stack key={line.productVariant.name} column>
                             <Stack justifyBetween>
                                 <Stack gap="3rem">
-                                    <ProductImage src={line.featuredAsset?.preview} size="thumbnail-big" />
+                                    <ProductImage
+                                        src={line.featuredAsset?.preview}
+                                        size="thumbnail-big"
+                                        alt={line.productVariant.name}
+                                        title={line.productVariant.name}
+                                    />
                                     <Stack column>
                                         <TP size="2rem" weight={600} style={{ paddingBottom: '2rem' }}>
                                             {!isDefaultVariant

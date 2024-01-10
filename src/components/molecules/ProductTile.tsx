@@ -21,7 +21,11 @@ export const ProductTile: React.FC<{
     return (
         <Main column gap="2rem">
             <Link href={`/products/${product.slug}/`}>
-                <ProductImageGrid src={product.productAsset?.preview} />
+                <ProductImageGrid
+                    src={product.productAsset?.preview}
+                    alt={product.productName}
+                    title={product.productName}
+                />
             </Link>
             <Categories gap="0.5rem">
                 {product.collectionIds

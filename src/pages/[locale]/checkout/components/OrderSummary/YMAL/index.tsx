@@ -31,6 +31,8 @@ export const YMALCarousel: React.FC<YMALProps> = ({ YMALProducts, currencyCode }
                                     ? selectedVariant?.assets[0]?.preview
                                     : product.featuredAsset?.preview
                             }
+                            alt={selectedVariant.name}
+                            title={selectedVariant.name}
                         />
                     </ImageWrapper>
                     <Stack column gap="0.25rem">

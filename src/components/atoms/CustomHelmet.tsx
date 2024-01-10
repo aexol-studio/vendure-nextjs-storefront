@@ -19,14 +19,14 @@ export const CustomHelmet: React.FC<{
     }
     if (title.length > 60) {
         title = pageTitle.slice(0, 60 - 3) + '...';
-        console.log(`title of ${asPath} is too long`);
+        // console.log(`title of ${asPath} is too long`);
     }
     const u = new URL((process.env.NEXT_PUBLIC_DOMAIN || 'https://shop.aexol.com') + asPath);
     const canonicalUrl = u.origin + u.pathname;
     const metaDescription = product?.description || collection?.description || 'Demo store made by Aexol';
     if (metaDescription.length > 160) {
         metaDescription.slice(0, 160 - 3) + '...';
-        console.log(`description of ${asPath} is too long`);
+        // console.log(`description of ${asPath} is too long`);
     }
 
     const seo = {

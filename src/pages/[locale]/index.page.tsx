@@ -40,7 +40,7 @@ export const Index: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = p
                         <MainBar title={t('most-wanted')} categories={props.categories} />
                         <MainGrid>
                             {props.products.map(p => (
-                                <ProductTile collections={props.categories} product={p} key={p.slug} />
+                                <ProductTile lazy collections={props.categories} product={p} key={p.slug} />
                             ))}
                         </MainGrid>
                     </Stack>

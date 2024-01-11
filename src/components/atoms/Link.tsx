@@ -8,12 +8,14 @@ interface LinkComponentProps extends LinkProps {
     skipLocaleHandling?: boolean;
     external?: boolean;
     style?: React.CSSProperties;
+    ariaLabel?: string;
 }
 
 export const Link: React.FC<PropsWithChildren<LinkComponentProps>> = ({
     children,
     skipLocaleHandling,
     external,
+    ariaLabel,
     ...rest
 }) => {
     const router = useRouter();
@@ -27,7 +29,7 @@ export const Link: React.FC<PropsWithChildren<LinkComponentProps>> = ({
     }
 
     return (
-        <NextLink href={linkHref} {...(external && { target: '_blank' })} {...restProps}>
+        <NextLink aria-label={ariaLabel} href={linkHref} {...(external && { target: '_blank' })} {...restProps}>
             {children}
         </NextLink>
     );

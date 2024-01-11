@@ -90,7 +90,7 @@ export const Navigation: React.FC<NavigationProps> = ({ navigation, categories }
                 <ContentContainer>
                     <Stack itemsCenter justifyBetween gap="5rem" w100>
                         <Stack itemsCenter>
-                            <Link href={'/'}>
+                            <Link ariaLabel={'Home'} href={'/'}>
                                 <LogoAexol />
                             </Link>
                         </Stack>
@@ -110,7 +110,10 @@ export const Navigation: React.FC<NavigationProps> = ({ navigation, categories }
                             )}
                         </AnimatePresence>
                         <Stack gap="1rem" itemsCenter>
-                            <IconButton onClick={navigationSearch.toggleSearch} ref={iconRef}>
+                            <IconButton
+                                aria-label="Search products"
+                                onClick={navigationSearch.toggleSearch}
+                                ref={iconRef}>
                                 <SearchIcon />
                             </IconButton>
                             <LanguagePicker />

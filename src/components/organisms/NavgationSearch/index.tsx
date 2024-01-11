@@ -34,6 +34,7 @@ export const NavigationSearch: React.FC<ReturnType<typeof useNavigationSearch>> 
                 </CrossButton>
                 <Form onSubmit={onSubmit}>
                     <Input
+                        onKeyDown={e => e.key === 'Escape' && closeSearch()}
                         ref={inputRef}
                         placeholder="Search for best products"
                         value={searchQuery}

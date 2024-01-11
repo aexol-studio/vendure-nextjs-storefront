@@ -86,4 +86,6 @@ const Main = styled(Stack)`
     position: relative;
     width: 100%;
     font-weight: 500;
+
+    max-width: 35.5rem;
 `;

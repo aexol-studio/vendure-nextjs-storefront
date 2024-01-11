@@ -7,7 +7,8 @@ import React from 'react';
 export const ProductTile: React.FC<{
     product: ProductSearchType;
     collections: CollectionTileType[];
-}> = ({ product, collections }) => {
+    lazy?: boolean;
+}> = ({ product, collections, lazy }) => {
     const priceValue =
         'value' in product.priceWithTax
             ? priceFormatter(product.priceWithTax.value, product.currencyCode)
@@ -22,6 +23,7 @@ export const ProductTile: React.FC<{
         <Main column gap="2rem">
             <Link href={`/products/${product.slug}/`}>
                 <ProductImageGrid
+                    loading={lazy ? 'lazy' : undefined}
                     src={product.productAsset?.preview}
                     alt={product.productName}
                     title={product.productName}

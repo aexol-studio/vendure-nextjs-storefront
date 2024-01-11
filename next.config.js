@@ -4,7 +4,6 @@ const nextConfig = {
     pageExtensions: ['page.tsx', 'page.ts'],
     swcMinify: true,
     reactStrictMode: true,
-    images: { remotePatterns: [{ hostname: 'localhost' }, { hostname: 'vendure-dev.aexol.com' }] },
 };
 
 module.exports = nextConfig;

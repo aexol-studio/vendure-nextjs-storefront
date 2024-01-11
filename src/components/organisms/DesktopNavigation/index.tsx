@@ -44,7 +44,7 @@ export const DesktopNavigation: React.FC<NavProps> = ({ navigation }) => {
 };
 
 const DesktopStack = styled(Stack)`
-    @media (max-width: ${p => p.theme.breakpoints.xl}) {
+    @media (max-width: ${p => p.theme.breakpoints.lg}) {
         display: none;
     }
 `;

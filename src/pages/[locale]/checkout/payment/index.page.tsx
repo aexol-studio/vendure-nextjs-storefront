@@ -22,6 +22,7 @@ const PaymentPage: React.FC<InferGetServerSidePropsType<typeof getServerSideProp
                     <OrderPayment
                         availablePaymentMethods={props.eligiblePaymentMethods}
                         stripeData={props.stripeData}
+                        language={props.language}
                     />
                     <OrderSummary />
                 </Main>
@@ -33,15 +34,18 @@ const PaymentPage: React.FC<InferGetServerSidePropsType<typeof getServerSideProp
 const getServerSideProps = async (context: GetServerSidePropsContext) => {
     const r = await makeServerSideProps(['common', 'checkout'])(context);
     const homePageRedirect = prepareSSRRedirect('/')(context);
+    const language = (context.params?.locale as string) ?? 'en';
 
     try {
-        const [{ activeOrder }, { eligiblePaymentMethods }] = await Promise.all([
+        const [{ activeOrder: checkout }, { eligiblePaymentMethods }] = await Promise.all([
             SSRQuery(context)({ activeOrder: ActiveOrderSelector }),
             SSRQuery(context)({ eligiblePaymentMethods: AvailablePaymentMethodsSelector }),
         ]);
 
         //If no active order, redirect to homepage
-        if (!activeOrder) throw new Error('No active order');
+        if (!checkout || checkout.lines.length === 0) {
+            throw new Error('No active order');
+        }
         //If stripe is available, create a payment intent
         // let paymentIntent = null;
         // if (eligiblePaymentMethods.find(method => method?.code === 'stripe')) {
@@ -51,12 +55,12 @@ const getServerSideProps = async (context: GetServerSidePropsContext) => {
         //     paymentIntent = createStripePaymentIntent;
         // }
 
-        //MOST IMPORTANT PART WE HAVE TO RETURN `checkout` BECAUSE WE LOOK FOR IT IN _app.tsx
         const returnedStuff = {
             ...r.props,
-            checkout: activeOrder,
+            checkout,
             eligiblePaymentMethods,
             stripeData: { paymentIntent: null },
+            language,
         };
 
         return { props: returnedStuff };

@@ -38,10 +38,9 @@ export const OrderAddress: React.FC<OrderAddressProps> = ({ address, label, icon
 };
 
 const NoteCard = styled(Stack)`
-    //yellow bg more
     background-color: #ffff99;
     box-shadow: 0 0.2rem 0.5rem 0.1rem ${p => p.theme.shadow};
-    padding: 1.5rem;
+    padding: 2rem 1.5rem 4rem 1.5rem;
     width: 100%;
     box-sizing: border-box;
 `;

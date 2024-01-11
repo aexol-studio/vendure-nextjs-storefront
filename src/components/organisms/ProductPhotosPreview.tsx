@@ -6,10 +6,11 @@ type Asset = { source: string; preview: string } | undefined;
 
 interface ProductPhotosPreview {
     featuredAsset: Asset;
+    name?: string;
     images?: Asset[];
 }
 
-export const ProductPhotosPreview: React.FC<ProductPhotosPreview> = ({ featuredAsset, images }) => {
+export const ProductPhotosPreview: React.FC<ProductPhotosPreview> = ({ featuredAsset, images, name }) => {
     const [chosenImage, setChosenImage] = useState<Asset>(featuredAsset ?? images?.[0]);
 
     useEffect(() => {
@@ -45,6 +46,8 @@ export const ProductPhotosPreview: React.FC<ProductPhotosPreview> = ({ featuredA
                             src={a?.preview}
                             onClick={() => setChosenImage(a)}
                             isSelected={isSelected}
+                            alt={name}
+                            title={name}
                         />
                     );
                 })}
@@ -52,7 +55,7 @@ export const ProductPhotosPreview: React.FC<ProductPhotosPreview> = ({ featuredA
             {chosenImage ? (
                 <ProductImageContainer>
                     <ImageSwitcherArrow handleClick={() => handleArrowClick()} disabled={chosenImageIndex === 0} />
-                    <ProductImage size="detail" src={chosenImage.preview} />
+                    <ProductImage size="detail" src={chosenImage.preview} alt={name} title={name} />
                     <ImageSwitcherArrow
                         handleClick={() => handleArrowClick(true)}
                         disabled={chosenImageIndex === (images?.length ?? 1) - 1}
@@ -68,7 +71,6 @@ export const ProductPhotosPreview: React.FC<ProductPhotosPreview> = ({ featuredA
 
 const Wrapper = styled(Stack)`
     flex-direction: column-reverse;
-    align-items: center;
     @media (min-width: 1024px) {
         flex-direction: row;
     }

@@ -18,7 +18,7 @@ export const Slider: React.FC<SliderProps> = ({ slides, withArrows, withDots, sp
         <Wrapper column>
             <Content>
                 {withArrows && (
-                    <Button whileTap={{ scale: 0.95 }} left onClick={prevSlide}>
+                    <Button whileTap={{ scale: 0.95 }} left={1} onClick={prevSlide}>
                         <ArrowBigLeft size="2rem" />
                     </Button>
                 )}
@@ -72,7 +72,7 @@ const Content = styled(Stack)`
     }
 `;
 
-const Button = styled(motion.button)<{ left?: boolean }>`
+const Button = styled(motion.button)<{ left?: number }>`
     appearance: none;
     border: none;
     background: ${p => p.theme.background.secondary};
@@ -87,7 +87,7 @@ const Button = styled(motion.button)<{ left?: boolean }>`
 
     position: absolute;
     top: calc(50% - 1.75rem);
-    ${({ left }) => (left ? 'left: 1rem;' : 'right: 1rem;')}
+    ${({ left }) => (left === 1 ? 'left: 1rem;' : 'right: 1rem;')}
     z-index: 1;
 
     opacity: 0.5;

@@ -15,7 +15,7 @@ type ResetPasswordForm = {
     newPasswordConfirmation: string;
 };
 
-export const CustomerResetPasswordForm = () => {
+export const CustomerResetPasswordForm: React.FC<{ language: string }> = ({ language }) => {
     const push = usePush();
     const { t } = useTranslation('customer');
     const { t: tErrors } = useTranslation('common');
@@ -61,7 +61,7 @@ export const CustomerResetPasswordForm = () => {
 
     const onPasswordChange: SubmitHandler<ResetPasswordForm> = async data => {
         try {
-            const { updateCustomerPassword } = await storefrontApiMutation({
+            const { updateCustomerPassword } = await storefrontApiMutation(language)({
                 updateCustomerPassword: [
                     { currentPassword: data.oldPassword, newPassword: data.newPassword },
                     {
@@ -92,7 +92,7 @@ export const CustomerResetPasswordForm = () => {
                 return;
             }
 
-            const { logout } = await storefrontApiMutation({ logout: { success: true } });
+            const { logout } = await storefrontApiMutation(language)({ logout: { success: true } });
             if (logout.success) push('/customer/sign-in/');
         } catch (error) {
             setError('root', { message: tErrors('errors.backend.UNKNOWN_ERROR') });

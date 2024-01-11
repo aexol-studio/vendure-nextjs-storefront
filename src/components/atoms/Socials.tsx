@@ -6,11 +6,11 @@ import { Link } from '@/src/components/atoms/Link';
 import styled from '@emotion/styled';
 
 const socialHrefs = [
-    { href: 'https://www.facebook.com/', icon: <Facebook /> },
-    { href: 'https://www.twitter.com/', icon: <Twitter /> },
-    { href: 'https://www.instagram.com/', icon: <Instagram /> },
-    { href: 'https://www.youtube.com/', icon: <Youtube /> },
-    { href: 'https://github.com/aexol-studio/vendure-nextjs-storefront', icon: <Github /> },
+    { href: 'https://www.facebook.com/', icon: <Facebook size="2rem" /> },
+    { href: 'https://www.twitter.com/', icon: <Twitter size="2rem" /> },
+    { href: 'https://www.instagram.com/', icon: <Instagram size="2rem" /> },
+    { href: 'https://www.youtube.com/', icon: <Youtube size="2rem" /> },
+    { href: 'https://github.com/aexol-studio/vendure-nextjs-storefront', icon: <Github size="2rem" /> },
 ];
 
 export const Socials = () => {

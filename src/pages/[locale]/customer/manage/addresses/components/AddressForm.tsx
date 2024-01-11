@@ -57,6 +57,7 @@ export const AddressForm: React.FC<{
             : undefined,
         resolver: zodResolver(schema),
     });
+
     return (
         <Stack column w100 gap="3.5rem">
             <TP size="2.5rem" weight={600}>
@@ -92,8 +93,7 @@ export const AddressForm: React.FC<{
                         <CountrySelect
                             {...register('countryCode')}
                             label={t('addressForm.countryCode')}
-                            //TODO: Verify what country we will use
-                            defaultValue={country ?? 'US'}
+                            defaultValue={country}
                             options={availableCountries}
                             error={errors.countryCode}
                         />

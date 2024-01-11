@@ -16,11 +16,16 @@ import { useAddresses } from './useAddresses';
 import { arrayToTree } from '@/src/util/arrayToTree';
 import { useTranslation } from 'next-i18next';
 import { CustomerWrap } from '../../components/shared';
+import { baseCountryFromLanguage } from '@/src/util/baseCountryFromLanguage';
 
 const Addresses: React.FC<InferGetServerSidePropsType<typeof getServerSideProps>> = props => {
     const { t } = useTranslation('customer');
     const { activeCustomer, addressToEdit, deleting, onDelete, onEdit, onModalClose, onSubmitCreate, onSubmitEdit } =
-        useAddresses(props.activeCustomer);
+        useAddresses(props.activeCustomer, props.language);
+
+    const country =
+        activeCustomer.addresses?.find(a => a.defaultBillingAddress || a.defaultShippingAddress)?.country?.code ??
+        baseCountryFromLanguage(props.language);
 
     const ref = useRef<HTMLDivElement>(null);
     useEffect(() => {
@@ -46,6 +51,7 @@ const Addresses: React.FC<InferGetServerSidePropsType<typeof getServerSideProps>
                                 availableCountries={props.availableCountries}
                                 addressToEdit={addressToEdit}
                                 onModalClose={onModalClose}
+                                country={country}
                             />
                         </ModalContent>
                     </Modal>
@@ -53,10 +59,14 @@ const Addresses: React.FC<InferGetServerSidePropsType<typeof getServerSideProps>
             </AnimatePresence>
             <ContentContainer>
                 <CustomerWrap w100 itemsStart gap="1.75rem">
-                    <CustomerNavigation />
+                    <CustomerNavigation language={props.language} />
                     <Wrapper w100 gap="1.5rem">
                         <Stack w100>
-                            <AddressForm onSubmit={onSubmitCreate} availableCountries={props.availableCountries} />
+                            <AddressForm
+                                country={country}
+                                onSubmit={onSubmitCreate}
+                                availableCountries={props.availableCountries}
+                            />
                         </Stack>
                         <Wrap w100 itemsCenter gap="2.5rem">
                             {activeCustomer?.addresses?.map(address => (
@@ -122,7 +132,7 @@ const Modal = styled(motion.div)`
     position: fixed;
     top: 0;
     left: 0;
-    z-index: 1000;
+    z-index: 2139;
     width: 100vw;
     height: 100vh;
 
@@ -135,7 +145,9 @@ const Modal = styled(motion.div)`
 
 const getServerSideProps = async (context: GetServerSidePropsContext) => {
     const r = await makeServerSideProps(['common', 'customer'])(context);
-    const collections = await getCollections();
+    const language = (context.params?.locale as string) ?? 'en';
+
+    const collections = await getCollections(language);
     const navigation = arrayToTree(collections);
     const homePageRedirect = prepareSSRRedirect('/')(context);
 
@@ -145,7 +157,7 @@ const getServerSideProps = async (context: GetServerSidePropsContext) => {
         });
         if (!activeCustomer) throw new Error('No active customer');
 
-        const { availableCountries } = await storefrontApiQuery({
+        const { availableCountries } = await storefrontApiQuery(language)({
             availableCountries: AvailableCountriesSelector,
         });
 
@@ -155,6 +167,7 @@ const getServerSideProps = async (context: GetServerSidePropsContext) => {
             activeCustomer,
             availableCountries,
             navigation,
+            language,
         };
 
         return { props: returnedStuff };

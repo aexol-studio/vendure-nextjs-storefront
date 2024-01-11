@@ -28,7 +28,7 @@ const MinWidth = styled.div`
 `;
 
 const IconButtonStatic = styled(IconButton)`
-    padding: 2rem;
+    padding: 1.75rem;
 `;
 
 const Main = styled(Stack)`
@@ -42,6 +42,7 @@ const Main = styled(Stack)`
         margin: 0 1rem;
         font-size: 1.8rem;
         font-weight: 600;
-        line-height: 2.4rem;
+        line-height: 1.5rem;
+        user-select: none;
     }
 `;

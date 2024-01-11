@@ -28,10 +28,10 @@ export const Index: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = p
                     h1={t('hero-h1')}
                     h2={t('hero-h2')}
                     desc={t('hero-p')}
-                    link="/collections/electronics"
+                    link="/collections/all"
                     image={
                         props.products.find(p => p.slug.includes('laptop'))?.productAsset?.preview ??
-                        (props.products[0].productAsset?.preview || '')
+                        (props.products[0]?.productAsset?.preview || '')
                     }
                 />
                 <ContentContainer>
@@ -55,23 +55,24 @@ const Main = styled(Stack)`
 `;
 
 const getStaticProps = async (ctx: ContextModel) => {
-    const products = await storefrontApiQuery({
+    const r = await makeStaticProps(['common', 'homepage'])(ctx);
+    const language = r.props._nextI18Next?.initialLocale ?? 'en';
+    const products = await storefrontApiQuery(language)({
         search: [
             { input: { take: 24, groupByProduct: true, sort: { price: SortOrder.DESC } } },
             { items: ProductSearchSelector },
         ],
     });
 
-    const bestOf = await storefrontApiQuery({
+    const bestOf = await storefrontApiQuery(language)({
         search: [
-            { input: { take: 4, groupByProduct: true, sort: { name: SortOrder.DESC } } },
+            { input: { take: 4, groupByProduct: false, sort: { name: SortOrder.DESC }, inStock: true } },
             { items: ProductSearchSelector },
         ],
     });
 
-    const collections = await getCollections();
+    const collections = await getCollections(language);
     const navigation = arrayToTree(collections);
-    const r = await makeStaticProps(['common', 'homepage'])(ctx);
 
     const returnedStuff = {
         props: {

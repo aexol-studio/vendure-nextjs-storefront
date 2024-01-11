@@ -1,4 +1,4 @@
-import { storefrontApiQuery } from '@/src/graphql/client';
+import { DEFAULT_LANGUAGE, storefrontApiQuery } from '@/src/graphql/client';
 import {
     CollectionTileSelector,
     CollectionTileProductVariantType,
@@ -8,12 +8,12 @@ import {
 import { SortOrder } from '@/src/zeus';
 
 export const getCollectionsPaths = () =>
-    storefrontApiQuery({
+    storefrontApiQuery(DEFAULT_LANGUAGE)({
         collections: [{ options: { filter: { slug: { notEq: 'search' } } } }, { items: { id: true, slug: true } }],
     }).then(d => d.collections?.items);
 
-export const getCollections = async () => {
-    const _collections = await storefrontApiQuery({
+export const getCollections = async (language: string) => {
+    const _collections = await storefrontApiQuery(language)({
         collections: [{ options: { filter: { slug: { notEq: 'search' } } } }, { items: CollectionTileSelector }],
     });
 
@@ -25,18 +25,17 @@ export const getCollections = async () => {
     try {
         variantForCollections = await Promise.all(
             _collections.collections.items.map(async c => {
-                const products = await storefrontApiQuery({
+                const products = await storefrontApiQuery(language)({
                     collection: [
                         { slug: c.slug },
                         {
                             productVariants: [
-                                { options: { take: 2, filter: { priceWithTax: { lte: 5000 } } } },
+                                { options: { take: 2, sort: { createdAt: SortOrder.ASC } } },
                                 { totalItems: true, items: CollectionTileProductVariantSelector },
                             ],
                         },
                     ],
                 });
-
                 return { ...c, productVariants: products.collection?.productVariants };
             }),
         );
@@ -54,7 +53,7 @@ export const getCollections = async () => {
     return collections;
 };
 
-export const getYMALProducts = () =>
-    storefrontApiQuery({
+export const getYMALProducts = (language: string) =>
+    storefrontApiQuery(language)({
         products: [{ options: { take: 8, sort: { createdAt: SortOrder.DESC } } }, { items: YAMLProductsSelector }],
     }).then(d => d.products.items.filter(p => p.variants.length > 0));

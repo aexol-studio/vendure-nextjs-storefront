@@ -114,16 +114,18 @@ const CollectionPage: React.FC<InferGetStaticPropsType<typeof getStaticProps>> =
                                         imageSrc={col.featuredAsset?.preview}
                                         size="tile"
                                         text={col.name}
+                                        alt={col.name}
+                                        title={col.name}
                                     />
                                 ))}
                             </Stack>
                         </Stack>
                     ) : null}
-                    <Stack justifyBetween itemsCenter>
+                    <Wrapper justifyBetween>
                         <Stack itemsEnd>
                             <TH1>{collection?.name}</TH1>
                         </Stack>
-                        <Stack itemsCenter gap="2.5rem">
+                        <Stack justifyEnd itemsCenter gap="2.5rem">
                             <SortBy sort={sort} handleSort={handleSort} />
                             <Filters onClick={() => setFiltersOpen(true)}>
                                 <TP>{t('filters')}</TP>
@@ -132,7 +134,7 @@ const CollectionPage: React.FC<InferGetStaticPropsType<typeof getStaticProps>> =
                                 </IconButton>
                             </Filters>
                         </Stack>
-                    </Stack>
+                    </Wrapper>
                     <MainGrid>
                         {products?.map(p => <ProductTile collections={props.collections} product={p} key={p.slug} />)}
                     </MainGrid>
@@ -147,8 +149,17 @@ const CollectionPage: React.FC<InferGetStaticPropsType<typeof getStaticProps>> =
     );
 };
 
+const Wrapper = styled(Stack)`
+    flex-direction: column;
+    gap: 2rem;
+    @media (min-width: ${p => p.theme.breakpoints.xl}) {
+        flex-direction: row;
+    }
+`;
+
 const RelativeStack = styled(Stack)`
     position: relative;
+    padding-top: 2rem;
     @media (min-width: ${p => p.theme.breakpoints.xl}) {
         padding: 3.5rem 0;
     }
@@ -166,12 +177,15 @@ const Filters = styled(Stack)`
 `;
 
 const Facets = styled(motion.div)`
+    width: 100%;
     background: ${p => p.theme.grayAlpha(900, 0.5)};
     position: fixed;
     inset: 0;
     z-index: 2138;
 `;
 const FacetsFilters = styled(motion.div)`
+    max-width: fit-content;
+    width: 100%;
     background: ${p => p.theme.gray(0)};
     position: absolute;
     top: 0;
@@ -195,14 +209,15 @@ export const getStaticProps = async (context: ContextModel<{ slug?: string }>) =
     const { slug } = context.params || {};
 
     const r = await makeStaticProps(['common'])(context);
-    const collections = await getCollections();
+    const language = r.props._nextI18Next?.initialLocale ?? 'en';
+    const collections = await getCollections(language);
     const navigation = arrayToTree(collections);
 
-    const { collection } = await storefrontApiQuery({
+    const { collection } = await storefrontApiQuery(language)({
         collection: [{ slug }, CollectionSelector],
     });
 
-    const productsQuery = await storefrontApiQuery({
+    const productsQuery = await storefrontApiQuery(language)({
         search: [
             {
                 input: {
@@ -226,6 +241,7 @@ export const getStaticProps = async (context: ContextModel<{ slug?: string }>) =
         totalProducts: productsQuery.search?.totalItems,
         collection,
         navigation,
+        language,
         ...r.props,
     };
 

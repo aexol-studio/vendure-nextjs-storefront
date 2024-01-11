@@ -1,6 +1,7 @@
 import { ContentContainer, Link, Stack, TH1, TH2, TP } from '@/src/components/atoms';
 import { Button } from '@/src/components/molecules/Button';
 import { thv } from '@/src/theme';
+import { optimizeImage } from '@/src/util/optimizeImage';
 import styled from '@emotion/styled';
 
 export const Hero: React.FC<{
@@ -25,7 +26,11 @@ export const Hero: React.FC<{
                             <Button>{cta}</Button>
                         </Link>
                     </Stack>
-                    <HeroImage src={image} />
+                    <HeroImage
+                        src={optimizeImage({ size: 'popup', src: image })}
+                        alt="Aexol shop demo"
+                        title="Aexol shop demo"
+                    />
                 </Content>
             </ContentContainer>
         </Main>

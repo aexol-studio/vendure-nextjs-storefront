@@ -9,27 +9,23 @@ interface Props {
     payment?: PaymentType;
 }
 
-//TODO: add all payment states
-const validPaymentStates = ['Authorized'] as const;
+const validPaymentStates = ['Authorized', 'Settled', 'Declined'] as const;
+//TODO: Add all possible payment states
 
 export const OrderPaymentState: React.FC<Props> = ({ payment }) => {
     const { t } = useTranslation('common');
     if (!payment) return null;
+
     return (
         <Stack column gap="0.75rem">
             <Stack gap="0.5rem" itemsCenter>
                 <CreditCard size={20} />
                 {validPaymentStates.includes(payment.state as (typeof validPaymentStates)[number]) && (
                     <TP weight={500} size="1rem">
-                        {t(`payments.states.${payment.state as (typeof validPaymentStates)[number]}`)}
+                        {t(`paymentStates.${payment.state as (typeof validPaymentStates)[number]}`)}
                     </TP>
                 )}
             </Stack>
-            {payment.method === 'standard-payment' ? (
-                <TP weight={500} size="1rem">
-                    {t('payments.dummy-method')}
-                </TP>
-            ) : null}
         </Stack>
     );
 };

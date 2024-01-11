@@ -8,6 +8,10 @@ export const FormContainer = styled(Stack)`
     gap: 3.5rem;
     justify-content: center;
     align-items: center;
+
+    @media (max-width: ${({ theme }) => theme.breakpoints.lg}) {
+        min-height: 60vh;
+    }
 `;
 
 export const FormWrapper = styled(Stack)`
@@ -20,6 +24,8 @@ export const FormWrapper = styled(Stack)`
 export const Form = styled.form`
     display: flex;
     flex-direction: column;
+    min-width: 27.5rem;
+    max-width: 27.5rem;
 `;
 
 export const Absolute = styled(Stack)`
@@ -30,7 +36,6 @@ export const Absolute = styled(Stack)`
 `;
 
 export const FormContent = styled(Stack)`
-    //TODO: Make it better
     min-width: 32rem;
     max-width: 40rem;
 `;

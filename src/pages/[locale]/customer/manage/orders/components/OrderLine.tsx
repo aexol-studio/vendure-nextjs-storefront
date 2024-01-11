@@ -21,6 +21,8 @@ export const OrderLine: React.FC<Props> = ({ currencyCode, line }) => {
             <ProductImage
                 size="thumbnail"
                 src={line.productVariant.featuredAsset?.source ?? line.featuredAsset?.preview}
+                alt={line.productVariant.name}
+                title={line.productVariant.name}
             />
             <Stack column>
                 <TP size="1.5rem" weight={500} style={{ whiteSpace: 'nowrap' }}>

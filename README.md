@@ -27,7 +27,31 @@ Just remember you need to have the Vendure store running locally to use this sto
 
 ### Vendure Server
 
-This storefront requires a Vendure V2 server. You can either run a local instance, or use our public demo server.  
+This storefront requires a Vendure V2 server. You can either run a local instance, or use our public demo server.
+
+For the best experience of our demo, you need to apply some modifications into Vendure, but these are just ‘small’ ones.
+
+Our demo of Vendure server (MinIO & Postgres & SMTP) can be found [here](https://github.com/aexol-studio/aexol-shop-backend) to see all changes.
+
+Here is a list of changes at Vendure server:
+
+- apply two collections `all` and `search`. Both of them should contain all products (or not? for cases with gift cards / shipping-protections)
+- add the stock level as number value not as enum values
+```ts
+export class ExactStockDisplayStrategy implements StockDisplayStrategy {
+  getStockLevel(
+    ctx: RequestContext,
+    productVariant: ProductVariant,
+    saleableStockLevel: number
+  ): string {
+    return saleableStockLevel.toString();
+  }
+}
+
+export const catalogOptions: VendureConfig["catalogOptions"] = {
+  stockDisplayStrategy: new ExactStockDisplayStrategy(),
+};
+```
 
 ## Zeus
 

@@ -19,8 +19,12 @@ const Account: React.FC<InferGetServerSidePropsType<typeof getServerSideProps>> 
         <Layout categories={props.collections} navigation={props.navigation} pageTitle={t('accountPage.title')}>
             <ContentContainer>
                 <CustomerWrap itemsStart w100 gap="3rem">
-                    <CustomerNavigation />
-                    <CustomerForm initialCustomer={props.activeCustomer} order={props.lastOrder} />
+                    <CustomerNavigation language={props.language} />
+                    <CustomerForm
+                        initialCustomer={props.activeCustomer}
+                        order={props.lastOrder}
+                        language={props.language}
+                    />
                 </CustomerWrap>
             </ContentContainer>
         </Layout>
@@ -29,7 +33,9 @@ const Account: React.FC<InferGetServerSidePropsType<typeof getServerSideProps>> 
 
 const getServerSideProps = async (context: GetServerSidePropsContext) => {
     const r = await makeServerSideProps(['common', 'customer'])(context);
-    const collections = await getCollections();
+    const language = (context.params?.locale as string) ?? 'en';
+
+    const collections = await getCollections(language);
     const navigation = arrayToTree(collections);
     const homePageRedirect = prepareSSRRedirect('/')(context);
 
@@ -53,6 +59,7 @@ const getServerSideProps = async (context: GetServerSidePropsContext) => {
             activeCustomer: customer,
             lastOrder: orders.items && orders.items.length > 0 ? orders.items[0] : null,
             navigation,
+            language,
         };
 
         return { props: returnedStuff };

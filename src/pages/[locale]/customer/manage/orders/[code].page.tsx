@@ -28,7 +28,6 @@ const Order: React.FC<InferGetServerSidePropsType<typeof getServerSideProps>> = 
     const order = props.activeCustomer?.orders.items?.[0];
     const currencyCode = order?.currencyCode;
 
-    //TODO: Now we will display only one method
     const paymentMethod = order?.payments?.[0];
     const shippingMethod = order?.shippingLines?.[0];
 
@@ -39,7 +38,7 @@ const Order: React.FC<InferGetServerSidePropsType<typeof getServerSideProps>> = 
             pageTitle={`${t('orderPage.title')} #${order?.code}`}>
             <ContentContainer>
                 <CustomerWrap itemsStart gap="1.75rem">
-                    <CustomerNavigation />
+                    <CustomerNavigation language={props.language} />
                     <Stack column w100 gap="3.5rem">
                         <Stack column gap="1.5rem">
                             <StyledLink href="/customer/manage/orders">
@@ -123,7 +122,9 @@ const StyledLink = styled(Link)`
 
 const getServerSideProps = async (context: GetServerSidePropsContext) => {
     const r = await makeServerSideProps(['common', 'customer'])(context);
-    const collections = await getCollections();
+    const language = (context.params?.locale as string) ?? 'en';
+
+    const collections = await getCollections(language);
     const navigation = arrayToTree(collections);
     const homePageRedirect = prepareSSRRedirect('/')(context);
     const code = context.params?.code as string;
@@ -151,6 +152,7 @@ const getServerSideProps = async (context: GetServerSidePropsContext) => {
             collections,
             activeCustomer,
             navigation,
+            language,
         };
 
         return { props: returnedStuff };

@@ -13,3 +13,4 @@ export * from './SearchInput';
 export * from './Select';
 export * from './Stack';
 export * from './TypoGraphy';
+export * from './LanguagePicker';

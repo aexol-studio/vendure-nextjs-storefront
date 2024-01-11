@@ -4,11 +4,12 @@ import styled from '@emotion/styled';
 
 export const Content = styled(ContentContainer)`
     position: relative;
-    margin-block: 4rem;
 `;
 
 export const Main = styled(Stack)`
     gap: 5rem;
+    min-height: 100vh;
+    padding: 4rem 0;
     @media (max-width: ${({ theme }) => theme.breakpoints.lg}) {
         flex-direction: column-reverse;
     }

@@ -30,7 +30,7 @@ const History: React.FC<InferGetServerSidePropsType<typeof getServerSideProps>> 
     const [activeOrders, setActiveOrders] = useState(props.activeCustomer?.orders.items);
 
     const lookForOrder = async (contains: string) => {
-        const { activeCustomer } = await storefrontApiQuery({
+        const { activeCustomer } = await storefrontApiQuery(props.language)({
             activeCustomer: {
                 ...ActiveCustomerSelector,
                 orders: [
@@ -73,7 +73,7 @@ const History: React.FC<InferGetServerSidePropsType<typeof getServerSideProps>> 
 
     const onLoadMore = async () => {
         setMore(true);
-        const { activeCustomer } = await storefrontApiQuery({
+        const { activeCustomer } = await storefrontApiQuery(props.language)({
             activeCustomer: {
                 ...ActiveCustomerSelector,
                 orders: [
@@ -99,7 +99,7 @@ const History: React.FC<InferGetServerSidePropsType<typeof getServerSideProps>> 
         <Layout categories={props.collections} navigation={props.navigation} pageTitle={t('ordersPage.title')}>
             <ContentContainer>
                 <CustomerWrap w100 itemsStart gap="1.75rem">
-                    <CustomerNavigation />
+                    <CustomerNavigation language={props.language} />
                     <Stack column w100 gap="1rem">
                         <TP size="2.5rem" weight={600}>
                             {t('ordersPage.title')}
@@ -167,7 +167,9 @@ const Wrap = styled(Stack)`
 
 const getServerSideProps = async (context: GetServerSidePropsContext) => {
     const r = await makeServerSideProps(['common', 'customer'])(context);
-    const collections = await getCollections();
+    const language = (context.params?.locale as string) ?? 'en';
+
+    const collections = await getCollections(language);
     const navigation = arrayToTree(collections);
     const homePageRedirect = prepareSSRRedirect('/')(context);
 
@@ -188,6 +190,7 @@ const getServerSideProps = async (context: GetServerSidePropsContext) => {
             collections,
             activeCustomer,
             navigation,
+            language,
         };
 
         return { props: returnedStuff };

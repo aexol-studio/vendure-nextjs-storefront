@@ -21,6 +21,8 @@ export const RelatedProductCollections: React.FC<RelatedProductCollectionsProps>
             href={`/collections/${collection.slug}`}
             imageSrc={collection.featuredAsset?.preview || ''}
             text={collection.name || ''}
+            alt={collection.name}
+            title={collection.name}
         />
     ));
 

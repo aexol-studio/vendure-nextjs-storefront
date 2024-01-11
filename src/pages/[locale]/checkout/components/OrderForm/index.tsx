@@ -30,6 +30,7 @@ import { useValidationSchema } from './useValidationSchema';
 import { Link } from '@/src/components/atoms/Link';
 import { useCheckout } from '@/src/state/checkout';
 import { MoveLeft } from 'lucide-react';
+import { baseCountryFromLanguage } from '@/src/util/baseCountryFromLanguage';
 
 type Form = CreateCustomerType & {
     deliveryMethod?: string;
@@ -46,10 +47,19 @@ type Form = CreateCustomerType & {
 };
 
 interface OrderFormProps {
+    language: string;
     availableCountries?: AvailableCountriesType[];
 }
 
-export const OrderForm: React.FC<OrderFormProps> = ({ availableCountries }) => {
+const isAddressesEqual = (a: object, b?: object) => {
+    try {
+        return JSON.stringify(a) === JSON.stringify(b ?? {});
+    } catch (e) {
+        return false;
+    }
+};
+
+export const OrderForm: React.FC<OrderFormProps> = ({ availableCountries, language }) => {
     const { activeOrder, changeShippingMethod } = useCheckout();
 
     const { t } = useTranslation('checkout');
@@ -63,8 +73,8 @@ export const OrderForm: React.FC<OrderFormProps> = ({ availableCountries }) => {
 
     useEffect(() => {
         Promise.all([
-            storefrontApiQuery({ activeCustomer: ActiveCustomerSelector }),
-            storefrontApiQuery({ eligibleShippingMethods: ShippingMethodsSelector }),
+            storefrontApiQuery(language)({ activeCustomer: ActiveCustomerSelector }),
+            storefrontApiQuery(language)({ eligibleShippingMethods: ShippingMethodsSelector }),
         ]).then(([{ activeCustomer }, { eligibleShippingMethods }]) => {
             if (activeCustomer) setActiveCustomer(activeCustomer);
             if (eligibleShippingMethods) setShippingMethods(eligibleShippingMethods);
@@ -74,12 +84,11 @@ export const OrderForm: React.FC<OrderFormProps> = ({ availableCountries }) => {
     const defaultShippingAddress = activeCustomer?.addresses?.find(address => address.defaultShippingAddress);
     const defaultBillingAddress = activeCustomer?.addresses?.find(address => address.defaultBillingAddress);
 
-    //TODO: Verify what country we will use
     const countryCode =
         defaultBillingAddress?.country.code ??
         defaultShippingAddress?.country.code ??
         availableCountries?.find(country => country.name === 'Poland')?.code ??
-        'PL';
+        baseCountryFromLanguage(language);
 
     const {
         register,
@@ -94,7 +103,7 @@ export const OrderForm: React.FC<OrderFormProps> = ({ availableCountries }) => {
         delayError: 100,
         defaultValues: {
             shippingDifferentThanBilling: defaultShippingAddress
-                ? JSON.stringify(defaultBillingAddress) !== JSON.stringify(defaultShippingAddress)
+                ? !isAddressesEqual(defaultShippingAddress, defaultBillingAddress)
                 : false,
             billing: { countryCode },
             // NIP: defaultBillingAddress?.customFields?.NIP ?? '',
@@ -110,7 +119,7 @@ export const OrderForm: React.FC<OrderFormProps> = ({ availableCountries }) => {
                   //   NIP: defaultBillingAddress?.customFields?.NIP ?? '',
                   //   userNeedInvoice: defaultBillingAddress?.customFields?.NIP ? true : false,
                   shippingDifferentThanBilling: defaultShippingAddress
-                      ? JSON.stringify(defaultBillingAddress) !== JSON.stringify(defaultShippingAddress)
+                      ? !isAddressesEqual(defaultShippingAddress, defaultBillingAddress)
                       : false,
                   shipping: {
                       ...defaultShippingAddress,
@@ -127,7 +136,6 @@ export const OrderForm: React.FC<OrderFormProps> = ({ availableCountries }) => {
         resolver: zodResolver(schema),
     });
 
-    console.log(errors);
     const onSubmit: SubmitHandler<Form> = async ({
         emailAddress,
         firstName,
@@ -145,14 +153,13 @@ export const OrderForm: React.FC<OrderFormProps> = ({ availableCountries }) => {
             if (deliveryMethod && activeOrder?.shippingLines[0]?.shippingMethod.id !== deliveryMethod) {
                 await changeShippingMethod(deliveryMethod);
             }
-            const { nextOrderStates } = await storefrontApiQuery({ nextOrderStates: true });
+            const { nextOrderStates } = await storefrontApiQuery(language)({ nextOrderStates: true });
             if (!nextOrderStates.includes('ArrangingPayment')) {
-                //TODO: Handle error (no next order state)
                 setError('root', { message: tErrors(`errors.backend.UNKNOWN_ERROR`) });
                 return;
             }
             // Set the billing address for the order
-            const { setOrderBillingAddress } = await storefrontApiMutation({
+            const { setOrderBillingAddress } = await storefrontApiMutation(language)({
                 setOrderBillingAddress: [
                     {
                         input: {
@@ -178,7 +185,7 @@ export const OrderForm: React.FC<OrderFormProps> = ({ availableCountries }) => {
             // Set the shipping address for the order
             if (shippingDifferentThanBilling) {
                 // Set the shipping address for the order if it is different than billing
-                const { setOrderShippingAddress } = await storefrontApiMutation({
+                const { setOrderShippingAddress } = await storefrontApiMutation(language)({
                     setOrderShippingAddress: [
                         { input: { ...shipping, defaultBillingAddress: false, defaultShippingAddress: false } },
                         {
@@ -195,7 +202,7 @@ export const OrderForm: React.FC<OrderFormProps> = ({ availableCountries }) => {
                 }
             } else {
                 // Set the billing address for the order if it is the same as shipping
-                const { setOrderShippingAddress } = await storefrontApiMutation({
+                const { setOrderShippingAddress } = await storefrontApiMutation(language)({
                     setOrderShippingAddress: [
                         { input: { ...billing, defaultBillingAddress: false, defaultShippingAddress: false } },
                         {
@@ -213,7 +220,7 @@ export const OrderForm: React.FC<OrderFormProps> = ({ availableCountries }) => {
             }
 
             if (!activeCustomer) {
-                const { setCustomerForOrder } = await storefrontApiMutation({
+                const { setCustomerForOrder } = await storefrontApiMutation(language)({
                     setCustomerForOrder: [
                         { input: { emailAddress, firstName, lastName, phoneNumber } },
                         {
@@ -229,6 +236,7 @@ export const OrderForm: React.FC<OrderFormProps> = ({ availableCountries }) => {
 
                 if (setCustomerForOrder?.__typename !== 'Order') {
                     if (setCustomerForOrder.__typename === 'EmailAddressConflictError') {
+                        // TODO: IN THIS CASE WE SHOULD SHOW THE LOGIN FORM or ADD A LINK TO LOGIN
                         setError('emailAddress', {
                             message: tErrors(`errors.backend.${setCustomerForOrder.errorCode}`),
                         });
@@ -241,7 +249,7 @@ export const OrderForm: React.FC<OrderFormProps> = ({ availableCountries }) => {
             }
 
             // Set the order state to ArrangingPayment
-            const { transitionOrderToState } = await storefrontApiMutation({
+            const { transitionOrderToState } = await storefrontApiMutation(language)({
                 transitionOrderToState: [
                     { state: 'ArrangingPayment' },
                     {
@@ -260,7 +268,7 @@ export const OrderForm: React.FC<OrderFormProps> = ({ availableCountries }) => {
 
             // After all create account if needed and password is provided
             if (!activeCustomer && createAccount && password) {
-                await storefrontApiMutation({
+                await storefrontApiMutation(language)({
                     registerCustomerAccount: [
                         { input: { emailAddress, firstName, lastName, phoneNumber, password } },
                         {
@@ -321,9 +329,13 @@ export const OrderForm: React.FC<OrderFormProps> = ({ availableCountries }) => {
                 <Stack column gap="0.5rem">
                     <Stack column gap="2rem">
                         <Stack gap="0.75rem" itemsCenter>
-                            <BackButton href="/">
-                                <MoveLeft size={24} />
-                            </BackButton>
+                            <AnimatePresence>
+                                {!isSubmitting ? (
+                                    <BackButton href="/">
+                                        <MoveLeft size={24} />
+                                    </BackButton>
+                                ) : null}
+                            </AnimatePresence>
                             <TH2 size="2rem" weight={500}>
                                 {t('orderForm.contactInfo')}
                             </TH2>
@@ -591,7 +603,9 @@ export const OrderForm: React.FC<OrderFormProps> = ({ availableCountries }) => {
                                 <Trans
                                     i18nKey="orderForm.regulations"
                                     t={t}
-                                    components={{ 1: <Link href="/regulations"></Link> }}
+                                    components={{
+                                        1: <Link style={{ zIndex: 2, position: 'relative' }} href="/checkout" />,
+                                    }}
                                 />
                             }
                             required
@@ -603,7 +617,9 @@ export const OrderForm: React.FC<OrderFormProps> = ({ availableCountries }) => {
                                 <Trans
                                     i18nKey="orderForm.terms"
                                     t={t}
-                                    components={{ 1: <Link href="/terms"></Link> }}
+                                    components={{
+                                        1: <Link style={{ zIndex: 2, position: 'relative' }} href="/checkout" />,
+                                    }}
                                 />
                             }
                             required

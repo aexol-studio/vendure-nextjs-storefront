@@ -39,7 +39,7 @@ export const CheckBox = forwardRef((props: InputType, ref: React.ForwardedRef<HT
                         onChange && onChange(e);
                     }}
                 />
-                <Label htmlFor={props.name} style={{ zIndex: typeof label === 'string' ? 'auto' : '2' }}>
+                <Label htmlFor={props.name}>
                     {label}
                     {props.required && <FormRequired>&nbsp;*</FormRequired>}
                 </Label>

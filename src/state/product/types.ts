@@ -9,4 +9,12 @@ export type ProductContainerType = {
     handleVariant: (variant?: Variant) => void;
     handleAddToCart: () => void;
     handleBuyNow: () => void;
+    handleOptionClick: (groupId: string, id: string) => void;
+    productOptionsGroups: ProductOptionsGroup[];
+};
+
+export type OptionGroup = ProductDetailType['optionGroups'][0]['options'];
+export type OptionGroupWithStock = OptionGroup[number] & { stockLevel: number; isSelected: boolean };
+export type ProductOptionsGroup = OptionGroup[number] & {
+    options: OptionGroupWithStock[];
 };

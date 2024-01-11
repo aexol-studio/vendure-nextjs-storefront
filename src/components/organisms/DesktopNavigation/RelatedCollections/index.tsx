@@ -18,7 +18,12 @@ export const RelatedCollections: React.FC<{
                 {collection.children.slice(0, 2).map(children => (
                     <Stack key={children.name + '2'} column gap="1rem">
                         <Link href={`/collections/${children.slug}`}>
-                            <ProductImage src={children.featuredAsset?.preview || ''} size="thumbnail-big" />
+                            <ProductImage
+                                src={children.featuredAsset?.preview || ''}
+                                size="thumbnail-big"
+                                alt={collection.name}
+                                title={collection.name}
+                            />
                         </Link>
                         <StyledLink href={`/collections/${children.slug}`}>
                             {children.name} ({children.productVariants ? children.productVariants.totalItems : 0})

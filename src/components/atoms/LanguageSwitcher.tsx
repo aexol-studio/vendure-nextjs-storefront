@@ -98,7 +98,6 @@ export const LanguageSwitcher = () => {
                     className="language"
                     onClick={() => {
                         languageDetector.cache && languageDetector.cache(newLang);
-                        //TODO: think about better solution [locale] [slug] [code]
                         const correctPathname = pathname
                             .replace('[locale]', newLang === 'en' ? '' : newLang)
                             .replace('[slug]', query.slug as string)

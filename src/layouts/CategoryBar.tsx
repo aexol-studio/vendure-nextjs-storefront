@@ -31,7 +31,7 @@ const Main = styled(Stack)`
     padding: 4rem 0;
     overflow-x: auto;
 
-    @media (min-width: ${p => p.theme.breakpoints.xl}) {
+    @media (min-width: ${p => p.theme.breakpoints.lg}) {
         display: none;
     }
 `;

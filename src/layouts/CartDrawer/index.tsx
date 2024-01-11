@@ -14,7 +14,6 @@ import { CartBody } from './CartBody';
 
 export const CartDrawer = ({ activeOrder }: { activeOrder?: ActiveOrderType }) => {
     const { isOpen, open, close } = useCart();
-
     const currencyCode = activeOrder?.currencyCode || CurrencyCode.USD;
     const discountsSum = useMemo(() => {
         const discounts = activeOrder?.discounts?.reduce((acc, discount) => acc - discount.amountWithTax, 0) ?? 0;
@@ -38,7 +37,7 @@ export const CartDrawer = ({ activeOrder }: { activeOrder?: ActiveOrderType }) =
         <>
             <IconButton onClick={open}>
                 <ShoppingCartIcon size={'2.4rem'} />
-                <QuantityBadge>
+                <QuantityBadge id="header-cart-quantity">
                     <Quantity size="1rem" weight={500}>
                         {activeOrder ? activeOrder.lines.length : 0}
                     </Quantity>
@@ -89,9 +88,10 @@ const Quantity = styled(TP)`
 const CartComponentMain = styled(motion.div)`
     width: 100%;
     max-width: 55rem;
-    height: 100vh;
+    height: 100dvh;
+    transition: all 0.3s ease;
 
-    z-index: 1;
+    z-index: 2147483647;
 
     position: fixed;
     top: 0;

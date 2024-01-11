@@ -17,6 +17,7 @@ import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { TP } from '@/src/components/atoms/TypoGraphy';
 import { arrayToTree } from '@/src/util/arrayToTree';
+import { usePush } from '@/src/lib/redirect';
 
 type FormValues = RegisterCustomerInputType & { confirmPassword: string };
 
@@ -24,7 +25,7 @@ const SignIn: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = props =
     const { t } = useTranslation('customer');
     const { t: tErrors } = useTranslation('common');
     const [success, setSuccess] = useState<boolean>(false);
-
+    const push = usePush();
     const schema = z
         .object({
             emailAddress: z.string().email(tErrors('errors.email.invalid')).min(1, tErrors('errors.email.required')),
@@ -55,7 +56,7 @@ const SignIn: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = props =
         const { emailAddress, password } = data;
 
         try {
-            const { registerCustomerAccount } = await storefrontApiMutation({
+            const { registerCustomerAccount } = await storefrontApiMutation(props.language)({
                 registerCustomerAccount: [
                     { input: { emailAddress, password } },
                     {
@@ -80,6 +81,8 @@ const SignIn: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = props =
 
             if (registerCustomerAccount.__typename === 'Success') {
                 setSuccess(true);
+                await new Promise(resolve => setTimeout(resolve, 3000));
+                push('/customer/sign-in');
                 return;
             }
 
@@ -94,6 +97,11 @@ const SignIn: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = props =
             <ContentContainer>
                 <FormContainer>
                     <FormWrapper column itemsCenter gap="3.5rem">
+                        {success && (
+                            <Absolute w100>
+                                <Banner success={{ message: t('signUpSuccess') }} />
+                            </Absolute>
+                        )}
                         <Absolute w100>
                             <Banner error={errors.root} clearErrors={() => setError('root', { message: undefined })} />
                         </Absolute>
@@ -123,7 +131,6 @@ const SignIn: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = props =
                                 </Button>
                             </Form>
 
-                            {success && <Banner success={{ message: t('signUpSuccess') }} />}
                             <Stack column itemsCenter gap="0.5rem">
                                 <Link href="/customer/forgot-password">{t('forgotPassword')}</Link>
                                 <Link href="/customer/sign-in">{t('signIn')}</Link>
@@ -138,13 +145,15 @@ const SignIn: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = props =
 
 const getStaticProps = async (context: ContextModel) => {
     const r = await makeStaticProps(['common', 'customer'])(context);
-    const collections = await getCollections();
+    const language = r.props._nextI18Next?.initialLocale ?? 'en';
+    const collections = await getCollections(language);
     const navigation = arrayToTree(collections);
 
     const returnedStuff = {
         ...r.props,
         collections,
         navigation,
+        language,
     };
 
     return {

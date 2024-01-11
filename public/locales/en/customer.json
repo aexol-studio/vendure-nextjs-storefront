@@ -39,7 +39,7 @@
             "totalQuantity": "Total Quantity",
             "totalProducts": "Total Products",
             "totalPrice": "Total Price",
-            "orderNumber": "Order Number",
+            "orderCode": "Order Code",
             "orderDate": "Order Date"
         },
         "detailsForm": {

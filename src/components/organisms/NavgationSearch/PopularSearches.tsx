@@ -9,7 +9,7 @@ interface PopularSearchesProps extends PropsWithChildren {
 
 export const PopularSearches: React.FC<PopularSearchesProps> = ({ children, popularSearches, onClick }) => {
     return (
-        <Stack column gap="1rem" style={{ paddingRight: '12rem' }}>
+        <Stack column gap="1rem">
             {children}
             <PopularSearchesWrapper gap="1rem">
                 {popularSearches &&

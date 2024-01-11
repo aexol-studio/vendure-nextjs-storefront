@@ -48,7 +48,7 @@ export const NavigationSearch: React.FC<ReturnType<typeof useNavigationSearch>> 
             <SearchPosition w100>
                 <SearchContent w100>
                     {searchQuery.length < 3 ? (
-                        <Stack justifyBetween w100>
+                        <EmptyStateContainer w100>
                             <div>
                                 <TP>{t('search-query-to-short')}</TP>
                             </div>
@@ -57,11 +57,11 @@ export const NavigationSearch: React.FC<ReturnType<typeof useNavigationSearch>> 
                                     {t('popular-searches-heading')}
                                 </TypoGraphy>
                             </PopularSearches>
-                        </Stack>
+                        </EmptyStateContainer>
                     ) : loading ? (
                         <TP>{t('search-results-loading')}</TP>
                     ) : searchResults.length === 0 ? (
-                        <Stack justifyBetween w100>
+                        <EmptyStateContainer w100>
                             <div>
                                 <TP>
                                     <Trans
@@ -76,7 +76,7 @@ export const NavigationSearch: React.FC<ReturnType<typeof useNavigationSearch>> 
                                     {t('popular-searches-heading')}
                                 </TypoGraphy>
                             </PopularSearches>
-                        </Stack>
+                        </EmptyStateContainer>
                     ) : (
                         <Wrapper column w100 gap={'2rem'}>
                             <Container>
@@ -168,7 +168,7 @@ const SearchPosition = styled(Stack)`
     width: 100%;
     top: calc(100% + 1rem);
     position: absolute;
-    right: 0rem;
+    right: -1.5rem;
     z-index: 2136;
 
     @media (min-width: ${p => p.theme.breakpoints.md}) {
@@ -256,3 +256,14 @@ const IconWrapper = styled.div`
 `;
 
 const Wrapper = styled(Stack)``;
+
+const EmptyStateContainer = styled(Stack)`
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    gap: 4rem;
+    @media (min-width: ${p => p.theme.breakpoints.md}) {
+        flex-direction: row;
+        justify-content: space-between;
+    }
+`;

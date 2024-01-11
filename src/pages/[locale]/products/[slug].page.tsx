@@ -129,6 +129,7 @@ const ProductPage: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = pr
 };
 
 const Wrapper = styled(Stack)`
+    padding-top: 2rem;
     @media (min-width: ${p => p.theme.breakpoints.xl}) {
         padding: 3.5rem 0;
     }

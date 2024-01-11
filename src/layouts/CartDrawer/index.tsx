@@ -89,7 +89,6 @@ const CartComponentMain = styled(motion.div)`
     width: 100%;
     max-width: 55rem;
     height: 100dvh;
-    transition: all 0.3s ease;
 
     z-index: 2147483647;
 

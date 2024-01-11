@@ -1,33 +1,88 @@
 import { optimizeImage } from '@/src/util/optimizeImage';
 import styled from '@emotion/styled';
 import { ImgHTMLAttributes, forwardRef } from 'react';
+import Image, { ImageProps } from 'next/image';
 
-type ImageType = ImgHTMLAttributes<HTMLImageElement> & {
+type ImageType = ImgHTMLAttributes<ImageProps & HTMLImageElement> & {
     size: 'thumbnail' | 'tile' | 'popup' | 'detail' | 'full' | 'thumbnail-big';
 };
 
 export const ProductImage = forwardRef((props: ImageType, ref: React.ForwardedRef<HTMLImageElement>) => {
-    const { size, src, ...rest } = props;
+    const { size, src, alt, ...rest } = props;
     const better_src = optimizeImage({ size, src });
-    return <StyledProductImage {...rest} src={better_src} size={size} ref={ref} />;
+
+    let width = 200;
+    let height = 200;
+
+    switch (size) {
+        case 'thumbnail':
+            width = 200;
+            height = 200;
+            break;
+        case 'thumbnail-big':
+            width = 400;
+            height = 400;
+            break;
+        case 'tile':
+            width = 400;
+            height = 400;
+            break;
+        case 'popup':
+            width = 600;
+            height = 600;
+            break;
+        case 'detail':
+            width = 800;
+            height = 800;
+            break;
+        case 'full':
+            width = 1200;
+            height = 1200;
+            break;
+    }
+
+    return (
+        <StyledProductImage
+            {...rest}
+            src={better_src || ''}
+            alt={alt || ''}
+            width={width}
+            height={height}
+            placeholder="empty"
+            size={size}
+            ref={ref}
+            quality={100}
+        />
+    );
 });
 
 export const ProductImageGrid = forwardRef(
-    (props: ImgHTMLAttributes<HTMLImageElement>, ref: React.ForwardedRef<HTMLImageElement>) => {
-        const { src, ...rest } = props;
+    (props: ImgHTMLAttributes<ImageProps & HTMLImageElement>, ref: React.ForwardedRef<HTMLImageElement>) => {
+        const { src, alt, ...rest } = props;
         const better_src = optimizeImage({ size: 'popup', src });
-        return <StyledProductImageGrid {...rest} src={better_src} ref={ref} />;
+        return (
+            <StyledProductImageGrid
+                {...rest}
+                src={better_src || ''}
+                alt={alt || ''}
+                width={600}
+                height={600}
+                placeholder="empty"
+                ref={ref}
+                quality={100}
+            />
+        );
     },
 );
 
-const StyledProductImageGrid = styled.img`
+const StyledProductImageGrid = styled(Image)`
     width: 100%;
     object-fit: cover;
     height: 48rem;
     flex: 0 0 auto;
 `;
 
-export const StyledProductImage = styled.img<{
+export const StyledProductImage = styled(Image)<{
     size: 'thumbnail' | 'tile' | 'popup' | 'detail' | 'full' | 'thumbnail-big';
 }>`
     height: ${p =>

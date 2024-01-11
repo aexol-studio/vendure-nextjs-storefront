@@ -27,7 +27,10 @@ export const Hero: React.FC<{
                         </Link>
                     </Stack>
                     <HeroImage
-                        src={optimizeImage({ size: 'popup', src: image })}
+                        src={optimizeImage({
+                            size: { width: 500, height: 300, format: 'webp', mode: 'resize' },
+                            src: image,
+                        })}
                         alt="Aexol shop demo"
                         title="Aexol shop demo"
                     />
@@ -38,7 +41,8 @@ export const Hero: React.FC<{
 };
 
 const Content = styled(Stack)`
-    @media (max-width: ${p => p.theme.breakpoints.sm}) {
+    gap: 4rem;
+    @media (max-width: ${p => p.theme.breakpoints.md}) {
         flex-direction: column-reverse;
     }
 `;
@@ -52,4 +56,8 @@ const HeroImage = styled.img`
     aspect-ratio: 2.2;
     object-fit: cover;
     height: 24rem;
+    @media (max-width: ${p => p.theme.breakpoints.md}) {
+        margin-bottom: 3rem;
+        height: 35rem;
+    }
 `;

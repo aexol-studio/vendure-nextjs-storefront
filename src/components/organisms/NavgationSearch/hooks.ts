@@ -18,7 +18,7 @@ const useDebounce = (value: string, delay: number) => {
 };
 
 export const useNavigationSearch = () => {
-    const { query } = useRouter();
+    const { query, asPath } = useRouter();
     const push = usePush();
 
     const [searchOpen, setSearchOpen] = useState(false);
@@ -28,6 +28,11 @@ export const useNavigationSearch = () => {
     const [searchResults, setSearchResult] = useState<ProductSearchType[]>([]);
     const debouncedSearch = useDebounce(searchQuery, 200);
     const [totalItems, setTotalItems] = useState(0);
+
+    useEffect(() => {
+        if (!searchOpen) return;
+        setSearchOpen(false);
+    }, [asPath]);
 
     const toggleSearch = () => setSearchOpen(prev => !prev);
     const closeSearch = () => {

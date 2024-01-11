@@ -5,6 +5,7 @@ import { Link, Stack, TP, TypoGraphy } from '@/src/components/atoms';
 import { ProductImageWithInfo } from '../../molecules/ProductImageWithInfo';
 import { useTranslation, Trans } from 'react-i18next';
 import { useNavigationSearch } from './hooks';
+import { PopularSearches } from './PopularSearches';
 
 export const NavigationSearch: React.FC<ReturnType<typeof useNavigationSearch>> = ({
     loading,
@@ -47,17 +48,35 @@ export const NavigationSearch: React.FC<ReturnType<typeof useNavigationSearch>> 
             <SearchPosition w100>
                 <SearchContent w100>
                     {searchQuery.length < 3 ? (
-                        <TP>{t('search-query-to-short')}</TP>
+                        <Stack justifyBetween w100>
+                            <div>
+                                <TP>{t('search-query-to-short')}</TP>
+                            </div>
+                            <PopularSearches popularSearches={popularSearches} onClick={item => setSearchQuery(item)}>
+                                <TypoGraphy size="2rem" weight={400} style={{ whiteSpace: 'nowrap' }}>
+                                    {t('popular-searches-heading')}
+                                </TypoGraphy>
+                            </PopularSearches>
+                        </Stack>
                     ) : loading ? (
                         <TP>{t('search-results-loading')}</TP>
                     ) : searchResults.length === 0 ? (
-                        <TP>
-                            <Trans
-                                i18nKey="search-results-no-results"
-                                values={{ searchQuery }}
-                                components={{ 1: <strong></strong> }}
-                            />
-                        </TP>
+                        <Stack justifyBetween w100>
+                            <div>
+                                <TP>
+                                    <Trans
+                                        i18nKey="search-results-no-results"
+                                        values={{ searchQuery }}
+                                        components={{ 1: <strong></strong> }}
+                                    />
+                                </TP>
+                            </div>
+                            <PopularSearches popularSearches={popularSearches} onClick={item => setSearchQuery(item)}>
+                                <TypoGraphy size="2rem" weight={400} style={{ whiteSpace: 'nowrap' }}>
+                                    {t('popular-searches-heading')}
+                                </TypoGraphy>
+                            </PopularSearches>
+                        </Stack>
                     ) : (
                         <Wrapper column w100 gap={'2rem'}>
                             <Container>
@@ -67,9 +86,8 @@ export const NavigationSearch: React.FC<ReturnType<typeof useNavigationSearch>> 
                                     </TypoGraphy>
                                     <Results w100 flexWrap>
                                         {searchResults.slice(0, 6).map(result => {
-                                            const optionInName =
-                                                result.productVariantName.replace(result.productName, '') !== '';
-
+                                            // const optionInName =
+                                            //     result.productVariantName.replace(result.productName, '') !== '';
                                             return (
                                                 <ResultCard gap="0.5rem" itemsCenter column key={result.slug}>
                                                     <ProductImageWithInfo
@@ -81,36 +99,26 @@ export const NavigationSearch: React.FC<ReturnType<typeof useNavigationSearch>> 
                                                         <TP size="1.5rem" weight={500}>
                                                             {result.productName}
                                                         </TP>
-                                                        {optionInName && (
+                                                        {/* {optionInName && (
                                                             <TP size="1.25rem" weight={400}>
                                                                 {result.productVariantName.replace(
                                                                     result.productName,
                                                                     '',
                                                                 )}
                                                             </TP>
-                                                        )}
+                                                        )} */}
                                                     </Stack>
                                                 </ResultCard>
                                             );
                                         })}
                                     </Results>
                                 </Stack>
-                                <PopularSearches column gap="1rem">
+                                <PopularSearches
+                                    popularSearches={popularSearches}
+                                    onClick={item => setSearchQuery(item)}>
                                     <TypoGraphy size="2rem" weight={400} style={{ whiteSpace: 'nowrap' }}>
                                         {t('popular-searches-heading')}
                                     </TypoGraphy>
-                                    <PopularSearchesWrapper gap="1rem">
-                                        {popularSearches.map(item => (
-                                            <TypoGraphy
-                                                key={item}
-                                                size={'1.5rem'}
-                                                weight={400}
-                                                onClick={() => setSearchQuery(item)}
-                                                style={{ cursor: 'pointer' }}>
-                                                {item}
-                                            </TypoGraphy>
-                                        ))}
-                                    </PopularSearchesWrapper>
                                 </PopularSearches>
                             </Container>
                             <StyledLink href={`/search?q=${searchQuery}`}>
@@ -156,18 +164,6 @@ const ResultCard = styled(Stack)`
     }
 `;
 
-const PopularSearchesWrapper = styled(Stack)`
-    flex-direction: row;
-
-    @media (min-width: ${p => p.theme.breakpoints.lg}) {
-        flex-direction: column;
-    }
-`;
-
-const PopularSearches = styled(Stack)`
-    padding-right: 12rem;
-`;
-
 const SearchPosition = styled(Stack)`
     width: 100%;
     top: calc(100% + 1rem);
@@ -184,6 +180,7 @@ const SearchPosition = styled(Stack)`
 const SearchContent = styled(Stack)`
     position: relative;
     width: 100%;
+    min-height: 36rem;
     padding: 3rem 4rem;
     border: 1px solid ${p => p.theme.gray(100)};
     border-radius: ${({ theme }) => theme.borderRadius};

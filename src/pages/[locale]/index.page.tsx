@@ -28,7 +28,7 @@ export const Index: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = p
                     h1={t('hero-h1')}
                     h2={t('hero-h2')}
                     desc={t('hero-p')}
-                    link="/collections/electronics"
+                    link="/collections/all"
                     image={
                         props.products.find(p => p.slug.includes('laptop'))?.productAsset?.preview ??
                         (props.products[0]?.productAsset?.preview || '')

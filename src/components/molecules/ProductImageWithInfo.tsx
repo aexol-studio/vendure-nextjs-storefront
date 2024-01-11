@@ -1,7 +1,6 @@
 import React from 'react';
 import styled from '@emotion/styled';
-import Link from 'next/link';
-import { TP, ProductImage } from '@/src/components/atoms';
+import { TP, ProductImage, Link } from '@/src/components/atoms';
 
 interface ProductImageWithInfoProps {
     size: 'thumbnail' | 'tile' | 'popup' | 'detail' | 'full' | 'thumbnail-big';

@@ -37,9 +37,7 @@ export const SortBy: React.FC<Props> = ({ handleSort, sort }) => {
                         <TP capitalize>
                             {t('sort-by')}: {t(`sort-keys.${sort.key as SortKey}`)}&nbsp;
                         </TP>
-                        <TP capitalize weight={400} size="1.25rem">
-                            ({t(`sort-directions.${sort.direction}`)})
-                        </TP>
+                        <TP capitalize>({t(`sort-directions.${sort.direction}`)})</TP>
                     </Stack>
 
                     <IconWrapper justifyCenter itemsCenter>

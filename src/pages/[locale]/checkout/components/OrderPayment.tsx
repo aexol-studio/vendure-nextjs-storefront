@@ -281,18 +281,15 @@ const PaymentForm = styled.form`
     align-items: start;
     gap: 2rem;
     height: 100%;
-    justify-content: space-between;
 `;
 
 const AnimationStack = styled(motion.div)`
     position: relative;
     width: 100%;
-    height: 100%;
 
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: flex-end;
     gap: 2rem;
 `;
 

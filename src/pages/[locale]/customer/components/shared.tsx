@@ -8,6 +8,10 @@ export const FormContainer = styled(Stack)`
     gap: 3.5rem;
     justify-content: center;
     align-items: center;
+
+    @media (max-width: ${({ theme }) => theme.breakpoints.lg}) {
+        min-height: 60vh;
+    }
 `;
 
 export const FormWrapper = styled(Stack)`

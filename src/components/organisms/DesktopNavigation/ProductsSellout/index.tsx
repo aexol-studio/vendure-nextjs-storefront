@@ -84,7 +84,7 @@ export const ProductsSellout: React.FC<{ collection: RootNode<NavigationType>['c
                 {t('featured-products')}
             </TP>
             <MaxWidth>
-                <Slider spacing={16} withArrows slides={slides} />
+                <Slider spacing={16} withDots slides={slides} />
             </MaxWidth>
         </Stack>
     );

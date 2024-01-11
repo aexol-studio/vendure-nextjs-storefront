@@ -67,7 +67,7 @@ export const VendureChain = (...options: chainOptions) => Thunder(apiFetchVendur
 
 const i18nToVendure = {
     en: 'default-channel',
-    pl: 'pl-channel',
+    pl: 'default-channel',
     fr: 'default-channel',
     de: 'default-channel',
     ja: 'default-channel',

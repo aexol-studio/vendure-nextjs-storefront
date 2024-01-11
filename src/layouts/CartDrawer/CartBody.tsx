@@ -57,7 +57,7 @@ export const CartBody: React.FC<Props> = ({ currencyCode, activeOrder }) => {
                                     currencyCode={currencyCode}
                                     price={unitPriceWithTax}
                                     discountPrice={discountedLinePriceWithTax / quantity}
-                                    // quantity={quantity}
+                                    quantity={quantity}
                                 />
                             </CartRow>
                         );

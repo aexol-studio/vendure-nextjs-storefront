@@ -144,6 +144,7 @@ const getServerSideProps = async (context: GetServerSidePropsContext) => {
 
     const collections = await getCollections(language);
     const navigation = arrayToTree(collections);
+
     let page = 1;
     let q = '';
     let sort = { key: 'name', direction: 'ASC' as SortOrder };

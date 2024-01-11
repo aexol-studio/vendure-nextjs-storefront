@@ -17,7 +17,7 @@ const App = ({ Component, pageProps }: AppProps) => {
     return (
         <ThemeProvider theme={LightTheme}>
             <Global styles={`body { font-family:${sans.style.fontFamily}; }`} />
-            {/* ONLY CHECKOUT SHOULD HAVE checkout prop */}
+            {/* `checkout` prop should exist only on routes with checkout functionally */}
             {'checkout' in pageProps ? (
                 <CheckoutProvider initialState={{ checkout: pageProps.checkout, language: pageProps.language }}>
                     <Component {...pageProps} />

@@ -236,6 +236,7 @@ export const OrderForm: React.FC<OrderFormProps> = ({ availableCountries, langua
 
                 if (setCustomerForOrder?.__typename !== 'Order') {
                     if (setCustomerForOrder.__typename === 'EmailAddressConflictError') {
+                        // TODO: IN THIS CASE WE SHOULD SHOW THE LOGIN FORM or ADD A LINK TO LOGIN
                         setError('emailAddress', {
                             message: tErrors(`errors.backend.${setCustomerForOrder.errorCode}`),
                         });

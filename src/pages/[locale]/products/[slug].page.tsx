@@ -216,19 +216,10 @@ export const getStaticProps = async (context: ContextModel<{ slug?: string }>) =
 
     const { optionGroups: _optionGroups, ...product } = response.product;
 
-    //mapping option groups to match the color names <-> hex codes
-    // const getFacetsValues = await storefrontApiQuery({
+    // mapping option groups to match the color names <-> hex codes
+    // const getFacetsValues = await storefrontApiQuery(language)({
     //     facets: [{ options: { filter: { name: { eq: 'color' } } } }, { items: { values: { name: true, code: true } } }],
     // });
-    // const optionGroups = _optionGroups.map(og => ({
-    //     ...og,
-    //     options: og.options.map(o => ({
-    //         ...o,
-    //         name:
-    //             getFacetsValues.facets.items[0].values.find(v => v.name.toLowerCase() === o.code.toLowerCase())?.code ||
-    //             o.name,
-    //     })),
-    // }));
 
     const optionGroups = _optionGroups.map(og => {
         return {
@@ -236,6 +227,11 @@ export const getStaticProps = async (context: ContextModel<{ slug?: string }>) =
             options: og.options
                 .sort((a, b) => a.name.length - b.name.length || a.name.localeCompare(b.name))
                 .map(o => {
+                    // mapping option groups to match the color names <-> hex codes
+                    // const name =
+                    //     getFacetsValues.facets.items[0].values.find(v => v.name.toLowerCase() === o.code.toLowerCase())
+                    //         ?.code || o.name;
+
                     const name =
                         notInDemoStore.find(v => v.name.toLowerCase() === o.code.toLowerCase())?.code || o.name;
                     return { ...o, name };

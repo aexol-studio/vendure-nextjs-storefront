@@ -11,6 +11,7 @@ import { CurrencyCode } from '@/src/zeus';
 import { OrderStateType, OrderType } from '@/src/graphql/selectors';
 import { Trans, useTranslation } from 'next-i18next';
 import { Discounts } from '@/src/components/molecules/Discounts';
+import { Price } from '@/src/components';
 
 export const OrderConfirmation: React.FC<{ code: string; order?: OrderType }> = ({ code, order }) => {
     const { t } = useTranslation('checkout');
@@ -85,7 +86,6 @@ export const OrderConfirmation: React.FC<{ code: string; order?: OrderType }> = 
                 <Divider marginBlock="4rem" />
                 {order?.lines.map(line => {
                     const isDefaultVariant = line.productVariant.name.includes(line.productVariant.product.name);
-                    const isPriceDiscounted = line.linePriceWithTax !== line.discountedLinePriceWithTax;
                     return (
                         <Stack key={line.productVariant.name} column>
                             <Stack justifyBetween>
@@ -110,20 +110,12 @@ export const OrderConfirmation: React.FC<{ code: string; order?: OrderType }> = 
                                         </Stack>
                                     </Stack>
                                 </Stack>
-                                {isPriceDiscounted ? (
-                                    <Stack justifyEnd gap="0.5rem">
-                                        <TP
-                                            size="1.25rem"
-                                            style={{ textDecoration: 'line-through', lineHeight: '2.4rem' }}>
-                                            {priceFormatter(line.linePriceWithTax, currencyCode)}
-                                        </TP>
-                                        <TP style={{ color: 'red' }}>
-                                            {priceFormatter(line.discountedLinePriceWithTax, currencyCode)}
-                                        </TP>
-                                    </Stack>
-                                ) : (
-                                    <TP>{priceFormatter(line.linePriceWithTax, currencyCode)}</TP>
-                                )}
+                                <Price
+                                    currencyCode={currencyCode}
+                                    price={line.unitPriceWithTax}
+                                    discountPrice={line.discountedLinePriceWithTax / line.quantity}
+                                    quantity={line.quantity}
+                                />
                             </Stack>
                             <Divider style={{ marginBlock: '3rem' }} />
                         </Stack>

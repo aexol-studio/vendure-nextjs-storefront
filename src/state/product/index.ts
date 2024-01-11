@@ -40,6 +40,16 @@ const useProductContainer = createContainer<ProductContainerType, { product: Pro
             setVariant(variant);
         }, [query.variant]);
 
+        useEffect(() => {
+            const newState = variant?.options.reduce(
+                (acc, option) => {
+                    acc[option.groupId] = option.id;
+                    return acc;
+                },
+                {} as { [key: string]: string },
+            );
+            if (newState) setSelectedOptions(newState);
+        }, [variant]);
         const handleVariant = (variant?: Variant) => {
             const url = new URL(window.location.href);
             if (variant) {
@@ -61,17 +71,6 @@ const useProductContainer = createContainer<ProductContainerType, { product: Pro
                 push('/checkout');
             } else setAddingError(t('select-options'));
         };
-
-        useEffect(() => {
-            const newState = variant?.options.reduce(
-                (acc, option) => {
-                    acc[option.groupId] = option.id;
-                    return acc;
-                },
-                {} as { [key: string]: string },
-            );
-            if (newState) setSelectedOptions(newState);
-        }, [variant]);
 
         const handleOptionClick = (groupId: string, id: string) => {
             let newState: { [key: string]: string };

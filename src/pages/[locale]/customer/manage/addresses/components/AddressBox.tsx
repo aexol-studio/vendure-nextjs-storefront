@@ -2,7 +2,7 @@ import { Stack } from '@/src/components/atoms/Stack';
 import { TP } from '@/src/components/atoms/TypoGraphy';
 import { ActiveAddressType } from '@/src/graphql/selectors';
 import styled from '@emotion/styled';
-import { CreditCard, Pen, Trash2, Truck } from 'lucide-react';
+import { CreditCard, Factory, Pen, Trash2, Truck } from 'lucide-react';
 import React from 'react';
 import { useTranslation } from 'next-i18next';
 import { Button } from '@/src/components/molecules/Button';
@@ -23,7 +23,14 @@ export const AddressBox: React.FC<Props> = ({ address, selected, onEdit, onDelet
             <Stack w100 justifyBetween itemsStart>
                 <Stack column gap="1rem">
                     <TP>{address.fullName}</TP>
-                    <TP>{address.company}</TP>
+                    {address.company && address.company !== '' && (
+                        <Stack itemsCenter gap="0.5rem">
+                            <Factory size="1.5rem" />
+                            <TP size="1.5rem" style={{ lineHeight: '1.5rem' }}>
+                                {address.company}
+                            </TP>
+                        </Stack>
+                    )}
                     <TP>
                         {address.streetLine1} {address.streetLine2}
                     </TP>

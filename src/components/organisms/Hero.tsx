@@ -3,6 +3,7 @@ import { Button } from '@/src/components/molecules/Button';
 import { thv } from '@/src/theme';
 import { optimizeImage } from '@/src/util/optimizeImage';
 import styled from '@emotion/styled';
+import Image from 'next/image';
 
 export const Hero: React.FC<{
     h1: string;
@@ -27,12 +28,16 @@ export const Hero: React.FC<{
                         </Link>
                     </Stack>
                     <HeroImage
-                        src={optimizeImage({
-                            size: { width: 500, height: 300, format: 'webp', mode: 'resize' },
-                            src: image,
-                        })}
+                        src={
+                            optimizeImage({
+                                size: { width: 500, height: 400, format: 'webp', mode: 'resize' },
+                                src: image,
+                            }) ?? ''
+                        }
                         alt="Aexol shop demo"
                         title="Aexol shop demo"
+                        width={500}
+                        height={400}
                     />
                 </Content>
             </ContentContainer>
@@ -52,7 +57,7 @@ const Main = styled(Stack)`
     background: ${thv.background.third};
     padding: 15rem 0 20rem 0;
 `;
-const HeroImage = styled.img`
+const HeroImage = styled(Image)`
     aspect-ratio: 2.2;
     object-fit: cover;
     height: 24rem;

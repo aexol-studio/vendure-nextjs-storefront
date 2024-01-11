@@ -49,35 +49,17 @@ export const NavigationSearch: React.FC<ReturnType<typeof useNavigationSearch>> 
             <SearchPosition w100>
                 <SearchContent w100>
                     {searchQuery.length < 3 ? (
-                        <EmptyStateContainer w100>
-                            <div>
-                                <TP>{t('search-query-to-short')}</TP>
-                            </div>
-                            <PopularSearches popularSearches={popularSearches} onClick={item => setSearchQuery(item)}>
-                                <TypoGraphy size="2rem" weight={400} style={{ whiteSpace: 'nowrap' }}>
-                                    {t('popular-searches-heading')}
-                                </TypoGraphy>
-                            </PopularSearches>
-                        </EmptyStateContainer>
+                        <TP>{t('search-query-to-short')}</TP>
                     ) : loading ? (
                         <TP>{t('search-results-loading')}</TP>
                     ) : searchResults.length === 0 ? (
-                        <EmptyStateContainer w100>
-                            <div>
-                                <TP>
-                                    <Trans
-                                        i18nKey="search-results-no-results"
-                                        values={{ searchQuery }}
-                                        components={{ 1: <strong></strong> }}
-                                    />
-                                </TP>
-                            </div>
-                            <PopularSearches popularSearches={popularSearches} onClick={item => setSearchQuery(item)}>
-                                <TypoGraphy size="2rem" weight={400} style={{ whiteSpace: 'nowrap' }}>
-                                    {t('popular-searches-heading')}
-                                </TypoGraphy>
-                            </PopularSearches>
-                        </EmptyStateContainer>
+                        <TP>
+                            <Trans
+                                i18nKey="search-results-no-results"
+                                values={{ searchQuery }}
+                                components={{ 1: <strong></strong> }}
+                            />
+                        </TP>
                     ) : (
                         <Wrapper column w100 gap={'2rem'}>
                             <Container>
@@ -87,8 +69,6 @@ export const NavigationSearch: React.FC<ReturnType<typeof useNavigationSearch>> 
                                     </TypoGraphy>
                                     <Results w100 flexWrap>
                                         {searchResults.slice(0, 6).map(result => {
-                                            // const optionInName =
-                                            //     result.productVariantName.replace(result.productName, '') !== '';
                                             return (
                                                 <ResultCard gap="0.5rem" itemsCenter column key={result.slug}>
                                                     <ProductImageWithInfo
@@ -100,27 +80,12 @@ export const NavigationSearch: React.FC<ReturnType<typeof useNavigationSearch>> 
                                                         <TP size="1.5rem" weight={500}>
                                                             {result.productName}
                                                         </TP>
-                                                        {/* {optionInName && (
-                                                            <TP size="1.25rem" weight={400}>
-                                                                {result.productVariantName.replace(
-                                                                    result.productName,
-                                                                    '',
-                                                                )}
-                                                            </TP>
-                                                        )} */}
                                                     </Stack>
                                                 </ResultCard>
                                             );
                                         })}
                                     </Results>
                                 </Stack>
-                                <PopularSearches
-                                    popularSearches={popularSearches}
-                                    onClick={item => setSearchQuery(item)}>
-                                    <TypoGraphy size="2rem" weight={400} style={{ whiteSpace: 'nowrap' }}>
-                                        {t('popular-searches-heading')}
-                                    </TypoGraphy>
-                                </PopularSearches>
                             </Container>
                             <StyledLink href={`/search?q=${searchQuery}`}>
                                 <Trans
@@ -134,6 +99,11 @@ export const NavigationSearch: React.FC<ReturnType<typeof useNavigationSearch>> 
                             </StyledLink>
                         </Wrapper>
                     )}
+                    <PopularSearches popularSearches={popularSearches} onClick={item => setSearchQuery(item)}>
+                        <TypoGraphy size="2rem" weight={400} style={{ whiteSpace: 'nowrap' }}>
+                            {t('popular-searches-heading')}
+                        </TypoGraphy>
+                    </PopularSearches>{' '}
                 </SearchContent>
             </SearchPosition>
         </Stack>
@@ -191,6 +161,13 @@ const SearchContent = styled(Stack)`
     background: ${p => p.theme.gray(0)};
     transition: all 0.2s ease-in-out;
     overflow: hidden;
+
+    flex-direction: column;
+    gap: 2rem;
+    @media (min-width: ${p => p.theme.breakpoints.md}) {
+        flex-direction: row;
+        justify-content: space-between;
+    }
 `;
 
 const Form = styled.form`
@@ -257,14 +234,3 @@ const IconWrapper = styled.div`
 `;
 
 const Wrapper = styled(Stack)``;
-
-const EmptyStateContainer = styled(Stack)`
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-    gap: 4rem;
-    @media (min-width: ${p => p.theme.breakpoints.md}) {
-        flex-direction: row;
-        justify-content: space-between;
-    }
-`;

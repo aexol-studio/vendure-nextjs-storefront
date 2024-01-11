@@ -50,7 +50,7 @@ const ProductPage: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = pr
                                 name={product?.name}
                             />
                         </StickyLeft>
-                        <StyledStack column gap="2.5rem">
+                        <StyledStack w100 column gap="2.5rem">
                             <TH1>{product?.name}</TH1>
                             {product && product.variants.length > 1 ? (
                                 <ProductOptions

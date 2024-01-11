@@ -77,7 +77,7 @@ const Image = styled(ProductImageGrid)`
     height: 42rem;
 
     @media (min-width: ${p => p.theme.breakpoints.xl}) {
-        transition: all 0.4s ease-in-out;
+        transition: transform 0.4s ease-in-out;
         :hover {
             transform: scale(1.02);
         }

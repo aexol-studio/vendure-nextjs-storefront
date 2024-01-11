@@ -172,7 +172,7 @@ export const OrderPayment: React.FC<OrderPaymentProps> = ({ availablePaymentMeth
                                         checked={watch('payment') === 'dummy-method-success'}
                                         {...register('payment', { required: true })}
                                     />
-                                    <PaymentButton
+                                    {/* <PaymentButton
                                         id="dummy-method-error"
                                         value="dummy-method-error"
                                         label={t('paymentMethod.dummyMethods.error')}
@@ -187,7 +187,7 @@ export const OrderPayment: React.FC<OrderPaymentProps> = ({ availablePaymentMeth
                                         icon={<StyledCreditCard method="decline" />}
                                         checked={watch('payment') === 'dummy-method-decline'}
                                         {...register('payment', { required: true })}
-                                    />
+                                    /> */}
                                 </>
                             )}
                         </GridEntry>

@@ -21,6 +21,7 @@ import { CategoryBar } from './CategoryBar';
 import { NavigationSearch } from '../components/organisms/NavgationSearch';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useNavigationSearch } from '../components/organisms/NavgationSearch/hooks';
+import { useEffect, useRef } from 'react';
 
 interface NavigationProps {
     navigation: RootNode<NavigationType> | null;
@@ -58,6 +59,29 @@ const entries = [
 export const Navigation: React.FC<NavigationProps> = ({ navigation, categories }) => {
     const { isLogged, cart } = useCart();
     const navigationSearch = useNavigationSearch();
+    const searchRef = useRef<HTMLDivElement>(null);
+    const searchMobileRef = useRef<HTMLDivElement>(null);
+    const iconRef = useRef<HTMLButtonElement>(null);
+
+    const handleOutsideClick = (event: MouseEvent) => {
+        if (
+            searchRef.current &&
+            !searchRef.current.contains(event.target as Node) &&
+            iconRef.current &&
+            !iconRef.current.contains(event.target as Node) &&
+            searchMobileRef.current &&
+            !searchMobileRef.current.contains(event.target as Node)
+        ) {
+            navigationSearch.closeSearch();
+        }
+    };
+
+    useEffect(() => {
+        document.addEventListener('click', handleOutsideClick);
+        return () => {
+            document.removeEventListener('click', handleOutsideClick);
+        };
+    }, []);
 
     return (
         <>
@@ -77,7 +101,8 @@ export const Navigation: React.FC<NavigationProps> = ({ navigation, categories }
                                     initial={{ opacity: 0 }}
                                     animate={{ opacity: 1 }}
                                     exit={{ opacity: 0 }}
-                                    transition={{ duration: 0.2 }}>
+                                    transition={{ duration: 0.2 }}
+                                    ref={searchRef}>
                                     <NavigationSearch {...navigationSearch} />
                                 </DesktopNavigationContainer>
                             ) : (
@@ -85,7 +110,7 @@ export const Navigation: React.FC<NavigationProps> = ({ navigation, categories }
                             )}
                         </AnimatePresence>
                         <Stack gap="1rem" itemsCenter>
-                            <IconButton onClick={navigationSearch.toggleSearch}>
+                            <IconButton onClick={navigationSearch.toggleSearch} ref={iconRef}>
                                 <SearchIcon />
                             </IconButton>
                             <LanguagePicker />
@@ -95,7 +120,7 @@ export const Navigation: React.FC<NavigationProps> = ({ navigation, categories }
                     </Stack>
                 </ContentContainer>
                 {navigationSearch.searchOpen && (
-                    <MobileNavigationContainer>
+                    <MobileNavigationContainer ref={searchMobileRef}>
                         <NavigationSearch {...navigationSearch} />
                     </MobileNavigationContainer>
                 )}

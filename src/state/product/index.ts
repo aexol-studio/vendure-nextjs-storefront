@@ -19,28 +19,30 @@ const useProductContainer = createContainer<ProductContainerType, { product: Pro
         }>({});
         const [variant, setVariant] = useState<Variant | undefined>(initialState.product?.variants[0]);
         const [addingError, setAddingError] = useState<string | undefined>();
-        const { query } = useRouter();
-
+        const { asPath } = useRouter();
         useEffect(() => {
             setVariant(initialState.product?.variants[0]);
         }, [initialState.product]);
 
         useEffect(() => {
-            if (typeof window === 'undefined' || !initialState.product) return;
+            if (typeof window === 'undefined') return;
+            const url = new URLSearchParams(window.location.search);
+            const query = url.get('variant');
+            if (!initialState.product || !variant || query) return;
             if (initialState.product.variants.length) {
                 const url = new URL(window.location.href);
-                url.searchParams.set('variant', variant?.id ?? initialState.product.variants[0].id);
+                url.searchParams.set('variant', initialState.product.variants[0].id);
                 window.history.replaceState({}, '', url.pathname + url.search);
             }
-        }, []);
+        }, [initialState.product]);
 
         useEffect(() => {
-            if (typeof window === 'undefined' || !query.variant || !initialState.product) return;
-            const variant = initialState.product?.variants.find(v => v.id === query.variant);
+            if (typeof window === 'undefined') return;
+            const url = new URLSearchParams(window.location.search);
+            const query = url.get('variant');
+            if (!query || !initialState.product) return;
+            const variant = initialState.product?.variants.find(v => v.id === query);
             setVariant(variant);
-        }, [query.variant]);
-
-        useEffect(() => {
             const newState = variant?.options.reduce(
                 (acc, option) => {
                     acc[option.groupId] = option.id;
@@ -49,7 +51,8 @@ const useProductContainer = createContainer<ProductContainerType, { product: Pro
                 {} as { [key: string]: string },
             );
             if (newState) setSelectedOptions(newState);
-        }, [variant]);
+        }, [asPath]);
+
         const handleVariant = (variant?: Variant) => {
             const url = new URL(window.location.href);
             if (variant) {
@@ -105,7 +108,7 @@ const useProductContainer = createContainer<ProductContainerType, { product: Pro
 
                 return { ...group, options };
             });
-        }, [selectedOptions]);
+        }, [selectedOptions, initialState.product, variant]);
 
         return {
             product: initialState.product,

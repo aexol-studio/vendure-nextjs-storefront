@@ -8,7 +8,7 @@ import { User2, UserCheck2 } from 'lucide-react';
 export const UserMenu: React.FC<{ isLogged: boolean }> = ({ isLogged }) => {
     return (
         <Dropdown>
-            <IconLink href={isLogged ? '/customer/manage' : '/customer/sign-in'}>
+            <IconLink aria-label="User menu" href={isLogged ? '/customer/manage' : '/customer/sign-in'}>
                 <AnimatePresence>
                     {isLogged ? (
                         <IconWrapper initial={{ opacity: 1 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>

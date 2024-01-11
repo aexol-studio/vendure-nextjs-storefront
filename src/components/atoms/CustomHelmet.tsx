@@ -12,7 +12,7 @@ export const CustomHelmet: React.FC<{
     const jsonLD = generateJSONLD({ product, collection, variant });
     let title = pageTitle;
     if (product && variant) {
-        title = `${product.name} ${toUpperCase(variant.name.replace(product.name, ''))} | ${pageTitle}`;
+        title = `${product.name} | ${pageTitle}`;
     }
     if (collection) {
         title = `${collection.name} | ${pageTitle}`;
@@ -89,7 +89,6 @@ export const CustomHelmet: React.FC<{
     );
 };
 
-const toUpperCase = (str: string) => str.trim().charAt(0).toUpperCase() + str.trim().slice(1);
 const doProductLD = (product: ProductDetailType) => {
     return {
         '@context': 'https://schema.org/',

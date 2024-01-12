@@ -4,26 +4,27 @@ import React from 'react';
 import languageDetector from './lngDetector';
 import styled from '@emotion/styled';
 import { Url } from 'next/dist/shared/lib/router/router';
+import { DEFAULT_LOCALE } from './consts';
 
 const AppLoader = styled.div``;
 
 export const useRedirect = ({ to }: { to?: string }) => {
     const router = useRouter();
-    to = to || router.asPath.replace('/[locale]', '');
+    to = to || router.asPath.replace('/[channel]', '');
     useEffect(() => {
         const detectedLng = languageDetector.detect();
-        if (detectedLng === 'en') {
+        if (detectedLng === DEFAULT_LOCALE) {
             return;
         }
         if (to?.startsWith('/' + detectedLng) && router.route !== '/404') {
-            router.replace('/' + detectedLng + router.route.replace('/[locale]', ''));
+            router.replace('/' + detectedLng + router.route.replace('/[channel]', ''));
             return;
         }
 
         if (detectedLng && languageDetector.cache) {
             languageDetector.cache(detectedLng);
         }
-        router.replace('/' + detectedLng + to?.replace('/[locale]', ''));
+        router.replace('/' + detectedLng + to?.replace('/[channel]', ''));
     });
 };
 
@@ -32,7 +33,7 @@ export const Redirect =
     // eslint-disable-next-line react/display-name
     () => {
         const detectedLng = languageDetector.detect();
-        if (detectedLng === 'en') {
+        if (detectedLng === DEFAULT_LOCALE) {
             return children;
         }
         useRedirect({});
@@ -54,7 +55,7 @@ interface TransitionOptions {
 export const usePush = () => {
     const router = useRouter();
     const lang = languageDetector.detect();
-    const locale = lang === 'en' ? '' : '/' + lang;
+    const locale = lang === DEFAULT_LOCALE ? '' : '/' + lang;
 
     return useCallback(
         (to?: string, as?: Url, options?: TransitionOptions) => {

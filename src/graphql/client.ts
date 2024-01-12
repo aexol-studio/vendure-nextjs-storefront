@@ -102,6 +102,16 @@ export const storefrontApiMutation = (language: string, channel?: string) => {
     })('mutation', { scalars });
 };
 
+export const SSGQuery = (reqParams: { locale: string; channel: string }) => {
+    const HOST = `${VENDURE_HOST}?languageCode=${reqParams.locale}`;
+    return VendureChain(HOST, {
+        headers: {
+            'Content-Type': 'application/json',
+            'vendure-token': reqParams.channel,
+        },
+    })('query', { scalars });
+};
+
 export const SSRQuery = (context: GetServerSidePropsContext) => {
     const authCookies = {
         session: context.req.cookies['session'],

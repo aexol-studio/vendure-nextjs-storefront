@@ -1,4 +1,4 @@
-import { DEFAULT_LANGUAGE, storefrontApiQuery } from '@/src/graphql/client';
+import { SSGQuery } from '@/src/graphql/client';
 import {
     CollectionTileSelector,
     CollectionTileProductVariantType,
@@ -8,12 +8,12 @@ import {
 import { SortOrder } from '@/src/zeus';
 
 export const getCollectionsPaths = () =>
-    storefrontApiQuery(DEFAULT_LANGUAGE)({
+    SSGQuery({ channel: 'pl-channel', locale: 'pl' })({
         collections: [{ options: { filter: { slug: { notEq: 'search' } } } }, { items: { id: true, slug: true } }],
     }).then(d => d.collections?.items);
 
-export const getCollections = async (language: string) => {
-    const _collections = await storefrontApiQuery(language)({
+export const getCollections = async (params: { locale: string; channel: string }) => {
+    const _collections = await SSGQuery(params)({
         collections: [{ options: { filter: { slug: { notEq: 'search' } } } }, { items: CollectionTileSelector }],
     });
 
@@ -25,7 +25,7 @@ export const getCollections = async (language: string) => {
     try {
         variantForCollections = await Promise.all(
             _collections.collections.items.map(async c => {
-                const products = await storefrontApiQuery(language)({
+                const products = await SSGQuery(params)({
                     collection: [
                         { slug: c.slug },
                         {
@@ -53,7 +53,7 @@ export const getCollections = async (language: string) => {
     return collections;
 };
 
-export const getYMALProducts = (language: string) =>
-    storefrontApiQuery(language)({
+export const getYMALProducts = (params: { locale: string; channel: string }) =>
+    SSGQuery(params)({
         products: [{ options: { take: 8, sort: { createdAt: SortOrder.DESC } } }, { items: YAMLProductsSelector }],
     }).then(d => d.products.items.filter(p => p.variants.length > 0));

@@ -3,7 +3,7 @@ import { useTranslation } from 'next-i18next';
 import React from 'react';
 import { Layout } from '@/src/layouts';
 import type { InferGetStaticPropsType } from 'next';
-import { storefrontApiQuery } from '@/src/graphql/client';
+import { SSGQuery } from '@/src/graphql/client';
 import { ProductSearchSelector } from '@/src/graphql/selectors';
 import { ProductTile } from '@/src/components/molecules/ProductTile';
 import { ContentContainer } from '@/src/components/atoms/ContentContainer';
@@ -56,27 +56,33 @@ const Main = styled(Stack)`
 
 const getStaticProps = async (ctx: ContextModel) => {
     const r = await makeStaticProps(['common', 'homepage'])(ctx);
-    const language = r.props._nextI18Next?.initialLocale ?? 'en';
-    const products = await storefrontApiQuery(language)({
+    const params = {
+        locale: r.context.locale,
+        channel: r.context.channel,
+    };
+    const api = SSGQuery(params);
+
+    const products = await api({
         search: [
             { input: { take: 24, groupByProduct: true, sort: { price: SortOrder.DESC } } },
             { items: ProductSearchSelector },
         ],
     });
 
-    const bestOf = await storefrontApiQuery(language)({
+    const bestOf = await api({
         search: [
             { input: { take: 4, groupByProduct: false, sort: { name: SortOrder.DESC }, inStock: true } },
             { items: ProductSearchSelector },
         ],
     });
 
-    const collections = await getCollections(language);
+    const collections = await getCollections(params);
     const navigation = arrayToTree(collections);
 
     const returnedStuff = {
         props: {
             ...r.props,
+            ...r.context,
             products: products.search.items,
             categories: collections,
             navigation,

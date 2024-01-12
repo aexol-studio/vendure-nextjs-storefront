@@ -184,5 +184,10 @@
             { "header": "Company", "linksTitles": ["Our history", "Blog"] }
         ],
         "law": ["Privacy Policy", "Terms and Conditions", "Cookie Policy"]
+    },
+    "picker": {
+        "ship-to-country": "Ship to country",
+        "change-language": "Change language",
+        "save": "Save"
     }
 }

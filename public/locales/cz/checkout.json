@@ -1,0 +1,92 @@
+{
+    "seoTitles": { "checkout": "Pokladna", "payment": "Platba", "confirmation": "Potvrzení" },
+    "steps": { "shipping": "Přeprava", "payment": "Platba", "confirmation": "Potvrzení" },
+    "orderForm": {
+        "emptyCart": "Váš košík je prázdný",
+        "emptyCartDescription": "V nákupním košíku nemáte žádné položky. Klikněte <1>zde</1> a pokračujte v nákupu.",
+        "whatAccountGives": "Účet vám umožní přístup k historii a stavu vašich objednávek. Umožňuje také provádět změny vašich osobních údajů a adres.",
+        "createAccount": "Vytvořit účet?",
+        "password": "Heslo",
+        "confirmPassword": "Potvrzení hesla",
+        "shippingDifferentThanBilling": "Liší se dodací adresa od fakturační?",
+        "userNeedInvoice": "Potřebujete fakturu?",
+        "orderSummary": "Přehled objednávek",
+        "contactInfo": "Kontaktní informace",
+        "emailAddress": "E-mailová adresa",
+        "firstName": "Jméno",
+        "lastName": "Příjmení",
+        "phone": "Telefon",
+        "shippingInfo": "Informace o přepravě",
+        "billingInfo": "Fakturační údaje",
+        "NIP": "NIP",
+        "fullName": "Celé jméno",
+        "company": "Společnost",
+        "individual": "Individuální",
+        "streetLine1": "Adresa",
+        "streetLine2": "Apartmán, apartmá atd.",
+        "city": "Město",
+        "countryCode": "Země",
+        "province": "Stát / provincie",
+        "postalCode": "Poštovní směrovací číslo",
+        "continueToPayment": "Pokračovat k platbě",
+        "regulations": "Přijímám <1>pravidla</1>.",
+        "terms": "Souhlasím s <1>podmínkami</1>.",
+        "errors": {
+            "root": {
+                "invalid": "Při odesílání formuláře došlo k chybě. Opravte prosím níže uvedené chyby",
+                "closeButton": "Zavřít"
+            },
+            "emailAddress": { "required": "Je vyžadována e-mailová adresa", "email": "E-mailová adresa je neplatná" },
+            "firstName": { "required": "Křestní jméno je povinné" },
+            "lastName": { "required": "Příjmení je povinné" },
+            "phone": { "required": "Je vyžadován telefon" },
+            "fullName": { "required": "Vyžaduje se celé jméno" },
+            "company": { "required": "Společnost je povinna" },
+            "streetLine1": { "required": "Je vyžadována adresa" },
+            "streetLine2": { "required": "Je vyžadován apartmán, apartmá apod." },
+            "city": { "required": "Město je povinno" },
+            "countryCode": { "required": "Země je vyžadována" },
+            "province": { "required": "Vyžaduje se stát / provincie" },
+            "postalCode": { "required": "Je vyžadováno poštovní směrovací číslo" },
+            "terms": { "required": "Vyžadují se podmínky" },
+            "regulations": { "required": "Jsou vyžadovány předpisy" },
+            "NIP": { "required": "NIP je vyžadován" },
+            "password": { "required": "Heslo je vyžadováno" },
+            "confirmPassword": { "required": "Je vyžadováno potvrzení hesla", "notMatch": "Hesla se neshodují" }
+        }
+    },
+    "orderSummary": {
+        "title": "Přehled objednávek",
+        "subtotal": "Mezisoučet",
+        "discount": "Sleva",
+        "shipping": "Přeprava",
+        "total": "Celkem",
+        "quantity": "Množství",
+        "remove": "Odstranění adresy",
+        "YMAL": { "title": "Může se vám také líbit", "addToCart": "Přidat do košíku" }
+    },
+    "deliveryMethod": {
+        "title": "Způsob doručení",
+        "required": "*(Vyžaduje se jeden ze způsobů doručení)",
+        "errors": { "required": "Je vyžadován způsob doručení" }
+    },
+    "paymentMethod": {
+        "title": "Jedná se o fiktivní platbu pouze pro demonstrační účely.",
+        "submit": "Odeslat platbu",
+        "notAvailable": "Výchozí způsob platby není k dispozici",
+        "success": "Vrátit úspěch",
+        "error": "Vrátit chybu",
+        "selectToContinue": "Zvolte způsob platby a pokračujte",
+        "decline": "Návrat odmítnut",
+        "dummyMethods": {
+            "success": "Úspěšnost fiktivní platby",
+            "error": "Chyba fiktivní platby",
+            "decline": "Dummy poklesu platby"
+        }
+    },
+    "confirmation": {
+        "orderReceived": "Vaše objednávka <1>{{code}}</1> byla přijata",
+        "orderCancelled": "Vaše objednávka <1>{{code}}</1> byla zrušena",
+        "orderNotFound": "Objednávka nebyla nalezena"
+    }
+}

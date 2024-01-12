@@ -1,0 +1,171 @@
+{
+    "home": "Home",
+    "shop": "Předváděcí obchod",
+    "title": "Dobrý den,",
+    "search-products": "Vyhledávání produktů",
+    "made-by": "Made by VendureAgency.com 2023",
+    "select-category": "Vyberte kategorii",
+    "filters": "Filtry",
+    "sort-by": "Seřadit podle",
+    "cart": "Košík",
+    "cart-summary": "Shrnutí košíku",
+    "your-cart": "Váš košík",
+    "items": "položky",
+    "proceed-to-checkout": "Přejděte k pokladně",
+    "continue-shopping": "Pokračovat v nákupu",
+    "price": "Cena",
+    "discount": "Sleva",
+    "shipping": "Přeprava",
+    "subtotal": "Mezisoučet",
+    "total": "Celkem",
+    "coupon-code": "Kód:",
+    "empty-cart": "Váš košík je prázdný",
+    "remove": "Odstranění stránky",
+    "add-to-cart": "Přidat do košíku",
+    "buy-now": "Koupit nyní",
+    "related-collections": "Související sbírky",
+    "newest-products": "Nejnovější produkty",
+    "featured-products": "Doporučené produkty",
+    "sort-keys": { "title": "Název", "price": "Cena" },
+    "sort-directions": { "ASC": "Vzestupně", "DESC": "Sestupné" },
+    "stockLevel": {
+        "OUT_OF_STOCK": "Není skladem",
+        "IN_STOCK": "Skladem",
+        "LOW_STOCK": "🔥 Ať je to jen rychle {{value}} zbývá! 🔥",
+        "COMING_SOON": "Již brzy"
+    },
+    "commonError": "Něco není v pořádku",
+    "send": "Odeslat",
+    "search-results": "Výsledky hledání pro:",
+    "search-results-header": "Výsledky vyhledávání",
+    "search-results-total": "Viz . {{totalItems}} výsledky pro <1>{{searchQuery}}</1>",
+    "search-query-to-short": "Vyhledávací dotaz musí být dlouhý alespoň 3 znaky.",
+    "search-results-no-results": "Žádné výsledky pro <1>{{searchQuery}}</1>",
+    "search-results-loading": "Načítání výsledků hledání...",
+    "popular-searches": ["Počítač", "Tablet", "Rostlina", "Rukavice", "Myš"],
+    "popular-searches-heading": "Oblíbená vyhledávání",
+    "cart-empty": "Váš košík je prázdný",
+    "select-options": "Vyberte prosím možnosti",
+    "shipping-protection": { "title": "Ochrana přepravy", "subtitle": "Od poškození, ztráty a krádeže pro {{value}}" },
+    "navigation": {
+        "manageAccount": "Správa účtu",
+        "manageAddresses": "Správa adres",
+        "manageOrders": "Správa objednávek",
+        "logout": "Odhlášení"
+    },
+    "orderStates": {
+        "Created": "Vytvořeno",
+        "Draft": "Návrh",
+        "AddingItems": "Přidávání položek",
+        "Cancelled": "Zrušeno",
+        "ArrangingPayment": "Zajištění platby",
+        "PaymentAuthorized": "Autorizovaná platba",
+        "PaymentSettled": "Vyrovnaná platba",
+        "PartiallyShipped": "Částečně odesláno",
+        "Shipped": "Odesláno",
+        "PartiallyDelivered": "Částečně splněno",
+        "Delivered": "Doručeno na",
+        "Modifying": "Úprava stránek",
+        "ArrangingAdditionalPayment": "Dodatečná platba"
+    },
+    "paymentStates": { "Authorized": "Autorizované stránky", "Settled": "Vypořádáno", "Declined": "Odmítnuto" },
+    "notifyMe": {
+        "invalidEmail": "Zadejte prosím platný e-mail",
+        "backendError": "Nemohl jsem vás přidat do seznamu oznámení",
+        "placeholder": "Upozorněte mě"
+    },
+    "errors": {
+        "clearErrors": "Vymazání chyb",
+        "backend": {
+            "UNKNOWN_ERROR": "Neznámá chyba",
+            "NATIVE_AUTH_STRATEGY_ERROR": "Chyba nativní strategie ověřování",
+            "INVALID_CREDENTIALS_ERROR": "Neplatné pověření",
+            "ORDER_STATE_TRANSITION_ERROR": "Chyba přechodu stavu objednávky",
+            "EMAIL_ADDRESS_CONFLICT_ERROR": "Chyba konfliktu e-mailových adres",
+            "GUEST_CHECKOUT_ERROR": "Chyba při odhlášení hosta",
+            "ORDER_LIMIT_ERROR": "Chyba limitu objednávky",
+            "NEGATIVE_QUANTITY_ERROR": "Záporná množstevní chyba",
+            "INSUFFICIENT_STOCK_ERROR": "Nedostatečná chyba zásob",
+            "COUPON_CODE_INVALID_ERROR": "Chyba neplatného kódu kupónu",
+            "COUPON_CODE_EXPIRED_ERROR": "Chyba vypršení platnosti kódu kupónu",
+            "COUPON_CODE_LIMIT_ERROR": "Chyba omezení kódu kupónu",
+            "ORDER_MODIFICATION_ERROR": "Chyba při úpravě objednávky",
+            "INELIGIBLE_SHIPPING_METHOD_ERROR": "Chyba nezpůsobilého způsobu přepravy",
+            "NO_ACTIVE_ORDER_ERROR": "Žádná chyba aktivní objednávky",
+            "ORDER_PAYMENT_STATE_ERROR": "Chyba stavu platby objednávky",
+            "INELIGIBLE_PAYMENT_METHOD_ERROR": "Chyba nezpůsobilého způsobu platby",
+            "PAYMENT_FAILED_ERROR": "Chyba neúspěšné platby",
+            "PAYMENT_DECLINED_ERROR": "Chyba odmítnutí platby",
+            "ALREADY_LOGGED_IN_ERROR": "Chyba již přihlášeného uživatele",
+            "MISSING_PASSWORD_ERROR": "Chybějící heslo",
+            "PASSWORD_VALIDATION_ERROR": "Chyba ověření hesla",
+            "PASSWORD_ALREADY_SET_ERROR": "Chyba již nastaveného hesla",
+            "VERIFICATION_TOKEN_INVALID_ERROR": "Chyba neplatného ověřovacího tokenu",
+            "VERIFICATION_TOKEN_EXPIRED_ERROR": "Chyba vypršení platnosti ověřovacího tokenu",
+            "IDENTIFIER_CHANGE_TOKEN_INVALID_ERROR": "Chyba neplatného tokenu změny identifikátoru",
+            "IDENTIFIER_CHANGE_TOKEN_EXPIRED_ERROR": "Chyba tokenu změny identifikátoru vypršela",
+            "PASSWORD_RESET_TOKEN_INVALID_ERROR": "Chyba neplatného tokenu pro resetování hesla",
+            "PASSWORD_RESET_TOKEN_EXPIRED_ERROR": "Vypršení platnosti tokenu pro resetování hesla",
+            "NOT_VERIFIED_ERROR": "Neověřená chyba"
+        },
+        "stripe": {
+            "api_connection_error": "Chyba připojení Stripe API",
+            "api_error": "Chyba rozhraní API služby Stripe",
+            "authentication_error": "Chyba ověřování Stripe",
+            "card_error": "Chyba karty Stripe",
+            "idempotency_error": "Chyba idempotence proužku",
+            "invalid_request_error": "Chyba neplatného požadavku Stripe",
+            "rate_limit_error": "Chyba omezení rychlosti proužků",
+            "validation_error": "Chyba ověřování Stripe"
+        },
+        "email": { "required": "Je vyžadován e-mail", "invalid": "E-mail je neplatný" },
+        "password": {
+            "required": "Heslo je vyžadováno",
+            "minLength": "Heslo musí mít alespoň 8 znaků",
+            "maxLength": "Heslo nesmí být delší než 25 znaků",
+            "mustDifferent": "Heslo se musí lišit od stávajícího"
+        },
+        "confirmPassword": { "required": "Je vyžadováno potvrzení hesla", "mustMatch": "Hesla se musí shodovat" },
+        "firstName": { "required": "Křestní jméno je povinné" },
+        "lastName": { "required": "Příjmení je povinné" },
+        "phoneNumber": { "required": "Vyžaduje se telefonní číslo" }
+    },
+    "bestOf": "To nejlepší z",
+    "footer": {
+        "sections": [
+            {
+                "header": "Nejprodávanější produkty",
+                "linksTitles": ["Laptop", "Tablet", "Bezdrátová optická myš", "Kabel USB", "Ethernetový kabel"]
+            },
+            {
+                "header": "Akce + nabídky",
+                "linksTitles": [
+                    "Doporučte přítele a získejte 10% slevu",
+                    "Zaregistrujte se a získejte 20% slevu",
+                    "Napište nám a získejte 25% slevu",
+                    "Všechny propagační akce + nabídky"
+                ]
+            },
+            {
+                "header": "Kontaktujte nás",
+                "contactInfo": [
+                    "4-500-600-44332",
+                    "Pondělí - pátek: 9:00 - 20:00",
+                    "Sobota: 10:00 - 16:40 HOD.",
+                    "Neděle - ZAVŘENO"
+                ]
+            },
+            {
+                "header": "Informace",
+                "linksTitles": ["Účet", "Stav objednávky", "Vrací se", "ČASTO KLADENÉ DOTAZY", "Zpětná vazba"]
+            },
+            { "header": "Společnost", "linksTitles": ["Naše historie", "Blog"] }
+        ],
+        "law": ["Zásady ochrany osobních údajů", "Podmínky a pravidla", "Zásady používání souborů cookie"]
+    },
+    "picker": {
+        "ship-to-country": "Ship to country",
+        "change-language": "Change language",
+        "save": "Save"
+    }
+}

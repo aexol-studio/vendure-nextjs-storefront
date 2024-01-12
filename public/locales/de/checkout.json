@@ -1,0 +1,95 @@
+{
+    "seoTitles": { "checkout": "Checkout", "payment": "Zahlung", "confirmation": "Konfirmation" },
+    "steps": { "shipping": "Versand", "payment": "Zahlung", "confirmation": "Konfirmation" },
+    "orderForm": {
+        "emptyCart": "Dein Warenkorb ist leer",
+        "emptyCartDescription": "Du hast keine Artikel in deinem Einkaufswagen. Klicke <1>hier</1>, um deinen Einkauf fortzusetzen.",
+        "whatAccountGives": "Über dein Konto hast du Zugriff auf deine Bestellhistorie und deinen Bestellstatus. Außerdem kannst du dort Änderungen an deinen persönlichen Daten und Adressen vornehmen.",
+        "createAccount": "Ein Konto erstellen?",
+        "password": "Passwort",
+        "confirmPassword": "Passwort bestätigen",
+        "shippingDifferentThanBilling": "Ist die Lieferadresse anders als die Rechnungsadresse?",
+        "userNeedInvoice": "Brauchst du eine Rechnung?",
+        "orderSummary": "Zusammenfassung der Bestellung",
+        "contactInfo": "Kontaktinformationen",
+        "emailAddress": "E-Mail Adresse",
+        "firstName": "Vorname",
+        "lastName": "Nachname",
+        "phone": "Telefon",
+        "shippingInfo": "Versandinformationen",
+        "billingInfo": "Informationen zur Rechnungsstellung",
+        "NIP": "NIP",
+        "fullName": "Vollständiger Name",
+        "company": "Unternehmen",
+        "individual": "Einzelne",
+        "streetLine1": "Adresse",
+        "streetLine2": "Wohnung, Suite, etc.",
+        "city": "Stadt",
+        "countryCode": "Land",
+        "province": "Bundesland/Provinz",
+        "postalCode": "Postleitzahl",
+        "continueToPayment": "Weiter zur Bezahlung",
+        "regulations": "Ich akzeptiere die <1>Vorschriften</1>.",
+        "terms": "Ich akzeptiere die <1>Bedingungen und Konditionen</1>.",
+        "errors": {
+            "root": {
+                "invalid": "Beim Senden des Formulars ist ein Fehler aufgetreten. Bitte korrigiere die Fehler unten",
+                "closeButton": "Schließen"
+            },
+            "emailAddress": { "required": "E-Mail Adresse ist erforderlich", "email": "E-Mail Adresse ist ungültig" },
+            "firstName": { "required": "Der Vorname ist erforderlich" },
+            "lastName": { "required": "Nachname ist erforderlich" },
+            "phone": { "required": "Telefon ist erforderlich" },
+            "fullName": { "required": "Vollständiger Name ist erforderlich" },
+            "company": { "required": "Unternehmen ist erforderlich" },
+            "streetLine1": { "required": "Adresse ist erforderlich" },
+            "streetLine2": { "required": "Wohnung, Suite, etc. ist erforderlich" },
+            "city": { "required": "Stadt ist erforderlich" },
+            "countryCode": { "required": "Land ist erforderlich" },
+            "province": { "required": "Bundesland/Provinz ist erforderlich" },
+            "postalCode": { "required": "Postleitzahl ist erforderlich" },
+            "terms": { "required": "Bedingungen und Konditionen sind erforderlich" },
+            "regulations": { "required": "Vorschriften sind erforderlich" },
+            "NIP": { "required": "NIP ist erforderlich" },
+            "password": { "required": "Passwort ist erforderlich" },
+            "confirmPassword": {
+                "required": "Passwort bestätigen ist erforderlich",
+                "notMatch": "Passwörter stimmen nicht überein"
+            }
+        }
+    },
+    "orderSummary": {
+        "title": "Zusammenfassung der Bestellung",
+        "subtotal": "Zwischensumme",
+        "discount": "Rabatt",
+        "shipping": "Versand",
+        "total": "Gesamt",
+        "quantity": "Menge",
+        "remove": "entfernen",
+        "YMAL": { "title": "Das könnte dir auch gefallen", "addToCart": "In den Warenkorb legen" }
+    },
+    "deliveryMethod": {
+        "title": "Liefermethode",
+        "required": "*(Eine der Liefermethoden ist erforderlich)",
+        "errors": { "required": "Liefermethode ist erforderlich" }
+    },
+    "paymentMethod": {
+        "title": "Dies ist eine Dummy-Zahlung, die nur zu Demonstrationszwecken dient",
+        "submit": "Zahlung einreichen",
+        "notAvailable": "Standard-Zahlungsmethode ist nicht verfügbar",
+        "success": "Erfolg zurückgeben",
+        "error": "Fehler zurückgeben",
+        "selectToContinue": "Wähle eine Zahlungsmethode, um fortzufahren",
+        "decline": "Rückkehr abgelehnt",
+        "dummyMethods": {
+            "success": "Dummy-Zahlungserfolg",
+            "error": "Dummy-Zahlungsfehler",
+            "decline": "Dummy Zahlungsrückgang"
+        }
+    },
+    "confirmation": {
+        "orderReceived": "Deine Bestellung <1>{{code}}</1> ist eingegangen",
+        "orderCancelled": "Deine Bestellung <1>{{code}}</1> wurde storniert",
+        "orderNotFound": "Bestellung nicht gefunden"
+    }
+}

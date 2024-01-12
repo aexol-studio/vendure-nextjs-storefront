@@ -1,56 +1,92 @@
 {
-    "steps": {
-        "shipping": "Dane do wysyłki",
-        "payment": "Płatność",
-        "confirmation": "Potwierdzenie"
-    },
+    "seoTitles": { "checkout": "Kasa", "payment": "Płatność", "confirmation": "Potwierdzenie" },
+    "steps": { "shipping": "Wysyłka", "payment": "Płatność", "confirmation": "Potwierdzenie" },
     "orderForm": {
+        "emptyCart": "Twój koszyk jest pusty",
+        "emptyCartDescription": "Nie masz żadnych produktów w koszyku. Kliknij <1>tutaj</1>, aby kontynuować zakupy.",
+        "whatAccountGives": "Konto daje Ci dostęp do historii i statusu Twoich zamówień. Umożliwia również dokonywanie zmian danych osobowych i adresów.",
+        "createAccount": "Założyć konto?",
+        "password": "Hasło",
+        "confirmPassword": "Potwierdź hasło",
+        "shippingDifferentThanBilling": "Czy adres wysyłki różni się od adresu rozliczeniowego?",
+        "userNeedInvoice": "Czy potrzebujesz faktury?",
+        "orderSummary": "Podsumowanie zamówienia",
         "contactInfo": "Informacje kontaktowe",
         "emailAddress": "Adres e-mail",
         "firstName": "Imię",
         "lastName": "Nazwisko",
         "phone": "Telefon",
-        "shippingInfo": "Informacje o dostawie",
+        "shippingInfo": "Informacje o wysyłce",
+        "billingInfo": "Informacje rozliczeniowe",
+        "NIP": "NIP",
         "fullName": "Imię i nazwisko",
         "company": "Firma",
+        "individual": "Indywidualny",
         "streetLine1": "Adres",
-        "streetLine2": "Apartament, suite, itp.",
+        "streetLine2": "Mieszkanie, apartament itp.",
         "city": "Miasto",
-        "countryCode": "Kod kraju",
-        "province": "Województwo",
+        "countryCode": "Kraj",
+        "province": "Państwo/prowincja",
         "postalCode": "Kod pocztowy",
+        "continueToPayment": "Przejdź do płatności",
+        "regulations": "Akceptuję <1>regulamin</1>.",
+        "terms": "Akceptuję <1>zasady i warunki</1>.",
         "errors": {
-            "emailAddress": "Pole Imię jest wymagane",
-            "firstName": "Pole Nazwisko jest wymagane",
-            "lastName": "Pole Adres e-mail jest wymagane",
-            "phone": "Pole Kod pocztowy jest wymagane",
-            "fullName": "Pole Województwo jest wymagane",
-            "company": "Pole Kod kraju jest wymagane",
-            "streetLine1": "Pole Adres jest wymagane",
-            "streetLine2": "Proszę wypełnić wszystkie wymagane pola",
-            "city": "Pole Miasto jest wymagane",
-            "countryCode": "Adres e-mail jest nieprawidłowy",
-            "province": "Proszę wypełnić wszystkie wymagane pola",
-            "postalCode": "Pole Telefon jest wymagane"
+            "root": {
+                "invalid": "Wystąpił błąd podczas wysyłania formularza. Popraw błędy poniżej",
+                "closeButton": "Zamknij"
+            },
+            "emailAddress": { "required": "Adres e-mail jest wymagany", "email": "Adres e-mail jest nieprawidłowy" },
+            "firstName": { "required": "Imię jest wymagane" },
+            "lastName": { "required": "Nazwisko jest wymagane" },
+            "phone": { "required": "Wymagany jest telefon" },
+            "fullName": { "required": "Wymagane jest pełne imię i nazwisko" },
+            "company": { "required": "Firma jest wymagana" },
+            "streetLine1": { "required": "Adres jest wymagany" },
+            "streetLine2": { "required": "Wymagane jest mieszkanie, apartament itp." },
+            "city": { "required": "Miasto jest wymagane" },
+            "countryCode": { "required": "Wymagany jest kraj" },
+            "province": { "required": "Wymagany jest stan/prowincja" },
+            "postalCode": { "required": "Wymagany jest kod pocztowy" },
+            "terms": { "required": "Wymagane są warunki i postanowienia" },
+            "regulations": { "required": "Wymagane są przepisy" },
+            "NIP": { "required": "NIP jest wymagany" },
+            "password": { "required": "Hasło jest wymagane" },
+            "confirmPassword": { "required": "Wymagane jest potwierdzenie hasła", "notMatch": "Hasła nie są zgodne" }
         }
     },
     "orderSummary": {
         "title": "Podsumowanie zamówienia",
         "subtotal": "Suma częściowa",
+        "discount": "Zniżka",
         "shipping": "Wysyłka",
-        "total": "Razem",
+        "total": "Łącznie",
         "quantity": "Ilość",
-        "remove": "Usuń"
+        "remove": "Usuń",
+        "YMAL": { "title": "Możesz także polubić", "addToCart": "Dodaj do koszyka" }
     },
     "deliveryMethod": {
-        "title": "Metoda dostawy"
+        "title": "Metoda dostawy",
+        "required": "*(Wymagana jest jedna z metod dostawy)",
+        "errors": { "required": "Wymagana jest metoda dostawy" }
     },
     "paymentMethod": {
-        "title": "To jest płatność demonstracyjna tylko w celach prezentacyjnych",
-        "submit": "Zapłać standardową metodą płatności",
-        "notAvailable": "Domyślna metoda płatności jest niedostępna"
+        "title": "Jest to fikcyjna płatność służąca wyłącznie do celów demonstracyjnych",
+        "submit": "Prześlij płatność",
+        "notAvailable": "Domyślna metoda płatności nie jest dostępna",
+        "success": "Zwróć sukces",
+        "error": "Zwróć błąd",
+        "selectToContinue": "Wybierz metodę płatności, aby kontynuować",
+        "decline": "Zwrot odrzucony",
+        "dummyMethods": {
+            "success": "Fikcyjna płatność zakończona sukcesem",
+            "error": "Fałszywy błąd płatności",
+            "decline": "Manekin spadku płatności"
+        }
     },
     "confirmation": {
-        "orderReceived": "Twoje zamówienie <1>{{code}}</1> zostało odebrane"
+        "orderReceived": "Twoje zamówienie <1>{{code}}</1> zostało odebrane",
+        "orderCancelled": "Twoje zamówienie <1>{{code}}</1> zostało anulowane",
+        "orderNotFound": "Nie znaleziono zamówienia"
     }
 }

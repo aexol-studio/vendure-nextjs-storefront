@@ -1,4 +1,4 @@
-import Page, { getStaticProps, getStaticPaths } from '@/src/pages/[locale]/collections/[slug].page';
+import Page, { getStaticProps, getStaticPaths } from '@/src/pages/[channel]/collections/[slug].page';
 import { Redirect } from '@/src/lib/redirect';
 import React from 'react';
 import type { InferGetStaticPropsType } from 'next';

@@ -35,6 +35,7 @@ export const Layout: React.FC<LayoutProps> = ({ pageTitle, children, categories,
     const { fetchActiveOrder } = useCart();
     const { product, variant } = useProduct();
     const { collection } = useCollection();
+
     useEffect(() => {
         fetchActiveOrder();
     }, []);

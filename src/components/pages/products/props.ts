@@ -49,6 +49,8 @@ export const getStaticProps = async (context: ContextModel<{ slug?: string }>) =
         };
     });
     const returnedStuff = {
+        ...r.props,
+        ...r.context,
         slug: context.params?.slug,
         product: {
             ...product,
@@ -58,7 +60,6 @@ export const getStaticProps = async (context: ContextModel<{ slug?: string }>) =
         newestProducts,
         navigation,
         language,
-        ...r.props,
     };
 
     return {

@@ -20,12 +20,19 @@ export const Link: React.FC<PropsWithChildren<LinkComponentProps>> = ({
 }) => {
     const router = useRouter();
     const locale = (rest.locale || router.query.locale || '') as string;
+    const channel = (router.query.channel || '') as string;
     const { href, ...restProps } = rest;
     let linkHref = (href || router.asPath) as string;
     if (linkHref.indexOf('http') === 0) skipLocaleHandling = true;
     if (notTranslatedLinks.find(ntl => linkHref.startsWith(ntl))) skipLocaleHandling = true;
-    if (locale && !skipLocaleHandling && locale !== 'en') {
-        linkHref = href ? `/${locale}${linkHref}` : router.pathname.replace('[locale]', locale);
+    // if (locale && !skipLocaleHandling && locale !== 'en') {
+    //     linkHref = href ? `/${locale}${linkHref}` : router.pathname.replace('[locale]', locale);
+    // }
+
+    if (channel && !skipLocaleHandling) {
+        linkHref = href
+            ? `/${channel}${locale ? `/${locale}` : ''}${linkHref}`
+            : router.pathname.replace('[channel]', channel).replace('/[locale]/', `/${locale}/` ?? '');
     }
 
     return (

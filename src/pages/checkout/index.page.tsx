@@ -1,10 +1,11 @@
-import Page, { getServerSideProps } from '@/src/pages/[locale]/checkout/index.page';
-import { Redirect } from '@/src/lib/redirect';
+import { InferGetServerSidePropsType } from 'next';
 import React from 'react';
-import type { InferGetServerSidePropsType } from 'next';
+import { getServerSideProps } from '@/src/components/pages/checkout/props';
+import { CheckoutPage } from '@/src/components/pages/checkout';
 
-export default (props: InferGetServerSidePropsType<typeof getServerSideProps>) => {
-    return Redirect({ children: <Page {...props} /> })();
-};
+export const Page: React.FC<InferGetServerSidePropsType<typeof getServerSideProps>> = props => (
+    <CheckoutPage {...props} />
+);
 
 export { getServerSideProps };
+export default Page;

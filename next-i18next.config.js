@@ -5,11 +5,17 @@
  */
 module.exports = {
     // https://www.i18next.com/overview/configuration-options#logging
+    // i18n: {
+    //     defaultLocale: 'pl',
+    //     locales: ['pl', 'de', 'cz'],
+    //     returnObjects: true,
+    //     fallbackLng: 'pl',
+    // },
     i18n: {
-        defaultLocale: 'pl',
-        locales: ['pl', 'de', 'cz'],
+        defaultLocale: 'en',
+        locales: ['en', 'pl', 'fr', 'de', 'ja', 'es', 'nl', 'da'],
         returnObjects: true,
-        fallbackLng: 'pl',
+        fallbackLng: 'en',
     },
     /** To avoid issues when deploying to some paas (vercel...) */
     localePath: typeof window === 'undefined' ? require('path').resolve('./public/locales') : '/locales',

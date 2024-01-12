@@ -1,5 +1,6 @@
 import { GraphQLError, GraphQLResponse, Thunder, ZeusScalars, chainOptions, fetchOptions } from '@/src/zeus';
 import { GetServerSidePropsContext } from 'next';
+import { getContext } from '@/src/lib/utils';
 
 let token: string | null = typeof window !== 'undefined' ? window.localStorage.getItem('token') : null;
 
@@ -92,6 +93,7 @@ export const SSGQuery = (params: { locale: string; channel: string }) => {
         locale: params?.locale as string,
         channel: params?.channel as string,
     };
+
     const HOST = `${VENDURE_HOST}?languageCode=${reqParams.locale}`;
     return VendureChain(HOST, {
         headers: {
@@ -106,10 +108,12 @@ export const SSRQuery = (context: GetServerSidePropsContext) => {
         session: context.req.cookies['session'],
         'session.sig': context.req.cookies['session.sig'],
     };
-    const locale = context.params?.locale as string;
-    const HOST = `${VENDURE_HOST}?languageCode=${locale}`;
-    const properChannel = 'pl-channel';
 
+    const ctx = getContext(context);
+    const properChannel = ctx?.params?.channel as string;
+    const locale = ctx?.params?.locale as string;
+
+    const HOST = `${VENDURE_HOST}?languageCode=${locale}`;
     return VendureChain(HOST, {
         headers: {
             Cookie: `session=${authCookies['session']}; session.sig=${authCookies['session.sig']}`,
@@ -125,10 +129,11 @@ export const SSRMutation = (context: GetServerSidePropsContext) => {
         'session.sig': context.req.cookies['session.sig'],
     };
 
-    const locale = context.params?.locale as string;
-    const HOST = `${VENDURE_HOST}?languageCode=${locale}`;
-    const properChannel = 'pl-channel';
+    const ctx = getContext(context);
+    const properChannel = ctx?.params?.channel as string;
+    const locale = ctx?.params?.locale as string;
 
+    const HOST = `${VENDURE_HOST}?languageCode=${locale}`;
     return VendureChain(HOST, {
         headers: {
             Cookie: `session=${authCookies['session']}; session.sig=${authCookies['session.sig']}`,

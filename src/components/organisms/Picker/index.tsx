@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from '@emotion/styled';
 import { Stack } from '../../atoms';
 import { LogoAexol } from '@/src/assets';
@@ -26,20 +26,17 @@ const localesWithChannels = {
     },
 };
 
-interface PickerProps {
-    onClosePicker: () => void;
-}
-
 type FormValues = {
     channel: string;
     locale: string;
 };
 
-export const Picker: React.FC<PickerProps> = ({ onClosePicker }) => {
+export const Picker: React.FC = () => {
     const { channel, locale } = useChannels();
     const { t } = useTranslation('common');
     const channels = Object.keys(localesWithChannels);
     const { query, push, pathname } = useRouter();
+    const [isOpen, setIsOpen] = useState(false);
 
     const { control, handleSubmit, watch, setValue } = useForm<FormValues>({
         defaultValues: { channel, locale },
@@ -58,35 +55,35 @@ export const Picker: React.FC<PickerProps> = ({ onClosePicker }) => {
 
         if (sameAsChannel) {
             if (pathname.includes('[channel]') && pathname.includes('[locale]')) {
-                const correctPathname = pathname
-                    .replace('[channel]', channelAsLocale === 'pl' ? '' : channelAsLocale)
-                    .replace('[locale]', sameAsChannel ? '' : (query.locale as string))
+                const splitted = pathname.split('[locale]');
+                const correctPathname = (splitted[0] + (newLang === channelAsLocale ? '' : newLang) + splitted[1])
+                    .replace('[channel]', channelAsLocale)
                     .replace('[slug]', query.slug as string)
                     .replace('[code]', query.code as string);
                 console.log(correctPathname);
                 push(correctPathname);
             }
+
             if (pathname.includes('[channel]') && !pathname.includes('[locale]')) {
-                const correctPathname = pathname
-                    .replace('[channel]', channelAsLocale === 'pl' ? '' : channelAsLocale)
+                const splitted = pathname.split('[channel]');
+                const correctPathname = (splitted[0] + channelAsLocale + splitted[1])
                     .replace('[slug]', query.slug as string)
                     .replace('[code]', query.code as string);
                 console.log(correctPathname);
                 push(correctPathname);
             }
             if (!pathname.includes('[channel]') && !pathname.includes('[locale]')) {
-                const correctPathname =
-                    pathname +
-                    '/' +
-                    channelAsLocale.replace('[slug]', query.slug as string).replace('[code]', query.code as string);
+                const correctPathname = (pathname + '/' + channelAsLocale)
+                    .replace('[slug]', query.slug as string)
+                    .replace('[code]', query.code as string);
                 console.log(correctPathname);
                 push(correctPathname);
             }
         } else {
             if (pathname.includes('[channel]') && pathname.includes('[locale]')) {
-                const correctPathname = (pathname + '/' + newLang)
-                    .replace('[channel]', channelAsLocale === 'pl' ? '' : channelAsLocale)
-                    .replace('[locale]', sameAsChannel ? newLang : (query.locale as string))
+                const splitted = pathname.split('[locale]');
+                const correctPathname = (splitted[0] + newLang + splitted[1])
+                    .replace('[channel]', channelAsLocale)
                     .replace('[slug]', query.slug as string)
                     .replace('[code]', query.code as string);
 
@@ -94,14 +91,15 @@ export const Picker: React.FC<PickerProps> = ({ onClosePicker }) => {
                 push(correctPathname);
             }
             if (pathname.includes('[channel]') && !pathname.includes('[locale]')) {
-                const correctPathname = (pathname + '/' + newLang)
-                    .replace('[channel]', query.channel as string)
+                const splitted = pathname.split('[channel]');
+                const correctPathname = (splitted[0] + channelAsLocale + '/' + newLang + splitted[1])
                     .replace('[slug]', query.slug as string)
                     .replace('[code]', query.code as string);
 
                 console.log(correctPathname);
                 push(correctPathname);
             }
+
             if (!pathname.includes('[channel]') && !pathname.includes('[locale]')) {
                 const correctPathname = (pathname + '/' + channelAsLocale + '/' + newLang)
                     .replace('[slug]', query.slug as string)
@@ -112,53 +110,62 @@ export const Picker: React.FC<PickerProps> = ({ onClosePicker }) => {
             }
         }
 
-        onClosePicker();
+        setIsOpen(false);
     };
 
     return (
-        <Overlay>
-            <form onSubmit={handleSubmit(onSubmit)}>
-                <PickerWrapper column gap={'3rem'} justifyCenter>
-                    <IconWrapper onClick={onClosePicker}>
-                        <XIcon />
-                    </IconWrapper>
-                    <LogoAexol />
-                    <Controller
-                        name="channel"
-                        control={control}
-                        render={({ field: { value, onChange } }) => (
-                            <Dropdown
-                                items={channels}
-                                placeholder={t('picker.ship-to-country')}
-                                setSelected={channel => {
-                                    onChange(channel);
-                                    setValue(
-                                        'locale',
-                                        localesWithChannels[channel as keyof typeof localesWithChannels].defaultLocale,
-                                    );
-                                }}
-                                selected={value}
+        <>
+            <button onClick={() => setIsOpen(true)}>
+                {locale} {channel}
+            </button>
+            {isOpen && (
+                <Overlay>
+                    <form onSubmit={handleSubmit(onSubmit)}>
+                        <PickerWrapper column gap={'3rem'} justifyCenter>
+                            <IconWrapper onClick={() => setIsOpen(false)}>
+                                <XIcon />
+                            </IconWrapper>
+                            <LogoAexol />
+                            <Controller
+                                name="channel"
+                                control={control}
+                                render={({ field: { value, onChange } }) => (
+                                    <Dropdown
+                                        items={channels}
+                                        placeholder={t('picker.ship-to-country')}
+                                        setSelected={channel => {
+                                            onChange(channel);
+                                            setValue(
+                                                'locale',
+                                                localesWithChannels[channel as keyof typeof localesWithChannels]
+                                                    .defaultLocale,
+                                            );
+                                        }}
+                                        selected={value}
+                                    />
+                                )}
                             />
-                        )}
-                    />
-                    <Controller
-                        name="locale"
-                        control={control}
-                        render={({ field: { value, onChange } }) => (
-                            <Dropdown
-                                items={
-                                    localesWithChannels[watch('channel') as keyof typeof localesWithChannels].locales
-                                }
-                                placeholder={t('picker.ship-to-country')}
-                                setSelected={onChange}
-                                selected={value}
+                            <Controller
+                                name="locale"
+                                control={control}
+                                render={({ field: { value, onChange } }) => (
+                                    <Dropdown
+                                        items={
+                                            localesWithChannels[watch('channel') as keyof typeof localesWithChannels]
+                                                .locales
+                                        }
+                                        placeholder={t('picker.ship-to-country')}
+                                        setSelected={onChange}
+                                        selected={value}
+                                    />
+                                )}
                             />
-                        )}
-                    />
-                    <StyledButton type="submit"> {t('picker.save')} </StyledButton>
-                </PickerWrapper>
-            </form>
-        </Overlay>
+                            <StyledButton type="submit"> {t('picker.save')} </StyledButton>
+                        </PickerWrapper>
+                    </form>
+                </Overlay>
+            )}
+        </>
     );
 };
 

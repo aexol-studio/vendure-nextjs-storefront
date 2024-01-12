@@ -9,7 +9,7 @@ import { Chevron } from '@/src/assets';
 export const LanguagePicker = () => {
     const { query, push, pathname } = useRouter();
     const { locales, defaultLocale } = nextI18nextConfig.i18n;
-    const currentLocale = (query.locale as string) || defaultLocale;
+    const currentLocale = (query.channel as string) || defaultLocale;
     const [dropdownOpen, setDropdownOpen] = useState(false);
     const menuRef = useRef<HTMLDivElement>(null);
 
@@ -36,7 +36,7 @@ export const LanguagePicker = () => {
                     onClick={() => {
                         languageDetector.cache && languageDetector.cache(newLang);
                         const correctPathname = pathname
-                            .replace('[locale]', newLang === 'en' ? '' : newLang)
+                            .replace('[channel]', newLang === 'en' ? '' : newLang)
                             .replace('[slug]', query.slug as string)
                             .replace('[code]', query.code as string);
 

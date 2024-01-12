@@ -3,7 +3,12 @@ import { i18n } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import resources from '@/src/@types/resources';
 import { GetServerSidePropsContext } from 'next';
-import { DEFAULT_CHANNEL, DEFAULT_LOCALE, channels } from './consts';
+import { channels } from './consts';
+import { getContext } from './utils';
+
+export interface ContextModel<T = Record<string, string>> {
+    params: { locale: string; channel: string } & T;
+}
 
 const getAllPossibleWithChannels = () => {
     const paths: { params: { locale?: string; channel: string } }[] = [];
@@ -11,13 +16,23 @@ const getAllPossibleWithChannels = () => {
         c.locales.forEach(locale => {
             paths.push({ params: { channel: c.slug, locale } });
         });
-        paths.push({ params: { channel: c.slug } });
+        paths.push({ params: { channel: c.slug, locale: c.nationalLocale } });
     });
+    console.log(paths);
     return paths;
 };
-export interface ContextModel<T = Record<string, string>> {
-    params: { locale: string; channel: string } & T;
-}
+
+const getStandardLocalePaths = () => {
+    const paths: { params: { locale?: string; channel: string } }[] = [];
+    channels.forEach(c => {
+        c.locales.forEach(locale => {
+            paths.push({ params: { channel: c.slug, locale } });
+        });
+        paths.push({ params: { channel: c.slug, locale: c.nationalLocale } });
+    });
+    console.log(paths);
+    return paths;
+};
 
 export const localizeGetStaticPaths = <T>(
     existingPaths: Array<{
@@ -25,7 +40,7 @@ export const localizeGetStaticPaths = <T>(
     }>,
 ) => {
     const allPaths = getAllPossibleWithChannels();
-    return allPaths.flatMap(locale =>
+    const paths = allPaths.flatMap(locale =>
         existingPaths.map(ep => ({
             ...ep,
             params: {
@@ -34,40 +49,19 @@ export const localizeGetStaticPaths = <T>(
             },
         })),
     );
+    return paths;
 };
-// getI18nPaths().flatMap(locale =>
-//     existingPaths.map(ep => ({
-//         ...ep,
-//         params: {
-//             ...ep.params,
-//             locale,
-//         },
-//     })),
-// );
 
 export async function getI18nProps(ctx: ContextModel, ns: Array<keyof typeof resources> = ['common']) {
     const locale = ctx?.params?.locale;
-    if (process.env.NODE_ENV === 'development') {
-        await i18n?.reloadResources();
-    }
+    if (process.env.NODE_ENV === 'development') await i18n?.reloadResources();
+
     const props = {
         ...(await serverSideTranslations(locale, ns)),
     };
 
     return props;
 }
-
-const getContext = (ctx: ContextModel | GetServerSidePropsContext): ContextModel => {
-    const channelSlug = ctx.params?.channel ?? DEFAULT_LOCALE;
-    const locale = ctx.params?.locale as string;
-    if (!locale) {
-        const currentLocale = channels.find(c => c.slug === channelSlug)?.nationalLocale;
-        const channel = channels.find(c => c.slug === channelSlug)?.channel ?? DEFAULT_CHANNEL;
-        return { params: { channel, locale: currentLocale ?? DEFAULT_LOCALE } };
-    }
-    const channel = channels.find(c => c.slug === channelSlug)?.channel ?? DEFAULT_CHANNEL;
-    return { params: { channel, locale } };
-};
 
 export function makeStaticProps(ns: Array<keyof typeof resources>) {
     return async function getStaticProps(ctx: ContextModel) {
@@ -94,17 +88,6 @@ export function makeServerSideProps(ns: Array<keyof typeof resources>) {
         };
     };
 }
-
-const getStandardLocalePaths = () => {
-    const paths: { params: { locale?: string; channel: string } }[] = [];
-    channels.forEach(c => {
-        c.locales.forEach(locale => {
-            paths.push({ params: { channel: c.slug, locale } });
-        });
-        paths.push({ params: { channel: c.slug, locale: '' } });
-    });
-    return paths;
-};
 
 export const getStaticPaths = () => ({
     fallback: false,

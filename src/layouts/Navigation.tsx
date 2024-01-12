@@ -18,10 +18,11 @@ import { SearchIcon } from 'lucide-react';
 import { IconButton } from '@/src/components/molecules/Button';
 import { AnnouncementBar } from '@/src/components/organisms/AnnouncementBar';
 import { CategoryBar } from './CategoryBar';
-import { NavigationSearch } from '../components/organisms/NavgationSearch';
+import { NavigationSearch } from '@/src/components/organisms/NavgationSearch';
 import { AnimatePresence, motion } from 'framer-motion';
-import { useNavigationSearch } from '../components/organisms/NavgationSearch/hooks';
+import { useNavigationSearch } from '@/src/components/organisms/NavgationSearch/hooks';
 import { useEffect, useRef } from 'react';
+// import { Picker } from '../components/organisms/Picker';
 
 interface NavigationProps {
     navigation: RootNode<NavigationType> | null;
@@ -117,6 +118,7 @@ export const Navigation: React.FC<NavigationProps> = ({ navigation, categories }
                                 <SearchIcon />
                             </IconButton>
                             <LanguagePicker />
+                            {/* <Picker /> */}
                             <UserMenu isLogged={isLogged} />
                             <CartDrawer activeOrder={cart} />
                         </Stack>

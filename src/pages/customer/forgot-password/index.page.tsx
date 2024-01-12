@@ -1,4 +1,4 @@
-import Page, { getStaticProps } from '@/src/pages/[locale]/customer/forgot-password/index.page';
+import Page, { getStaticProps } from '@/src/pages/[channel]/customer/forgot-password/index.page';
 import { Redirect } from '@/src/lib/redirect';
 import React from 'react';
 import type { InferGetStaticPropsType } from 'next';

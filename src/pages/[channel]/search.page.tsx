@@ -4,7 +4,7 @@ import { Stack } from '@/src/components/atoms/Stack';
 import { TP } from '@/src/components/atoms/TypoGraphy';
 // import { FacetFilterCheckbox } from '@/src/components/molecules/FacetFilter';
 import { ProductTile } from '@/src/components/molecules/ProductTile';
-import { storefrontApiQuery } from '@/src/graphql/client';
+import { SSRQuery } from '@/src/graphql/client';
 import { CollectionSelector, FacetSelector, ProductSearchSelector } from '@/src/graphql/selectors';
 import { getCollections } from '@/src/graphql/sharedQueries';
 import { Layout } from '@/src/layouts';
@@ -141,8 +141,12 @@ const FacetsFilters = styled(motion.div)`
 const getServerSideProps = async (context: GetServerSidePropsContext) => {
     const r = await makeServerSideProps(['common'])(context);
     const language = (context.params?.locale as string) ?? 'en';
+    const params = {
+        locale: r.context.locale,
+        channel: r.context.channel,
+    };
 
-    const collections = await getCollections(language);
+    const collections = await getCollections(params);
     const navigation = arrayToTree(collections);
 
     let page = 1;
@@ -160,11 +164,11 @@ const getServerSideProps = async (context: GetServerSidePropsContext) => {
     }
 
     //we simulate a collection with the search slug + we skip this collection everywhere else
-    const { collection } = await storefrontApiQuery(language)({
+    const { collection } = await SSRQuery(context)({
         collection: [{ slug: 'search' }, CollectionSelector],
     });
     const filters: { [key: string]: string[] } = {};
-    const facetsQuery = await storefrontApiQuery(language)({
+    const facetsQuery = await SSRQuery(context)({
         search: [
             { input: { term: q, collectionSlug: 'search', groupByProduct: true, take: PER_PAGE } },
             { facetValues: { count: true, facetValue: { ...FacetSelector, facet: FacetSelector } } },
@@ -197,7 +201,7 @@ const getServerSideProps = async (context: GetServerSidePropsContext) => {
         facetValueFilters,
         sort: sort.key === 'title' ? { name: sort.direction } : { price: sort.direction },
     };
-    const productsQuery = await storefrontApiQuery(language)({
+    const productsQuery = await SSRQuery(context)({
         search: [{ input }, { items: ProductSearchSelector, totalItems: true }],
     });
     const returnedStuff = {

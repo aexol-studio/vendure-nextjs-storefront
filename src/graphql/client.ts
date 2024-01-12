@@ -17,8 +17,6 @@ export const scalars = ZeusScalars({
     },
 });
 
-export const DEFAULT_LANGUAGE = 'en';
-export const DEFAULT_CHANNEL = 'default-channel';
 //use 'http://localhost:3000/shop-api/' in local .env file for localhost development and provide env to use on prod/dev envs
 
 export const VENDURE_HOST = `${process.env.NEXT_PUBLIC_HOST || 'https://vendure-dev.aexol.com'}/shop-api`;
@@ -65,22 +63,9 @@ const apiFetchVendure =
 
 export const VendureChain = (...options: chainOptions) => Thunder(apiFetchVendure(options));
 
-const i18nToVendure = {
-    en: 'default-channel',
-    pl: 'default-channel',
-    fr: 'default-channel',
-    de: 'default-channel',
-    ja: 'default-channel',
-    es: 'default-channel',
-    nl: 'default-channel',
-    da: 'default-channel',
-};
-
-const getChannelByLanguage = (lang: string) => i18nToVendure[lang as keyof typeof i18nToVendure] || DEFAULT_CHANNEL;
-
-export const storefrontApiQuery = (language: string, channel?: string) => {
+export const storefrontApiQuery = (language: string) => {
     const HOST = `${VENDURE_HOST}?languageCode=${language}`;
-    const properChannel = channel || getChannelByLanguage(language);
+    const properChannel = 'pl-channel';
 
     return VendureChain(HOST, {
         headers: {
@@ -90,9 +75,9 @@ export const storefrontApiQuery = (language: string, channel?: string) => {
     })('query', { scalars });
 };
 
-export const storefrontApiMutation = (language: string, channel?: string) => {
+export const storefrontApiMutation = (language: string) => {
     const HOST = `${VENDURE_HOST}?languageCode=${language}`;
-    const properChannel = channel || getChannelByLanguage(language);
+    const properChannel = 'pl-channel';
 
     return VendureChain(HOST, {
         headers: {
@@ -102,7 +87,11 @@ export const storefrontApiMutation = (language: string, channel?: string) => {
     })('mutation', { scalars });
 };
 
-export const SSGQuery = (reqParams: { locale: string; channel: string }) => {
+export const SSGQuery = (params: { locale: string; channel: string }) => {
+    const reqParams = {
+        locale: params?.locale as string,
+        channel: params?.channel as string,
+    };
     const HOST = `${VENDURE_HOST}?languageCode=${reqParams.locale}`;
     return VendureChain(HOST, {
         headers: {
@@ -117,9 +106,9 @@ export const SSRQuery = (context: GetServerSidePropsContext) => {
         session: context.req.cookies['session'],
         'session.sig': context.req.cookies['session.sig'],
     };
-    const locale = (context.params?.locale as string) || DEFAULT_LANGUAGE;
+    const locale = context.params?.locale as string;
     const HOST = `${VENDURE_HOST}?languageCode=${locale}`;
-    const properChannel = getChannelByLanguage(locale);
+    const properChannel = 'pl-channel';
 
     return VendureChain(HOST, {
         headers: {
@@ -136,9 +125,9 @@ export const SSRMutation = (context: GetServerSidePropsContext) => {
         'session.sig': context.req.cookies['session.sig'],
     };
 
-    const locale = (context.params?.locale as string) || DEFAULT_LANGUAGE;
+    const locale = context.params?.locale as string;
     const HOST = `${VENDURE_HOST}?languageCode=${locale}`;
-    const properChannel = getChannelByLanguage(locale);
+    const properChannel = 'pl-channel';
 
     return VendureChain(HOST, {
         headers: {

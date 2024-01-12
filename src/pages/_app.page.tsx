@@ -3,7 +3,7 @@ import '../styles/global.css';
 import 'keen-slider/keen-slider.min.css';
 import { AppProps } from 'next/app';
 import { appWithTranslation } from 'next-i18next';
-import { Noto_Sans_HK } from 'next/font/google';
+import { Nunito } from 'next/font/google';
 import { Global, ThemeProvider } from '@emotion/react';
 import { LightTheme } from '@/src/theme';
 import { CartProvider } from '@/src/state/cart';
@@ -12,13 +12,13 @@ import { ProductProvider } from '@/src/state/product';
 import { CollectionProvider } from '@/src/state/collection';
 import { ChannelsProvider } from '../state/channels';
 
-const sans = Noto_Sans_HK({ subsets: ['latin'] });
+const nunito = Nunito({ subsets: ['latin'] });
 
 const App = ({ Component, pageProps }: AppProps) => {
     return (
         <ThemeProvider theme={LightTheme}>
             <ChannelsProvider initialState={{ channel: pageProps.channel, locale: pageProps.locale }}>
-                <Global styles={`body { font-family:${sans.style.fontFamily}; }`} />
+                <Global styles={`body { font-family:${nunito.style.fontFamily}; }`} />
                 {/* `checkout` prop should exist only on routes with checkout functionally */}
                 {'checkout' in pageProps ? (
                     <CheckoutProvider initialState={{ checkout: pageProps.checkout, language: pageProps.language }}>

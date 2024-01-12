@@ -16,7 +16,7 @@ const getAllPossibleWithChannels = () => {
     return paths;
 };
 export interface ContextModel<T = Record<string, string>> {
-    params: { locale: string } & T;
+    params: { locale: string; channel: string } & T;
 }
 
 export const localizeGetStaticPaths = <T>(
@@ -57,9 +57,9 @@ export async function getI18nProps(ctx: ContextModel, ns: Array<keyof typeof res
     return props;
 }
 
-const getContext = (ctx: ContextModel): ContextModel => {
+const getContext = (ctx: ContextModel | GetServerSidePropsContext): ContextModel => {
     const channelSlug = ctx.params?.channel ?? DEFAULT_LOCALE;
-    const locale = ctx.params?.locale;
+    const locale = ctx.params?.locale as string;
     if (!locale) {
         const currentLocale = channels.find(c => c.slug === channelSlug)?.nationalLocale;
         const channel = channels.find(c => c.slug === channelSlug)?.channel ?? DEFAULT_CHANNEL;
@@ -83,9 +83,14 @@ export function makeStaticProps(ns: Array<keyof typeof resources>) {
 }
 
 export function makeServerSideProps(ns: Array<keyof typeof resources>) {
-    return async function getServerSideProps(context: GetServerSidePropsContext) {
+    return async function getServerSideProps(ctx: GetServerSidePropsContext) {
+        const context = getContext(ctx);
         return {
-            props: await getI18nProps({ params: { locale: context.locale || 'en' } }, ns),
+            props: await getI18nProps(context, ns),
+            context: {
+                channel: context.params.channel,
+                locale: context.params.locale,
+            },
         };
     };
 }

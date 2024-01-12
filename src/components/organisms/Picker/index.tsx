@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import styled from '@emotion/styled';
 import { Stack } from '../../atoms';
 import { LogoAexol } from '@/src/assets';
@@ -6,6 +6,10 @@ import { XIcon } from 'lucide-react';
 import { Button } from '../../molecules/Button';
 import { Dropdown } from './Dropdown';
 import { useTranslation } from 'next-i18next';
+import { Controller, SubmitHandler, useForm } from 'react-hook-form';
+import { useChannels } from '@/src/state/channels';
+import languageDetector from '@/src/lib/lngDetector';
+import { useRouter } from 'next/router';
 
 const localesWithChannels = {
     'pl-channel': {
@@ -26,48 +30,130 @@ interface PickerProps {
     onClosePicker: () => void;
 }
 
+type FormValues = {
+    channel: string;
+    locale: string;
+};
+
 export const Picker: React.FC<PickerProps> = ({ onClosePicker }) => {
+    const { channel, locale } = useChannels();
     const { t } = useTranslation('common');
     const channels = Object.keys(localesWithChannels);
-    const [selectedData, setSelectedData] = useState({
-        channel: channels[0], // narazie biorę pierwszy channel z danych
-        locale: localesWithChannels[channels[0]].defaultLocale,
-        defaultLocale: '',
+    const { query, push, pathname } = useRouter();
+
+    const { control, handleSubmit, watch, setValue } = useForm<FormValues>({
+        defaultValues: { channel, locale },
     });
 
-    const locales = localesWithChannels[selectedData.channel].locales;
+    const onSubmit: SubmitHandler<FormValues> = data => {
+        console.log(data);
+        const newLang = data.locale;
+        const channelAsLocale = localesWithChannels[data.channel as keyof typeof localesWithChannels].defaultLocale;
+        console.log(channelAsLocale, newLang);
+        const sameAsChannel = newLang === channelAsLocale;
+
+        languageDetector.cache && languageDetector.cache(newLang);
+
+        console.log(pathname);
+
+        if (sameAsChannel) {
+            if (pathname.includes('[channel]') && pathname.includes('[locale]')) {
+                const correctPathname = pathname
+                    .replace('[channel]', channelAsLocale === 'pl' ? '' : channelAsLocale)
+                    .replace('[locale]', sameAsChannel ? '' : (query.locale as string))
+                    .replace('[slug]', query.slug as string)
+                    .replace('[code]', query.code as string);
+                console.log(correctPathname);
+                push(correctPathname);
+            }
+            if (pathname.includes('[channel]') && !pathname.includes('[locale]')) {
+                const correctPathname = pathname
+                    .replace('[channel]', channelAsLocale === 'pl' ? '' : channelAsLocale)
+                    .replace('[slug]', query.slug as string)
+                    .replace('[code]', query.code as string);
+                console.log(correctPathname);
+                push(correctPathname);
+            }
+            if (!pathname.includes('[channel]') && !pathname.includes('[locale]')) {
+                const correctPathname =
+                    pathname +
+                    '/' +
+                    channelAsLocale.replace('[slug]', query.slug as string).replace('[code]', query.code as string);
+                console.log(correctPathname);
+                push(correctPathname);
+            }
+        } else {
+            if (pathname.includes('[channel]') && pathname.includes('[locale]')) {
+                const correctPathname = (pathname + '/' + newLang)
+                    .replace('[channel]', channelAsLocale === 'pl' ? '' : channelAsLocale)
+                    .replace('[locale]', sameAsChannel ? newLang : (query.locale as string))
+                    .replace('[slug]', query.slug as string)
+                    .replace('[code]', query.code as string);
+
+                console.log(correctPathname);
+                push(correctPathname);
+            }
+            if (pathname.includes('[channel]') && !pathname.includes('[locale]')) {
+                const correctPathname = (pathname + '/' + newLang)
+                    .replace('[channel]', query.channel as string)
+                    .replace('[slug]', query.slug as string)
+                    .replace('[code]', query.code as string);
+
+                console.log(correctPathname);
+                push(correctPathname);
+            }
+            if (!pathname.includes('[channel]') && !pathname.includes('[locale]')) {
+                const correctPathname = (pathname + '/' + channelAsLocale + '/' + newLang)
+                    .replace('[slug]', query.slug as string)
+                    .replace('[code]', query.code as string);
+
+                console.log(correctPathname);
+                push(correctPathname);
+            }
+        }
+
+        onClosePicker();
+    };
 
     return (
         <Overlay>
-            <form onSubmit={() => console.log(selectedData)}>
+            <form onSubmit={handleSubmit(onSubmit)}>
                 <PickerWrapper column gap={'3rem'} justifyCenter>
                     <IconWrapper onClick={onClosePicker}>
                         <XIcon />
                     </IconWrapper>
                     <LogoAexol />
-                    <Dropdown
-                        items={channels}
-                        placeholder={t('picker.ship-to-country')}
-                        setSelected={channel =>
-                            setSelectedData({
-                                ...selectedData,
-                                channel: channel,
-                                defaultLocale: localesWithChannels[channel].defaultLocale,
-                                locale: localesWithChannels[channel].defaultLocale,
-                            })
-                        }
-                        selected={selectedData.channel}
+                    <Controller
+                        name="channel"
+                        control={control}
+                        render={({ field: { value, onChange } }) => (
+                            <Dropdown
+                                items={channels}
+                                placeholder={t('picker.ship-to-country')}
+                                setSelected={channel => {
+                                    onChange(channel);
+                                    setValue(
+                                        'locale',
+                                        localesWithChannels[channel as keyof typeof localesWithChannels].defaultLocale,
+                                    );
+                                }}
+                                selected={value}
+                            />
+                        )}
                     />
-                    <Dropdown
-                        items={locales}
-                        placeholder={t('picker.change-language')}
-                        setSelected={locale =>
-                            setSelectedData({
-                                ...selectedData,
-                                locale: locale,
-                            })
-                        }
-                        selected={selectedData.locale}
+                    <Controller
+                        name="locale"
+                        control={control}
+                        render={({ field: { value, onChange } }) => (
+                            <Dropdown
+                                items={
+                                    localesWithChannels[watch('channel') as keyof typeof localesWithChannels].locales
+                                }
+                                placeholder={t('picker.ship-to-country')}
+                                setSelected={onChange}
+                                selected={value}
+                            />
+                        )}
                     />
                     <StyledButton type="submit"> {t('picker.save')} </StyledButton>
                 </PickerWrapper>

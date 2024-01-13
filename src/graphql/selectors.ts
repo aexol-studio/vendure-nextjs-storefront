@@ -519,7 +519,7 @@ export const homePageSlidersSelector = Selector('Collection')({
                 currencyCode: true,
                 priceWithTax: true,
                 featuredAsset: { preview: true },
-                product: { slug: true, featuredAsset: { preview: true } },
+                product: { collections: { slug: true, name: true }, slug: true, featuredAsset: { preview: true } },
             },
         },
     ],

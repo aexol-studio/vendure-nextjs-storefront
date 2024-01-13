@@ -29,15 +29,7 @@ export const Home: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = pr
                     }
                 />
                 <ContentContainer>
-                    <Stack gap="4rem" column>
-                        <HomePageSliders sliders={props.sliders} />
-                        {/* <MainBar title={t('most-wanted')} categories={props.categories} />
-                        <MainGrid>
-                            {props.products.map(p => (
-                                <ProductTile lazy collections={props.categories} product={p} key={p.slug} />
-                            ))}
-                        </MainGrid> */}
-                    </Stack>
+                    <HomePageSliders sliders={props.sliders} />
                 </ContentContainer>
             </Main>
         </Layout>

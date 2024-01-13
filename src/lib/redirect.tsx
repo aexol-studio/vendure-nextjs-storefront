@@ -13,9 +13,9 @@ export const useRedirect = ({ to }: { to?: string }) => {
     to = to || router.asPath.replace('/[channel]', '');
     useEffect(() => {
         const detectedLng = languageDetector.detect();
-        if (detectedLng === DEFAULT_LOCALE) {
-            return;
-        }
+        // if (detectedLng === DEFAULT_LOCALE) {
+        //     return;
+        // }
         if (to?.startsWith('/' + detectedLng) && router.route !== '/404') {
             router.replace('/' + detectedLng + router.route.replace('/[channel]', ''));
             return;
@@ -29,13 +29,16 @@ export const useRedirect = ({ to }: { to?: string }) => {
 };
 
 export const Redirect =
-    ({ children }: { children?: React.ReactNode }) =>
+    (
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        { children }: { children?: React.ReactNode },
+    ) =>
     // eslint-disable-next-line react/display-name
     () => {
-        const detectedLng = languageDetector.detect();
-        if (detectedLng === DEFAULT_LOCALE) {
-            return children;
-        }
+        // const detectedLng = languageDetector.detect();
+        // if (detectedLng === DEFAULT_LOCALE) {
+        //     return children;
+        // }
         useRedirect({});
         return <AppLoader />;
     };

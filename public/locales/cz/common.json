@@ -132,36 +132,27 @@
     },
     "seeAll": "Zobrazit vše",
     "footer": {
+        "notify": {
+            "header": "Stay radiant!",
+            "paragraph": "Join our newsletter for exclusive offers & beauty tips",
+            "placeholder": "email@example.com",
+            "alert": "Notified!"
+        },
         "sections": [
             {
-                "header": "Nejprodávanější produkty",
-                "linksTitles": ["Laptop", "Tablet", "Bezdrátová optická myš", "Kabel USB", "Ethernetový kabel"]
+                "header": "Skin care essentials",
+                "linksTitles": ["Face care", "Body care"]
             },
             {
-                "header": "Akce + nabídky",
-                "linksTitles": [
-                    "Doporučte přítele a získejte 10% slevu",
-                    "Zaregistrujte se a získejte 20% slevu",
-                    "Napište nám a získejte 25% slevu",
-                    "Všechny propagační akce + nabídky"
-                ]
+                "header": "Hair care & more",
+                "linksTitles": ["Scalp & hair health", "Lips moisturizing"]
             },
             {
-                "header": "Kontaktujte nás",
-                "contactInfo": [
-                    "4-500-600-44332",
-                    "Pondělí - pátek: 9:00 - 20:00",
-                    "Sobota: 10:00 - 16:40 HOD.",
-                    "Neděle - ZAVŘENO"
-                ]
-            },
-            {
-                "header": "Informace",
-                "linksTitles": ["Účet", "Stav objednávky", "Vrací se", "ČASTO KLADENÉ DOTAZY", "Zpětná vazba"]
-            },
-            { "header": "Společnost", "linksTitles": ["Naše historie", "Blog"] }
+                "header": "Relaxation & renewal",
+                "linksTitles": ["Feet care", "Body treatments"]
+            }
         ],
-        "law": ["Zásady ochrany osobních údajů", "Podmínky a pravidla", "Zásady používání souborů cookie"]
+        "law": ["About us", "Provacy policy", "Terms & conditions"]
     },
     "picker": {
         "ship-to-country": "Ship to country",

@@ -135,36 +135,27 @@
     },
     "seeAll": "Alle anzeigen",
     "footer": {
+        "notify": {
+            "header": "Stay radiant!",
+            "paragraph": "Join our newsletter for exclusive offers & beauty tips",
+            "placeholder": "email@example.com",
+            "alert": "Notified!"
+        },
         "sections": [
             {
-                "header": "Bestseller",
-                "linksTitles": ["Laptop", "Tablet", "Kabellose optische Maus", "USB-Kabel", "Ethernet-Kabel"]
+                "header": "Skin care essentials",
+                "linksTitles": ["Face care", "Body care"]
             },
             {
-                "header": "Aktionen + Angebote",
-                "linksTitles": [
-                    "Empfehle einen Freund und erhalte 10% Rabatt",
-                    "Registrieren und 20% Rabatt erhalten",
-                    "Schicke uns eine SMS und erhalte 25% Rabatt",
-                    "Alle Aktionen + Angebote"
-                ]
+                "header": "Hair care & more",
+                "linksTitles": ["Scalp & hair health", "Lips moisturizing"]
             },
             {
-                "header": "Kontakt",
-                "contactInfo": [
-                    "4-500-600-44332",
-                    "Montag - Freitag: 9 AM - 20 PM",
-                    "Samstag: 10 UHR - 16:40 UHR",
-                    "Sonntag - GESCHLOSSEN"
-                ]
-            },
-            {
-                "header": "Informationen",
-                "linksTitles": ["Konto", "Status der Bestellung", "Rückgabe", "FAQ", "Feedback"]
-            },
-            { "header": "Unternehmen", "linksTitles": ["Unsere Geschichte", "Blog"] }
+                "header": "Relaxation & renewal",
+                "linksTitles": ["Feet care", "Body treatments"]
+            }
         ],
-        "law": ["Datenschutzrichtlinie", "Bedingungen und Konditionen", "Cookie-Richtlinie"]
+        "law": ["About us", "Provacy policy", "Terms & conditions"]
     },
     "picker": {
         "ship-to-country": "Ship to country",

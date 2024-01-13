@@ -12,8 +12,8 @@ export const DEFAULT_CHANNEL = 'default-channel';
 export const DEFAULT_LOCALE = 'en';
 export const DEFAULT_NATIONAL_LOCALE = 'en';
 export const channels = [
-    { slug: DEFAULT_LOCALE, channel: DEFAULT_CHANNEL, nationalLocale: DEFAULT_NATIONAL_LOCALE, locales: [] },
-    { slug: 'pl', channel: 'default-channel', nationalLocale: 'en', locales: [] },
+    { slug: DEFAULT_LOCALE, channel: DEFAULT_CHANNEL, nationalLocale: DEFAULT_NATIONAL_LOCALE, locales: ['pl'] },
+    // { slug: 'pl', channel: 'default-channel', nationalLocale: 'en', locales: [] },
     // { slug: 'fr', channel: 'default-channel', nationalLocale: 'en', locales: [] },
     // { slug: 'de', channel: 'default-channel', nationalLocale: 'en', locales: [] },
     // { slug: 'ja', channel: 'default-channel', nationalLocale: 'en', locales: [] },

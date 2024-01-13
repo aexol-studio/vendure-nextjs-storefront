@@ -13,24 +13,28 @@ export interface ContextModel<T = Record<string, string>> {
 const getAllPossibleWithChannels = () => {
     const paths: { params: { locale?: string; channel: string } }[] = [];
     channels.forEach(c => {
-        c.locales.forEach(locale => {
-            paths.push({ params: { channel: c.slug, locale } });
-        });
-        // paths.push({ params: { channel: c.slug, locale: c.nationalLocale } });
+        if (c.locales.length === 0) {
+            paths.push({ params: { channel: c.slug, locale: c.nationalLocale } });
+        } else {
+            c.locales.forEach(locale => {
+                paths.push({ params: { channel: c.slug, locale } });
+            });
+        }
     });
-    console.log(paths);
     return paths;
 };
 
 const getStandardLocalePaths = () => {
     const paths: { params: { locale?: string; channel: string } }[] = [];
     channels.forEach(c => {
-        c.locales.forEach(locale => {
-            paths.push({ params: { channel: c.slug, locale } });
-        });
-        // paths.push({ params: { channel: c.slug, locale: c.nationalLocale } });
+        if (c.locales.length === 0) {
+            paths.push({ params: { channel: c.slug, locale: c.nationalLocale } });
+        } else {
+            c.locales.forEach(locale => {
+                paths.push({ params: { channel: c.slug, locale } });
+            });
+        }
     });
-    console.log(paths);
     return paths;
 };
 

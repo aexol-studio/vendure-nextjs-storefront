@@ -1,4 +1,4 @@
-import { storefrontApiMutation } from '@/src/graphql/client';
+import { SSRMutation } from '@/src/graphql/client';
 import { getCollections } from '@/src/graphql/sharedQueries';
 import { makeServerSideProps, prepareSSRRedirect } from '@/src/lib/getStatic';
 import { arrayToTree } from '@/src/util/arrayToTree';
@@ -6,7 +6,6 @@ import { GetServerSidePropsContext } from 'next';
 
 export const getServerSideProps = async (context: GetServerSidePropsContext) => {
     const r = await makeServerSideProps(['common', 'customer'])(context);
-    const language = (context.params?.locale as string) ?? 'en';
 
     const collections = await getCollections(r.context);
     const navigation = arrayToTree(collections);
@@ -17,7 +16,7 @@ export const getServerSideProps = async (context: GetServerSidePropsContext) => 
     if (!token) return homePageRedirect;
 
     try {
-        const { verifyCustomerAccount } = await storefrontApiMutation(language)({
+        const { verifyCustomerAccount } = await SSRMutation(context)({
             verifyCustomerAccount: [
                 { token },
                 {

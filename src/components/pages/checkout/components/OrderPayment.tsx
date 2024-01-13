@@ -13,13 +13,13 @@ import { Button } from '@/src/components/molecules/Button';
 import { CreditCard } from 'lucide-react';
 import { usePush } from '@/src/lib/redirect';
 import { AnimatePresence, motion } from 'framer-motion';
+import { useChannels } from '@/src/state/channels';
 
 const STRIPE_PUBLIC_KEY = process.env.NEXT_PUBLIC_STRIPE_KEY;
 
 interface OrderPaymentProps {
     availablePaymentMethods?: AvailablePaymentMethodsType[];
     stripeData?: { paymentIntent: string | null };
-    language: string;
 }
 
 type FormValues = {
@@ -34,7 +34,8 @@ type StandardMethodMetadata = {
 
 const POSITIVE_DEFAULT_PAYMENT_STATUSES = ['PaymentAuthorized', 'PaymentSettled'];
 
-export const OrderPayment: React.FC<OrderPaymentProps> = ({ availablePaymentMethods, stripeData, language }) => {
+export const OrderPayment: React.FC<OrderPaymentProps> = ({ availablePaymentMethods, stripeData }) => {
+    const ctx = useChannels();
     const { t } = useTranslation('checkout');
     const { t: tError } = useTranslation('common');
     const { activeOrder } = useCheckout();
@@ -67,7 +68,7 @@ export const OrderPayment: React.FC<OrderPaymentProps> = ({ availablePaymentMeth
     const standardMethod = async (method: string, metadata: StandardMethodMetadata) => {
         try {
             setError(null);
-            const { addPaymentToOrder } = await storefrontApiMutation(language)({
+            const { addPaymentToOrder } = await storefrontApiMutation(ctx)({
                 addPaymentToOrder: [
                     { input: { method, metadata } },
                     {

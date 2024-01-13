@@ -130,7 +130,7 @@
         "lastName": { "required": "Příjmení je povinné" },
         "phoneNumber": { "required": "Vyžaduje se telefonní číslo" }
     },
-    "bestOf": "To nejlepší z",
+    "seeAll": "Zobrazit vše",
     "footer": {
         "sections": [
             {

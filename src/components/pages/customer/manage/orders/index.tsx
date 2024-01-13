@@ -15,10 +15,12 @@ import { useTranslation } from 'next-i18next';
 import { OrderBox } from './components/OrderBox';
 import { CustomerWrap } from '../../components/shared';
 import { getServerSideProps } from './props';
+import { useChannels } from '@/src/state/channels';
 
 const GET_MORE = 4;
 
 export const HistoryPage: React.FC<InferGetServerSidePropsType<typeof getServerSideProps>> = props => {
+    const ctx = useChannels();
     const { t } = useTranslation('customer');
     const [query, setQuery] = useState('');
     const [more, setMore] = useState(false);
@@ -28,7 +30,7 @@ export const HistoryPage: React.FC<InferGetServerSidePropsType<typeof getServerS
     const [activeOrders, setActiveOrders] = useState(props.activeCustomer?.orders.items);
 
     const lookForOrder = async (contains: string) => {
-        const { activeCustomer } = await storefrontApiQuery(props.language)({
+        const { activeCustomer } = await storefrontApiQuery(ctx)({
             activeCustomer: {
                 ...ActiveCustomerSelector,
                 orders: [
@@ -71,7 +73,7 @@ export const HistoryPage: React.FC<InferGetServerSidePropsType<typeof getServerS
 
     const onLoadMore = async () => {
         setMore(true);
-        const { activeCustomer } = await storefrontApiQuery(props.language)({
+        const { activeCustomer } = await storefrontApiQuery(ctx)({
             activeCustomer: {
                 ...ActiveCustomerSelector,
                 orders: [
@@ -97,7 +99,7 @@ export const HistoryPage: React.FC<InferGetServerSidePropsType<typeof getServerS
         <Layout categories={props.collections} navigation={props.navigation} pageTitle={t('ordersPage.title')}>
             <ContentContainer>
                 <CustomerWrap w100 itemsStart gap="1.75rem">
-                    <CustomerNavigation language={props.language} />
+                    <CustomerNavigation />
                     <Stack column w100 gap="1rem">
                         <TP size="2.5rem" weight={600}>
                             {t('ordersPage.title')}

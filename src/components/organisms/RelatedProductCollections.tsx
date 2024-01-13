@@ -2,16 +2,15 @@ import { CollectionTileType } from '@/src/graphql/selectors';
 import React from 'react';
 import { TH2, Stack } from '@/src/components/atoms';
 
-import { useTranslation } from 'next-i18next';
 import { Slider } from './Slider';
 import { ProductImageWithInfo } from '@/src/components/molecules/ProductImageWithInfo';
 
 interface RelatedProductCollectionsProps {
+    title: string;
     collections?: CollectionTileType[];
 }
 
-export const RelatedProductCollections: React.FC<RelatedProductCollectionsProps> = ({ collections }) => {
-    const { t } = useTranslation('common');
+export const RelatedProductCollections: React.FC<RelatedProductCollectionsProps> = ({ title, collections }) => {
     if (!collections?.length) return null;
 
     const slides = collections.map(collection => (
@@ -28,7 +27,7 @@ export const RelatedProductCollections: React.FC<RelatedProductCollectionsProps>
 
     return (
         <Stack column gap="2rem">
-            <TH2>{t('related-collections')}</TH2>
+            <TH2>{title}</TH2>
             <Slider withDots spacing={16} slides={slides} />
         </Stack>
     );

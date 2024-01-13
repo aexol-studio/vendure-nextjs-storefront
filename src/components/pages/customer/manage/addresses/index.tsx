@@ -13,11 +13,13 @@ import { useTranslation } from 'next-i18next';
 import { CustomerWrap } from '../../components/shared';
 import { baseCountryFromLanguage } from '@/src/util/baseCountryFromLanguage';
 import { getServerSideProps } from './props';
+import { useChannels } from '@/src/state/channels';
 
 export const AddressesPage: React.FC<InferGetServerSidePropsType<typeof getServerSideProps>> = props => {
     const { t } = useTranslation('customer');
+    const ctx = useChannels();
     const { activeCustomer, addressToEdit, deleting, onDelete, onEdit, onModalClose, onSubmitCreate, onSubmitEdit } =
-        useAddresses(props.activeCustomer, props.language);
+        useAddresses(props.activeCustomer, ctx);
 
     const country =
         activeCustomer.addresses?.find(a => a.defaultBillingAddress || a.defaultShippingAddress)?.country?.code ??
@@ -55,7 +57,7 @@ export const AddressesPage: React.FC<InferGetServerSidePropsType<typeof getServe
             </AnimatePresence>
             <ContentContainer>
                 <CustomerWrap w100 itemsStart gap="1.75rem">
-                    <CustomerNavigation language={props.language} />
+                    <CustomerNavigation />
                     <Wrapper w100 gap="1.5rem">
                         <Stack w100>
                             <AddressForm

@@ -2,11 +2,9 @@ import styled from '@emotion/styled';
 import { InferGetStaticPropsType } from 'next';
 import React from 'react';
 import { useTranslation } from 'next-i18next';
-import { Stack, ContentContainer, MainGrid } from '@/src/components/atoms';
-import { BestOf } from '@/src/components/molecules/BestOf';
-import { ProductTile } from '@/src/components/molecules/ProductTile';
+import { Stack, ContentContainer } from '@/src/components/atoms';
+import { HomePageSliders } from '@/src/components/molecules/HomePageSliders';
 import { Hero } from '@/src/components/organisms/Hero';
-import { MainBar } from '@/src/components/organisms/MainBar';
 import { Layout } from '@/src/layouts';
 import type { getStaticProps } from './props';
 
@@ -32,13 +30,13 @@ export const Home: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = pr
                 />
                 <ContentContainer>
                     <Stack gap="4rem" column>
-                        <BestOf products={props.bestOf} />
-                        <MainBar title={t('most-wanted')} categories={props.categories} />
+                        <HomePageSliders sliders={props.sliders} />
+                        {/* <MainBar title={t('most-wanted')} categories={props.categories} />
                         <MainGrid>
                             {props.products.map(p => (
                                 <ProductTile lazy collections={props.categories} product={p} key={p.slug} />
                             ))}
-                        </MainGrid>
+                        </MainGrid> */}
                     </Stack>
                 </ContentContainer>
             </Main>

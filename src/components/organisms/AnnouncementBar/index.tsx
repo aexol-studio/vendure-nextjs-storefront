@@ -8,8 +8,8 @@ type AnnouncementBarType = {
     href: string;
     bgColor: string;
     textColor: string;
-    hoverTextColor: string;
-    hoverBgColor: string;
+    hoverTextColor?: string;
+    hoverBgColor?: string;
 };
 
 type Omitted = Omit<Omit<AnnouncementBarType, 'text'>, 'href'>;
@@ -63,8 +63,8 @@ const Entry = styled(Stack)<Omitted>`
     transition:
         background 0.4s ease-out,
         color 0.4s ease-out;
-    &:hover {
+    /* &:hover {
         background: ${p => p.hoverBgColor};
         color: ${p => p.hoverTextColor};
-    }
+    } */
 `;

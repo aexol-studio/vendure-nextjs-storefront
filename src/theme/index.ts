@@ -10,6 +10,8 @@ type DetailTheme = {
     text: {
         main: string;
         inactive: string;
+        subtitle: string;
+        contrast: string;
     };
     background: {
         main: string;
@@ -119,11 +121,13 @@ export const LightTheme = createTheme(300, t => ({
         third: t.gray(50),
     },
     text: {
-        main: t.gray(900),
+        main: `lch(9.72% 6.43 251.05)`,
         inactive: t.gray(200),
+        subtitle: `lch(47.82% 6.77 249.38)`,
+        contrast: t.gray(0),
     },
     button: {
-        back: t.gray(900),
+        back: '#141C23',
         front: t.gray(0),
         icon: { front: t.gray(900) },
     },

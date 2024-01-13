@@ -155,7 +155,7 @@
             "required": "Phone number is required"
         }
     },
-    "bestOf": "Best of",
+    "seeAll": "See all",
     "footer": {
         "sections": [
             {
@@ -189,5 +189,6 @@
         "ship-to-country": "Ship to country",
         "change-language": "Change language",
         "save": "Save"
-    }
+    },
+    "best-seller": "Best seller"
 }

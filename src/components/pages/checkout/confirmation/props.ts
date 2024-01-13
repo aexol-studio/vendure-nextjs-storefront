@@ -34,6 +34,6 @@ export const getServerSideProps = async (context: GetServerSidePropsContext) => 
 
         return { props: returnedStuff };
     } catch (e) {
-        return { props: { ...r.props, collections, code, navigation, orderByCode: null, language } };
+        return { props: { ...r.props, ...r.context, collections, code, navigation, orderByCode: null, language } };
     }
 };

@@ -13,10 +13,12 @@ import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { TP } from '@/src/components/atoms/TypoGraphy';
 import { getServerSideProps } from './props';
+import { useChannels } from '@/src/state/channels';
 
 type FormValues = { password: string; confirmPassword: string };
 
 export const ResetPasswordPage: React.FC<InferGetServerSidePropsType<typeof getServerSideProps>> = props => {
+    const ctx = useChannels();
     const { t } = useTranslation('customer');
     const { t: tErrors } = useTranslation('common');
 
@@ -48,7 +50,7 @@ export const ResetPasswordPage: React.FC<InferGetServerSidePropsType<typeof getS
 
     const onSubmit: SubmitHandler<FormValues> = async data => {
         try {
-            const { resetPassword } = await storefrontApiMutation(props.language)({
+            const { resetPassword } = await storefrontApiMutation(ctx)({
                 resetPassword: [
                     { password: data.password, token: props.token as string },
                     {

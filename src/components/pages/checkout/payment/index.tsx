@@ -20,7 +20,6 @@ export const PaymentPage: React.FC<InferGetServerSidePropsType<typeof getServerS
                     <OrderPayment
                         availablePaymentMethods={props.eligiblePaymentMethods}
                         stripeData={props.stripeData}
-                        language={props.language}
                     />
                     <OrderSummary />
                 </Main>

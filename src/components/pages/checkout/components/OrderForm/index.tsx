@@ -31,6 +31,7 @@ import { Link } from '@/src/components/atoms/Link';
 import { useCheckout } from '@/src/state/checkout';
 import { MoveLeft } from 'lucide-react';
 import { baseCountryFromLanguage } from '@/src/util/baseCountryFromLanguage';
+import { useChannels } from '@/src/state/channels';
 
 type Form = CreateCustomerType & {
     deliveryMethod?: string;
@@ -47,7 +48,6 @@ type Form = CreateCustomerType & {
 };
 
 interface OrderFormProps {
-    language: string;
     availableCountries?: AvailableCountriesType[];
 }
 
@@ -59,7 +59,8 @@ const isAddressesEqual = (a: object, b?: object) => {
     }
 };
 
-export const OrderForm: React.FC<OrderFormProps> = ({ availableCountries, language }) => {
+export const OrderForm: React.FC<OrderFormProps> = ({ availableCountries }) => {
+    const ctx = useChannels();
     const { activeOrder, changeShippingMethod } = useCheckout();
 
     const { t } = useTranslation('checkout');
@@ -73,8 +74,8 @@ export const OrderForm: React.FC<OrderFormProps> = ({ availableCountries, langua
 
     useEffect(() => {
         Promise.all([
-            storefrontApiQuery(language)({ activeCustomer: ActiveCustomerSelector }),
-            storefrontApiQuery(language)({ eligibleShippingMethods: ShippingMethodsSelector }),
+            storefrontApiQuery(ctx)({ activeCustomer: ActiveCustomerSelector }),
+            storefrontApiQuery(ctx)({ eligibleShippingMethods: ShippingMethodsSelector }),
         ]).then(([{ activeCustomer }, { eligibleShippingMethods }]) => {
             if (activeCustomer) setActiveCustomer(activeCustomer);
             if (eligibleShippingMethods) setShippingMethods(eligibleShippingMethods);
@@ -88,7 +89,7 @@ export const OrderForm: React.FC<OrderFormProps> = ({ availableCountries, langua
         defaultBillingAddress?.country.code ??
         defaultShippingAddress?.country.code ??
         availableCountries?.find(country => country.name === 'Poland')?.code ??
-        baseCountryFromLanguage(language);
+        baseCountryFromLanguage(ctx.locale);
 
     const {
         register,
@@ -153,13 +154,13 @@ export const OrderForm: React.FC<OrderFormProps> = ({ availableCountries, langua
             if (deliveryMethod && activeOrder?.shippingLines[0]?.shippingMethod.id !== deliveryMethod) {
                 await changeShippingMethod(deliveryMethod);
             }
-            const { nextOrderStates } = await storefrontApiQuery(language)({ nextOrderStates: true });
+            const { nextOrderStates } = await storefrontApiQuery(ctx)({ nextOrderStates: true });
             if (!nextOrderStates.includes('ArrangingPayment')) {
                 setError('root', { message: tErrors(`errors.backend.UNKNOWN_ERROR`) });
                 return;
             }
             // Set the billing address for the order
-            const { setOrderBillingAddress } = await storefrontApiMutation(language)({
+            const { setOrderBillingAddress } = await storefrontApiMutation(ctx)({
                 setOrderBillingAddress: [
                     {
                         input: {
@@ -185,7 +186,7 @@ export const OrderForm: React.FC<OrderFormProps> = ({ availableCountries, langua
             // Set the shipping address for the order
             if (shippingDifferentThanBilling) {
                 // Set the shipping address for the order if it is different than billing
-                const { setOrderShippingAddress } = await storefrontApiMutation(language)({
+                const { setOrderShippingAddress } = await storefrontApiMutation(ctx)({
                     setOrderShippingAddress: [
                         { input: { ...shipping, defaultBillingAddress: false, defaultShippingAddress: false } },
                         {
@@ -202,7 +203,7 @@ export const OrderForm: React.FC<OrderFormProps> = ({ availableCountries, langua
                 }
             } else {
                 // Set the billing address for the order if it is the same as shipping
-                const { setOrderShippingAddress } = await storefrontApiMutation(language)({
+                const { setOrderShippingAddress } = await storefrontApiMutation(ctx)({
                     setOrderShippingAddress: [
                         { input: { ...billing, defaultBillingAddress: false, defaultShippingAddress: false } },
                         {
@@ -220,7 +221,7 @@ export const OrderForm: React.FC<OrderFormProps> = ({ availableCountries, langua
             }
 
             if (!activeCustomer) {
-                const { setCustomerForOrder } = await storefrontApiMutation(language)({
+                const { setCustomerForOrder } = await storefrontApiMutation(ctx)({
                     setCustomerForOrder: [
                         { input: { emailAddress, firstName, lastName, phoneNumber } },
                         {
@@ -249,7 +250,7 @@ export const OrderForm: React.FC<OrderFormProps> = ({ availableCountries, langua
             }
 
             // Set the order state to ArrangingPayment
-            const { transitionOrderToState } = await storefrontApiMutation(language)({
+            const { transitionOrderToState } = await storefrontApiMutation(ctx)({
                 transitionOrderToState: [
                     { state: 'ArrangingPayment' },
                     {
@@ -268,7 +269,7 @@ export const OrderForm: React.FC<OrderFormProps> = ({ availableCountries, langua
 
             // After all create account if needed and password is provided
             if (!activeCustomer && createAccount && password) {
-                await storefrontApiMutation(language)({
+                await storefrontApiMutation(ctx)({
                     registerCustomerAccount: [
                         { input: { emailAddress, firstName, lastName, phoneNumber, password } },
                         {

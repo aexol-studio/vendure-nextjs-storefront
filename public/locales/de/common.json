@@ -133,7 +133,7 @@
         "lastName": { "required": "Nachname ist erforderlich" },
         "phoneNumber": { "required": "Telefonnummer ist erforderlich" }
     },
-    "bestOf": "Best of",
+    "seeAll": "Alle anzeigen",
     "footer": {
         "sections": [
             {

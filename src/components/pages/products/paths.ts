@@ -1,9 +1,10 @@
-import { storefrontApiQuery } from '@/src/graphql/client';
+import { SSGQuery } from '@/src/graphql/client';
 import { ProductSlugSelector } from '@/src/graphql/selectors';
+import { DEFAULT_CHANNEL, DEFAULT_LOCALE } from '@/src/lib/consts';
 import { localizeGetStaticPaths } from '@/src/lib/getStatic';
 
 export const getStaticPaths = async () => {
-    const resp = await storefrontApiQuery('pl')({
+    const resp = await SSGQuery({ channel: DEFAULT_CHANNEL, locale: DEFAULT_LOCALE })({
         products: [{}, { items: ProductSlugSelector }],
     });
     const paths = localizeGetStaticPaths(

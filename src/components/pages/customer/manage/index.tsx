@@ -14,12 +14,8 @@ export const ManageAccountPage: React.FC<InferGetServerSidePropsType<typeof getS
         <Layout categories={props.collections} navigation={props.navigation} pageTitle={t('accountPage.title')}>
             <ContentContainer>
                 <CustomerWrap itemsStart w100 gap="3rem">
-                    <CustomerNavigation language={props.language} />
-                    <CustomerForm
-                        initialCustomer={props.activeCustomer}
-                        order={props.lastOrder}
-                        language={props.language}
-                    />
+                    <CustomerNavigation />
+                    <CustomerForm initialCustomer={props.activeCustomer} order={props.lastOrder} />
                 </CustomerWrap>
             </ContentContainer>
         </Layout>

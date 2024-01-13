@@ -16,10 +16,12 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { TP } from '@/src/components/atoms/TypoGraphy';
 import { usePush } from '@/src/lib/redirect';
 import { getStaticProps } from './props';
+import { useChannels } from '@/src/state/channels';
 
 type FormValues = RegisterCustomerInputType & { confirmPassword: string };
 
 export const SignUpPage: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = props => {
+    const ctx = useChannels();
     const { t } = useTranslation('customer');
     const { t: tErrors } = useTranslation('common');
     const [success, setSuccess] = useState<boolean>(false);
@@ -54,7 +56,7 @@ export const SignUpPage: React.FC<InferGetStaticPropsType<typeof getStaticProps>
         const { emailAddress, password } = data;
 
         try {
-            const { registerCustomerAccount } = await storefrontApiMutation(props.language)({
+            const { registerCustomerAccount } = await storefrontApiMutation(ctx)({
                 registerCustomerAccount: [
                     { input: { emailAddress, password } },
                     {

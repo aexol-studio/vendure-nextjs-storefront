@@ -1,8 +1,8 @@
-import { storefrontApiQuery } from '@/src/graphql/client';
+import { SSRQuery } from '@/src/graphql/client';
 import { CollectionSelector, FacetSelector, ProductSearchSelector } from '@/src/graphql/selectors';
 import { getCollections } from '@/src/graphql/sharedQueries';
 import { makeServerSideProps } from '@/src/lib/getStatic';
-import { PER_PAGE, reduceFacets } from '@/src/state/collection/utils';
+import { PER_PAGE, prepareFilters, reduceFacets } from '@/src/state/collection/utils';
 import { arrayToTree } from '@/src/util/arrayToTree';
 import { SortOrder, GraphQLTypes } from '@/src/zeus';
 import { GetServerSidePropsContext } from 'next';
@@ -29,25 +29,18 @@ export const getServerSideProps = async (context: GetServerSidePropsContext) => 
     }
 
     //we simulate a collection with the search slug + we skip this collection everywhere else
-    const { collection } = await storefrontApiQuery(language)({
+    const { collection } = await SSRQuery(context)({
         collection: [{ slug: 'search' }, CollectionSelector],
     });
-    const filters: { [key: string]: string[] } = {};
-    const facetsQuery = await storefrontApiQuery(language)({
+    const facetsQuery = await SSRQuery(context)({
         search: [
             { input: { term: q, collectionSlug: 'search', groupByProduct: true, take: PER_PAGE } },
             { facetValues: { count: true, facetValue: { ...FacetSelector, facet: FacetSelector } } },
         ],
     });
     const facets = reduceFacets(facetsQuery.search.facetValues);
-    Object.entries(context.query).forEach(([key, value]) => {
-        if (key === 'slug' || key === 'locale' || key === 'page' || key === 'sort' || !value) return;
-        const facetGroup = facets.find(f => f.name === key);
-        if (!facetGroup) return;
-        const facet = facetGroup.values?.find(v => v.name === value);
-        if (!facet) return;
-        filters[facetGroup.id] = [...(filters[facetGroup.id] || []), facet.id];
-    });
+    const filters = prepareFilters(context.query, facets);
+
     const facetValueFilters: GraphQLTypes['FacetValueFilterInput'][] = [];
     Object.entries(filters).forEach(([key, value]) => {
         const facet = facets.find(f => f.id === key);
@@ -66,7 +59,7 @@ export const getServerSideProps = async (context: GetServerSidePropsContext) => 
         facetValueFilters,
         sort: sort.key === 'title' ? { name: sort.direction } : { price: sort.direction },
     };
-    const productsQuery = await storefrontApiQuery(language)({
+    const productsQuery = await SSRQuery(context)({
         search: [{ input }, { items: ProductSearchSelector, totalItems: true }],
     });
     const returnedStuff = {

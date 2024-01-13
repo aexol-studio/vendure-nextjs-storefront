@@ -9,13 +9,13 @@ import { getServerSideProps } from './props';
 
 export const CheckoutPage: React.FC<InferGetServerSidePropsType<typeof getServerSideProps>> = props => {
     const { t } = useTranslation('checkout');
-    const { availableCountries, YMALProducts, language } = props;
+    const { availableCountries, YMALProducts } = props;
 
     return (
         <CheckoutLayout pageTitle={`${t('seoTitles.checkout')}`}>
             <Content>
                 <Main w100 justifyBetween>
-                    <OrderForm availableCountries={availableCountries} language={language} />
+                    <OrderForm availableCountries={availableCountries} />
                     <OrderSummary isForm YMALProducts={YMALProducts} />
                 </Main>
             </Content>

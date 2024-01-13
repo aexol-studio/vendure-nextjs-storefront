@@ -1,4 +1,4 @@
-import { SSRQuery, storefrontApiQuery } from '@/src/graphql/client';
+import { SSRQuery } from '@/src/graphql/client';
 import { ActiveCustomerSelector, AvailableCountriesSelector } from '@/src/graphql/selectors';
 import { getCollections } from '@/src/graphql/sharedQueries';
 import { makeServerSideProps, prepareSSRRedirect } from '@/src/lib/getStatic';
@@ -19,7 +19,7 @@ export const getServerSideProps = async (context: GetServerSidePropsContext) => 
         });
         if (!activeCustomer) throw new Error('No active customer');
 
-        const { availableCountries } = await storefrontApiQuery(language)({
+        const { availableCountries } = await SSRQuery(context)({
             availableCountries: AvailableCountriesSelector,
         });
 

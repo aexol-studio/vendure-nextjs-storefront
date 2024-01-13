@@ -9,6 +9,7 @@ import { CustomerLastOrder } from '../atoms/CustomerLastOrder';
 import { useTranslation } from 'next-i18next';
 import * as z from 'zod';
 import { CustomerWrap, Form, StyledButton } from '../atoms/shared';
+import { useChannels } from '@/src/state/channels';
 
 type CustomerDataForm = {
     addressEmail: ActiveCustomerType['emailAddress'];
@@ -20,8 +21,8 @@ type CustomerDataForm = {
 export const CustomerDetailsForm: React.FC<{
     initialCustomer: ActiveCustomerType;
     order: ActiveOrderType | null;
-    language: string;
-}> = ({ initialCustomer, order, language }) => {
+}> = ({ initialCustomer, order }) => {
+    const ctx = useChannels();
     const { t } = useTranslation('customer');
     const { t: tErrors } = useTranslation('common');
     const [activeCustomer, setActiveCustomer] = useState<ActiveCustomerType>(initialCustomer);
@@ -60,7 +61,7 @@ export const CustomerDetailsForm: React.FC<{
         if (isDirty) return;
 
         try {
-            const { updateCustomer } = await storefrontApiMutation(language)({
+            const { updateCustomer } = await storefrontApiMutation(ctx)({
                 updateCustomer: [{ input: { firstName, lastName, phoneNumber } }, ActiveCustomerSelector],
             });
 

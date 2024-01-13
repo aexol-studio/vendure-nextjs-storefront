@@ -9,10 +9,12 @@ import { usePush } from '@/src/lib/redirect';
 import { TP, Stack } from '@/src/components/atoms';
 import { useTranslation } from 'next-i18next';
 import { getServerSideProps } from './props';
+import { useChannels } from '@/src/state/channels';
 
 const MAX_RETRIES = 3;
 
 export const ConfirmationPage: React.FC<InferGetServerSidePropsType<typeof getServerSideProps>> = props => {
+    const ctx = useChannels();
     const { t } = useTranslation('checkout');
     const [order, setOrder] = useState<OrderType | null>(props.orderByCode);
     const push = usePush();
@@ -22,7 +24,7 @@ export const ConfirmationPage: React.FC<InferGetServerSidePropsType<typeof getSe
 
         const fetchOrder = async () => {
             try {
-                const { orderByCode } = await storefrontApiQuery(props.language)({
+                const { orderByCode } = await storefrontApiQuery(ctx)({
                     orderByCode: [{ code: props.code }, OrderSelector],
                 });
                 if (orderByCode && !orderByCode.active) setOrder(orderByCode);

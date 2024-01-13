@@ -17,8 +17,10 @@ import { TP } from '@/src/components/atoms/TypoGraphy';
 import { useCart } from '@/src/state/cart';
 import { Absolute, Form, FormContainer, FormContent, FormWrapper } from '../components/shared';
 import { getStaticProps } from './props';
+import { useChannels } from '@/src/state/channels';
 
 export const SignInPage: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = props => {
+    const ctx = useChannels();
     const { t } = useTranslation('customer');
     const { t: tErrors } = useTranslation('common');
     const { fetchActiveOrder } = useCart();
@@ -42,7 +44,7 @@ export const SignInPage: React.FC<InferGetStaticPropsType<typeof getStaticProps>
     const onSubmit: SubmitHandler<LoginCustomerInputType> = async data => {
         const { emailAddress, password, rememberMe } = data;
         try {
-            const { login } = await storefrontApiMutation(props.language)({
+            const { login } = await storefrontApiMutation(ctx)({
                 login: [
                     { password, username: emailAddress, rememberMe },
                     {

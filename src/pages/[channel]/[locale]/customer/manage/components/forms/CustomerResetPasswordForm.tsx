@@ -8,6 +8,7 @@ import { Stack } from '@/src/components/atoms/Stack';
 import { Banner, Input } from '@/src/components/forms';
 import { usePush } from '@/src/lib/redirect';
 import { CustomerWrap, Form, StyledButton } from '../atoms/shared';
+import { useChannels } from '@/src/state/channels';
 
 type ResetPasswordForm = {
     oldPassword: string;
@@ -15,7 +16,8 @@ type ResetPasswordForm = {
     newPasswordConfirmation: string;
 };
 
-export const CustomerResetPasswordForm: React.FC<{ language: string }> = ({ language }) => {
+export const CustomerResetPasswordForm: React.FC = () => {
+    const ctx = useChannels();
     const push = usePush();
     const { t } = useTranslation('customer');
     const { t: tErrors } = useTranslation('common');
@@ -61,7 +63,7 @@ export const CustomerResetPasswordForm: React.FC<{ language: string }> = ({ lang
 
     const onPasswordChange: SubmitHandler<ResetPasswordForm> = async data => {
         try {
-            const { updateCustomerPassword } = await storefrontApiMutation(language)({
+            const { updateCustomerPassword } = await storefrontApiMutation(ctx)({
                 updateCustomerPassword: [
                     { currentPassword: data.oldPassword, newPassword: data.newPassword },
                     {
@@ -92,7 +94,7 @@ export const CustomerResetPasswordForm: React.FC<{ language: string }> = ({ lang
                 return;
             }
 
-            const { logout } = await storefrontApiMutation(language)({ logout: { success: true } });
+            const { logout } = await storefrontApiMutation(ctx)({ logout: { success: true } });
             if (logout.success) push('/customer/sign-in/');
         } catch (error) {
             setError('root', { message: tErrors('errors.backend.UNKNOWN_ERROR') });

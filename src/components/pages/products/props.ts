@@ -27,7 +27,7 @@ export const getStaticProps = async (context: ContextModel<{ slug?: string }>) =
     const { optionGroups: _optionGroups, ...product } = response.product;
 
     // mapping option groups to match the color names <-> hex codes
-    // const getFacetsValues = await storefrontApiQuery(language)({
+    // const getFacetsValues = await SSGQuery(r.context)({
     //     facets: [{ options: { filter: { name: { eq: 'color' } } } }, { items: { values: { name: true, code: true } } }],
     // });
 

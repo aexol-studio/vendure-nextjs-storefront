@@ -8,7 +8,7 @@ import {
 import { useState, useEffect } from 'react';
 import { SubmitHandler } from 'react-hook-form';
 
-export const useAddresses = (customer: ActiveCustomerType, language: string) => {
+export const useAddresses = (customer: ActiveCustomerType, ctx: { locale: string; channel: string }) => {
     const [activeCustomer, setActiveCustomer] = useState<ActiveCustomerType>(customer);
     const [addressToEdit, setAddressToEdit] = useState<ActiveAddressType>();
     const [deleting, setDeleting] = useState<string>();
@@ -16,7 +16,7 @@ export const useAddresses = (customer: ActiveCustomerType, language: string) => 
 
     useEffect(() => {
         const fetchCustomer = async () => {
-            const { activeCustomer } = await storefrontApiQuery(language)({
+            const { activeCustomer } = await storefrontApiQuery(ctx)({
                 activeCustomer: ActiveCustomerSelector,
             });
             if (activeCustomer) setActiveCustomer(activeCustomer);
@@ -53,7 +53,7 @@ export const useAddresses = (customer: ActiveCustomerType, language: string) => 
         }
 
         try {
-            const { updateCustomerAddress } = await storefrontApiMutation(language)({
+            const { updateCustomerAddress } = await storefrontApiMutation(ctx)({
                 updateCustomerAddress: [{ input }, { __typename: true, id: true }],
             });
             if (updateCustomerAddress) {
@@ -67,7 +67,7 @@ export const useAddresses = (customer: ActiveCustomerType, language: string) => 
 
     const onSubmitCreate: SubmitHandler<CreateAddressType> = async data => {
         try {
-            const { createCustomerAddress } = await storefrontApiMutation(language)({
+            const { createCustomerAddress } = await storefrontApiMutation(ctx)({
                 createCustomerAddress: [{ input: data }, { __typename: true, id: true }],
             });
             if (createCustomerAddress) {
@@ -81,7 +81,7 @@ export const useAddresses = (customer: ActiveCustomerType, language: string) => 
     const onDelete = async (id: string) => {
         setDeleting(id);
         try {
-            const { deleteCustomerAddress } = await storefrontApiMutation(language)({
+            const { deleteCustomerAddress } = await storefrontApiMutation(ctx)({
                 deleteCustomerAddress: [{ id }, { success: true }],
             });
             setDeleting(undefined);

@@ -130,7 +130,7 @@
         "lastName": { "required": "Nazwisko jest wymagane" },
         "phoneNumber": { "required": "Numer telefonu jest wymagany" }
     },
-    "bestOf": "Najlepsze z",
+    "seeAll": "Zobacz wszystko",
     "footer": {
         "sections": [
             {

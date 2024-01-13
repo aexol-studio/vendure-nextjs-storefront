@@ -2,17 +2,15 @@ import { NewestProductType } from '@/src/graphql/selectors';
 import React from 'react';
 import { TH2, Stack, TP } from '@/src/components/atoms';
 
-import { useTranslation } from 'next-i18next';
 import { Slider } from './Slider';
 import { ProductImageWithInfo } from '@/src/components/molecules/ProductImageWithInfo';
 
 interface NewestProductsProps {
+    title: string;
     products: NewestProductType[];
 }
 
-export const NewestProducts: React.FC<NewestProductsProps> = ({ products }) => {
-    const { t } = useTranslation('common');
-
+export const NewestProducts: React.FC<NewestProductsProps> = ({ products, title }) => {
     const slides = products.map(product => (
         <Stack column gap="1rem" itemsCenter key={product.name}>
             <ProductImageWithInfo
@@ -28,7 +26,7 @@ export const NewestProducts: React.FC<NewestProductsProps> = ({ products }) => {
 
     return (
         <Stack column gap="2rem" style={{ marginBottom: '2rem' }}>
-            <TH2>{t('newest-products')}</TH2>
+            <TH2>{title}</TH2>
             <Slider withArrows withDots spacing={32} slides={slides} />
         </Stack>
     );

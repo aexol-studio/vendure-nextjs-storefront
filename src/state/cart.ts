@@ -1,11 +1,11 @@
 import { storefrontApiMutation, storefrontApiQuery } from '@/src/graphql/client';
 import { ActiveOrderSelector, ActiveOrderType } from '@/src/graphql/selectors';
-import { useRouter } from 'next/router';
 import { useState } from 'react';
 import { createContainer } from 'unstated-next';
+import { useChannels } from './channels';
+
 const useCartContainer = createContainer(() => {
-    const { query } = useRouter();
-    const language = (query.locale ?? 'en') as string;
+    const ctx = useChannels();
     const [activeOrder, setActiveOrder] = useState<ActiveOrderType>();
     const [isLogged, setIsLogged] = useState(false);
     const [isOpen, setOpen] = useState(false);
@@ -15,8 +15,8 @@ const useCartContainer = createContainer(() => {
     const fetchActiveOrder = async () => {
         try {
             const [{ activeOrder }, { activeCustomer }] = await Promise.all([
-                storefrontApiQuery(language)({ activeOrder: ActiveOrderSelector }),
-                storefrontApiQuery(language)({ activeCustomer: { id: true } }),
+                storefrontApiQuery(ctx)({ activeOrder: ActiveOrderSelector }),
+                storefrontApiQuery(ctx)({ activeCustomer: { id: true } }),
             ]);
             setActiveOrder(activeOrder);
             setIsLogged(!!activeCustomer?.id);
@@ -31,7 +31,7 @@ const useCartContainer = createContainer(() => {
             return c && { ...c, totalQuantity: c.totalQuantity + 1 };
         });
         try {
-            const { addItemToOrder } = await storefrontApiMutation(language)({
+            const { addItemToOrder } = await storefrontApiMutation(ctx)({
                 addItemToOrder: [
                     { productVariantId: id, quantity: q },
                     {
@@ -69,7 +69,7 @@ const useCartContainer = createContainer(() => {
             return c && { ...c, lines: c.lines.filter(l => l.id !== id) };
         });
         try {
-            const { removeOrderLine } = await storefrontApiMutation(language)({
+            const { removeOrderLine } = await storefrontApiMutation(ctx)({
                 removeOrderLine: [
                     { orderLineId: id },
                     {
@@ -99,7 +99,7 @@ const useCartContainer = createContainer(() => {
             return c;
         });
         try {
-            const { adjustOrderLine } = await storefrontApiMutation(language)({
+            const { adjustOrderLine } = await storefrontApiMutation(ctx)({
                 adjustOrderLine: [
                     { orderLineId: id, quantity: q },
                     {
@@ -136,7 +136,7 @@ const useCartContainer = createContainer(() => {
 
     const applyCouponCode = async (code: string) => {
         try {
-            const { applyCouponCode } = await storefrontApiMutation(language)({
+            const { applyCouponCode } = await storefrontApiMutation(ctx)({
                 applyCouponCode: [
                     { couponCode: code },
                     {
@@ -161,7 +161,7 @@ const useCartContainer = createContainer(() => {
 
     const removeCouponCode = async (code: string) => {
         try {
-            const { removeCouponCode } = await storefrontApiMutation(language)({
+            const { removeCouponCode } = await storefrontApiMutation(ctx)({
                 removeCouponCode: [{ couponCode: code }, ActiveOrderSelector],
             });
             if (removeCouponCode?.id) {

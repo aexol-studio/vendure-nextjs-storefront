@@ -9,6 +9,7 @@ interface ProductImageWithInfoProps {
     href: string;
     text?: string;
     imageSrc?: string;
+    lazy?: boolean;
 }
 
 export const ProductImageWithInfo: React.FC<ProductImageWithInfoProps> = ({
@@ -18,10 +19,11 @@ export const ProductImageWithInfo: React.FC<ProductImageWithInfoProps> = ({
     title,
     size,
     imageSrc,
+    lazy,
 }) => {
     return (
         <StyledLink size={size} hover={text ? 1 : 0} href={href}>
-            <ProductImage src={imageSrc} size={size} alt={alt} title={title} />
+            <ProductImage {...(lazy ? { lazy: true } : {})} src={imageSrc} size={size} alt={alt} title={title} />
             <AbsoluteStyledTP upperCase size="2rem">
                 {text}
             </AbsoluteStyledTP>

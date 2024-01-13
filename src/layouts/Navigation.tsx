@@ -32,28 +32,22 @@ interface NavigationProps {
 // IT SHOULD BE MOVED TO VENDURE AS PLUGIN FOR EXAMPLE
 const entries = [
     {
-        text: 'NextJS Storefront demo made by Aexol 🚀',
-        href: 'https://aexol.com',
-        bgColor: 'lch(50% 0 0)',
-        textColor: 'lch(80% 0 0)',
-        hoverTextColor: 'lch(100% 0 0)',
-        hoverBgColor: 'lch(50% 0 0)',
+        text: 'FREE SHIPPING OVER $50',
+        href: '/',
+        bgColor: `lch(95% 0 0)`,
+        textColor: '#69737C',
     },
     {
-        text: '🔥 BEST STORE EVER 🔥',
-        href: 'https://aexol.com',
-        bgColor: 'lch(50% 0 0)',
-        textColor: 'lch(80% 0 0)',
-        hoverTextColor: 'lch(100% 0 0)',
-        hoverBgColor: 'lch(50% 0 0)',
+        text: 'SECURE PAYMENTS',
+        href: '/',
+        bgColor: `lch(95% 0 0)`,
+        textColor: '#69737C',
     },
     {
-        text: 'See best products here 👀',
+        text: 'SEE ALL PRODUCTS',
         href: '/collections/all',
-        bgColor: 'lch(50% 0 0)',
-        textColor: 'lch(80% 0 0)',
-        hoverTextColor: 'lch(100% 0 0)',
-        hoverBgColor: 'lch(50% 0 0)',
+        bgColor: `lch(95% 0 0)`,
+        textColor: '#69737C',
     },
 ];
 

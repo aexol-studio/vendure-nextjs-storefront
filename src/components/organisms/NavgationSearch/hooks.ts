@@ -1,6 +1,7 @@
 import { storefrontApiQuery } from '@/src/graphql/client';
 import { ProductSearchSelector, ProductSearchType } from '@/src/graphql/selectors';
 import { usePush } from '@/src/lib/redirect';
+import { useChannels } from '@/src/state/channels';
 import { SortOrder } from '@/src/zeus';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
@@ -18,11 +19,11 @@ const useDebounce = (value: string, delay: number) => {
 };
 
 export const useNavigationSearch = () => {
+    const ctx = useChannels();
     const { query, asPath } = useRouter();
     const push = usePush();
 
     const [searchOpen, setSearchOpen] = useState(false);
-    const language = query?.locale as string;
     const [loading, setLoading] = useState(false);
     const [searchQuery, setSearchQuery] = useState(query.q ? query.q.toString() : '');
     const [searchResults, setSearchResult] = useState<ProductSearchType[]>([]);
@@ -56,7 +57,7 @@ export const useNavigationSearch = () => {
         const getResults = async () => {
             try {
                 setLoading(true);
-                const results = await storefrontApiQuery(language)({
+                const results = await storefrontApiQuery(ctx)({
                     search: [
                         {
                             input: {

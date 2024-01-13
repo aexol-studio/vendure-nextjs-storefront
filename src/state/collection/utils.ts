@@ -63,3 +63,17 @@ export const reduceFacets = (facetValues: SearchType['facetValues']): FiltersFac
         return acc;
     }, [] as FiltersFacetType[]);
 };
+
+export const prepareFilters = (query: Record<string, string | string[] | undefined>, facets: FiltersFacetType[]) => {
+    const filters: { [key: string]: string[] } = {};
+    Object.entries(query).forEach(([key, value]) => {
+        if (key === 'slug' || key === 'locale' || key === 'channel' || key === 'page' || key === 'sort' || !value)
+            return;
+        const facetGroup = facets.find(f => f.name === key);
+        if (!facetGroup) return;
+        const facet = facetGroup.values?.find(v => v.name === value);
+        if (!facet) return;
+        filters[facetGroup.id] = [...(filters[facetGroup.id] || []), facet.id];
+    });
+    return filters;
+};

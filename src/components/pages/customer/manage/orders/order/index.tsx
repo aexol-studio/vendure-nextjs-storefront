@@ -33,7 +33,7 @@ export const OrderPage: React.FC<InferGetServerSidePropsType<typeof getServerSid
             pageTitle={`${t('orderPage.title')} #${order?.code}`}>
             <ContentContainer>
                 <CustomerWrap itemsStart gap="1.75rem">
-                    <CustomerNavigation language={props.language} />
+                    <CustomerNavigation />
                     <Stack column w100 gap="3.5rem">
                         <Stack column gap="1.5rem">
                             <StyledLink href="/customer/manage/orders">

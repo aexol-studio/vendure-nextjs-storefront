@@ -4,6 +4,7 @@ import { TP } from '@/src/components/atoms/TypoGraphy';
 import { Button } from '@/src/components/molecules/Button';
 import { storefrontApiMutation } from '@/src/graphql/client';
 import { usePush } from '@/src/lib/redirect';
+import { useChannels } from '@/src/state/channels';
 import styled from '@emotion/styled';
 import { motion } from 'framer-motion';
 import { useTranslation } from 'next-i18next';
@@ -20,12 +21,13 @@ const routes = [
     },
 ];
 
-export const CustomerNavigation: React.FC<{ language: string }> = ({ language }) => {
+export const CustomerNavigation: React.FC = () => {
+    const ctx = useChannels();
     const { t } = useTranslation('customer');
     const { pathname } = useRouter();
     const push = usePush();
     const onClick = async () => {
-        await storefrontApiMutation(language)({ logout: { success: true } });
+        await storefrontApiMutation(ctx)({ logout: { success: true } });
         push('/');
     };
 

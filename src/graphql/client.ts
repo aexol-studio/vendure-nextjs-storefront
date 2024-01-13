@@ -64,26 +64,24 @@ const apiFetchVendure =
 
 export const VendureChain = (...options: chainOptions) => Thunder(apiFetchVendure(options));
 
-export const storefrontApiQuery = (language: string) => {
-    const HOST = `${VENDURE_HOST}?languageCode=${language}`;
-    const properChannel = 'pl-channel';
+export const storefrontApiQuery = (ctx: { locale: string; channel: string }) => {
+    const HOST = `${VENDURE_HOST}?languageCode=${ctx.locale}`;
 
     return VendureChain(HOST, {
         headers: {
             'Content-Type': 'application/json',
-            'vendure-token': properChannel,
+            'vendure-token': ctx.channel,
         },
     })('query', { scalars });
 };
 
-export const storefrontApiMutation = (language: string) => {
-    const HOST = `${VENDURE_HOST}?languageCode=${language}`;
-    const properChannel = 'pl-channel';
+export const storefrontApiMutation = (ctx: { locale: string; channel: string }) => {
+    const HOST = `${VENDURE_HOST}?languageCode=${ctx.locale}`;
 
     return VendureChain(HOST, {
         headers: {
             'Content-Type': 'application/json',
-            'vendure-token': properChannel,
+            'vendure-token': ctx.channel,
         },
     })('mutation', { scalars });
 };

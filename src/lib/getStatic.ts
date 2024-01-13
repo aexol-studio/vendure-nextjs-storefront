@@ -16,7 +16,7 @@ const getAllPossibleWithChannels = () => {
         c.locales.forEach(locale => {
             paths.push({ params: { channel: c.slug, locale } });
         });
-        paths.push({ params: { channel: c.slug, locale: c.nationalLocale } });
+        // paths.push({ params: { channel: c.slug, locale: c.nationalLocale } });
     });
     console.log(paths);
     return paths;
@@ -28,7 +28,7 @@ const getStandardLocalePaths = () => {
         c.locales.forEach(locale => {
             paths.push({ params: { channel: c.slug, locale } });
         });
-        paths.push({ params: { channel: c.slug, locale: c.nationalLocale } });
+        // paths.push({ params: { channel: c.slug, locale: c.nationalLocale } });
     });
     console.log(paths);
     return paths;
@@ -43,10 +43,7 @@ export const localizeGetStaticPaths = <T>(
     const paths = allPaths.flatMap(locale =>
         existingPaths.map(ep => ({
             ...ep,
-            params: {
-                ...ep.params,
-                ...locale.params,
-            },
+            params: { ...ep.params, ...locale.params },
         })),
     );
     return paths;

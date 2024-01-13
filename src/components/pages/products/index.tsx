@@ -1,19 +1,16 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { ContentContainer } from '@/src/components/atoms/ContentContainer';
-import { Facet } from '@/src/components/atoms/Facet';
 
 import { Stack } from '@/src/components/atoms/Stack';
-import { TH1, TP, TPriceBig } from '@/src/components/atoms/TypoGraphy';
+import { TH1, TP } from '@/src/components/atoms/TypoGraphy';
 import { FullWidthButton, FullWidthSecondaryButton } from '@/src/components/molecules/Button';
 import { NotifyMeForm } from '@/src/components/molecules/NotifyMeForm';
 import { NewestProducts } from '@/src/components/organisms/NewestProducts';
 // import { ProductPhotosPreview } from '@/src/components/organisms/ProductPhotosPreview';
 import { RelatedProductCollections } from '@/src/components/organisms/RelatedProductCollections';
 import { Layout } from '@/src/layouts';
-import { priceFormatter } from '@/src/util/priceFomatter';
-import { CurrencyCode } from '@/src/zeus';
 import styled from '@emotion/styled';
-import { Check, X } from 'lucide-react';
+import { Check, MinusIcon, PlusIcon, X } from 'lucide-react';
 import { InferGetStaticPropsType } from 'next';
 
 import { Trans, useTranslation } from 'next-i18next';
@@ -22,6 +19,7 @@ import { Breadcrumbs } from '@/src/components/molecules/Breadcrumbs';
 import { useProduct } from '@/src/state/product';
 import { ProductPhotosPreview } from '@/src/components/organisms/ProductPhotosPreview';
 import { getStaticProps } from '@/src/components/pages/products/props';
+import { Price } from '../../atoms';
 
 export const ProductPage: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = props => {
     const { product, variant, addingError, productOptionsGroups, handleOptionClick, handleBuyNow, handleAddToCart } =
@@ -46,33 +44,25 @@ export const ProductPage: React.FC<InferGetStaticPropsType<typeof getStaticProps
                                 name={product?.name}
                             />
                         </StickyLeft>
-                        <StyledStack w100 column gap="2.5rem">
-                            <TH1>{product?.name}</TH1>
-                            {product && product.variants.length > 1 ? (
-                                <ProductOptions
-                                    productOptionsGroups={productOptionsGroups}
-                                    handleClick={handleOptionClick}
-                                    addingError={addingError}
-                                />
-                            ) : (
-                                <FacetContainer gap="1rem">
-                                    {product?.facetValues.map(({ id, name }) => <Facet key={id}>{name}</Facet>)}
-                                </FacetContainer>
-                            )}
-
-                            {variant && (
-                                <Stack justifyBetween itemsCenter>
-                                    <Stack gap="1rem">
-                                        <TPriceBig>
-                                            {priceFormatter(
-                                                variant?.priceWithTax || 0,
-                                                variant?.currencyCode || CurrencyCode.USD,
-                                            )}
-                                        </TPriceBig>
-                                        <TPriceBig>{product?.variants[0].currencyCode}</TPriceBig>
-                                    </Stack>
-                                </Stack>
-                            )}
+                        <StyledStack w100 column gap="3.5rem">
+                            <Stack column gap="1.5rem">
+                                {Number(variant?.id) % 4 === 0 ? (
+                                    <TP color="subtitle" upperCase>
+                                        {t('best-seller')}
+                                    </TP>
+                                ) : null}
+                                <TH1 size="2.5rem">{product?.name}</TH1>
+                                {variant && <Price price={variant.priceWithTax} currencyCode={variant.currencyCode} />}
+                            </Stack>
+                            <Stack>
+                                {product && product.variants.length > 1 ? (
+                                    <ProductOptions
+                                        productOptionsGroups={productOptionsGroups}
+                                        handleClick={handleOptionClick}
+                                        addingError={addingError}
+                                    />
+                                ) : null}
+                            </Stack>
                             <Stack gap="1rem" column>
                                 {variant && Number(variant.stockLevel) > 0 && Number(variant.stockLevel) <= 10 && (
                                     <MakeItQuick size="1.25rem" weight={400}>
@@ -103,7 +93,6 @@ export const ProductPage: React.FC<InferGetStaticPropsType<typeof getStaticProps
                                     </TP>
                                 </StockInfo>
                             </Stack>
-                            <TP>{product?.description}</TP>
                             {!variant ? null : Number(variant.stockLevel) <= 0 ? (
                                 <NotifyMeForm />
                             ) : (
@@ -114,15 +103,100 @@ export const ProductPage: React.FC<InferGetStaticPropsType<typeof getStaticProps
                                     <FullWidthButton onClick={handleBuyNow}>{t('buy-now')}</FullWidthButton>
                                 </Stack>
                             )}
+                            <MultiDescription
+                                defaultOpenKeys={['Description']}
+                                data={{
+                                    'Product Information': (
+                                        <Stack column style={{ marginTop: '2rem' }}>
+                                            <Stack>
+                                                <TP>SKU:</TP>
+                                                <TP>&nbsp;{variant?.sku}</TP>
+                                            </Stack>
+                                            <Stack column>
+                                                {variant?.options.map(option => (
+                                                    <Stack key={option.code}>
+                                                        <TP>{option.name}</TP>
+                                                    </Stack>
+                                                ))}
+                                            </Stack>
+                                        </Stack>
+                                    ),
+                                    Description: <TP style={{ marginTop: '2rem' }}>{product?.description}</TP>,
+                                }}
+                            />
                         </StyledStack>
                     </Main>
-                    <NewestProducts products={props.newestProducts.products.items} />
-                    <RelatedProductCollections collections={props?.collections} />
+                    <NewestProducts title={t('newest-products')} products={props.newestProducts.products.items} />
+                    <RelatedProductCollections title={t('related-collections')} collections={props?.collections} />
                 </Wrapper>
             </ContentContainer>
         </Layout>
     );
 };
+
+const MultiDescription: React.FC<{ data: Record<string, React.ReactNode>; defaultOpenKeys?: string[] }> = ({
+    data,
+    defaultOpenKeys,
+}) => {
+    const [open, setOpen] = useState<Record<string, boolean>>(
+        Object.keys(data).reduce((acc, key) => {
+            if (defaultOpenKeys?.includes(key)) return { ...acc, [key]: true };
+            return { ...acc, [key]: false };
+        }, {}),
+    );
+
+    return (
+        <Stack column gap="2rem" style={{ marginTop: '3.5rem' }}>
+            {Object.entries(data).map(([key, children]) => (
+                <GridWrapper key={key} w100 column>
+                    <GridTitle onClick={() => setOpen({ ...open, [key]: !open[key] })}>
+                        <TP size="1.5rem" weight={400}>
+                            {key}
+                        </TP>
+                        {open[key] ? <MinusIcon size="1.5rem" /> : <PlusIcon size="1.5rem" />}
+                    </GridTitle>
+                    <Grid open={open[key]}>
+                        <GridEntry>{children}</GridEntry>
+                    </Grid>
+                    <Line />
+                </GridWrapper>
+            ))}
+        </Stack>
+    );
+};
+
+const Line = styled.div`
+    width: 100%;
+    height: 1px;
+    background-color: ${({ theme }) => theme.gray(100)};
+    margin-top: 2rem;
+`;
+
+const GridWrapper = styled(Stack)``;
+
+const Grid = styled.div<{ open: boolean }>`
+    display: grid;
+    grid-template-rows: ${({ open }) => (open ? '1fr' : '0fr')};
+    transition: grid-template-rows 0.3s ease-in-out;
+`;
+
+const GridTitle = styled.button`
+    width: 100%;
+    border: none;
+    background-color: transparent;
+    padding: 0;
+    cursor: pointer;
+
+    position: relative;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+`;
+
+const GridEntry = styled(Stack)`
+    overflow: hidden;
+`;
 
 const Wrapper = styled(Stack)`
     padding-top: 2rem;
@@ -157,14 +231,6 @@ const StyledStack = styled(Stack)`
     @media (min-width: 1024px) {
         justify-content: flex-start;
         align-items: flex-start;
-    }
-`;
-
-const FacetContainer = styled(Stack)`
-    flex-wrap: wrap;
-    justify-content: center;
-    @media (min-width: 1024px) {
-        justify-content: flex-start;
     }
 `;
 

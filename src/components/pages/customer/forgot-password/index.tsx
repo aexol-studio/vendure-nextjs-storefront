@@ -14,12 +14,14 @@ import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { TP } from '@/src/components/atoms/TypoGraphy';
 import { getStaticProps } from './props';
+import { useChannels } from '@/src/state/channels';
 
 type FormValues = {
     emailAddress: string;
 };
 
 export const ForgotPasswordPage: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = props => {
+    const ctx = useChannels();
     const { t } = useTranslation('customer');
     const { t: tErrors } = useTranslation('common');
     const [success, setSuccess] = useState<string>();
@@ -40,7 +42,7 @@ export const ForgotPasswordPage: React.FC<InferGetStaticPropsType<typeof getStat
     const onSubmit: SubmitHandler<{ emailAddress: string }> = async data => {
         const { emailAddress } = data;
         try {
-            const { requestPasswordReset } = await storefrontApiMutation(props.language)({
+            const { requestPasswordReset } = await storefrontApiMutation(ctx)({
                 requestPasswordReset: [
                     { emailAddress },
                     {

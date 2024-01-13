@@ -1,5 +1,5 @@
 import { LogoAexol } from '@/src/assets';
-import { ContentContainer, LanguagePicker } from '@/src/components/atoms';
+import { ContentContainer } from '@/src/components/atoms';
 import { UserMenu } from '@/src/components/molecules/UserMenu';
 
 import { Stack } from '@/src/components/atoms/Stack';
@@ -22,7 +22,7 @@ import { NavigationSearch } from '@/src/components/organisms/NavgationSearch';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useNavigationSearch } from '@/src/components/organisms/NavgationSearch/hooks';
 import { useEffect, useRef } from 'react';
-// import { Picker } from '../components/organisms/Picker';
+import { Picker } from '@/src/components/organisms/Picker';
 
 interface NavigationProps {
     navigation: RootNode<NavigationType> | null;
@@ -111,8 +111,8 @@ export const Navigation: React.FC<NavigationProps> = ({ navigation, categories }
                                 ref={iconRef}>
                                 <SearchIcon />
                             </IconButton>
-                            <LanguagePicker />
-                            {/* <Picker /> */}
+                            {/* <LanguagePicker /> */}
+                            <Picker />
                             <UserMenu isLogged={isLogged} />
                             <CartDrawer activeOrder={cart} />
                         </Stack>

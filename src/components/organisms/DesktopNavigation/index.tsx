@@ -17,9 +17,9 @@ export const DesktopNavigation: React.FC<NavProps> = ({ navigation }) => {
             {navigation?.children.map(collection => {
                 if (collection.children.length === 0) {
                     return (
-                        <Stack key={collection.name}>
+                        <RelativeStack w100 key={collection.name}>
                             <StyledLink href={`/collections/${collection.slug}`}>{collection.name}</StyledLink>
-                        </Stack>
+                        </RelativeStack>
                     );
                 }
                 return (
@@ -68,6 +68,11 @@ const RelativeStack = styled(Stack)`
     }
 
     &:hover {
+        & > :first-of-type {
+            text-decoration: underline;
+            text-decoration-thickness: 0.2rem;
+            text-underline-offset: 0.4rem;
+        }
         & > div {
             opacity: 1;
             visibility: visible;

@@ -11,31 +11,23 @@ export interface ContextModel<T = Record<string, string>> {
 }
 
 const getAllPossibleWithChannels = () => {
-    const paths: { params: { locale?: string; channel: string } }[] = [];
+    const paths: { params: { locale: string; channel: string } }[] = [];
     channels.forEach(c => {
         if (c.locales.length === 0) {
             paths.push({ params: { channel: c.slug, locale: c.nationalLocale } });
         } else {
-            c.locales.forEach(locale => {
-                paths.push({ params: { channel: c.slug, locale } });
-            });
+            c.locales
+                .filter(l => l !== c.nationalLocale)
+                .forEach(locale => {
+                    paths.push({ params: { channel: c.slug, locale } });
+                });
         }
     });
     return paths;
 };
 
 const getStandardLocalePaths = () => {
-    const paths: { params: { locale?: string; channel: string } }[] = [];
-    channels.forEach(c => {
-        if (c.locales.length === 0) {
-            paths.push({ params: { channel: c.slug, locale: c.nationalLocale } });
-        } else {
-            c.locales.forEach(locale => {
-                paths.push({ params: { channel: c.slug, locale } });
-            });
-        }
-    });
-    return paths;
+    return getAllPossibleWithChannels();
 };
 
 export const localizeGetStaticPaths = <T>(
@@ -95,8 +87,11 @@ export const getStaticPaths = () => ({
     paths: getStandardLocalePaths(),
 });
 
-export const prepareSSRRedirect = (where: string) => (context: GetServerSidePropsContext) => {
-    const locale = context.params?.locale || 'en';
-    const destination = locale === 'en' ? `${where}` : `/${context.params?.locale}${where}`;
+export const prepareSSRRedirect = (where: string) => (ctx: GetServerSidePropsContext) => {
+    const context = getContext(ctx);
+    const channel = context.params?.channel;
+    const locale = context.params?.locale;
+
+    const destination = `/${channel}${locale ? `/${locale}` : ''}${where}`;
     return { redirect: { destination, permanent: false } };
 };

@@ -91,15 +91,15 @@ const HeroImage = styled.img`
     object-fit: cover;
     width: 100%;
     max-width: 100%;
-    max-height: 42rem;
+    max-height: 36rem;
 
     @media (min-width: ${p => p.theme.breakpoints.md}) {
-        max-height: 32rem;
         max-width: 42rem;
+        max-height: 32rem;
     }
 
     @media (min-width: ${p => p.theme.breakpoints.lg}) {
-        max-width: 57rem;
-        max-height: 38rem;
+        max-width: 45rem;
+        max-height: 24rem;
     }
 `;

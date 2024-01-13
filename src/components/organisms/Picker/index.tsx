@@ -10,21 +10,7 @@ import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import { useChannels } from '@/src/state/channels';
 import languageDetector from '@/src/lib/lngDetector';
 import { useRouter } from 'next/router';
-
-const localesWithChannels = {
-    'pl-channel': {
-        defaultLocale: 'pl',
-        locales: ['pl', 'en'],
-    },
-    'cz-channel': {
-        defaultLocale: 'cz',
-        locales: ['cz', 'en'],
-    },
-    'de-channel': {
-        defaultLocale: 'de',
-        locales: ['de', 'en'],
-    },
-};
+import { channels } from '@/src/lib/consts';
 
 type FormValues = {
     channel: string;
@@ -34,18 +20,18 @@ type FormValues = {
 export const Picker: React.FC = () => {
     const { channel, locale } = useChannels();
     const { t } = useTranslation('common');
-    const channels = Object.keys(localesWithChannels);
     const { query, push, pathname } = useRouter();
     const [isOpen, setIsOpen] = useState(false);
+    const defaultChannel = channels.find(c => c.channel === channel)?.slug as string;
 
     const { control, handleSubmit, watch, setValue } = useForm<FormValues>({
-        defaultValues: { channel, locale },
+        defaultValues: { channel: defaultChannel, locale },
     });
 
     const onSubmit: SubmitHandler<FormValues> = data => {
         console.log(data);
         const newLang = data.locale;
-        const channelAsLocale = localesWithChannels[data.channel as keyof typeof localesWithChannels].defaultLocale;
+        const channelAsLocale = channels.find(c => c.nationalLocale === data.channel)?.nationalLocale as string;
         console.log(channelAsLocale, newLang);
         const sameAsChannel = newLang === channelAsLocale;
 
@@ -131,14 +117,14 @@ export const Picker: React.FC = () => {
                                 control={control}
                                 render={({ field: { value, onChange } }) => (
                                     <Dropdown
-                                        items={channels}
+                                        items={channels.map(c => c.slug)}
                                         placeholder={t('picker.ship-to-country')}
                                         setSelected={channel => {
                                             onChange(channel);
                                             setValue(
                                                 'locale',
-                                                localesWithChannels[channel as keyof typeof localesWithChannels]
-                                                    .defaultLocale,
+                                                channels.find(c => c.nationalLocale === channel)
+                                                    ?.nationalLocale as string,
                                             );
                                         }}
                                         selected={value}
@@ -151,8 +137,8 @@ export const Picker: React.FC = () => {
                                 render={({ field: { value, onChange } }) => (
                                     <Dropdown
                                         items={
-                                            localesWithChannels[watch('channel') as keyof typeof localesWithChannels]
-                                                .locales
+                                            channels.find(c => c.nationalLocale === watch('channel'))
+                                                ?.locales as string[]
                                         }
                                         placeholder={t('picker.ship-to-country')}
                                         setSelected={onChange}

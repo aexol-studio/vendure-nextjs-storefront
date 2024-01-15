@@ -4,6 +4,7 @@ import React from 'react';
 import languageDetector from './lngDetector';
 import styled from '@emotion/styled';
 import { Url } from 'next/dist/shared/lib/router/router';
+import { DEFAULT_LOCALE, channels } from './consts';
 
 const AppLoader = styled.div``;
 
@@ -11,19 +12,24 @@ export const useRedirect = ({ to }: { to?: string }) => {
     const router = useRouter();
     to = to || router.asPath.replace('/[channel]', '');
     useEffect(() => {
+        // TODO: Cache channel in cookie
         const detectedLng = languageDetector.detect();
+        const ch = channels.find(c => c.slug === detectedLng);
         // if (detectedLng === DEFAULT_LOCALE) {
         //     return;
         // }
-        if (to?.startsWith('/' + detectedLng) && router.route !== '/404') {
-            router.replace('/' + detectedLng + router.route.replace('/[channel]', ''));
+        const channel = ch?.slug || channels.find(c => c.locales.includes(detectedLng || ''))?.slug || DEFAULT_LOCALE;
+        const locale = ch?.slug === ch?.nationalLocale ? '' : `/${ch?.nationalLocale}`;
+
+        if (to?.startsWith('/' + channel) && router.route !== '/404') {
+            router.replace('/' + channel + router.route.replace('/[channel]', '').replace('/[locale]', locale));
             return;
         }
 
         if (detectedLng && languageDetector.cache) {
             languageDetector.cache(detectedLng);
         }
-        router.replace('/' + detectedLng + to?.replace('/[channel]', ''));
+        router.replace('/' + channel + to?.replace('/[channel]', '').replace('/[locale]', locale));
     });
 };
 

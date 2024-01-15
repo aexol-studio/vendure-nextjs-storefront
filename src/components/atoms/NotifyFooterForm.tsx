@@ -24,8 +24,8 @@ export const NotifyFooterForm = () => {
                 type="text"
                 placeholder={t('footer.notify.placeholder')}
             />
-            <button type="submit">
-                <SendHorizonal />
+            <button type="submit" style={{ display: 'flex', alignItems: 'center' }}>
+                <SendHorizonal size="2rem" />
             </button>
         </NotifyWrapper>
     );
@@ -33,6 +33,7 @@ export const NotifyFooterForm = () => {
 
 const NotifyWrapper = styled.form`
     display: flex;
+    align-items: center;
     width: max-content;
     height: max-content;
     padding: 1rem 1.2rem;

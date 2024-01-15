@@ -1,6 +1,6 @@
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
-import { ArrowLeftCircle } from 'lucide-react';
+import { ArrowLeft } from 'lucide-react';
 import React from 'react';
 import { BaseRemUnit } from '../sharedStyles';
 
@@ -19,7 +19,7 @@ export const ImageSwitcherArrow: React.FC<ImageSwitcherArrowProps> = ({
 }) => {
     return (
         <ArrowWrapper disabled={disabled} right={right} onClick={handleClick}>
-            <ArrowLeftCircle size={size || '3.5rem'} />
+            <ArrowLeft size={size || '3.5rem'} />
         </ArrowWrapper>
     );
 };
@@ -29,8 +29,17 @@ const ArrowWrapper = styled.div<{ right?: boolean; disabled?: boolean }>`
     top: 50%;
     transform: translateY(-50%);
     cursor: pointer;
-    color: ${({ theme }) => theme.gray(300)};
+
     user-select: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 6rem;
+    height: 6rem;
+
+    background: ${({ theme }) => theme.background.third};
+    border-radius: ${p => p.theme.borderRadius};
+
     :hover {
         color: ${({ theme }) => theme.gray(50)};
     }

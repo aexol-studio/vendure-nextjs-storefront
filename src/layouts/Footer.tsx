@@ -18,9 +18,9 @@ export const Footer: React.FC<{
             <Main>
                 <ContentContainer>
                     <Container column justifyBetween>
-                        <Stack column style={{ marginRight: '4rem' }}>
+                        <Stack column gap="1rem" style={{ marginRight: '4rem' }}>
                             <Stack column>
-                                <TypoGraphy as="h2" weight={400} size="2rem">
+                                <TypoGraphy as="h2" weight={400} size="2.5rem">
                                     {t('footer.notify.header')}
                                 </TypoGraphy>
                                 <TypoGraphy as="p" weight={400} size="1.5rem">

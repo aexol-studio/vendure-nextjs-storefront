@@ -8,7 +8,7 @@
     "stock-levels": {
         "in-stock": "In stock",
         "out-of-stock": "Out of stock",
-        "low-stock": "🔥 Make it quick only {{value}} left! 🔥"
+        "low-stock": "Make it quick only {{value}} left! 🔥"
     },
     "recently-viewed": "Recently viewed",
     "clients-also-bought": "Clients also bought"

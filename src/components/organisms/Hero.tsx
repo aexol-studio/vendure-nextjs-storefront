@@ -15,12 +15,14 @@ export const Hero: React.FC<{
     return (
         <Main column justifyCenter>
             <Content>
-                <TextWrapper column gap="4rem">
+                <TextWrapper column gap="2rem">
                     <Stack column gap="1rem">
-                        <TH1 weight={600}>{h1}</TH1>
-                        <TH2 weight={400} color="subtitle">
-                            {h2}
-                        </TH2>
+                        <Stack column>
+                            <TH1 weight={600}>{h1}</TH1>
+                            <TH2 weight={400} color="subtitle">
+                                {h2}
+                            </TH2>
+                        </Stack>
                         <TP size="1.75rem" color="subtitle" weight={500}>
                             {desc}
                         </TP>
@@ -46,7 +48,6 @@ export const Hero: React.FC<{
 
 const TextWrapper = styled(Stack)`
     margin-top: 1.5rem;
-    padding: 0 4rem;
     @media (min-width: ${p => p.theme.breakpoints.md}) {
         margin-top: 0;
     }
@@ -62,7 +63,7 @@ const Content = styled(Stack)`
         gap: 4rem;
         flex-direction: row;
         justify-content: space-between;
-        padding: 0 4rem;
+        align-items: center;
     }
 
     @media (min-width: 1560px) {
@@ -83,7 +84,7 @@ const StandAloneLink = styled(Link)`
 
 const Main = styled(Stack)`
     width: 100%;
-    background: ${thv.background.third};
+    background: #f8f8f8;
     padding: 4.5rem 0;
 `;
 

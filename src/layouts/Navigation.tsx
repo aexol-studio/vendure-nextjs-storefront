@@ -64,25 +64,25 @@ export const Navigation: React.FC<NavigationProps> = ({ navigation, categories }
             text: t('announcements-bar')[0],
             href: '/collections/all',
             bgColor: `lch(95% 0 0)`,
-            textColor: '#69737C',
+            textColor: '#F8F8F8',
         },
         {
             text: t('announcements-bar')[1],
             href: '/',
             bgColor: `lch(95% 0 0)`,
-            textColor: '#69737C',
+            textColor: '#F8F8F8',
         },
         {
             text: t('announcements-bar')[2],
             href: '/',
             bgColor: `lch(95% 0 0)`,
-            textColor: '#69737C',
+            textColor: '#F8F8F8',
         },
         {
             text: t('announcements-bar')[3],
             href: '/',
             bgColor: `lch(95% 0 0)`,
-            textColor: '#69737C',
+            textColor: '#F8F8F8',
         },
     ];
 
@@ -94,7 +94,7 @@ export const Navigation: React.FC<NavigationProps> = ({ navigation, categories }
                     <Stack itemsCenter justifyBetween gap="5rem" w100>
                         <Stack itemsCenter>
                             <Link ariaLabel={'Home'} href={'/'}>
-                                <LogoAexol />
+                                <LogoAexol width={60} />
                             </Link>
                         </Stack>
                         <AnimatePresence>

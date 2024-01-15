@@ -74,7 +74,7 @@ const VariantButton = styled.button`
 const ColorSwatch = styled(VariantButton)<{ color: string; outOfStock: boolean; selected: boolean }>`
     width: 3rem;
     background-color: ${p => p.color};
-    outline: 1px solid ${p => p.theme.gray(500)};
+    outline: 1px solid #dcdcdc;
     height: 3rem;
     cursor: pointer;
     ${p => p.outOfStock && `opacity: 0.5;`}

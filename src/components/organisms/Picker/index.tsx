@@ -35,19 +35,39 @@ export const Picker: React.FC = () => {
 
     const onSubmit: SubmitHandler<FormValues> = data => {
         const newLang = data.locale;
-        const channelAsLocale = channels.find(c => c.nationalLocale === data.channel)?.nationalLocale as string;
-        const sameAsChannel = newLang === channelAsLocale;
+        const channelAsLocale = channels.find(c => c.nationalLocale === data.channel);
+        const sameAsChannel = newLang === channelAsLocale?.nationalLocale;
 
         languageDetector.cache && languageDetector.cache(newLang);
 
         const haveChannel = pathname.includes('[channel]');
         const haveLocale = pathname.includes('[locale]');
 
+        if (haveChannel) {
+            const cookie = document.cookie
+                .split('; ')
+                .find(row => row.startsWith('channel'))
+                ?.split('=')[1];
+            if (cookie) {
+                if (cookie !== channelAsLocale?.channel) {
+                    document.cookie = `channel=${channelAsLocale?.channel}`;
+                } else {
+                    document.cookie = `channel=${channelAsLocale?.channel}`;
+                }
+            } else {
+                document.cookie = `channel=${channelAsLocale?.channel}`;
+            }
+        }
+
         if (sameAsChannel) {
             if (haveChannel && haveLocale) {
                 const split = pathname.split('[locale]');
-                const correctPathname = (split[0] + (newLang === channelAsLocale ? '' : newLang) + split[1])
-                    .replace('[channel]', channelAsLocale)
+                const correctPathname = (
+                    split[0] +
+                    (newLang === channelAsLocale.nationalLocale ? '' : newLang) +
+                    split[1]
+                )
+                    .replace('[channel]', channelAsLocale.nationalLocale)
                     .replace('[slug]', query.slug as string)
                     .replace('[code]', query.code as string);
                 console.log(correctPathname);
@@ -72,7 +92,7 @@ export const Picker: React.FC = () => {
             if (haveChannel && haveLocale) {
                 const split = pathname.split('[locale]');
                 const correctPathname = (split[0] + newLang + split[1])
-                    .replace('[channel]', channelAsLocale)
+                    .replace('[channel]', channelAsLocale?.nationalLocale as string)
                     .replace('[slug]', query.slug as string)
                     .replace('[code]', query.code as string);
 

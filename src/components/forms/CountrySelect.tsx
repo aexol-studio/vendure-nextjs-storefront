@@ -66,6 +66,7 @@ const SelectWrapper = styled(Stack)`
 export const StyledSelect = styled.select<{ error?: boolean }>`
     width: 100%;
     padding: 0.5rem 0.75rem;
+
     color: ${p => p.theme.gray(900)};
     border: 1px solid ${p => p.theme.gray(600)};
     :focus {

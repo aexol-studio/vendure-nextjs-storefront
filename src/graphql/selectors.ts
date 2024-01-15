@@ -184,7 +184,7 @@ export const ProductDetailSelector = Selector('Product')({
             name: true,
         },
     },
-    collections: { slug: true },
+    collections: { slug: true, name: true },
     featuredAsset: {
         source: true,
         preview: true,

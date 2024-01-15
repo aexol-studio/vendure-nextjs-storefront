@@ -20,7 +20,7 @@ export const ProductTile: React.FC<{
                 )}`;
 
     return (
-        <Main column gap="2rem">
+        <Main column gap="1rem">
             <Link href={`/products/${product.slug}/`}>
                 <ProductImageGrid
                     loading={lazy ? 'lazy' : undefined}
@@ -36,7 +36,12 @@ export const ProductTile: React.FC<{
                     .filter(c => c && c.slug !== 'all' && c.slug !== 'search')
                     .map(c => (
                         <CategoryBlock href={`/collections/${c?.slug}`} key={c?.slug}>
-                            <TP size="1.25rem" color="contrast">
+                            <TP
+                                size="1.25rem"
+                                color="contrast"
+                                upperCase
+                                weight={500}
+                                style={{ letterSpacing: '0.5px' }}>
                                 {c?.name}
                             </TP>
                         </CategoryBlock>
@@ -71,11 +76,11 @@ const ProductName = styled.div`
 const CategoryBlock = styled(Link)`
     padding: 1rem;
 
-    background-color: ${({ theme }) => theme.gray(500)};
+    background-color: #69737c;
 
     @media (min-width: ${({ theme }) => theme.breakpoints.sm}) {
         :hover {
-            background-color: ${({ theme }) => theme.gray(600)};
+            background-color: ${({ theme }) => theme.gray(500)};
         }
     }
 `;

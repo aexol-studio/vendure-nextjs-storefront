@@ -131,7 +131,7 @@ export const LightTheme = createTheme(300, t => ({
         front: t.gray(0),
         icon: { front: t.gray(900) },
     },
-    shadow: t.grayAlpha(200, 200),
+    shadow: t.grayAlpha(200, 100),
     error: '#eb1b19',
     success: '#1beb1b',
     price: {

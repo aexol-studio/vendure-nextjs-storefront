@@ -90,7 +90,8 @@ const CartComponentMain = styled(motion.div)`
     overflow-y: auto;
 
     background: ${p => p.theme.gray(0)};
-    box-shadow: 0rem 0.2rem 0.5rem ${({ theme }) => theme.shadow};
+    border-left: 1px solid ${p => p.theme.gray(100)};
+    box-shadow: 0rem 0.2rem 1rem #69737c30;
 `;
 
 const CartContainer = styled(Stack)`

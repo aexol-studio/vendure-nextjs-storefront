@@ -3,7 +3,7 @@ import '../styles/global.css';
 import 'keen-slider/keen-slider.min.css';
 import { AppProps } from 'next/app';
 import { appWithTranslation } from 'next-i18next';
-import { Nunito } from 'next/font/google';
+import { Nunito_Sans } from 'next/font/google';
 import { Global, ThemeProvider } from '@emotion/react';
 import { LightTheme } from '@/src/theme';
 import { CartProvider } from '@/src/state/cart';
@@ -12,7 +12,7 @@ import { ProductProvider } from '@/src/state/product';
 import { CollectionProvider } from '@/src/state/collection';
 import { ChannelsProvider } from '../state/channels';
 
-const nunito = Nunito({ subsets: ['latin'], variable: '--nunito-font' });
+const nunito = Nunito_Sans({ subsets: ['latin'], variable: '--nunito-font' });
 
 const App = ({ Component, pageProps }: AppProps) => {
     return (

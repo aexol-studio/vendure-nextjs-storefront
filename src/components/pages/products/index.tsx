@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 
-import { TH1, TP, ContentContainer, Stack, Price } from '@/src/components/atoms';
+import { TH1, TP, ContentContainer, Stack, Price, Link } from '@/src/components/atoms';
 import { FullWidthButton, FullWidthSecondaryButton } from '@/src/components/molecules/Button';
 import { NotifyMeForm } from '@/src/components/molecules/NotifyMeForm';
 import { ProductPageProductsSlider } from '@/src/components/organisms/ProductPageProductsSlider';
@@ -75,12 +75,23 @@ export const ProductPage: React.FC<InferGetStaticPropsType<typeof getStaticProps
                             />
                         </StickyLeft>
                         <StyledStack w100 column gap="2rem">
-                            <ProductInfoStack w100 column gap="2rem">
-                                {Number(variant?.id) % 4 === 0 ? (
-                                    <TP color="subtitle" upperCase>
-                                        {t('best-seller')}
-                                    </TP>
-                                ) : null}
+                            <ProductInfoStack w100 column gap="1rem">
+                                {product?.collections
+                                    .filter(c => c.slug !== 'all' && c.slug !== 'search')
+                                    .sort(() => -1)
+                                    .slice(0, 1)
+                                    .map(c => (
+                                        <CategoryBlock href={`/collections/${c.slug}`} key={c.slug}>
+                                            <TP
+                                                size="1.25rem"
+                                                color="subtitle"
+                                                upperCase
+                                                weight={500}
+                                                style={{ letterSpacing: '0.5px' }}>
+                                                {c.name}
+                                            </TP>
+                                        </CategoryBlock>
+                                    ))}
                                 <TH1 size="2.5rem">{product?.name}</TH1>
                                 {variant && <Price price={variant.priceWithTax} currencyCode={variant.currencyCode} />}
                             </ProductInfoStack>
@@ -145,16 +156,16 @@ export const ProductPage: React.FC<InferGetStaticPropsType<typeof getStaticProps
                                     {
                                         title: t('details'),
                                         children: (
-                                            <Stack column style={{ marginTop: '2rem' }}>
+                                            <Stack column style={{ marginTop: '1.5rem' }}>
                                                 <Stack>
-                                                    <TP>{t('sku')}</TP>
-                                                    <TP>&nbsp;{variant?.sku}</TP>
+                                                    <TP color="subtitle">{t('sku')}</TP>
+                                                    <TP color="subtitle">&nbsp;{variant?.sku}</TP>
                                                 </Stack>
                                                 {variant?.options.length ? (
                                                     <Stack column>
                                                         {variant?.options.map(option => (
                                                             <Stack key={option.code}>
-                                                                <TP>{option.name}</TP>
+                                                                <TP color="subtitle">{option.name}</TP>
                                                             </Stack>
                                                         ))}
                                                     </Stack>
@@ -164,7 +175,11 @@ export const ProductPage: React.FC<InferGetStaticPropsType<typeof getStaticProps
                                     },
                                     {
                                         title: t('description'),
-                                        children: <TP style={{ marginTop: '2rem' }}>{product?.description}</TP>,
+                                        children: (
+                                            <TP color="subtitle" style={{ marginTop: '1.5rem' }}>
+                                                {product?.description}
+                                            </TP>
+                                        ),
                                     },
                                 ]}
                             />
@@ -180,6 +195,10 @@ export const ProductPage: React.FC<InferGetStaticPropsType<typeof getStaticProps
         </Layout>
     );
 };
+
+const CategoryBlock = styled(Link)`
+    width: fit-content;
+`;
 
 const ProductInfoStack = styled(Stack)`
     border-bottom: 2px solid ${({ theme }) => theme.gray(100)};

@@ -13,11 +13,17 @@ export const useRedirect = ({ to }: { to?: string }) => {
     to = to || router.asPath.replace('/[channel]', '');
     useEffect(() => {
         // TODO: Cache channel in cookie
+        const detectedChannel = document.cookie
+            .split(';')
+            .find(c => c.trim().startsWith('channel='))
+            ?.split('=')[1];
+
         const detectedLng = languageDetector.detect();
         const ch = channels.find(c => c.slug === detectedLng);
         // if (detectedLng === DEFAULT_LOCALE) {
         //     return;
         // }
+
         const channel = ch?.slug || channels.find(c => c.locales.includes(detectedLng || ''))?.slug || DEFAULT_LOCALE;
         const locale = ch?.slug === ch?.nationalLocale ? '' : `/${ch?.nationalLocale}`;
 

@@ -619,7 +619,7 @@ export const OrderForm: React.FC<OrderFormProps> = ({ availableCountries, active
                         ) : null}
 
                         {/* Submit */}
-                        <Stack justifyBetween itemsEnd gap="3rem">
+                        <Stack column justifyBetween gap="0.5rem">
                             <CheckBox
                                 {...register('terms')}
                                 // error={errors.terms}

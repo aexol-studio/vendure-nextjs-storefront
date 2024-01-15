@@ -66,7 +66,7 @@ const Input = styled.input`
     appearance: none;
     outline: none;
 
-    padding: 0.2rem 0.5rem;
+    padding: 0.2rem 1rem;
     border: 1px solid ${p => p.theme.gray(100)};
 `;
 

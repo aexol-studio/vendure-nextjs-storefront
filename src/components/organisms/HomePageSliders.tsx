@@ -26,7 +26,9 @@ export const HomePageSliders: React.FC<BestOfI> = ({ sliders, seeAllText }) => {
                         <Stack w100 justifyBetween>
                             <TH2>{`${slider.name} (${slider.productVariants.totalItems})`}</TH2>
                             <StyledLink href={`/collections/${slider.slug}`}>
-                                <TP color="contrast">{seeAllText}</TP>
+                                <TP upperCase color="contrast" weight={500} style={{ letterSpacing: '0.5px' }}>
+                                    {seeAllText}
+                                </TP>
                             </StyledLink>
                         </Stack>
                         <Slider spacing={16} withArrows={4} slides={slides} />

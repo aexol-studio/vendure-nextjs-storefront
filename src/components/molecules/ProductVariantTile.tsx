@@ -26,9 +26,10 @@ export const ProductVariantTile: React.FC<ProductVariantTileProps> = ({
     const src = variant.featuredAsset?.preview ?? variant.product?.featuredAsset?.preview;
     const ImageLink = withoutRedirect ? ImageContainer : LinkContainer;
     const TextWrapper = withoutRedirect ? TextContainer : TextRedirectContainer;
+    const CategoryWrapper = withoutRedirect ? CategoryBlock : CategoryLinkBlock;
 
     return (
-        <Stack column key={variant.name}>
+        <Stack column key={variant.name} gap="0.5rem">
             <Stack style={{ position: 'relative', width: '32rem' }}>
                 <Categories>
                     {variant.product.collections
@@ -36,11 +37,16 @@ export const ProductVariantTile: React.FC<ProductVariantTileProps> = ({
                         .sort(() => -1)
                         .slice(0, displayAllCategories ? undefined : 1)
                         .map(c => (
-                            <CategoryBlock href={`/collections/${c.slug}`} key={c.slug}>
-                                <TP size="1.25rem" color="contrast">
+                            <CategoryWrapper href={`/collections/${c.slug}`} key={c.slug}>
+                                <TP
+                                    size="1.25rem"
+                                    color="contrast"
+                                    upperCase
+                                    weight={500}
+                                    style={{ letterSpacing: '0.5px' }}>
                                     {c.name}
                                 </TP>
-                            </CategoryBlock>
+                            </CategoryWrapper>
                         ))}
                 </Categories>
                 <ImageLink href={`/products/${variant.product.slug}?variant=${variant.id}`}>
@@ -55,9 +61,9 @@ export const ProductVariantTile: React.FC<ProductVariantTileProps> = ({
             </Stack>
             <Stack column gap="2rem">
                 <TextWrapper href={`/products/${variant.product.slug}?variant=${variant.id}`}>
-                    <Stack column gap="0.25rem">
+                    <Stack column gap="0.5rem">
                         <TP>{variant.name}</TP>
-                        <Price size="1.25rem" price={variant.priceWithTax} currencyCode={variant.currencyCode} />
+                        <Price price={variant.priceWithTax} currencyCode={variant.currencyCode} />
                     </Stack>
                     {!withoutRatings && <Ratings rating={Math.random() * 5} />}
                 </TextWrapper>
@@ -85,14 +91,19 @@ const LinkContainer = styled(Link)`
     justify-content: center;
 `;
 
-const CategoryBlock = styled(Link)`
+const CategoryBlock = styled(Stack)`
+    padding: 1rem;
+    background-color: #69737c;
+`;
+
+const CategoryLinkBlock = styled(Link)`
     padding: 1rem;
 
-    background-color: ${({ theme }) => theme.gray(500)};
+    background-color: #69737c;
 
     @media (min-width: ${({ theme }) => theme.breakpoints.sm}) {
         :hover {
-            background-color: ${({ theme }) => theme.gray(600)};
+            background-color: #5b636b;
         }
     }
 `;

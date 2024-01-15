@@ -73,12 +73,6 @@ const Wrapper = styled(Stack)``;
 const Content = styled(Stack)`
     position: relative;
     width: 100%;
-
-    :hover {
-        & > button {
-            opacity: 1;
-        }
-    }
 `;
 
 const Button = styled(motion.button)<{ left?: number }>`
@@ -98,7 +92,6 @@ const Button = styled(motion.button)<{ left?: number }>`
     ${({ left }) => (left === 1 ? 'left: -3rem;' : 'right: -3rem;')}
     z-index: 1;
 
-    opacity: 0.8;
     transition: opacity 0.3s ease;
 `;
 

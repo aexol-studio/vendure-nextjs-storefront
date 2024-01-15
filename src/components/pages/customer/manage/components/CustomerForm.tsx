@@ -1,6 +1,6 @@
 import { Stack } from '@/src/components/atoms/Stack';
 import { TP } from '@/src/components/atoms/TypoGraphy';
-import { ActiveCustomerType, ActiveOrderType } from '@/src/graphql/selectors';
+import { ActiveCustomerType } from '@/src/graphql/selectors';
 import React, { useState } from 'react';
 import { useTranslation } from 'next-i18next';
 import { CustomerResetPasswordForm } from './forms/CustomerResetPasswordForm';
@@ -10,10 +10,9 @@ import { AnimatePresence } from 'framer-motion';
 
 interface Props {
     initialCustomer: ActiveCustomerType;
-    order: ActiveOrderType | null;
 }
 
-export const CustomerForm: React.FC<Props> = ({ initialCustomer, order }) => {
+export const CustomerForm: React.FC<Props> = ({ initialCustomer }) => {
     const { t } = useTranslation('customer');
     const [view, setView] = useState<'details' | 'password'>('details');
     const handleView = (view: 'details' | 'password') => setView(view);
@@ -35,7 +34,7 @@ export const CustomerForm: React.FC<Props> = ({ initialCustomer, order }) => {
             </Stack>
             <AnimatePresence>
                 {view === 'details' ? (
-                    <CustomerDetailsForm order={order} initialCustomer={initialCustomer} />
+                    <CustomerDetailsForm initialCustomer={initialCustomer} />
                 ) : (
                     <CustomerResetPasswordForm />
                 )}

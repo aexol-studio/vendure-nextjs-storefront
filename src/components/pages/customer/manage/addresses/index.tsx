@@ -47,8 +47,10 @@ export const AddressesPage: React.FC<InferGetServerSidePropsType<typeof getServe
                 )}
             </AnimatePresence>
             <ContentContainer>
-                <CustomerWrap w100 itemsStart gap="1.75rem">
+                <Stack w100 justifyEnd>
                     <CustomerNavigation />
+                </Stack>
+                <CustomerWrap w100 itemsStart gap="1.75rem">
                     <Wrapper w100 gap="1.5rem">
                         <Stack w100>
                             <AddressForm

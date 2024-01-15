@@ -1,11 +1,10 @@
 import { Stack } from '@/src/components/atoms/Stack';
 import { Input, Banner } from '@/src/components/forms';
 import { storefrontApiMutation } from '@/src/graphql/client';
-import { ActiveCustomerSelector, ActiveCustomerType, ActiveOrderType } from '@/src/graphql/selectors';
+import { ActiveCustomerSelector, ActiveCustomerType } from '@/src/graphql/selectors';
 import { zodResolver } from '@hookform/resolvers/zod';
 import React, { useEffect, useState } from 'react';
 import { useForm, SubmitHandler } from 'react-hook-form';
-import { CustomerLastOrder } from '../atoms/CustomerLastOrder';
 import { useTranslation } from 'next-i18next';
 import * as z from 'zod';
 import { MotionCustomerWrap, Form, StyledButton } from '../atoms/shared';
@@ -20,8 +19,7 @@ type CustomerDataForm = {
 
 export const CustomerDetailsForm: React.FC<{
     initialCustomer: ActiveCustomerType;
-    order: ActiveOrderType | null;
-}> = ({ initialCustomer, order }) => {
+}> = ({ initialCustomer }) => {
     const ctx = useChannels();
     const { t } = useTranslation('customer');
     const { t: tErrors } = useTranslation('common');
@@ -130,7 +128,6 @@ export const CustomerDetailsForm: React.FC<{
                         {t('accountPage.detailsForm.changeDetails')}
                     </StyledButton>
                 </Form>
-                {order && <CustomerLastOrder order={order} />}
             </MotionCustomerWrap>
         </>
     );

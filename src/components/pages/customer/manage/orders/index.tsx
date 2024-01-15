@@ -98,8 +98,10 @@ export const HistoryPage: React.FC<InferGetServerSidePropsType<typeof getServerS
     return (
         <Layout categories={props.collections} navigation={props.navigation} pageTitle={t('ordersPage.title')}>
             <ContentContainer>
-                <CustomerWrap w100 itemsStart gap="1.75rem">
+                <Stack w100 justifyEnd>
                     <CustomerNavigation />
+                </Stack>
+                <CustomerWrap w100 itemsStart gap="1.75rem">
                     <Stack column w100 gap="1rem">
                         <TP size="2.5rem" weight={600}>
                             {t('ordersPage.title')}

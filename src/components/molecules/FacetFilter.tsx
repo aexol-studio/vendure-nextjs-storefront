@@ -3,6 +3,7 @@ import { FiltersFacetType } from '@/src/graphql/selectors';
 import styled from '@emotion/styled';
 import { CheckBox } from '@/src/components/forms';
 import { useState } from 'react';
+import { ChevronDown } from 'lucide-react';
 
 interface FacetProps {
     facet: FiltersFacetType;
@@ -15,7 +16,12 @@ export const FacetFilterCheckbox: React.FC<FacetProps> = ({ facet: { id, name, v
     return (
         <GridWrapper w100 column>
             <GridTitle onClick={() => setOpen(!open)}>
-                <TFacetHeading upperCase>{name}</TFacetHeading>
+                <TFacetHeading capitalize size="1.5rem">
+                    {name}
+                </TFacetHeading>
+                <IconWrapper>
+                    <ChevronDown />
+                </IconWrapper>
             </GridTitle>
             <Grid open={open}>
                 <GridEntry>
@@ -39,13 +45,13 @@ export const FacetFilterCheckbox: React.FC<FacetProps> = ({ facet: { id, name, v
 };
 
 const GridWrapper = styled(Stack)`
-    margin-top: 2rem;
+    margin-top: 1.7rem;
     min-width: 420px;
     max-width: 100%;
 `;
 
 const Grid = styled.div<{ open: boolean }>`
-    margin-top: 2rem;
+    margin-top: 1.7rem;
     display: grid;
     grid-template-rows: ${({ open }) => (open ? '1fr' : '0fr')};
     transition: grid-template-rows 0.3s ease-in-out;
@@ -75,4 +81,16 @@ const CheckGrid = styled.div`
     grid-template-columns: 1fr 1fr;
     gap: 2rem;
     padding-bottom: 2rem;
+    width: 100%;
+    & > label {
+        font-size: 1.5rem;
+        letter-spacing: -0.64px;
+        margin-left: 0.5rem;
+    }
+`;
+
+const IconWrapper = styled.div`
+    display: flex;
+    justify-content: center;
+    align-items: center;
 `;

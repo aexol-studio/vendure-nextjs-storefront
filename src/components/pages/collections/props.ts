@@ -6,16 +6,24 @@ import { PER_PAGE, reduceFacets } from '@/src/state/collection/utils';
 import { arrayToTree } from '@/src/util/arrayToTree';
 import { SortOrder } from '@/src/zeus';
 
-export const getStaticProps = async (context: ContextModel<{ slug?: string }>) => {
+export const getStaticProps = async (context: ContextModel<{ slug?: string[] }>) => {
     const { slug } = context.params || {};
+    const lastIndexSlug = slug?.length ? slug[slug.length - 1] : '';
+    const _context = {
+        ...context,
+        params: {
+            ...context.params,
+            slug: lastIndexSlug,
+        },
+    };
 
-    const r = await makeStaticProps(['common', 'collections'])(context);
+    const r = await makeStaticProps(['common', 'collections'])(_context);
     const collections = await getCollections(r.context);
     const navigation = arrayToTree(collections);
     const api = SSGQuery(r.context);
 
     const { collection } = await api({
-        collection: [{ slug }, CollectionSelector],
+        collection: [{ slug: lastIndexSlug }, CollectionSelector],
     });
     if (!collection) return { notFound: true };
 
@@ -23,7 +31,7 @@ export const getStaticProps = async (context: ContextModel<{ slug?: string }>) =
         search: [
             {
                 input: {
-                    collectionSlug: slug,
+                    collectionSlug: lastIndexSlug,
                     groupByProduct: true,
                     take: PER_PAGE,
                     sort: { name: SortOrder.ASC },
@@ -39,7 +47,7 @@ export const getStaticProps = async (context: ContextModel<{ slug?: string }>) =
         ...r.context,
         slug: context.params?.slug,
         collections: collections,
-        name: collections.find(c => c.slug === slug)?.name,
+        name: collections.find(c => c.slug === lastIndexSlug)?.name,
         products: productsQuery.search?.items,
         facets,
         totalProducts: productsQuery.search?.totalItems,

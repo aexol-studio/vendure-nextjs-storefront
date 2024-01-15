@@ -314,7 +314,7 @@ export const OrderForm: React.FC<OrderFormProps> = ({ availableCountries, active
         <Stack w100 column>
             <Banner ref={errorRef} clearErrors={() => clearErrors('root')} error={errors?.root} />
             <Form onSubmit={handleSubmit(onSubmit)} noValidate>
-                <Stack w100 gap="10rem" style={{ flexDirection: 'row-reverse' }}>
+                <Container w100 gap="10rem">
                     <OrderSummary
                         shipping={
                             shippingMethods ? (
@@ -335,11 +335,11 @@ export const OrderForm: React.FC<OrderFormProps> = ({ availableCountries, active
                         }
                         footer={
                             <Stack column gap="2.5rem" justifyCenter itemsCenter>
-                                <ButtonDesktop loading={isSubmitting} type="submit">
+                                <StyledButton loading={isSubmitting} type="submit">
                                     <TP color="contrast" upperCase>
                                         {t('orderForm.continueToPayment')}
                                     </TP>
-                                </ButtonDesktop>
+                                </StyledButton>
                                 <LinkButton href="/">{t('orderForm.continueShopping')}</LinkButton>
                             </Stack>
                         }
@@ -348,7 +348,7 @@ export const OrderForm: React.FC<OrderFormProps> = ({ availableCountries, active
                         <Stack column gap="0.5rem">
                             {/* Customer Part */}
                             <Stack column gap="2rem">
-                                <Stack gap="0.75rem" itemsCenter>
+                                <Stack gap="0.75rem" itemsCenter style={{ height: '2.6rem' }}>
                                     <AnimatePresence>
                                         {!isSubmitting ? (
                                             <BackButton href="/">
@@ -653,12 +653,19 @@ export const OrderForm: React.FC<OrderFormProps> = ({ availableCountries, active
                             </AnimatePresence>
                         </Stack>
                     </Stack>
-                </Stack>
+                </Container>
             </Form>
         </Stack>
     );
 };
 
+const Container = styled(Stack)`
+    flex-direction: column-reverse;
+
+    @media (min-width: ${({ theme }) => theme.breakpoints.lg}) {
+        flex-direction: row-reverse;
+    }
+`;
 const DeliveryMethodWrapper = styled(Stack)``;
 
 const LinkButton = styled(Link)`
@@ -670,11 +677,8 @@ const LinkButton = styled(Link)`
     font-weight: 600;
 `;
 
-const ButtonDesktop = styled(Button)`
+const StyledButton = styled(Button)`
     width: 100%;
-    @media (max-width: ${({ theme }) => theme.breakpoints.lg}) {
-        display: none;
-    }
 `;
 
 const BackButton = styled(Link)`

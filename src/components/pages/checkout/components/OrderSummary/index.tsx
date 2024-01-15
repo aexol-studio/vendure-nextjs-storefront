@@ -81,11 +81,15 @@ export const OrderSummary: React.FC<PropsWithChildren<OrderSummaryProps>> = ({ f
 };
 
 const SummaryContainer = styled(Stack)<{ isForm?: boolean }>`
-    min-width: 44rem;
-    max-width: 44rem;
+    max-width: 100%;
+    @media (min-width: ${({ theme }) => theme.breakpoints.lg}) {
+        min-width: 52rem;
+        max-width: 52rem;
+    }
+
     width: ${({ isForm }) => (isForm ? 'auto' : '100%')};
     position: ${({ isForm }) => (isForm ? 'sticky' : 'relative')};
-    top: ${({ isForm }) => (isForm ? '4.5rem' : '0')};
+    top: ${({ isForm }) => (isForm ? '1.5rem' : '0')};
     border: 1px solid ${p => p.theme.gray(100)};
     padding: 3.25rem;
     height: fit-content;

@@ -10,7 +10,7 @@ import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import { useChannels } from '@/src/state/channels';
 import languageDetector from '@/src/lib/lngDetector';
 import { useRouter } from 'next/router';
-import { channels } from '@/src/lib/consts';
+import { DEFAULT_CHANNEL, DEFAULT_CHANNEL_SLUG, channels } from '@/src/lib/consts';
 import { getFlagByCode } from '@/src/util/i18Helpers';
 import { useOutsideClick } from '@/src/util/hooks/useOutsideClick';
 
@@ -59,6 +59,8 @@ export const Picker: React.FC = () => {
             }
         }
 
+        const correctSlug = (typeof query.slug === 'string' ? query.slug : query.slug?.join('/')) as string;
+
         if (sameAsChannel) {
             if (haveChannel && haveLocale) {
                 const split = pathname.split('[locale]');
@@ -67,23 +69,23 @@ export const Picker: React.FC = () => {
                     (newLang === channelAsLocale.nationalLocale ? '' : newLang) +
                     split[1]
                 )
-                    .replace('[channel]', channelAsLocale.nationalLocale)
-                    .replace('[slug]', query.slug as string)
+                    .replace('[channel]', channelAsLocale.channel === DEFAULT_CHANNEL ? '' : channelAsLocale.slug)
+                    .replace('[...slug]', correctSlug)
                     .replace('[code]', query.code as string);
                 console.log(correctPathname);
                 push(correctPathname);
             }
             if (haveChannel && !haveLocale) {
                 const split = pathname.split('[channel]');
-                const correctPathname = (split[0] + channelAsLocale + split[1])
-                    .replace('[slug]', query.slug as string)
+                const correctPathname = (split[0] + channelAsLocale.slug + split[1])
+                    .replace('[...slug]', correctSlug)
                     .replace('[code]', query.code as string);
                 console.log(correctPathname);
                 push(correctPathname);
             }
             if (!haveChannel && !haveLocale) {
-                const correctPathname = (pathname + '/' + channelAsLocale)
-                    .replace('[slug]', query.slug as string)
+                const correctPathname = (pathname + '/' + channelAsLocale.slug)
+                    .replace('[...slug]', correctSlug)
                     .replace('[code]', query.code as string);
                 console.log(correctPathname);
                 push(correctPathname);
@@ -92,8 +94,11 @@ export const Picker: React.FC = () => {
             if (haveChannel && haveLocale) {
                 const split = pathname.split('[locale]');
                 const correctPathname = (split[0] + newLang + split[1])
-                    .replace('[channel]', channelAsLocale?.nationalLocale as string)
-                    .replace('[slug]', query.slug as string)
+                    .replace(
+                        '[channel]',
+                        channelAsLocale?.channel === DEFAULT_CHANNEL ? '' : channelAsLocale?.slug ?? '',
+                    )
+                    .replace('[...slug]', correctSlug)
                     .replace('[code]', query.code as string);
 
                 console.log(correctPathname);
@@ -101,8 +106,8 @@ export const Picker: React.FC = () => {
             }
             if (haveChannel && !haveLocale) {
                 const split = pathname.split('[channel]');
-                const correctPathname = (split[0] + channelAsLocale + '/' + newLang + split[1])
-                    .replace('[slug]', query.slug as string)
+                const correctPathname = (split[0] + channelAsLocale?.nationalLocale + '/' + newLang + split[1])
+                    .replace('[...slug]', correctSlug)
                     .replace('[code]', query.code as string);
 
                 console.log(correctPathname);
@@ -110,8 +115,8 @@ export const Picker: React.FC = () => {
             }
 
             if (!haveChannel && !haveLocale) {
-                const correctPathname = (pathname + '/' + channelAsLocale + '/' + newLang)
-                    .replace('[slug]', query.slug as string)
+                const correctPathname = (pathname + '/' + DEFAULT_CHANNEL_SLUG + '/' + newLang)
+                    .replace('[...slug]', correctSlug)
                     .replace('[code]', query.code as string);
 
                 console.log(correctPathname);

@@ -1,10 +1,10 @@
 import { useRouter } from 'next/router';
-import { useCallback, useEffect } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import React from 'react';
 import languageDetector from './lngDetector';
 import styled from '@emotion/styled';
 import { Url } from 'next/dist/shared/lib/router/router';
-import { DEFAULT_LOCALE, channels } from './consts';
+import { DEFAULT_CHANNEL_SLUG, channels } from './consts';
 
 const AppLoader = styled.div``;
 
@@ -12,45 +12,56 @@ export const useRedirect = ({ to }: { to?: string }) => {
     const router = useRouter();
     to = to || router.asPath.replace('/[channel]', '');
     useEffect(() => {
-        // TODO: Cache channel in cookie
-        const detectedChannel = document.cookie
+        const cachedChannel = document.cookie
             .split(';')
             .find(c => c.trim().startsWith('channel='))
             ?.split('=')[1];
-        console.log(detectedChannel);
 
         const detectedLng = languageDetector.detect();
-        const ch = channels.find(c => c.slug === detectedLng);
-        // if (detectedLng === DEFAULT_LOCALE) {
-        //     return;
-        // }
+        const ch = cachedChannel
+            ? channels.find(c => c.channel === cachedChannel)
+            : channels.find(c => c.slug === detectedLng);
+        console.log(detectedLng, cachedChannel, ch);
 
-        const channel = ch?.slug || channels.find(c => c.locales.includes(detectedLng || ''))?.slug || DEFAULT_LOCALE;
+        const channelSlug = ch?.slug ?? DEFAULT_CHANNEL_SLUG;
+        if (channelSlug === DEFAULT_CHANNEL_SLUG) {
+            return;
+        }
+
         const locale = ch?.slug === ch?.nationalLocale ? '' : `/${ch?.nationalLocale}`;
 
-        if (to?.startsWith('/' + channel) && router.route !== '/404') {
-            router.replace('/' + channel + router.route.replace('/[channel]', '').replace('/[locale]', locale));
+        if (to?.startsWith('/' + channelSlug) && router.route !== '/404') {
+            router.replace('/' + channelSlug + router.route.replace('/[channel]', '').replace('/[locale]', locale));
             return;
         }
 
         if (detectedLng && languageDetector.cache) {
             languageDetector.cache(detectedLng);
         }
-        router.replace('/' + channel + to?.replace('/[channel]', '').replace('/[locale]', locale));
+        router.replace('/' + channelSlug + to?.replace('/[channel]', '').replace('/[locale]', locale));
     });
 };
 
 export const Redirect =
-    (
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        { children }: { children?: React.ReactNode },
-    ) =>
+    ({ children }: { children?: React.ReactNode }) =>
     // eslint-disable-next-line react/display-name
     () => {
+        const [cookie, setCookie] = useState<string>();
+        useEffect(() => {
+            const cachedChannel = document.cookie
+                .split(';')
+                .find(c => c.trim().startsWith('channel='))
+                ?.split('=')[1];
+            setCookie(cachedChannel);
+        }, []);
+
+        const ch = channels.find(c => c.channel === cookie);
+        const channelSlug = ch?.slug ?? DEFAULT_CHANNEL_SLUG;
+
         // const detectedLng = languageDetector.detect();
-        // if (detectedLng === DEFAULT_LOCALE) {
-        //     return children;
-        // }
+        if (channelSlug === DEFAULT_CHANNEL_SLUG) {
+            return children;
+        }
         useRedirect({});
         return <AppLoader />;
     };
@@ -69,7 +80,7 @@ interface TransitionOptions {
 
 export const usePush = () => {
     const router = useRouter();
-    const channel = router.query.channel;
+    const channel = router.query.channel ?? DEFAULT_CHANNEL_SLUG;
     const locale = router.query.locale ? `/${router.query.locale}` : '';
 
     return useCallback(

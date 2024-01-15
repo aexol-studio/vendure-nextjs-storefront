@@ -28,4 +28,11 @@ export const CheckoutPage: React.FC<InferGetServerSidePropsType<typeof getServer
 
 const Content = styled(ContentContainer)`
     position: relative;
+    width: 1280px;
+    padding: 0;
+
+    @media (max-width: 1560px) {
+        width: 1440px;
+        padding: 0 4rem;
+    }
 `;

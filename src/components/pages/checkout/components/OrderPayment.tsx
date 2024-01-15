@@ -151,7 +151,7 @@ export const OrderPayment: React.FC<OrderPaymentProps> = ({ availablePaymentMeth
     };
 
     return activeOrder ? (
-        <Stack w100 column itemsCenter gap="3.5rem">
+        <Stack w100 column itemsCenter>
             <Banner error={{ message: error ?? undefined }} clearErrors={() => setError(null)} />
             <PaymentForm onSubmit={handleSubmit(onSubmit)} noValidate>
                 <Stack w100 column style={{ position: 'relative' }}>
@@ -253,7 +253,8 @@ const AbsoluteRadio = styled.input`
     opacity: 0;
     width: 100%;
     height: 100%;
-
+    left: 0;
+    top: 0;
     cursor: pointer;
 `;
 

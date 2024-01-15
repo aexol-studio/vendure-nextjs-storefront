@@ -31,47 +31,69 @@ export const CustomerNavigation: React.FC = () => {
         push('/');
     };
 
+    const pathnameWithoutChannel = pathname.replace('/[channel]', '');
+
     return (
-        <NavigationBox w100 column justifyCenter gap="2.5rem">
-            <Stack column gap="2rem">
+        <NavigationBox w100>
+            <Stack>
                 {routes.map(route => (
-                    <Stack key={route.href} column gap="0.25rem">
-                        <StyledLink href={route.href}>{t(route.label)}</StyledLink>
-                        <UnderLine
-                            initial={{ width: 0 }}
-                            animate={{ width: pathname === route.href || route.sub.includes(pathname) ? '100%' : '0%' }}
-                            exit={{ width: 0 }}
-                            transition={{ duration: 0.3 }}
-                        />
+                    <Stack column key={route.href}>
+                        <MenuItem key={route.href}>
+                            <StyledLink href={route.href}>{t(route.label)}</StyledLink>
+                            <UnderLine
+                                initial={{ width: 0 }}
+                                animate={{
+                                    width:
+                                        pathnameWithoutChannel === route.href ||
+                                        route.sub.includes(pathnameWithoutChannel)
+                                            ? '100%'
+                                            : '0%',
+                                }}
+                                exit={{ width: 0 }}
+                                transition={{ duration: 0.3 }}
+                            />
+                        </MenuItem>
                     </Stack>
                 ))}
+                <Button onClick={onClick}>
+                    <TP upperCase color="contrast">
+                        {t('navigation.logout')}
+                    </TP>
+                </Button>
             </Stack>
-            <Button onClick={onClick}>
-                <TP color="contrast">{t('navigation.logout')}</TP>
-            </Button>
         </NavigationBox>
     );
 };
 
 const StyledLink = styled(Link)`
     color: ${p => p.theme.text.main};
+    font-weight: 400;
 `;
 
 const UnderLine = styled(motion.div)`
+    position: absolute;
+    bottom: 0;
+    left: 0;
     width: 100%;
     height: 2px;
-    background-color: ${p => p.theme.grayAlpha(300, 200)};
+    background-color: ${p => p.theme.button.back};
 `;
 
 const NavigationBox = styled(Stack)`
+    width: fit-content;
     margin-top: 2rem;
+    display: flex;
+    align-items: center;
+    text-transform: uppercase;
 
     @media (min-width: ${({ theme }) => theme.breakpoints.lg}) {
-        max-width: 30rem;
-        min-width: 30rem;
         margin-top: 0;
     }
+`;
 
-    padding: 4rem 2.75rem;
+const MenuItem = styled(Stack)`
+    position: relative;
     border: 1px solid ${p => p.theme.gray(100)};
+    padding: 1.6rem 2.4rem;
+    height: 100%;
 `;

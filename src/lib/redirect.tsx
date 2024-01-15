@@ -17,6 +17,7 @@ export const useRedirect = ({ to }: { to?: string }) => {
             .split(';')
             .find(c => c.trim().startsWith('channel='))
             ?.split('=')[1];
+        console.log(detectedChannel);
 
         const detectedLng = languageDetector.detect();
         const ch = channels.find(c => c.slug === detectedLng);

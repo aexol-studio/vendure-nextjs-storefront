@@ -20,7 +20,6 @@ export const SortBy: React.FC<Props> = ({ handleSort, sort }) => {
     const ref = useRef<HTMLDivElement>(null);
     useOutsideClick(ref, () => setOpen(false));
 
-    console.log(sortOptions);
     return (
         <Container gap="0.5rem">
             <Relative ref={ref} itemsCenter justifyBetween>

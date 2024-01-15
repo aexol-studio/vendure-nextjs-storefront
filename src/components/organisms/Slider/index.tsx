@@ -1,9 +1,9 @@
 import React, { ReactNode } from 'react';
 import { useSlider } from './hooks';
 import styled from '@emotion/styled';
-import { ArrowLeft, ArrowRight } from 'lucide-react';
 import { Stack } from '@/src/components/atoms';
 import { motion } from 'framer-motion';
+import { ArrowLeft, ArrowRight } from '@/src/assets/svg';
 
 interface SliderProps {
     withDots?: boolean;
@@ -24,7 +24,7 @@ export const Slider: React.FC<SliderProps> = ({ slides, withArrows, withDots, sp
             <Content>
                 {jsEnabled && withArrows && slides?.length > withArrows && (
                     <Button whileTap={{ scale: 0.95 }} left={1} onClick={prevSlide}>
-                        <ArrowLeft size="2rem" />
+                        <ArrowLeft />
                     </Button>
                 )}
                 {jsEnabled ? (
@@ -40,7 +40,7 @@ export const Slider: React.FC<SliderProps> = ({ slides, withArrows, withDots, sp
                 )}
                 {jsEnabled && withArrows && slides?.length > withArrows && (
                     <Button whileTap={{ scale: 0.95 }} onClick={nextSlide}>
-                        <ArrowRight size="2rem" />
+                        <ArrowRight />
                     </Button>
                 )}
             </Content>

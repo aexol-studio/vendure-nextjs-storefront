@@ -4,12 +4,12 @@ import { storefrontApiQuery } from '@/src/graphql/client';
 import { OrderSelector, OrderType } from '@/src/graphql/selectors';
 import { Layout } from '@/src/layouts';
 import { OrderConfirmation } from '../components/OrderConfirmation';
-import { Content } from '../components/ui/shared';
 import { usePush } from '@/src/lib/redirect';
-import { TP, Stack } from '@/src/components/atoms';
+import { TP, Stack, ContentContainer } from '@/src/components/atoms';
 import { useTranslation } from 'next-i18next';
 import { getServerSideProps } from './props';
 import { useChannels } from '@/src/state/channels';
+import styled from '@emotion/styled';
 
 const MAX_RETRIES = 3;
 
@@ -58,3 +58,7 @@ export const ConfirmationPage: React.FC<InferGetServerSidePropsType<typeof getSe
         </Layout>
     );
 };
+
+const Content = styled(ContentContainer)`
+    position: relative;
+`;

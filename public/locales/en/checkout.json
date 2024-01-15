@@ -37,6 +37,7 @@
         "province": "State / Province",
         "postalCode": "Postal Code",
         "continueToPayment": "Continue to Payment",
+        "continueShopping": "Continue Shopping",
         "regulations": "I accept the <1>regulations</1>.",
         "terms": "I accept the <1>terms and conditions</1>.",
         "placeholders": {

@@ -5,7 +5,8 @@ import { OrderForm } from './components/OrderForm';
 import { useTranslation } from 'next-i18next';
 import { getServerSideProps } from './props';
 import { CheckoutCarousel } from './components/OrderSummary/CheckoutCarousel';
-import { Content, Main } from './components/ui/shared';
+import styled from '@emotion/styled';
+import { ContentContainer } from '@/src/components/atoms';
 
 export const CheckoutPage: React.FC<InferGetServerSidePropsType<typeof getServerSideProps>> = props => {
     const { t } = useTranslation('checkout');
@@ -14,15 +15,17 @@ export const CheckoutPage: React.FC<InferGetServerSidePropsType<typeof getServer
     return (
         <CheckoutLayout pageTitle={`${t('seoTitles.checkout')}`}>
             <Content>
-                <Main w100 justifyBetween>
-                    <OrderForm
-                        availableCountries={availableCountries}
-                        shippingMethods={eligibleShippingMethods}
-                        activeCustomer={activeCustomer}
-                    />
-                </Main>
+                <OrderForm
+                    availableCountries={availableCountries}
+                    shippingMethods={eligibleShippingMethods}
+                    activeCustomer={activeCustomer}
+                />
                 <CheckoutCarousel alsoBoughtProducts={alsoBoughtProducts} />
             </Content>
         </CheckoutLayout>
     );
 };
+
+const Content = styled(ContentContainer)`
+    position: relative;
+`;

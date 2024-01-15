@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { TH2 } from '@/src/components/atoms/TypoGraphy';
+import { TH2, TP } from '@/src/components/atoms/TypoGraphy';
 import { Stack } from '@/src/components/atoms/Stack';
 import { Button } from '@/src/components/molecules/Button';
 
@@ -336,9 +336,11 @@ export const OrderForm: React.FC<OrderFormProps> = ({ availableCountries, active
                         footer={
                             <Stack column gap="2.5rem" justifyCenter itemsCenter>
                                 <ButtonDesktop loading={isSubmitting} type="submit">
-                                    {t('orderForm.continueToPayment')}
+                                    <TP color="contrast" upperCase>
+                                        {t('orderForm.continueToPayment')}
+                                    </TP>
                                 </ButtonDesktop>
-                                <LinkButton href="/">Continue shopping</LinkButton>
+                                <LinkButton href="/">{t('orderForm.continueShopping')}</LinkButton>
                             </Stack>
                         }
                     />
@@ -403,20 +405,13 @@ export const OrderForm: React.FC<OrderFormProps> = ({ availableCountries, active
                                 <TH2 size="2rem" weight={500} style={{ marginBottom: '1.75rem' }}>
                                     {t('orderForm.billingInfo')}
                                 </TH2>
-                                <Stack w100 gap="1.5rem">
-                                    <Stack w100 column gap="1.5rem">
+                                <Stack w100 column gap="1.5rem">
+                                    <Stack w100 gap="1.5rem">
                                         <Input
                                             {...register('billing.fullName')}
                                             placeholder={t('orderForm.placeholders.fullName')}
                                             label={t('orderForm.fullName')}
                                             error={errors.billing?.fullName}
-                                            required
-                                        />
-                                        <Input
-                                            {...register('billing.streetLine1')}
-                                            placeholder={t('orderForm.placeholders.streetLine1')}
-                                            label={t('orderForm.streetLine1')}
-                                            error={errors.billing?.streetLine1}
                                             required
                                         />
                                         <Input
@@ -426,6 +421,23 @@ export const OrderForm: React.FC<OrderFormProps> = ({ availableCountries, active
                                             error={errors.billing?.city}
                                             required
                                         />
+                                    </Stack>
+                                    <Stack w100 gap="1.5rem">
+                                        <Input
+                                            {...register('billing.streetLine1')}
+                                            placeholder={t('orderForm.placeholders.streetLine1')}
+                                            label={t('orderForm.streetLine1')}
+                                            error={errors.billing?.streetLine1}
+                                            required
+                                        />
+                                        <Input
+                                            {...register('billing.streetLine2')}
+                                            placeholder={t('orderForm.placeholders.streetLine2')}
+                                            label={t('orderForm.streetLine2')}
+                                            error={errors.billing?.streetLine2}
+                                        />
+                                    </Stack>
+                                    <Stack w100 gap="1.5rem">
                                         <Input
                                             {...register('billing.province')}
                                             placeholder={t('orderForm.placeholders.province')}
@@ -433,19 +445,20 @@ export const OrderForm: React.FC<OrderFormProps> = ({ availableCountries, active
                                             error={errors.billing?.province}
                                             required
                                         />
+                                        <Input
+                                            {...register('billing.postalCode')}
+                                            placeholder={t('orderForm.placeholders.postalCode')}
+                                            label={t('orderForm.postalCode')}
+                                            error={errors.billing?.postalCode}
+                                            required
+                                        />
                                     </Stack>
-                                    <Stack w100 column gap="1.5rem">
+                                    <Stack w100 gap="1.5rem">
                                         <Input
                                             {...register('billing.company')}
                                             placeholder={t('orderForm.placeholders.company')}
                                             label={t('orderForm.company')}
                                             error={errors.billing?.company}
-                                        />
-                                        <Input
-                                            {...register('billing.streetLine2')}
-                                            placeholder={t('orderForm.placeholders.streetLine2')}
-                                            label={t('orderForm.streetLine2')}
-                                            error={errors.billing?.streetLine2}
                                         />
                                         {availableCountries && (
                                             <CountrySelect
@@ -458,13 +471,6 @@ export const OrderForm: React.FC<OrderFormProps> = ({ availableCountries, active
                                                 required
                                             />
                                         )}
-                                        <Input
-                                            {...register('billing.postalCode')}
-                                            placeholder={t('orderForm.placeholders.postalCode')}
-                                            label={t('orderForm.postalCode')}
-                                            error={errors.billing?.postalCode}
-                                            required
-                                        />
                                     </Stack>
                                 </Stack>
                             </BillingWrapper>
@@ -659,6 +665,7 @@ const LinkButton = styled(Link)`
     width: 100%;
     text-align: center;
     color: ${p => p.theme.text.main};
+    text-transform: uppercase;
     font-size: 1.5rem;
     font-weight: 600;
 `;

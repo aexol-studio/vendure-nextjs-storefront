@@ -2,7 +2,6 @@ export * from './CustomHelmet';
 export * from './LanguageSwitcher';
 export * from './ContentContainer';
 export * from './Divider';
-export * from './ImageSwitcherArrow';
 export * from './Link';
 export * from './MainGrid';
 export * from './Price';

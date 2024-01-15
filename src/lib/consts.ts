@@ -17,6 +17,6 @@ export const channels = [
         slug: DEFAULT_LOCALE,
         channel: DEFAULT_CHANNEL,
         nationalLocale: DEFAULT_NATIONAL_LOCALE,
-        locales: ['en', 'pl', 'fr', 'de', 'ja', 'es', 'nl', 'da'],
+        locales: ['en', 'pl', 'fr', 'de', 'ja', 'es'],
     },
 ];

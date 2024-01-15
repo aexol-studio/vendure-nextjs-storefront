@@ -1,16 +1,13 @@
-import React, { useState } from 'react';
-import { ContentContainer } from '@/src/components/atoms/ContentContainer';
+import React, { useEffect, useState } from 'react';
 
-import { Stack } from '@/src/components/atoms/Stack';
-import { TH1, TP } from '@/src/components/atoms/TypoGraphy';
+import { TH1, TP, ContentContainer, Stack, Price } from '@/src/components/atoms';
 import { FullWidthButton, FullWidthSecondaryButton } from '@/src/components/molecules/Button';
 import { NotifyMeForm } from '@/src/components/molecules/NotifyMeForm';
-import { NewestProducts } from '@/src/components/organisms/NewestProducts';
+import { ProductPageProductsSlider } from '@/src/components/organisms/ProductPageProductsSlider';
 // import { ProductPhotosPreview } from '@/src/components/organisms/ProductPhotosPreview';
-import { RelatedProductCollections } from '@/src/components/organisms/RelatedProductCollections';
 import { Layout } from '@/src/layouts';
 import styled from '@emotion/styled';
-import { Check, MinusIcon, PlusIcon, X } from 'lucide-react';
+import { Check, X } from 'lucide-react';
 import { InferGetStaticPropsType } from 'next';
 
 import { Trans, useTranslation } from 'next-i18next';
@@ -19,17 +16,50 @@ import { Breadcrumbs } from '@/src/components/molecules/Breadcrumbs';
 import { useProduct } from '@/src/state/product';
 import { ProductPhotosPreview } from '@/src/components/organisms/ProductPhotosPreview';
 import { getStaticProps } from '@/src/components/pages/products/props';
-import { Price } from '../../atoms';
+import { ProductDescription } from '@/src/components/molecules/ProductDescription';
+import { storefrontApiQuery } from '@/src/graphql/client';
+import { useChannels } from '@/src/state/channels';
+import { ProductVariantTileType, productVariantTileSelector } from '@/src/graphql/selectors';
 
 export const ProductPage: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = props => {
+    const { t } = useTranslation('products');
+    const { t: breadcrumb } = useTranslation('common');
+    const ctx = useChannels();
     const { product, variant, addingError, productOptionsGroups, handleOptionClick, handleBuyNow, handleAddToCart } =
         useProduct();
-    const { t } = useTranslation('common');
 
     const breadcrumbs = [
-        { name: t('home'), href: '/' },
+        { name: breadcrumb('breadcrumbs.home'), href: '/' },
         { name: props.product.name, href: `/products/${props.product.slug}` },
     ];
+
+    const [recentlyProducts, setRecentlyProducts] = useState<ProductVariantTileType[]>([]);
+
+    useEffect(() => {
+        if (typeof window === 'undefined') return;
+        const fetchData = async () => {
+            try {
+                const cookie = window.document.cookie.split('; ').find(row => row.startsWith('recentlyViewed'));
+                if (!cookie) return;
+                const recentlyViewed = cookie.split('=')[1].split(',');
+                const { collection } = await storefrontApiQuery(ctx)({
+                    collection: [
+                        { slug: 'all' },
+                        {
+                            productVariants: [
+                                { options: { filter: { id: { in: recentlyViewed } } } },
+                                { items: productVariantTileSelector },
+                            ],
+                        },
+                    ],
+                });
+                if (collection?.productVariants?.items.length) setRecentlyProducts(collection.productVariants.items);
+            } catch (error) {
+                console.log(error);
+            }
+        };
+        fetchData();
+    }, [product?.id]);
 
     return (
         <Layout categories={props.collections} navigation={props.navigation}>
@@ -44,8 +74,8 @@ export const ProductPage: React.FC<InferGetStaticPropsType<typeof getStaticProps
                                 name={product?.name}
                             />
                         </StickyLeft>
-                        <StyledStack w100 column gap="3.5rem">
-                            <Stack column gap="1.5rem">
+                        <StyledStack w100 column gap="2rem">
+                            <ProductInfoStack w100 column gap="2rem">
                                 {Number(variant?.id) % 4 === 0 ? (
                                     <TP color="subtitle" upperCase>
                                         {t('best-seller')}
@@ -53,8 +83,8 @@ export const ProductPage: React.FC<InferGetStaticPropsType<typeof getStaticProps
                                 ) : null}
                                 <TH1 size="2.5rem">{product?.name}</TH1>
                                 {variant && <Price price={variant.priceWithTax} currencyCode={variant.currencyCode} />}
-                            </Stack>
-                            <Stack>
+                            </ProductInfoStack>
+                            <Stack w100>
                                 {product && product.variants.length > 1 ? (
                                     <ProductOptions
                                         productOptionsGroups={productOptionsGroups}
@@ -63,11 +93,11 @@ export const ProductPage: React.FC<InferGetStaticPropsType<typeof getStaticProps
                                     />
                                 ) : null}
                             </Stack>
-                            <Stack gap="1rem" column>
+                            <Stack w100 gap="1rem" column>
                                 {variant && Number(variant.stockLevel) > 0 && Number(variant.stockLevel) <= 10 && (
-                                    <MakeItQuick size="1.25rem" weight={400}>
+                                    <MakeItQuick size="1.5rem" weight={500}>
                                         <Trans
-                                            i18nKey="stockLevel.LOW_STOCK"
+                                            i18nKey="stock-levels.low-stock"
                                             t={t}
                                             values={{ value: variant?.stockLevel }}
                                             components={{ 1: <span></span> }}
@@ -88,8 +118,8 @@ export const ProductPage: React.FC<InferGetStaticPropsType<typeof getStaticProps
                                         {!variant
                                             ? null
                                             : Number(variant.stockLevel) > 0
-                                              ? t('stockLevel.IN_STOCK')
-                                              : t('stockLevel.OUT_OF_STOCK')}
+                                              ? t('stock-levels.in-stock')
+                                              : t('stock-levels.out-of-stock')}
                                     </TP>
                                 </StockInfo>
                             </Stack>
@@ -97,105 +127,63 @@ export const ProductPage: React.FC<InferGetStaticPropsType<typeof getStaticProps
                                 <NotifyMeForm />
                             ) : (
                                 <Stack w100 gap="2.5rem" justifyBetween column>
-                                    <FullWidthSecondaryButton onClick={handleAddToCart}>
+                                    <FullWidthButton
+                                        style={{ textTransform: 'uppercase', padding: '1.5rem' }}
+                                        onClick={handleAddToCart}>
                                         {t('add-to-cart')}
+                                    </FullWidthButton>
+                                    <FullWidthSecondaryButton
+                                        style={{ textTransform: 'uppercase', padding: '1.5rem' }}
+                                        onClick={handleBuyNow}>
+                                        {t('buy-now')}
                                     </FullWidthSecondaryButton>
-                                    <FullWidthButton onClick={handleBuyNow}>{t('buy-now')}</FullWidthButton>
                                 </Stack>
                             )}
-                            <MultiDescription
-                                defaultOpenKeys={['Description']}
-                                data={{
-                                    'Product Information': (
-                                        <Stack column style={{ marginTop: '2rem' }}>
-                                            <Stack>
-                                                <TP>SKU:</TP>
-                                                <TP>&nbsp;{variant?.sku}</TP>
-                                            </Stack>
-                                            <Stack column>
-                                                {variant?.options.map(option => (
-                                                    <Stack key={option.code}>
-                                                        <TP>{option.name}</TP>
+                            <ProductDescription
+                                defaultOpenIndexes={[1]}
+                                data={[
+                                    {
+                                        title: t('details'),
+                                        children: (
+                                            <Stack column style={{ marginTop: '2rem' }}>
+                                                <Stack>
+                                                    <TP>{t('sku')}</TP>
+                                                    <TP>&nbsp;{variant?.sku}</TP>
+                                                </Stack>
+                                                {variant?.options.length ? (
+                                                    <Stack column>
+                                                        {variant?.options.map(option => (
+                                                            <Stack key={option.code}>
+                                                                <TP>{option.name}</TP>
+                                                            </Stack>
+                                                        ))}
                                                     </Stack>
-                                                ))}
+                                                ) : null}
                                             </Stack>
-                                        </Stack>
-                                    ),
-                                    Description: <TP style={{ marginTop: '2rem' }}>{product?.description}</TP>,
-                                }}
+                                        ),
+                                    },
+                                    {
+                                        title: t('description'),
+                                        children: <TP style={{ marginTop: '2rem' }}>{product?.description}</TP>,
+                                    },
+                                ]}
                             />
                         </StyledStack>
                     </Main>
-                    <NewestProducts title={t('newest-products')} products={props.newestProducts.products.items} />
-                    <RelatedProductCollections title={t('related-collections')} collections={props?.collections} />
+                    <ProductPageProductsSlider
+                        title={t('clients-also-bought')}
+                        products={props.clientsAlsoBought?.collection?.productVariants?.items ?? []}
+                    />
+                    <ProductPageProductsSlider title={t('recently-viewed')} products={recentlyProducts ?? []} />
                 </Wrapper>
             </ContentContainer>
         </Layout>
     );
 };
 
-const MultiDescription: React.FC<{ data: Record<string, React.ReactNode>; defaultOpenKeys?: string[] }> = ({
-    data,
-    defaultOpenKeys,
-}) => {
-    const [open, setOpen] = useState<Record<string, boolean>>(
-        Object.keys(data).reduce((acc, key) => {
-            if (defaultOpenKeys?.includes(key)) return { ...acc, [key]: true };
-            return { ...acc, [key]: false };
-        }, {}),
-    );
-
-    return (
-        <Stack column gap="2rem" style={{ marginTop: '3.5rem' }}>
-            {Object.entries(data).map(([key, children]) => (
-                <GridWrapper key={key} w100 column>
-                    <GridTitle onClick={() => setOpen({ ...open, [key]: !open[key] })}>
-                        <TP size="1.5rem" weight={400}>
-                            {key}
-                        </TP>
-                        {open[key] ? <MinusIcon size="1.5rem" /> : <PlusIcon size="1.5rem" />}
-                    </GridTitle>
-                    <Grid open={open[key]}>
-                        <GridEntry>{children}</GridEntry>
-                    </Grid>
-                    <Line />
-                </GridWrapper>
-            ))}
-        </Stack>
-    );
-};
-
-const Line = styled.div`
-    width: 100%;
-    height: 1px;
-    background-color: ${({ theme }) => theme.gray(100)};
-    margin-top: 2rem;
-`;
-
-const GridWrapper = styled(Stack)``;
-
-const Grid = styled.div<{ open: boolean }>`
-    display: grid;
-    grid-template-rows: ${({ open }) => (open ? '1fr' : '0fr')};
-    transition: grid-template-rows 0.3s ease-in-out;
-`;
-
-const GridTitle = styled.button`
-    width: 100%;
-    border: none;
-    background-color: transparent;
-    padding: 0;
-    cursor: pointer;
-
-    position: relative;
-
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-`;
-
-const GridEntry = styled(Stack)`
-    overflow: hidden;
+const ProductInfoStack = styled(Stack)`
+    border-bottom: 2px solid ${({ theme }) => theme.gray(100)};
+    padding-bottom: 7.5rem;
 `;
 
 const Wrapper = styled(Stack)`

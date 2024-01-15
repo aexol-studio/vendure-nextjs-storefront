@@ -4,7 +4,7 @@ import { storefrontApiQuery } from '@/src/graphql/client';
 import { OrderSelector, OrderType } from '@/src/graphql/selectors';
 import { Layout } from '@/src/layouts';
 import { OrderConfirmation } from '../components/OrderConfirmation';
-import { Content } from '../components/ui/Shared';
+import { Content } from '../components/ui/shared';
 import { usePush } from '@/src/lib/redirect';
 import { TP, Stack } from '@/src/components/atoms';
 import { useTranslation } from 'next-i18next';

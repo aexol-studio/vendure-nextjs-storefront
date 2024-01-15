@@ -8,7 +8,7 @@ import { useForm, SubmitHandler } from 'react-hook-form';
 import { CustomerLastOrder } from '../atoms/CustomerLastOrder';
 import { useTranslation } from 'next-i18next';
 import * as z from 'zod';
-import { CustomerWrap, Form, StyledButton } from '../atoms/shared';
+import { MotionCustomerWrap, Form, StyledButton } from '../atoms/shared';
 import { useChannels } from '@/src/state/channels';
 
 type CustomerDataForm = {
@@ -92,7 +92,7 @@ export const CustomerDetailsForm: React.FC<{
     return (
         <>
             <Banner clearErrors={hideSuccessBanner} success={{ message: successBanner }} />
-            <CustomerWrap
+            <MotionCustomerWrap
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
@@ -102,7 +102,7 @@ export const CustomerDetailsForm: React.FC<{
                     damping: 30,
                 }}>
                 <Form onSubmit={handleSubmit(onCustomerDataChange)} noValidate>
-                    <Stack column itemsCenter>
+                    <Stack gap="2rem" column itemsCenter>
                         <Input
                             {...register('addressEmail')}
                             label={t('accountPage.detailsForm.addressEmail')}
@@ -131,7 +131,7 @@ export const CustomerDetailsForm: React.FC<{
                     </StyledButton>
                 </Form>
                 {order && <CustomerLastOrder order={order} />}
-            </CustomerWrap>
+            </MotionCustomerWrap>
         </>
     );
 };

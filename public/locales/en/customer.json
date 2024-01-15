@@ -83,7 +83,9 @@
         "totalItems": "Total Items",
         "totalPrice": "Total Price",
         "loadMore": "Load More",
-        "viewOrder": "View Order"
+        "viewOrder": "View Order",
+        "searchOrder": "Search Order",
+        "lookForOrder": "Look for an order by code"
     },
     "addressForm": {
         "title": "My Addresses",

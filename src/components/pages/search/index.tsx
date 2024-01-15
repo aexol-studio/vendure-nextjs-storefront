@@ -15,7 +15,7 @@ import { getServerSideProps } from './props';
 import { Layout } from '@/src/layouts';
 
 export const SearchPage: React.FC<InferGetServerSidePropsType<typeof getServerSideProps>> = props => {
-    const { t } = useTranslation('common');
+    const { t } = useTranslation('collections');
     const {
         searchPhrase,
         products,
@@ -43,13 +43,15 @@ export const SearchPage: React.FC<InferGetServerSidePropsType<typeof getServerSi
                             onClick={() => setFiltersOpen(false)}
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
-                            exit={{ opacity: 0 }}>
+                            exit={{ opacity: 0 }}
+                            transition={{ duration: 0.2, ease: 'easeInOut' }}>
                             <FacetsFilters
                                 onClick={e => e.stopPropagation()}
                                 initial={{ translateX: '-100%' }}
                                 animate={{ translateX: '0%' }}
-                                exit={{ translateX: '-100%' }}>
-                                <Stack column gap="3rem">
+                                exit={{ translateX: '-100%' }}
+                                transition={{ duration: 0.3, ease: 'easeInOut' }}>
+                                <Stack column>
                                     <Stack justifyBetween itemsCenter>
                                         <TP weight={400} upperCase>
                                             {t('filters')}

@@ -3,7 +3,7 @@ import { BoxIcon } from 'lucide-react';
 import React from 'react';
 import { TP, Stack } from '@/src/components/atoms';
 import { Trans, useTranslation } from 'next-i18next';
-import { priceFormatter } from '@/src/util/priceFomatter';
+import { priceFormatter } from '@/src/util/priceFormatter';
 import { CurrencyCode } from '@/src/zeus';
 
 export const ShippingProtection: React.FC<{

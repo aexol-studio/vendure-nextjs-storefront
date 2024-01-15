@@ -184,6 +184,7 @@ export const ProductDetailSelector = Selector('Product')({
             name: true,
         },
     },
+    collections: { slug: true },
     featuredAsset: {
         source: true,
         preview: true,
@@ -506,6 +507,17 @@ export const YAMLProductsSelector = Selector('Product')({
 
 export type YAMLProductsType = FromSelector<typeof YAMLProductsSelector, 'Product', typeof scalars>;
 
+export const productVariantTileSelector = Selector('ProductVariant')({
+    id: true,
+    name: true,
+    currencyCode: true,
+    priceWithTax: true,
+    featuredAsset: { preview: true },
+    product: { collections: { slug: true, name: true }, slug: true, featuredAsset: { preview: true } },
+});
+
+export type ProductVariantTileType = FromSelector<typeof productVariantTileSelector, 'ProductVariant', typeof scalars>;
+
 export const homePageSlidersSelector = Selector('Collection')({
     name: true,
     slug: true,
@@ -513,14 +525,7 @@ export const homePageSlidersSelector = Selector('Collection')({
         { options: { take: 8, sort: { priceWithTax: SortOrder.DESC } } },
         {
             totalItems: true,
-            items: {
-                id: true,
-                name: true,
-                currencyCode: true,
-                priceWithTax: true,
-                featuredAsset: { preview: true },
-                product: { collections: { slug: true, name: true }, slug: true, featuredAsset: { preview: true } },
-            },
+            items: productVariantTileSelector,
         },
     ],
 });

@@ -47,11 +47,11 @@ export const Line: React.FC<LineProps> = ({
                     <Stack column gap="0.75rem" justifyBetween style={{ height: '100%' }}>
                         <Stack gap="1.25rem">
                             <Stack column gap="0.5rem">
-                                <TypoGraphy size="1.5rem" weight={500} style={{ whiteSpace: 'nowrap' }}>
+                                <TypoGraphy size="1.5rem" weight={500} noWrap>
                                     {productVariant.product.name}
                                 </TypoGraphy>
                                 {optionInName && (
-                                    <TypoGraphy size="1.25rem" weight={400} style={{ textTransform: 'capitalize' }}>
+                                    <TypoGraphy size="1.25rem" weight={400} capitalize>
                                         {productVariant.name.replace(productVariant.product.name, '')}
                                     </TypoGraphy>
                                 )}

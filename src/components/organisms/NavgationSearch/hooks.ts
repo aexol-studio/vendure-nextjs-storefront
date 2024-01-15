@@ -2,21 +2,10 @@ import { storefrontApiQuery } from '@/src/graphql/client';
 import { ProductSearchSelector, ProductSearchType } from '@/src/graphql/selectors';
 import { usePush } from '@/src/lib/redirect';
 import { useChannels } from '@/src/state/channels';
+import { useDebounce } from '@/src/util/hooks/useDebounce';
 import { SortOrder } from '@/src/zeus';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
-
-const useDebounce = (value: string, delay: number) => {
-    const [debouncedValue, setDebouncedValue] = useState(value);
-    useEffect(() => {
-        const handler = setTimeout(() => {
-            setDebouncedValue(value);
-        }, delay);
-
-        return () => clearTimeout(handler);
-    }, [value, delay]);
-    return debouncedValue;
-};
 
 export const useNavigationSearch = () => {
     const ctx = useChannels();
@@ -74,7 +63,7 @@ export const useNavigationSearch = () => {
                 setLoading(false);
                 setTotalItems(results.search.totalItems);
             } catch (error) {
-                console.error(error);
+                console.log(error);
                 setSearchResult([]);
                 setLoading(false);
             }

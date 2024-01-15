@@ -3,7 +3,6 @@ import {
     CollectionTileSelector,
     CollectionTileProductVariantType,
     CollectionTileProductVariantSelector,
-    YAMLProductsSelector,
 } from '@/src/graphql/selectors';
 import { SortOrder } from '@/src/zeus';
 
@@ -52,8 +51,3 @@ export const getCollections = async (params: { locale: string; channel: string }
 
     return collections;
 };
-
-export const getYMALProducts = (params: { locale: string; channel: string }) =>
-    SSGQuery(params)({
-        products: [{ options: { take: 8, sort: { createdAt: SortOrder.DESC } } }, { items: YAMLProductsSelector }],
-    }).then(d => d.products.items.filter(p => p.variants.length > 0));

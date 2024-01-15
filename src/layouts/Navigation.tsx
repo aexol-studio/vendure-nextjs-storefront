@@ -23,35 +23,15 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { useNavigationSearch } from '@/src/components/organisms/NavgationSearch/hooks';
 import { useEffect, useRef } from 'react';
 import { Picker } from '@/src/components/organisms/Picker';
+import { useTranslation } from 'next-i18next';
 
 interface NavigationProps {
     navigation: RootNode<NavigationType> | null;
     categories: CollectionTileType[];
 }
 
-// IT SHOULD BE MOVED TO VENDURE AS PLUGIN FOR EXAMPLE
-const entries = [
-    {
-        text: 'FREE SHIPPING OVER $50',
-        href: '/',
-        bgColor: `lch(95% 0 0)`,
-        textColor: '#69737C',
-    },
-    {
-        text: 'SECURE PAYMENTS',
-        href: '/',
-        bgColor: `lch(95% 0 0)`,
-        textColor: '#69737C',
-    },
-    {
-        text: 'SEE ALL PRODUCTS',
-        href: '/collections/all',
-        bgColor: `lch(95% 0 0)`,
-        textColor: '#69737C',
-    },
-];
-
 export const Navigation: React.FC<NavigationProps> = ({ navigation, categories }) => {
+    const { t } = useTranslation('common');
     const { isLogged, cart } = useCart();
     const navigationSearch = useNavigationSearch();
     const searchRef = useRef<HTMLDivElement>(null);
@@ -77,6 +57,34 @@ export const Navigation: React.FC<NavigationProps> = ({ navigation, categories }
             document.removeEventListener('click', handleOutsideClick);
         };
     }, []);
+
+    // THIS SHOULD COME FROM PLUGIN
+    const entries = [
+        {
+            text: t('announcements-bar')[0],
+            href: '/collections/all',
+            bgColor: `lch(95% 0 0)`,
+            textColor: '#69737C',
+        },
+        {
+            text: t('announcements-bar')[1],
+            href: '/',
+            bgColor: `lch(95% 0 0)`,
+            textColor: '#69737C',
+        },
+        {
+            text: t('announcements-bar')[2],
+            href: '/',
+            bgColor: `lch(95% 0 0)`,
+            textColor: '#69737C',
+        },
+        {
+            text: t('announcements-bar')[3],
+            href: '/',
+            bgColor: `lch(95% 0 0)`,
+            textColor: '#69737C',
+        },
+    ];
 
     return (
         <>

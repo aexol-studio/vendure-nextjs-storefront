@@ -1,18 +1,17 @@
 import { NavigationType } from '@/src/graphql/selectors';
 import { RootNode } from '@/src/util/arrayToTree';
-import { useTranslation } from 'next-i18next';
 import { Stack, ProductImage, Link, TP } from '@/src/components/atoms';
 import styled from '@emotion/styled';
 
 export const RelatedCollections: React.FC<{
+    title: string;
     collection: RootNode<NavigationType>['children'][number];
-}> = ({ collection }) => {
+}> = ({ title, collection }) => {
     if (!collection || collection?.children?.length === 0) return null;
-    const { t } = useTranslation('common');
     return (
         <Stack column gap="1.5rem">
             <TP size="1.5rem" weight={500}>
-                {t('related-collections')}
+                {title}
             </TP>
             <Stack itemsCenter gap="2rem">
                 {collection.children.slice(0, 2).map(children => (

@@ -1,52 +1,76 @@
-import React from 'react';
-import { SubmitHandler, useForm } from 'react-hook-form';
+import React, { useState } from 'react';
 import { TagIcon } from 'lucide-react';
 import styled from '@emotion/styled';
 import { z } from 'zod';
-import { zodResolver } from '@hookform/resolvers/zod';
 import { useTranslation } from 'next-i18next';
 import { FormError } from '@/src/components/forms';
 import { Stack } from '@/src/components/atoms';
 
 export const DiscountForm = ({ applyCouponCode }: { applyCouponCode: (code: string) => Promise<boolean> }) => {
     const { t } = useTranslation('common');
-    const schema = z.object({ code: z.string().min(1, 'Please enter a code') });
-    const {
-        handleSubmit,
-        register,
-        setError,
-        formState: { errors },
-        reset,
-    } = useForm<{ code: string }>({
-        resolver: zodResolver(schema),
-    });
-    const onSubmit: SubmitHandler<{ code: string }> = async ({ code }) => {
+    const [code, setCode] = useState('');
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState<string>();
+    const schema = z.object({ code: z.string().min(1, t('discounts-errors.enter-code')) });
+    const submitCode = async () => {
+        if (!code || loading) return;
+        setError(undefined);
+        setLoading(true);
         try {
-            const data = await applyCouponCode(code);
-            if (data) {
-                reset();
-            } else {
-                setError('code', { message: "Couldn't find a coupon with that code" });
+            const parsed = schema.safeParse({ code });
+            if (!parsed.success) {
+                setError(parsed.error.issues[0].message);
+                setLoading(false);
+                return;
             }
-        } catch (error) {
-            setError('code', { message: 'Something went wrong' });
+        } catch (e) {
+            setCode('');
+            setError(t('discounts-errors.something-went-wrong'));
+            setLoading(false);
+            return;
+        }
+
+        try {
+            const success = await applyCouponCode(code);
+            if (success) {
+                setCode('');
+                setError(undefined);
+                setLoading(false);
+            } else {
+                setError(t('discounts-errors.coupon-code-invalid'));
+                setLoading(false);
+            }
+        } catch (e) {
+            setCode('');
+            setError(t('discounts-errors.something-went-wrong'));
+            setLoading(false);
         }
     };
 
     return (
-        <Stack column gap="0.25rem">
-            <Form onSubmit={handleSubmit(onSubmit)}>
-                <Input {...register('code', { required: true })} placeholder={t('coupon-code')} />
-                <Button type="submit">
+        <Stack w100 column gap="0.25rem">
+            <FakeForm>
+                <Input
+                    value={code}
+                    onChange={e => setCode(e.target.value)}
+                    onKeyDown={e => {
+                        if (e.key === 'Enter') {
+                            e.preventDefault();
+                            submitCode();
+                        }
+                    }}
+                    placeholder={t('coupon-code')}
+                />
+                <Button type="button" disabled={loading} onClick={submitCode}>
                     <TagIcon size={24} />
                 </Button>
-            </Form>
+            </FakeForm>
             <FormError
                 style={{ margin: 0 }}
                 initial={{ opacity: 0 }}
-                animate={{ opacity: errors.code?.message ? 1 : 0 }}
+                animate={{ opacity: error ? 1 : 0 }}
                 transition={{ duration: 0.2 }}>
-                {errors.code?.message}
+                {error}
             </FormError>
         </Stack>
     );
@@ -74,7 +98,7 @@ const Input = styled.input`
     font-size: 1.6rem;
 `;
 
-const Form = styled.form`
+const FakeForm = styled(Stack)`
     width: 100%;
     position: relative;
 

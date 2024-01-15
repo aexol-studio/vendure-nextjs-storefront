@@ -6,7 +6,7 @@ import { Discounts } from '@/src/components/molecules/Discounts';
 import { ActiveOrderType } from '@/src/graphql/selectors';
 import { usePush } from '@/src/lib/redirect';
 import { useCart } from '@/src/state/cart';
-import { priceFormatter } from '@/src/util/priceFomatter';
+import { priceFormatter } from '@/src/util/priceFormatter';
 import { CurrencyCode } from '@/src/zeus';
 import styled from '@emotion/styled';
 import { useTranslation } from 'next-i18next';

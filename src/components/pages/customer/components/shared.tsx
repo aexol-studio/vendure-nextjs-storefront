@@ -24,6 +24,7 @@ export const FormWrapper = styled(Stack)`
 export const Form = styled.form`
     display: flex;
     flex-direction: column;
+    gap: 2rem;
     min-width: 27.5rem;
     max-width: 27.5rem;
 `;

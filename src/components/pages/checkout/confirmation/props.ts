@@ -8,7 +8,7 @@ import { GetServerSidePropsContext } from 'next';
 export const getServerSideProps = async (context: GetServerSidePropsContext) => {
     const r = await makeServerSideProps(['common', 'checkout'])(context);
     const homePageRedirect = prepareSSRRedirect('/')(context);
-    const language = (context.params?.locale as string) ?? 'en';
+    const api = SSRQuery(context);
 
     const collections = await getCollections(r.context);
     const navigation = arrayToTree(collections);
@@ -16,7 +16,7 @@ export const getServerSideProps = async (context: GetServerSidePropsContext) => 
     if (!code) return homePageRedirect;
 
     try {
-        const { orderByCode } = await SSRQuery(context)({
+        const { orderByCode } = await api({
             orderByCode: [{ code }, OrderSelector],
         });
 
@@ -29,11 +29,10 @@ export const getServerSideProps = async (context: GetServerSidePropsContext) => 
             code,
             orderByCode,
             navigation,
-            language,
         };
 
         return { props: returnedStuff };
     } catch (e) {
-        return { props: { ...r.props, ...r.context, collections, code, navigation, orderByCode: null, language } };
+        return { props: { ...r.props, ...r.context, collections, code, navigation, orderByCode: null } };
     }
 };

@@ -6,12 +6,12 @@ import { GetServerSidePropsContext } from 'next';
 export const getServerSideProps = async (context: GetServerSidePropsContext) => {
     const r = await makeServerSideProps(['common', 'checkout'])(context);
     const homePageRedirect = prepareSSRRedirect('/')(context);
-    const language = (context.params?.locale as string) ?? 'en';
+    const api = SSRQuery(context);
 
     try {
         const [{ activeOrder: checkout }, { eligiblePaymentMethods }] = await Promise.all([
-            SSRQuery(context)({ activeOrder: ActiveOrderSelector }),
-            SSRQuery(context)({ eligiblePaymentMethods: AvailablePaymentMethodsSelector }),
+            api({ activeOrder: ActiveOrderSelector }),
+            api({ eligiblePaymentMethods: AvailablePaymentMethodsSelector }),
         ]);
 
         //If no active order, redirect to homepage
@@ -33,7 +33,6 @@ export const getServerSideProps = async (context: GetServerSidePropsContext) => 
             checkout,
             eligiblePaymentMethods,
             stripeData: { paymentIntent: null },
-            language,
         };
 
         return { props: returnedStuff };

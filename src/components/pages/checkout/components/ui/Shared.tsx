@@ -8,7 +8,6 @@ export const Content = styled(ContentContainer)`
 
 export const Main = styled(Stack)`
     gap: 5rem;
-    min-height: 100vh;
     padding: 4rem 0;
     @media (max-width: ${({ theme }) => theme.breakpoints.lg}) {
         flex-direction: column-reverse;

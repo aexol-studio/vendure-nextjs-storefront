@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { InferGetServerSidePropsType } from 'next';
 import { OrderSummary } from '../components/OrderSummary';
 import { OrderPayment } from '../components/OrderPayment';
-import { Content, Main } from '../components/ui/Shared';
+import { Content, Main } from '../components/ui/shared';
 import { CheckoutLayout } from '@/src/layouts';
 import { useTranslation } from 'next-i18next';
 import { getServerSideProps } from './props';

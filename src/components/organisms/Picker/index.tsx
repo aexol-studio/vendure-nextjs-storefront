@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import styled from '@emotion/styled';
 import { Stack } from '../../atoms';
 import { LogoAexol } from '@/src/assets';
@@ -11,6 +11,8 @@ import { useChannels } from '@/src/state/channels';
 import languageDetector from '@/src/lib/lngDetector';
 import { useRouter } from 'next/router';
 import { channels } from '@/src/lib/consts';
+import { getFlagByCode } from '@/src/util/i18Helpers';
+import { useOutsideClick } from '@/src/util/hooks/useOutsideClick';
 
 type FormValues = {
     channel: string;
@@ -23,42 +25,43 @@ export const Picker: React.FC = () => {
     const { query, push, pathname } = useRouter();
     const [isOpen, setIsOpen] = useState(false);
     const defaultChannel = channels.find(c => c.channel === channel)?.slug as string;
+    const ref = useRef<HTMLDivElement>(null);
+
+    useOutsideClick(ref, () => setIsOpen(false));
 
     const { control, handleSubmit, watch, setValue } = useForm<FormValues>({
         defaultValues: { channel: defaultChannel, locale },
     });
 
     const onSubmit: SubmitHandler<FormValues> = data => {
-        console.log(data);
         const newLang = data.locale;
         const channelAsLocale = channels.find(c => c.nationalLocale === data.channel)?.nationalLocale as string;
-        console.log(channelAsLocale, newLang);
         const sameAsChannel = newLang === channelAsLocale;
 
         languageDetector.cache && languageDetector.cache(newLang);
 
-        console.log(pathname);
+        const haveChannel = pathname.includes('[channel]');
+        const haveLocale = pathname.includes('[locale]');
 
         if (sameAsChannel) {
-            if (pathname.includes('[channel]') && pathname.includes('[locale]')) {
-                const splitted = pathname.split('[locale]');
-                const correctPathname = (splitted[0] + (newLang === channelAsLocale ? '' : newLang) + splitted[1])
+            if (haveChannel && haveLocale) {
+                const split = pathname.split('[locale]');
+                const correctPathname = (split[0] + (newLang === channelAsLocale ? '' : newLang) + split[1])
                     .replace('[channel]', channelAsLocale)
                     .replace('[slug]', query.slug as string)
                     .replace('[code]', query.code as string);
                 console.log(correctPathname);
                 push(correctPathname);
             }
-
-            if (pathname.includes('[channel]') && !pathname.includes('[locale]')) {
-                const splitted = pathname.split('[channel]');
-                const correctPathname = (splitted[0] + channelAsLocale + splitted[1])
+            if (haveChannel && !haveLocale) {
+                const split = pathname.split('[channel]');
+                const correctPathname = (split[0] + channelAsLocale + split[1])
                     .replace('[slug]', query.slug as string)
                     .replace('[code]', query.code as string);
                 console.log(correctPathname);
                 push(correctPathname);
             }
-            if (!pathname.includes('[channel]') && !pathname.includes('[locale]')) {
+            if (!haveChannel && !haveLocale) {
                 const correctPathname = (pathname + '/' + channelAsLocale)
                     .replace('[slug]', query.slug as string)
                     .replace('[code]', query.code as string);
@@ -66,9 +69,9 @@ export const Picker: React.FC = () => {
                 push(correctPathname);
             }
         } else {
-            if (pathname.includes('[channel]') && pathname.includes('[locale]')) {
-                const splitted = pathname.split('[locale]');
-                const correctPathname = (splitted[0] + newLang + splitted[1])
+            if (haveChannel && haveLocale) {
+                const split = pathname.split('[locale]');
+                const correctPathname = (split[0] + newLang + split[1])
                     .replace('[channel]', channelAsLocale)
                     .replace('[slug]', query.slug as string)
                     .replace('[code]', query.code as string);
@@ -76,9 +79,9 @@ export const Picker: React.FC = () => {
                 console.log(correctPathname);
                 push(correctPathname);
             }
-            if (pathname.includes('[channel]') && !pathname.includes('[locale]')) {
-                const splitted = pathname.split('[channel]');
-                const correctPathname = (splitted[0] + channelAsLocale + '/' + newLang + splitted[1])
+            if (haveChannel && !haveLocale) {
+                const split = pathname.split('[channel]');
+                const correctPathname = (split[0] + channelAsLocale + '/' + newLang + split[1])
                     .replace('[slug]', query.slug as string)
                     .replace('[code]', query.code as string);
 
@@ -86,7 +89,7 @@ export const Picker: React.FC = () => {
                 push(correctPathname);
             }
 
-            if (!pathname.includes('[channel]') && !pathname.includes('[locale]')) {
+            if (!haveChannel && !haveLocale) {
                 const correctPathname = (pathname + '/' + channelAsLocale + '/' + newLang)
                     .replace('[slug]', query.slug as string)
                     .replace('[code]', query.code as string);
@@ -95,32 +98,39 @@ export const Picker: React.FC = () => {
                 push(correctPathname);
             }
         }
-
         setIsOpen(false);
     };
 
     return (
         <>
-            <button onClick={() => setIsOpen(true)}>
-                {locale} {channel}
-            </button>
+            <CurrentLocale onClick={() => setIsOpen(true)}>{getFlagByCode(locale, true)}</CurrentLocale>
             {isOpen && (
                 <Overlay>
-                    <form onSubmit={handleSubmit(onSubmit)}>
-                        <PickerWrapper column gap={'3rem'} justifyCenter>
-                            <IconWrapper onClick={() => setIsOpen(false)}>
-                                <XIcon />
-                            </IconWrapper>
-                            <LogoAexol />
+                    <PickerWrapper ref={ref} column gap={'3rem'} justifyCenter>
+                        <IconWrapper onClick={() => setIsOpen(false)}>
+                            <XIcon />
+                        </IconWrapper>
+                        <LogoAexol />
+                        <StyledForm onSubmit={handleSubmit(onSubmit)}>
                             <Controller
                                 name="channel"
                                 control={control}
                                 render={({ field: { value, onChange } }) => (
                                     <Dropdown
-                                        items={channels.map(c => c.slug)}
+                                        items={channels.map(c => {
+                                            return {
+                                                key: c.slug,
+                                                children: (
+                                                    <LocaleInList itemsCenter gap="1rem">
+                                                        {getFlagByCode(c.nationalLocale)}
+                                                    </LocaleInList>
+                                                ),
+                                            };
+                                        })}
                                         placeholder={t('picker.ship-to-country')}
                                         setSelected={channel => {
                                             onChange(channel);
+                                            if (channel === value) return;
                                             setValue(
                                                 'locale',
                                                 channels.find(c => c.nationalLocale === channel)
@@ -128,6 +138,11 @@ export const Picker: React.FC = () => {
                                             );
                                         }}
                                         selected={value}
+                                        renderSelected={value => (
+                                            <LocaleInList w100 gap="1rem" style={{ marginTop: '0.25rem' }}>
+                                                {getFlagByCode(value)}
+                                            </LocaleInList>
+                                        )}
                                     />
                                 )}
                             />
@@ -137,23 +152,75 @@ export const Picker: React.FC = () => {
                                 render={({ field: { value, onChange } }) => (
                                     <Dropdown
                                         items={
-                                            channels.find(c => c.nationalLocale === watch('channel'))
-                                                ?.locales as string[]
+                                            channels
+                                                .find(c => c.nationalLocale === watch('channel'))
+                                                ?.locales.map(l => {
+                                                    return {
+                                                        key: l,
+                                                        children: (
+                                                            <LocaleInList itemsCenter gap="1rem">
+                                                                {getFlagByCode(l)}
+                                                            </LocaleInList>
+                                                        ),
+                                                    };
+                                                }) ?? []
                                         }
-                                        placeholder={t('picker.ship-to-country')}
+                                        placeholder={t('picker.change-language')}
                                         setSelected={onChange}
                                         selected={value}
+                                        renderSelected={value => (
+                                            <LocaleInList w100 gap="1rem" style={{ marginTop: '0.25rem' }}>
+                                                {getFlagByCode(value)}
+                                            </LocaleInList>
+                                        )}
                                     />
                                 )}
                             />
                             <StyledButton type="submit"> {t('picker.save')} </StyledButton>
-                        </PickerWrapper>
-                    </form>
+                        </StyledForm>
+                    </PickerWrapper>
                 </Overlay>
             )}
         </>
     );
 };
+
+const StyledForm = styled.form`
+    width: 24rem;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+`;
+
+const LocaleInList = styled(Stack)`
+    cursor: pointer;
+
+    svg {
+        width: 2rem;
+        height: 2rem;
+    }
+
+    &:hover {
+        background-color: ${({ theme }) => theme.background.secondary};
+    }
+`;
+
+const CurrentLocale = styled.button`
+    border: none;
+    background-color: transparent;
+    cursor: pointer;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    &:focus {
+        outline: none;
+    }
+    svg {
+        width: 2.5rem;
+        height: 2.5rem;
+    }
+`;
 
 const Overlay = styled.div`
     position: fixed;
@@ -161,31 +228,22 @@ const Overlay = styled.div`
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(
-        55,
-        55,
-        55,
-        0.8
-    ); // nie dodwałam tego jeszcze do themu aexolowego bo nie wiem czy taki będzie użyty
+    background-color: ${({ theme }) => theme.grayAlpha(800, 0.7)};
     display: flex;
     justify-content: center;
     align-items: center;
     gap: 2rem;
-    backdrop-filter: blur(1rem);
+    backdrop-filter: blur(0.2rem);
     z-index: 100;
     padding: 0 2rem;
-    z-index: 900000;
+    z-index: 3000;
 `;
 
 const PickerWrapper = styled(Stack)`
     position: relative;
-    width: 100%;
-    padding: 4rem 1.5rem 3rem 1.5rem;
+    padding: 4rem 8rem;
     align-items: center;
     background-color: ${({ theme }) => theme.background.main};
-    @media (min-width: ${p => p.theme.breakpoints.sm}) {
-        width: 30rem;
-    }
 `;
 
 const IconWrapper = styled.div`

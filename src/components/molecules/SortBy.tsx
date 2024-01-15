@@ -1,11 +1,12 @@
 import { sortOptions } from '@/src/state/collection/utils';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { Stack, TP } from '@/src/components/atoms';
 import { SortAsc, SortDesc } from 'lucide-react';
 import { Sort } from '@/src/state/collection/types';
 import { useTranslation } from 'next-i18next';
 import styled from '@emotion/styled';
 import { AnimatePresence, motion } from 'framer-motion';
+import { useOutsideClick } from '@/src/util/hooks/useOutsideClick';
 
 interface Props {
     sort: Sort;
@@ -15,19 +16,11 @@ interface Props {
 type SortKey = (typeof sortOptions)[number]['key'];
 
 export const SortBy: React.FC<Props> = ({ handleSort, sort }) => {
+    const { t } = useTranslation('collections');
     const [open, setOpen] = useState(false);
-    const { t } = useTranslation('common');
 
     const ref = useRef<HTMLDivElement>(null);
-    useEffect(() => {
-        const handleClickOutside = (e: MouseEvent) => {
-            if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
-        };
-        document.addEventListener('mousedown', handleClickOutside);
-        return () => {
-            document.removeEventListener('mousedown', handleClickOutside);
-        };
-    }, []);
+    useOutsideClick(ref, () => setOpen(false));
 
     return (
         <Container gap="0.5rem">

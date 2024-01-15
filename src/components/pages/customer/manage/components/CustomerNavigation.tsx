@@ -47,7 +47,7 @@ export const CustomerNavigation: React.FC = () => {
                 ))}
             </Stack>
             <Button onClick={onClick}>
-                <TP>{t('navigation.logout')}</TP>
+                <TP color="contrast">{t('navigation.logout')}</TP>
             </Button>
         </NavigationBox>
     );
@@ -68,6 +68,7 @@ const NavigationBox = styled(Stack)`
 
     @media (min-width: ${({ theme }) => theme.breakpoints.lg}) {
         max-width: 30rem;
+        min-width: 30rem;
         margin-top: 0;
     }
 

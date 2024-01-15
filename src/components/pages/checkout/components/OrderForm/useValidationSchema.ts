@@ -16,7 +16,6 @@ export const useValidationSchema = () => {
         deliveryMethod: z.string().min(1, { message: t('deliveryMethod.errors.required') }),
 
         terms: z.boolean().refine(value => value, { message: t('orderForm.errors.terms.required') }),
-        regulations: z.boolean().refine(value => value, { message: t('orderForm.errors.regulations.required') }),
 
         shippingDifferentThanBilling: z.boolean(),
         // userNeedInvoice: z.boolean(),

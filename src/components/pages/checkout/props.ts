@@ -1,22 +1,35 @@
 import { SSRQuery } from '@/src/graphql/client';
-import { ActiveOrderSelector, AvailableCountriesSelector } from '@/src/graphql/selectors';
-import { getYMALProducts } from '@/src/graphql/sharedQueries';
+import {
+    ActiveCustomerSelector,
+    ActiveOrderSelector,
+    AvailableCountriesSelector,
+    ShippingMethodsSelector,
+    homePageSlidersSelector,
+} from '@/src/graphql/selectors';
 import { makeServerSideProps, prepareSSRRedirect } from '@/src/lib/getStatic';
 import { GetServerSidePropsContext } from 'next';
 
 export const getServerSideProps = async (context: GetServerSidePropsContext) => {
     const r = await makeServerSideProps(['common', 'checkout'])(context);
-    const language = (context.params?.locale as string) ?? 'en';
 
     const homePageRedirect = prepareSSRRedirect('/')(context);
     const paymentRedirect = prepareSSRRedirect('/checkout/payment')(context);
+    const api = SSRQuery(context);
 
     try {
-        const [{ activeOrder: checkout }, { availableCountries }] = await Promise.all([
-            SSRQuery(context)({ activeOrder: ActiveOrderSelector }),
-            SSRQuery(context)({ availableCountries: AvailableCountriesSelector }),
+        const [
+            { activeOrder: checkout },
+            { availableCountries },
+            { activeCustomer },
+            { eligibleShippingMethods },
+            { collection: alsoBoughtProducts },
+        ] = await Promise.all([
+            api({ activeOrder: ActiveOrderSelector }),
+            api({ availableCountries: AvailableCountriesSelector }),
+            api({ activeCustomer: ActiveCustomerSelector }),
+            api({ eligibleShippingMethods: ShippingMethodsSelector }),
+            api({ collection: [{ slug: 'all' }, homePageSlidersSelector] }),
         ]);
-        const YMALProducts = await getYMALProducts(r.context);
 
         if (checkout?.state === 'ArrangingPayment') {
             return paymentRedirect;
@@ -31,8 +44,9 @@ export const getServerSideProps = async (context: GetServerSidePropsContext) => 
             ...r.context,
             availableCountries,
             checkout,
-            YMALProducts,
-            language,
+            alsoBoughtProducts: alsoBoughtProducts?.productVariants.items ?? null,
+            activeCustomer: activeCustomer ?? null,
+            eligibleShippingMethods: eligibleShippingMethods ?? null,
         };
 
         return { props: returnedStuff };

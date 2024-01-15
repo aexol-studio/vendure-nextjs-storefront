@@ -17,26 +17,25 @@ const socialHrefs = [
     },
 ];
 
-export const Socials = () => {
-    const mode = 'light';
+export const Socials: React.FC = () => {
     return (
-        <Container gap="1rem" justifyEnd mode={mode}>
+        <Container gap="1rem" justifyEnd>
             {socialHrefs.map(({ href, icon, ariaLabel }) => (
-                <Link
-                    aria-label={ariaLabel}
-                    external
-                    style={{ height: 'max-content', color: 'inherit' }}
-                    key={href}
-                    href={href}>
+                <StyledLink aria-label={ariaLabel} external key={href} href={href}>
                     {icon}
-                </Link>
+                </StyledLink>
             ))}
         </Container>
     );
 };
 
-const Container = styled(Stack)<{ mode?: string }>`
-    color: ${({ theme, mode }) => (mode === 'light' ? theme.gray(800) : theme.gray(200))};
+const StyledLink = styled(Link)`
+    height: max-content;
+    color: inherit;
+`;
+
+const Container = styled(Stack)`
+    color: ${({ theme }) => theme.gray(800)};
     @media (min-width: ${p => p.theme.breakpoints.ssm}) {
         gap: 3.5rem;
     }

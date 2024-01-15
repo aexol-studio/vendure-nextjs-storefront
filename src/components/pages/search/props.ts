@@ -8,11 +8,11 @@ import { SortOrder, GraphQLTypes } from '@/src/zeus';
 import { GetServerSidePropsContext } from 'next';
 
 export const getServerSideProps = async (context: GetServerSidePropsContext) => {
-    const r = await makeServerSideProps(['common'])(context);
-    const language = (context.params?.locale as string) ?? 'en';
+    const r = await makeServerSideProps(['common', 'collections'])(context);
 
     const collections = await getCollections(r.context);
     const navigation = arrayToTree(collections);
+    const api = SSRQuery(context);
 
     let page = 1;
     let q = '';
@@ -29,10 +29,10 @@ export const getServerSideProps = async (context: GetServerSidePropsContext) => 
     }
 
     //we simulate a collection with the search slug + we skip this collection everywhere else
-    const { collection } = await SSRQuery(context)({
+    const { collection } = await api({
         collection: [{ slug: 'search' }, CollectionSelector],
     });
-    const facetsQuery = await SSRQuery(context)({
+    const facetsQuery = await api({
         search: [
             { input: { term: q, collectionSlug: 'search', groupByProduct: true, take: PER_PAGE } },
             { facetValues: { count: true, facetValue: { ...FacetSelector, facet: FacetSelector } } },
@@ -74,7 +74,6 @@ export const getServerSideProps = async (context: GetServerSidePropsContext) => 
         filters,
         searchQuery: q,
         page,
-        language,
     };
 
     return { props: returnedStuff };

@@ -1,23 +1,27 @@
 import { CheckoutLayout } from '@/src/layouts';
 import { InferGetServerSidePropsType } from 'next';
 import React from 'react';
-import { OrderSummary } from './components/OrderSummary';
 import { OrderForm } from './components/OrderForm';
-import { Content, Main } from './components/ui/Shared';
+import { Content, Main } from './components/ui/shared';
 import { useTranslation } from 'next-i18next';
 import { getServerSideProps } from './props';
+import { CheckoutCarousel } from './components/OrderSummary/CheckoutCarousel';
 
 export const CheckoutPage: React.FC<InferGetServerSidePropsType<typeof getServerSideProps>> = props => {
     const { t } = useTranslation('checkout');
-    const { availableCountries, YMALProducts } = props;
+    const { availableCountries, alsoBoughtProducts, eligibleShippingMethods, activeCustomer } = props;
 
     return (
         <CheckoutLayout pageTitle={`${t('seoTitles.checkout')}`}>
             <Content>
                 <Main w100 justifyBetween>
-                    <OrderForm availableCountries={availableCountries} />
-                    <OrderSummary isForm YMALProducts={YMALProducts} />
+                    <OrderForm
+                        availableCountries={availableCountries}
+                        shippingMethods={eligibleShippingMethods}
+                        activeCustomer={activeCustomer}
+                    />
                 </Main>
+                <CheckoutCarousel alsoBoughtProducts={alsoBoughtProducts} />
             </Content>
         </CheckoutLayout>
     );

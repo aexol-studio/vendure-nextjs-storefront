@@ -61,10 +61,7 @@ export function makeStaticProps(ns: Array<keyof typeof resources>) {
         const context = getContext(ctx);
         return {
             props: await getI18nProps(context, ns),
-            context: {
-                channel: context.params.channel,
-                locale: context.params.locale,
-            },
+            context: context.params,
         };
     };
 }
@@ -74,10 +71,7 @@ export function makeServerSideProps(ns: Array<keyof typeof resources>) {
         const context = getContext(ctx);
         return {
             props: await getI18nProps(context, ns),
-            context: {
-                channel: context.params.channel,
-                locale: context.params.locale,
-            },
+            context: context.params,
         };
     };
 }
@@ -88,10 +82,9 @@ export const getStaticPaths = () => ({
 });
 
 export const prepareSSRRedirect = (where: string) => (ctx: GetServerSidePropsContext) => {
-    const context = getContext(ctx);
-    const channel = context.params?.channel;
-    const locale = context.params?.locale;
+    const channel = ctx.params?.channel;
+    const locale = ctx.params?.locale ? `/${ctx.params.locale}` : '';
 
-    const destination = `/${channel}${locale ? `/${locale}` : ''}${where}`;
+    const destination = `/${channel}${locale}${where}`;
     return { redirect: { destination, permanent: false } };
 };

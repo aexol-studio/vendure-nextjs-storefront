@@ -1,5 +1,5 @@
 import { Layout } from '@/src/layouts';
-import { InferGetStaticPropsType } from 'next';
+import { InferGetServerSidePropsType } from 'next';
 import React, { useState } from 'react';
 import { Stack } from '@/src/components/atoms/Stack';
 import { Link } from '@/src/components/atoms/Link';
@@ -13,14 +13,14 @@ import { Absolute, Form, FormContainer, FormContent, FormWrapper } from '../comp
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { TP } from '@/src/components/atoms/TypoGraphy';
-import { getStaticProps } from './props';
+import { getServerSideProps } from './props';
 import { useChannels } from '@/src/state/channels';
 
 type FormValues = {
     emailAddress: string;
 };
 
-export const ForgotPasswordPage: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = props => {
+export const ForgotPasswordPage: React.FC<InferGetServerSidePropsType<typeof getServerSideProps>> = props => {
     const ctx = useChannels();
     const { t } = useTranslation('customer');
     const { t: tErrors } = useTranslation('common');

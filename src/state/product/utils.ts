@@ -25,3 +25,11 @@ export const findRelatedVariant = (
         }),
     );
 };
+
+export const setRecentlyViewedInCookie = (cookie: string, productId: string) => {
+    const recentlyViewed = cookie.replace('recentlyViewed=', '').split(',');
+    const index = recentlyViewed.findIndex(id => id === productId);
+    if (index !== -1) recentlyViewed.splice(index, 1);
+    recentlyViewed.unshift(productId);
+    return recentlyViewed.slice(0, 10).join(',');
+};

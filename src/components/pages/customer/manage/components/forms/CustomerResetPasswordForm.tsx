@@ -7,7 +7,7 @@ import { storefrontApiMutation } from '@/src/graphql/client';
 import { Stack } from '@/src/components/atoms/Stack';
 import { Banner, Input } from '@/src/components/forms';
 import { usePush } from '@/src/lib/redirect';
-import { CustomerWrap, Form, StyledButton } from '../atoms/shared';
+import { MotionCustomerWrap, Form, StyledButton } from '../atoms/shared';
 import { useChannels } from '@/src/state/channels';
 
 type ResetPasswordForm = {
@@ -101,7 +101,7 @@ export const CustomerResetPasswordForm: React.FC = () => {
         }
     };
     return (
-        <CustomerWrap
+        <MotionCustomerWrap
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -112,7 +112,7 @@ export const CustomerResetPasswordForm: React.FC = () => {
             }}>
             <Form onSubmit={handleSubmit(onPasswordChange)} noValidate>
                 <Banner error={errors.root} clearErrors={() => clearErrors('root')} />
-                <Stack column itemsCenter>
+                <Stack gap="2rem" column itemsCenter>
                     <Input
                         label={t('accountPage.passwordForm.oldPassword')}
                         type="password"
@@ -135,6 +135,6 @@ export const CustomerResetPasswordForm: React.FC = () => {
                     {t('accountPage.passwordForm.confirmPassword')}
                 </StyledButton>
             </Form>
-        </CustomerWrap>
+        </MotionCustomerWrap>
     );
 };

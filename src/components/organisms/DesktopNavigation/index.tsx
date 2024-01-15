@@ -6,12 +6,16 @@ import { NavigationType } from '@/src/graphql/selectors';
 import { NavigationLinks } from './NavigationLinks';
 import { ProductsSellout } from './ProductsSellout';
 import { RelatedCollections } from './RelatedCollections';
+import { useTranslation } from 'next-i18next';
+import { useCart } from '@/src/state/cart';
 
 interface NavProps {
     navigation: RootNode<NavigationType> | null;
 }
 
 export const DesktopNavigation: React.FC<NavProps> = ({ navigation }) => {
+    const { t } = useTranslation('common');
+    const { addToCart } = useCart();
     return (
         <DesktopStack itemsCenter gap="10rem">
             {navigation?.children.map(collection => {
@@ -30,8 +34,13 @@ export const DesktopNavigation: React.FC<NavProps> = ({ navigation }) => {
                                 <Background w100 justifyBetween>
                                     <NavigationLinks collection={collection} />
                                     <Stack gap="3.5rem">
-                                        <ProductsSellout collection={collection} />
-                                        <RelatedCollections collection={collection} />
+                                        <ProductsSellout
+                                            title={t('featured-products')}
+                                            addToCart={addToCart}
+                                            addToCartLabel={t('add-to-cart')}
+                                            collection={collection}
+                                        />
+                                        <RelatedCollections title={t('best-collections')} collection={collection} />
                                     </Stack>
                                 </Background>
                             </ContentContainer>
@@ -68,10 +77,10 @@ const RelativeStack = styled(Stack)`
     }
 
     &:hover {
-        & > :first-of-type {
+        & > a {
             text-decoration: underline;
-            text-decoration-thickness: 0.2rem;
-            text-underline-offset: 0.4rem;
+            text-decoration-thickness: 0.1rem;
+            text-underline-offset: 0.5rem;
         }
         & > div {
             opacity: 1;

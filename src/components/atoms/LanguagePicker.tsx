@@ -1,10 +1,11 @@
 import styled from '@emotion/styled';
 import { useRouter } from 'next/router';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useRef, useState } from 'react';
 import languageDetector from '@/src/lib/lngDetector';
 import nextI18nextConfig from '@/next-i18next.config';
 import { getFlagByCode } from '@/src/util/i18Helpers';
 import { Chevron } from '@/src/assets';
+import { useOutsideClick } from '@/src/util/hooks/useOutsideClick';
 
 export const LanguagePicker = () => {
     const { query, push, pathname } = useRouter();
@@ -13,18 +14,7 @@ export const LanguagePicker = () => {
     const [dropdownOpen, setDropdownOpen] = useState(false);
     const menuRef = useRef<HTMLDivElement>(null);
 
-    const handleOutsideClick = (event: MouseEvent) => {
-        if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
-            setDropdownOpen(false);
-        }
-    };
-
-    useEffect(() => {
-        document.addEventListener('click', handleOutsideClick);
-        return () => {
-            document.removeEventListener('click', handleOutsideClick);
-        };
-    }, []);
+    useOutsideClick(menuRef, () => setDropdownOpen(false));
 
     const languages = locales
         .filter(locale => locale !== currentLocale)

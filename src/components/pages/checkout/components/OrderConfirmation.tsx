@@ -1,17 +1,17 @@
 import React from 'react';
 import { Stack } from '@/src/components/atoms/Stack';
-import { CheckoutStatus } from '../components/CheckoutStatus';
 import { TH2, TP } from '@/src/components/atoms/TypoGraphy';
 
 import { Divider } from '@/src/components/atoms/Divider';
 import { ProductImage } from '@/src/components/atoms/ProductImage';
 import { CheckCircle2, X } from 'lucide-react';
-import { priceFormatter } from '@/src/util/priceFomatter';
+import { priceFormatter } from '@/src/util/priceFormatter';
 import { CurrencyCode } from '@/src/zeus';
 import { OrderStateType, OrderType } from '@/src/graphql/selectors';
 import { Trans, useTranslation } from 'next-i18next';
 import { Discounts } from '@/src/components/molecules/Discounts';
 import { Price } from '@/src/components';
+import styled from '@emotion/styled';
 
 export const OrderConfirmation: React.FC<{ code: string; order?: OrderType }> = ({ code, order }) => {
     const { t } = useTranslation('checkout');
@@ -24,10 +24,7 @@ export const OrderConfirmation: React.FC<{ code: string; order?: OrderType }> = 
     // const paymentState = order?.payments?.[0]?.state;
 
     return (
-        <Stack column w100 gap="2.5rem">
-            <Stack style={{ paddingBlock: '2rem' }}>
-                <CheckoutStatus step={'confirmation'} />
-            </Stack>
+        <Wrapper column w100 gap="2.5rem">
             <Stack column gap="4rem">
                 <Stack justifyBetween w100 gap="2rem">
                     <Stack w100 column gap="4rem">
@@ -122,6 +119,10 @@ export const OrderConfirmation: React.FC<{ code: string; order?: OrderType }> = 
                     );
                 })}
             </Stack>
-        </Stack>
+        </Wrapper>
     );
 };
+
+const Wrapper = styled(Stack)`
+    margin: 12rem 0 0 0;
+`;

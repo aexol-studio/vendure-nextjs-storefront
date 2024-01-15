@@ -1,32 +1,36 @@
 import React, { ReactNode } from 'react';
 import { useSlider } from './hooks';
 import styled from '@emotion/styled';
-import { ArrowBigLeft, ArrowBigRight } from 'lucide-react';
+import { ArrowLeft, ArrowRight } from 'lucide-react';
 import { Stack } from '@/src/components/atoms';
 import { motion } from 'framer-motion';
 
 interface SliderProps {
     withDots?: boolean;
-    withArrows?: boolean;
+    withArrows?: number;
     spacing?: number;
     slides: ReactNode[];
 }
 
 export const Slider: React.FC<SliderProps> = ({ slides, withArrows, withDots, spacing = 0 }) => {
-    const { jsEnabled, ref, nextSlide, prevSlide, goToSlide, currentSlide } = useSlider({ spacing });
+    if (!slides?.length) return null;
+    const { jsEnabled, ref, nextSlide, prevSlide, goToSlide, currentSlide } = useSlider({
+        spacing,
+        loop: withArrows ? slides?.length > withArrows : false,
+    });
 
     return (
         <Wrapper column>
             <Content>
-                {jsEnabled && withArrows && (
+                {jsEnabled && withArrows && slides?.length > withArrows && (
                     <Button whileTap={{ scale: 0.95 }} left={1} onClick={prevSlide}>
-                        <ArrowBigLeft size="2rem" />
+                        <ArrowLeft size="2rem" />
                     </Button>
                 )}
                 {jsEnabled ? (
                     <StyledSlider className="keen-slider" ref={ref}>
                         {slides.map((slide, idx) => (
-                            <StyledSlide column itemsCenter key={idx} className="keen-slider__slide">
+                            <StyledSlide column key={idx} className="keen-slider__slide">
                                 {slide}
                             </StyledSlide>
                         ))}
@@ -34,13 +38,13 @@ export const Slider: React.FC<SliderProps> = ({ slides, withArrows, withDots, sp
                 ) : (
                     <StyledNoJSSlider gap={`${spacing / 10}rem`}>{slides}</StyledNoJSSlider>
                 )}
-                {jsEnabled && withArrows && (
+                {jsEnabled && withArrows && slides?.length > withArrows && (
                     <Button whileTap={{ scale: 0.95 }} onClick={nextSlide}>
-                        <ArrowBigRight size="2rem" />
+                        <ArrowRight size="2rem" />
                     </Button>
                 )}
             </Content>
-            {jsEnabled && withDots && (
+            {jsEnabled && slides?.length > 1 && withDots && (
                 <DotsWrapper justifyCenter itemsCenter gap="1rem">
                     {slides.map((_, i) => (
                         <Dot key={i} active={i === currentSlide} onClick={() => goToSlide(i)} />
@@ -80,22 +84,21 @@ const Content = styled(Stack)`
 const Button = styled(motion.button)<{ left?: number }>`
     appearance: none;
     border: none;
-    background: ${p => p.theme.background.secondary};
+    background: ${({ theme }) => theme.background.third};
     border-radius: ${p => p.theme.borderRadius};
-    box-shadow: 0 0.1rem 0.1rem 0 ${({ theme }) => theme.shadow};
 
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 3rem;
-    height: 3rem;
+    width: 6rem;
+    height: 6rem;
 
     position: absolute;
     top: calc(50% - 1.75rem);
-    ${({ left }) => (left === 1 ? 'left: 1rem;' : 'right: 1rem;')}
+    ${({ left }) => (left === 1 ? 'left: -3rem;' : 'right: -3rem;')}
     z-index: 1;
 
-    opacity: 0.5;
+    opacity: 0.8;
     transition: opacity 0.3s ease;
 `;
 
@@ -110,4 +113,5 @@ const StyledSlider = styled(Stack)``;
 
 const StyledSlide = styled(Stack)`
     min-width: fit-content;
+    max-width: fit-content;
 `;

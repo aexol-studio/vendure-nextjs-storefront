@@ -105,7 +105,11 @@ export const HistoryPage: React.FC<InferGetServerSidePropsType<typeof getServerS
                             {t('ordersPage.title')}
                         </TP>
                         <Main column w100>
-                            <Input label="Search order" placeholder="Look for order by code" onChange={onSearch} />
+                            <Input
+                                label={t('ordersPage.searchOrder')}
+                                placeholder={t('ordersPage.lookForOrder')}
+                                onChange={onSearch}
+                            />
                             <Wrap flexWrap w100 ref={scrollableRef}>
                                 {!loading ? (
                                     activeOrders?.map(order => <OrderBox key={order.id} order={order} />)

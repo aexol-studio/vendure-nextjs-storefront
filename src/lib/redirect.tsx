@@ -4,7 +4,6 @@ import React from 'react';
 import languageDetector from './lngDetector';
 import styled from '@emotion/styled';
 import { Url } from 'next/dist/shared/lib/router/router';
-import { DEFAULT_LOCALE } from './consts';
 
 const AppLoader = styled.div``;
 
@@ -57,13 +56,13 @@ interface TransitionOptions {
 
 export const usePush = () => {
     const router = useRouter();
-    const lang = languageDetector.detect();
-    const locale = lang === DEFAULT_LOCALE ? '' : '/' + lang;
+    const channel = router.query.channel;
+    const locale = router.query.locale ? `/${router.query.locale}` : '';
 
     return useCallback(
         (to?: string, as?: Url, options?: TransitionOptions) => {
-            router.push(`${locale}${to}`, as, options);
+            router.push(`/${channel}${locale}${to}`, as, options);
         },
-        [lang, router.query.locale],
+        [router.query],
     );
 };

@@ -64,10 +64,9 @@ export const AddressForm: React.FC<{
                 {t('addressForm.title')}
             </TP>
             <Form onSubmit={handleSubmit(onSubmit)}>
-                <Stack w100 column>
+                <Stack w100 column gap="2rem">
                     <Input {...register('fullName')} label={t('addressForm.fullName')} error={errors.fullName} />
                     <Stack w100 itemsCenter gap="1.25rem">
-                        <Input {...register('company')} label={t('addressForm.company')} error={errors.company} />
                         <Input
                             type="tel"
                             label={t('addressForm.phone')}
@@ -76,17 +75,18 @@ export const AddressForm: React.FC<{
                             })}
                             error={errors.phoneNumber}
                         />
+                        <Input {...register('company')} label={t('addressForm.company')} error={errors.company} />
                     </Stack>
                     <Stack w100 itemsCenter gap="1.25rem">
                         <Input
                             {...register('streetLine1')}
                             label={t('addressForm.streetLine1')}
-                            error={errors.province}
+                            error={errors.streetLine1}
                         />
                         <Input
                             {...register('streetLine2')}
                             label={t('addressForm.streetLine2')}
-                            error={errors.postalCode}
+                            error={errors.streetLine2}
                         />
                     </Stack>
                     {availableCountries && (
@@ -133,6 +133,10 @@ export const AddressForm: React.FC<{
 
 const Form = styled.form`
     width: 100%;
+
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
 `;
 
 const CheckboxStack = styled(Stack)`

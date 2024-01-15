@@ -6,7 +6,7 @@ export type CheckoutContainerType = {
     applyCouponCode: (code: string) => Promise<boolean>;
     removeCouponCode: (code: string) => Promise<void>;
 
-    addToCheckout: (id: string, q: number) => void;
-    removeFromCheckout: (id: string) => void;
-    changeQuantity: (id: string, q: number) => void;
+    addToCheckout: (id: string, q: number) => Promise<void>;
+    removeFromCheckout: (id: string) => Promise<void>;
+    changeQuantity: (id: string, q: number) => Promise<void>;
 };

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 
 import { TH2 } from '@/src/components/atoms/TypoGraphy';
 import { Stack } from '@/src/components/atoms/Stack';
@@ -13,8 +13,6 @@ import {
     AvailableCountriesType,
     CreateCustomerType,
     ActiveOrderSelector,
-    ActiveCustomerSelector,
-    ShippingMethodsSelector,
     ActiveCustomerType,
 } from '@/src/graphql/selectors';
 
@@ -24,16 +22,17 @@ import styled from '@emotion/styled';
 import { AnimatePresence, motion } from 'framer-motion';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Input, FormError, Banner, CountrySelect, CheckBox } from '@/src/components/forms';
-import { WhatAccountGives } from '../ui/WhatAccountGives';
 import { DeliveryMethod } from '../DeliveryMethod';
 import { useValidationSchema } from './useValidationSchema';
 import { Link } from '@/src/components/atoms/Link';
 import { useCheckout } from '@/src/state/checkout';
-import { MoveLeft } from 'lucide-react';
+import { Info, MoveLeft } from 'lucide-react';
 import { baseCountryFromLanguage } from '@/src/util/baseCountryFromLanguage';
+import { OrderSummary } from '../OrderSummary';
 import { useChannels } from '@/src/state/channels';
+import { Tooltip } from '@/src/components/molecules/Tooltip';
 
-type Form = CreateCustomerType & {
+type FormValues = CreateCustomerType & {
     deliveryMethod?: string;
     shippingDifferentThanBilling?: boolean;
     shipping: CreateAddressType;
@@ -43,12 +42,13 @@ type Form = CreateCustomerType & {
     createAccount?: boolean;
     password?: string;
     confirmPassword?: string;
-    regulations?: boolean;
     terms?: boolean;
 };
 
 interface OrderFormProps {
     availableCountries?: AvailableCountriesType[];
+    activeCustomer: ActiveCustomerType | null;
+    shippingMethods: ShippingMethodType[] | null;
 }
 
 const isAddressesEqual = (a: object, b?: object) => {
@@ -59,7 +59,7 @@ const isAddressesEqual = (a: object, b?: object) => {
     }
 };
 
-export const OrderForm: React.FC<OrderFormProps> = ({ availableCountries }) => {
+export const OrderForm: React.FC<OrderFormProps> = ({ availableCountries, activeCustomer, shippingMethods }) => {
     const ctx = useChannels();
     const { activeOrder, changeShippingMethod } = useCheckout();
 
@@ -68,19 +68,7 @@ export const OrderForm: React.FC<OrderFormProps> = ({ availableCountries }) => {
     const push = usePush();
     const schema = useValidationSchema();
 
-    const [activeCustomer, setActiveCustomer] = useState<ActiveCustomerType>();
-    const [shippingMethods, setShippingMethods] = useState<ShippingMethodType[]>();
     const errorRef = React.useRef<HTMLDivElement>(null);
-
-    useEffect(() => {
-        Promise.all([
-            storefrontApiQuery(ctx)({ activeCustomer: ActiveCustomerSelector }),
-            storefrontApiQuery(ctx)({ eligibleShippingMethods: ShippingMethodsSelector }),
-        ]).then(([{ activeCustomer }, { eligibleShippingMethods }]) => {
-            if (activeCustomer) setActiveCustomer(activeCustomer);
-            if (eligibleShippingMethods) setShippingMethods(eligibleShippingMethods);
-        });
-    }, []);
 
     const defaultShippingAddress = activeCustomer?.addresses?.find(address => address.defaultShippingAddress);
     const defaultBillingAddress = activeCustomer?.addresses?.find(address => address.defaultBillingAddress);
@@ -100,7 +88,7 @@ export const OrderForm: React.FC<OrderFormProps> = ({ availableCountries }) => {
         watch,
         setFocus,
         formState: { errors, isSubmitting },
-    } = useForm<Form>({
+    } = useForm<FormValues>({
         delayError: 100,
         defaultValues: {
             shippingDifferentThanBilling: defaultShippingAddress
@@ -137,7 +125,7 @@ export const OrderForm: React.FC<OrderFormProps> = ({ availableCountries }) => {
         resolver: zodResolver(schema),
     });
 
-    const onSubmit: SubmitHandler<Form> = async ({
+    const onSubmit: SubmitHandler<FormValues> = async ({
         emailAddress,
         firstName,
         lastName,
@@ -326,118 +314,164 @@ export const OrderForm: React.FC<OrderFormProps> = ({ availableCountries }) => {
         <Stack w100 column>
             <Banner ref={errorRef} clearErrors={() => clearErrors('root')} error={errors?.root} />
             <Form onSubmit={handleSubmit(onSubmit)} noValidate>
-                {/* Customer Part */}
-                <Stack column gap="0.5rem">
-                    <Stack column gap="2rem">
-                        <Stack gap="0.75rem" itemsCenter>
-                            <AnimatePresence>
-                                {!isSubmitting ? (
-                                    <BackButton href="/">
-                                        <MoveLeft size={24} />
-                                    </BackButton>
-                                ) : null}
-                            </AnimatePresence>
-                            <TH2 size="2rem" weight={500}>
-                                {t('orderForm.contactInfo')}
-                            </TH2>
-                        </Stack>
-                        <Stack w100 column>
-                            <Input
-                                {...register('emailAddress')}
-                                label={t('orderForm.emailAddress')}
-                                error={errors.emailAddress}
-                                required
-                                disabled={activeCustomer?.id ? true : false}
-                            />
-                            <Stack w100 gap="1.75rem">
-                                <Input
-                                    {...register('firstName')}
-                                    label={t('orderForm.firstName')}
-                                    error={errors.firstName}
-                                    required
-                                />
-                                <Input
-                                    {...register('lastName')}
-                                    label={t('orderForm.lastName')}
-                                    error={errors.lastName}
-                                    required
-                                />
+                <Stack w100 gap="10rem" style={{ flexDirection: 'row-reverse' }}>
+                    <OrderSummary
+                        shipping={
+                            shippingMethods ? (
+                                <DeliveryMethodWrapper>
+                                    <DeliveryMethod
+                                        selected={watch('deliveryMethod')}
+                                        error={errors.deliveryMethod?.message}
+                                        onChange={async id => {
+                                            await changeShippingMethod(id);
+                                            setValue('deliveryMethod', id);
+                                            clearErrors('deliveryMethod');
+                                        }}
+                                        shippingMethods={shippingMethods}
+                                        currencyCode={activeOrder?.currencyCode}
+                                    />
+                                </DeliveryMethodWrapper>
+                            ) : null
+                        }
+                        footer={
+                            <Stack column gap="2.5rem" justifyCenter itemsCenter>
+                                <ButtonDesktop loading={isSubmitting} type="submit">
+                                    {t('orderForm.continueToPayment')}
+                                </ButtonDesktop>
+                                <LinkButton href="/">Continue shopping</LinkButton>
                             </Stack>
-                            <Input
-                                {...register('phoneNumber', {
-                                    onChange: e => (e.target.value = e.target.value.replace(/[^0-9]/g, '')),
-                                })}
-                                type="tel"
-                                label={t('orderForm.phone')}
-                                error={errors.phoneNumber}
-                            />
-                        </Stack>
-                    </Stack>
+                        }
+                    />
+                    <Stack w100 column gap="2rem">
+                        <Stack column gap="0.5rem">
+                            {/* Customer Part */}
+                            <Stack column gap="2rem">
+                                <Stack gap="0.75rem" itemsCenter>
+                                    <AnimatePresence>
+                                        {!isSubmitting ? (
+                                            <BackButton href="/">
+                                                <MoveLeft size={24} />
+                                            </BackButton>
+                                        ) : null}
+                                    </AnimatePresence>
+                                    <TH2 size="2rem" weight={500}>
+                                        {t('orderForm.contactInfo')}
+                                    </TH2>
+                                </Stack>
 
-                    {/* Shipping Part */}
-                    <BillingWrapper column>
-                        <TH2 size="2rem" weight={500} style={{ marginBottom: '1.75rem' }}>
-                            {t('orderForm.billingInfo')}
-                        </TH2>
-                        <Input
-                            {...register('billing.fullName')}
-                            label={t('orderForm.fullName')}
-                            error={errors.billing?.fullName}
-                            required
-                        />
-                        <Input
-                            {...register('billing.company')}
-                            label={t('orderForm.company')}
-                            error={errors.billing?.company}
-                        />
-                        <Input
-                            {...register('billing.streetLine1')}
-                            label={t('orderForm.streetLine1')}
-                            error={errors.billing?.streetLine1}
-                            required
-                        />
-                        <Input
-                            {...register('billing.streetLine2')}
-                            label={t('orderForm.streetLine2')}
-                            error={errors.billing?.streetLine2}
-                        />
-                        <Stack gap="1.75rem">
-                            <Input
-                                {...register('billing.city')}
-                                label={t('orderForm.city')}
-                                error={errors.billing?.city}
-                                required
-                            />
-                            {availableCountries && (
-                                <CountrySelect
-                                    {...register('billing.countryCode')}
-                                    label={t('orderForm.countryCode')}
-                                    defaultValue={countryCode}
-                                    options={availableCountries}
-                                    error={errors.billing?.countryCode}
-                                    required
-                                />
-                            )}
-                        </Stack>
-                        <Stack gap="1.75rem">
-                            <Input
-                                {...register('billing.province')}
-                                label={t('orderForm.province')}
-                                error={errors.billing?.province}
-                                required
-                            />
-                            <Input
-                                {...register('billing.postalCode')}
-                                label={t('orderForm.postalCode')}
-                                error={errors.billing?.postalCode}
-                                required
-                            />
-                        </Stack>
-                    </BillingWrapper>
-                </Stack>
+                                <Stack w100 column gap="1.5rem">
+                                    <Stack w100 gap="1.5rem">
+                                        <Input
+                                            {...register('firstName')}
+                                            placeholder={t('orderForm.placeholders.firstName')}
+                                            label={t('orderForm.firstName')}
+                                            error={errors.firstName}
+                                            required
+                                        />
+                                        <Input
+                                            {...register('lastName')}
+                                            placeholder={t('orderForm.placeholders.lastName')}
+                                            label={t('orderForm.lastName')}
+                                            error={errors.lastName}
+                                            required
+                                        />
+                                    </Stack>
+                                    <Stack w100 gap="1.5rem">
+                                        <Input
+                                            {...register('phoneNumber', {
+                                                onChange: e => (e.target.value = e.target.value.replace(/[^0-9]/g, '')),
+                                            })}
+                                            placeholder={t('orderForm.placeholders.phoneNumber')}
+                                            type="tel"
+                                            label={t('orderForm.phone')}
+                                            error={errors.phoneNumber}
+                                        />
+                                        <Input
+                                            {...register('emailAddress')}
+                                            placeholder={t('orderForm.placeholders.emailAddress')}
+                                            label={t('orderForm.emailAddress')}
+                                            error={errors.emailAddress}
+                                            required
+                                            disabled={activeCustomer?.id ? true : false}
+                                        />
+                                    </Stack>
+                                </Stack>
+                            </Stack>
 
-                <Stack justifyBetween itemsCenter>
-                    {/* <CheckBox
+                            {/* Shipping Part */}
+                            <BillingWrapper column>
+                                <TH2 size="2rem" weight={500} style={{ marginBottom: '1.75rem' }}>
+                                    {t('orderForm.billingInfo')}
+                                </TH2>
+                                <Stack w100 gap="1.5rem">
+                                    <Stack w100 column gap="1.5rem">
+                                        <Input
+                                            {...register('billing.fullName')}
+                                            placeholder={t('orderForm.placeholders.fullName')}
+                                            label={t('orderForm.fullName')}
+                                            error={errors.billing?.fullName}
+                                            required
+                                        />
+                                        <Input
+                                            {...register('billing.streetLine1')}
+                                            placeholder={t('orderForm.placeholders.streetLine1')}
+                                            label={t('orderForm.streetLine1')}
+                                            error={errors.billing?.streetLine1}
+                                            required
+                                        />
+                                        <Input
+                                            {...register('billing.city')}
+                                            placeholder={t('orderForm.placeholders.city')}
+                                            label={t('orderForm.city')}
+                                            error={errors.billing?.city}
+                                            required
+                                        />
+                                        <Input
+                                            {...register('billing.province')}
+                                            placeholder={t('orderForm.placeholders.province')}
+                                            label={t('orderForm.province')}
+                                            error={errors.billing?.province}
+                                            required
+                                        />
+                                    </Stack>
+                                    <Stack w100 column gap="1.5rem">
+                                        <Input
+                                            {...register('billing.company')}
+                                            placeholder={t('orderForm.placeholders.company')}
+                                            label={t('orderForm.company')}
+                                            error={errors.billing?.company}
+                                        />
+                                        <Input
+                                            {...register('billing.streetLine2')}
+                                            placeholder={t('orderForm.placeholders.streetLine2')}
+                                            label={t('orderForm.streetLine2')}
+                                            error={errors.billing?.streetLine2}
+                                        />
+                                        {availableCountries && (
+                                            <CountrySelect
+                                                {...register('billing.countryCode')}
+                                                placeholder={t('orderForm.placeholders.countryCode')}
+                                                label={t('orderForm.countryCode')}
+                                                defaultValue={countryCode}
+                                                options={availableCountries}
+                                                error={errors.billing?.countryCode}
+                                                required
+                                            />
+                                        )}
+                                        <Input
+                                            {...register('billing.postalCode')}
+                                            placeholder={t('orderForm.placeholders.postalCode')}
+                                            label={t('orderForm.postalCode')}
+                                            error={errors.billing?.postalCode}
+                                            required
+                                        />
+                                    </Stack>
+                                </Stack>
+                            </BillingWrapper>
+                        </Stack>
+
+                        <Stack justifyBetween itemsCenter>
+                            {/* <CheckBox
                         {...register('userNeedInvoice', {
                             onChange: e => {
                                 setValue('userNeedInvoice', e.target.checked);
@@ -446,15 +480,15 @@ export const OrderForm: React.FC<OrderFormProps> = ({ availableCountries }) => {
                         })}
                         label={t('orderForm.userNeedInvoice')}
                     /> */}
-                    <CheckBox
-                        {...register('shippingDifferentThanBilling')}
-                        checked={watch('shippingDifferentThanBilling')}
-                        label={t('orderForm.shippingDifferentThanBilling')}
-                    />
-                </Stack>
+                            <CheckBox
+                                {...register('shippingDifferentThanBilling')}
+                                checked={watch('shippingDifferentThanBilling')}
+                                label={t('orderForm.shippingDifferentThanBilling')}
+                            />
+                        </Stack>
 
-                {/* NIP */}
-                {/* <AnimatePresence>
+                        {/* NIP */}
+                        {/* <AnimatePresence>
                     {watch('userNeedInvoice') && (
                         <FVInputWrapper
                             initial={{ opacity: 0 }}
@@ -472,207 +506,166 @@ export const OrderForm: React.FC<OrderFormProps> = ({ availableCountries }) => {
                     )}
                 </AnimatePresence> */}
 
-                {/* Billing Part */}
-                <AnimatePresence>
-                    {watch('shippingDifferentThanBilling') && (
-                        <ShippingWrapper
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            exit={{ opacity: 0 }}
-                            transition={{ duration: 0.2 }}>
-                            <TH2 size="2rem" weight={500} style={{ marginBottom: '1.75rem' }}>
-                                {t('orderForm.shippingInfo')}
-                            </TH2>
-                            <Stack column>
-                                <Input
-                                    {...register('shipping.fullName')}
-                                    label={t('orderForm.fullName')}
-                                    error={errors.shipping?.fullName}
-                                    required
-                                />
-                                <Input
-                                    {...register('shipping.company')}
-                                    label={t('orderForm.company')}
-                                    error={errors.shipping?.company}
-                                />
-                                <Input
-                                    {...register('shipping.streetLine1')}
-                                    label={t('orderForm.streetLine1')}
-                                    error={errors.shipping?.province}
-                                    required
-                                />
-                                <Input
-                                    {...register('shipping.streetLine2')}
-                                    label={t('orderForm.streetLine2')}
-                                    error={errors.shipping?.postalCode}
-                                    required
-                                />
-                                <Stack gap="1.75rem">
-                                    <Input
-                                        {...register('shipping.city')}
-                                        label={t('orderForm.city')}
-                                        error={errors.shipping?.city}
-                                        required
-                                    />
-                                    {availableCountries && (
-                                        <CountrySelect
-                                            {...register('shipping.countryCode')}
-                                            label={t('orderForm.countryCode')}
-                                            defaultValue={countryCode}
-                                            options={availableCountries}
-                                            error={errors.shipping?.countryCode}
+                        {/* Billing Part */}
+                        <AnimatePresence>
+                            {watch('shippingDifferentThanBilling') && (
+                                <ShippingWrapper
+                                    initial={{ opacity: 0 }}
+                                    animate={{ opacity: 1 }}
+                                    exit={{ opacity: 0 }}
+                                    transition={{ duration: 0.2 }}>
+                                    <TH2 size="2rem" weight={500} style={{ marginBottom: '1.75rem' }}>
+                                        {t('orderForm.shippingInfo')}
+                                    </TH2>
+                                    <Stack column>
+                                        <Stack w100 gap="1.75rem">
+                                            <Input
+                                                {...register('shipping.fullName')}
+                                                label={t('orderForm.fullName')}
+                                                error={errors.shipping?.fullName}
+                                                required
+                                            />
+                                            <Input
+                                                {...register('shipping.company')}
+                                                label={t('orderForm.company')}
+                                                error={errors.shipping?.company}
+                                            />
+                                        </Stack>
+                                        <Stack w100 gap="1.75rem">
+                                            <Input
+                                                {...register('shipping.streetLine1')}
+                                                label={t('orderForm.streetLine1')}
+                                                error={errors.shipping?.province}
+                                                required
+                                            />
+                                            <Input
+                                                {...register('shipping.streetLine2')}
+                                                label={t('orderForm.streetLine2')}
+                                                error={errors.shipping?.postalCode}
+                                                required
+                                            />
+                                        </Stack>
+                                        <Stack w100 gap="1.75rem">
+                                            <Input
+                                                {...register('shipping.city')}
+                                                label={t('orderForm.city')}
+                                                error={errors.shipping?.city}
+                                                required
+                                            />
+                                            {availableCountries && (
+                                                <CountrySelect
+                                                    {...register('shipping.countryCode')}
+                                                    label={t('orderForm.countryCode')}
+                                                    defaultValue={countryCode}
+                                                    options={availableCountries}
+                                                    error={errors.shipping?.countryCode}
+                                                    required
+                                                />
+                                            )}
+                                        </Stack>
+                                        <Stack gap="1.75rem">
+                                            <Input
+                                                {...register('shipping.province')}
+                                                label={t('orderForm.province')}
+                                                error={errors.shipping?.province}
+                                                required
+                                            />
+                                            <Input
+                                                {...register('shipping.postalCode')}
+                                                label={t('orderForm.postalCode')}
+                                                error={errors.shipping?.postalCode}
+                                                required
+                                            />
+                                        </Stack>
+                                    </Stack>
+                                </ShippingWrapper>
+                            )}
+                        </AnimatePresence>
+
+                        {/* Create Account */}
+                        {!activeCustomer?.id ? (
+                            <Stack column gap="1.25rem">
+                                <Stack itemsCenter gap="1rem">
+                                    <CheckBox {...register('createAccount')} label={t('orderForm.createAccount')} />
+                                    <Stack itemsCenter justifyCenter>
+                                        <Tooltip text={t('orderForm.whatAccountGives')}>
+                                            <Info size={12} />
+                                        </Tooltip>
+                                    </Stack>
+                                </Stack>
+                                {watch('createAccount') && (
+                                    <CreateAccountWrapper
+                                        initial={{ opacity: 0 }}
+                                        animate={{ opacity: 1 }}
+                                        exit={{ opacity: 0 }}
+                                        transition={{ duration: 0.2 }}>
+                                        <Input
+                                            {...register('password')}
+                                            type="password"
+                                            label={t('orderForm.password')}
+                                            error={errors.password}
                                             required
                                         />
-                                    )}
-                                </Stack>
-                                <Stack gap="1.75rem">
-                                    <Input
-                                        {...register('shipping.province')}
-                                        label={t('orderForm.province')}
-                                        error={errors.shipping?.province}
-                                        required
-                                    />
-                                    <Input
-                                        {...register('shipping.postalCode')}
-                                        label={t('orderForm.postalCode')}
-                                        error={errors.shipping?.postalCode}
-                                        required
-                                    />
-                                </Stack>
+                                        <Input
+                                            {...register('confirmPassword')}
+                                            type="password"
+                                            label={t('orderForm.confirmPassword')}
+                                            error={errors.confirmPassword}
+                                            required
+                                        />
+                                    </CreateAccountWrapper>
+                                )}
                             </Stack>
-                        </ShippingWrapper>
-                    )}
-                </AnimatePresence>
+                        ) : null}
 
-                {/* Create Account */}
-                {!activeCustomer?.id ? (
-                    <Stack column gap="1.25rem">
-                        <Stack itemsCenter gap="1rem">
-                            <CheckBox {...register('createAccount')} label={t('orderForm.createAccount')} />
-                            <WhatAccountGives />
+                        {/* Submit */}
+                        <Stack justifyBetween itemsEnd gap="3rem">
+                            <CheckBox
+                                {...register('terms')}
+                                // error={errors.terms}
+                                label={
+                                    <Trans
+                                        i18nKey="orderForm.terms"
+                                        t={t}
+                                        components={{
+                                            1: <Link style={{ zIndex: 2, position: 'relative' }} href="/checkout" />,
+                                        }}
+                                    />
+                                }
+                                required
+                            />
+                            <AnimatePresence>
+                                {errors.terms?.message && (
+                                    <FormError
+                                        initial={{ opacity: 0 }}
+                                        animate={{ opacity: 1 }}
+                                        exit={{ opacity: 0 }}
+                                        transition={{ duration: 0.2 }}>
+                                        {errors.terms?.message}
+                                    </FormError>
+                                )}
+                            </AnimatePresence>
                         </Stack>
-                        {watch('createAccount') && (
-                            <CreateAccountWrapper
-                                initial={{ opacity: 0 }}
-                                animate={{ opacity: 1 }}
-                                exit={{ opacity: 0 }}
-                                transition={{ duration: 0.2 }}>
-                                <Input
-                                    {...register('password')}
-                                    type="password"
-                                    label={t('orderForm.password')}
-                                    error={errors.password}
-                                    required
-                                />
-                                <Input
-                                    {...register('confirmPassword')}
-                                    type="password"
-                                    label={t('orderForm.confirmPassword')}
-                                    error={errors.confirmPassword}
-                                    required
-                                />
-                            </CreateAccountWrapper>
-                        )}
                     </Stack>
-                ) : null}
-
-                {/* Shipping Methods */}
-                {shippingMethods && (
-                    <DeliveryMethodWrapper>
-                        <DeliveryMethod
-                            selected={watch('deliveryMethod')}
-                            error={errors.deliveryMethod?.message}
-                            onChange={async id => {
-                                await changeShippingMethod(id);
-                                setValue('deliveryMethod', id);
-                                clearErrors('deliveryMethod');
-                            }}
-                            shippingMethods={shippingMethods}
-                            currencyCode={activeOrder?.currencyCode}
-                            required
-                        />
-                    </DeliveryMethodWrapper>
-                )}
-
-                {/* Submit */}
-                <Stack justifyBetween itemsEnd gap="3rem">
-                    <Stack itemsStart column>
-                        <CheckBox
-                            {...register('regulations')}
-                            // error={errors.regulations}
-                            label={
-                                <Trans
-                                    i18nKey="orderForm.regulations"
-                                    t={t}
-                                    components={{
-                                        1: <Link style={{ zIndex: 2, position: 'relative' }} href="/checkout" />,
-                                    }}
-                                />
-                            }
-                            required
-                        />
-                        <CheckBox
-                            {...register('terms')}
-                            // error={errors.terms}
-                            label={
-                                <Trans
-                                    i18nKey="orderForm.terms"
-                                    t={t}
-                                    components={{
-                                        1: <Link style={{ zIndex: 2, position: 'relative' }} href="/checkout" />,
-                                    }}
-                                />
-                            }
-                            required
-                        />
-                    </Stack>
-                    <ButtonDesktop loading={isSubmitting} type="submit">
-                        {t('orderForm.continueToPayment')}
-                    </ButtonDesktop>
-                </Stack>
-                <Stack column>
-                    <AnimatePresence>
-                        {errors.terms?.message && (
-                            <FormError
-                                initial={{ opacity: 0 }}
-                                animate={{ opacity: 1 }}
-                                exit={{ opacity: 0 }}
-                                transition={{ duration: 0.2 }}>
-                                {errors.terms?.message}
-                            </FormError>
-                        )}
-                    </AnimatePresence>
-                    <AnimatePresence>
-                        {errors.regulations?.message && (
-                            <FormError
-                                initial={{ opacity: 0 }}
-                                animate={{ opacity: 1 }}
-                                exit={{ opacity: 0 }}
-                                transition={{ duration: 0.2 }}>
-                                {errors.regulations?.message}
-                            </FormError>
-                        )}
-                    </AnimatePresence>
-                </Stack>
-                <Stack w100 justifyEnd>
-                    <ButtonMobile loading={isSubmitting} type="submit">
-                        {t('orderForm.continueToPayment')}
-                    </ButtonMobile>
                 </Stack>
             </Form>
         </Stack>
     );
 };
 
-const ButtonDesktop = styled(Button)`
-    @media (max-width: ${({ theme }) => theme.breakpoints.lg}) {
-        display: none;
-    }
+const DeliveryMethodWrapper = styled(Stack)``;
+
+const LinkButton = styled(Link)`
+    width: 100%;
+    text-align: center;
+    color: ${p => p.theme.text.main};
+    font-size: 1.5rem;
+    font-weight: 600;
 `;
-const ButtonMobile = styled(Button)`
-    margin-top: 1.75rem;
-    padding: 1.75rem 2rem;
-    @media (min-width: ${({ theme }) => theme.breakpoints.lg}) {
+
+const ButtonDesktop = styled(Button)`
+    width: 100%;
+    @media (max-width: ${({ theme }) => theme.breakpoints.lg}) {
         display: none;
     }
 `;
@@ -705,10 +698,6 @@ const EmptyCartDescription = styled.div`
         color: ${p => p.theme.accent(800)};
         text-decoration: underline;
     }
-`;
-
-const DeliveryMethodWrapper = styled(Stack)`
-    margin: 2.4rem 0;
 `;
 
 const BillingWrapper = styled(Stack)`

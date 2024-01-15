@@ -2,7 +2,7 @@ import { InputHTMLAttributes, forwardRef, useState } from 'react';
 import { FieldError } from 'react-hook-form';
 import styled from '@emotion/styled';
 import { Stack } from '@/src/components/atoms/Stack';
-import { FormRequired, FormErrorWrapper, Label } from './shared';
+import { FormRequired, Label } from './shared';
 import { AnimatePresence, motion } from 'framer-motion';
 import { Eye } from 'lucide-react';
 
@@ -33,39 +33,46 @@ export const Input = forwardRef((props: InputType, ref: React.ForwardedRef<HTMLI
                         <Eye size={'1.8rem'} />
                     </EyeWrapper>
                 )}
+                {error?.message && (
+                    <AnimatePresence>
+                        <Error>
+                            <FormError
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 1 }}
+                                exit={{ opacity: 0 }}
+                                transition={{ duration: 0.2 }}>
+                                {error?.message}
+                            </FormError>
+                        </Error>
+                    </AnimatePresence>
+                )}
             </InputWrapper>
-            <FormErrorWrapper>
-                <AnimatePresence>
-                    {error?.message && (
-                        <FormError
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            exit={{ opacity: 0 }}
-                            transition={{ duration: 0.2 }}>
-                            {error?.message}
-                        </FormError>
-                    )}
-                </AnimatePresence>
-            </FormErrorWrapper>
         </Stack>
     );
 });
 
+const Error = styled.div`
+    position: absolute;
+    right: 1.5rem;
+`;
+
 export const FormError = styled(motion.span)`
     color: ${p => p.theme.error};
-    font-size: 1.2rem;
-    font-weight: 500;
+    font-size: 1rem;
+    font-weight: 700;
     margin: 0.4rem 0 0.8rem 0;
 `;
 
 const InputWrapper = styled(Stack)`
     position: relative;
+    padding: 1.5rem;
+    border: 1px solid ${p => p.theme.gray(100)};
 `;
 
 const EyeWrapper = styled(Stack)<{ active: boolean }>`
     position: absolute;
     top: 50%;
-    right: 0.75rem;
+    right: 1.5rem;
 
     height: 1.8rem;
     width: 1.8rem;
@@ -79,12 +86,12 @@ const EyeWrapper = styled(Stack)<{ active: boolean }>`
 `;
 
 export const StyledInput = styled.input<{ error?: boolean }>`
-    margin-top: 0.6rem;
-    padding: 0.5rem 0.75rem;
-    color: ${p => p.theme.gray(900)};
-    border: 1px solid ${p => p.theme.gray(100)};
+    border: 0;
     outline: none;
-    border-color: ${p => p.theme.gray(600)};
+    margin-top: 0.6rem;
+    padding: 0.5rem 0.25rem;
+    color: ${p => p.theme.gray(900)};
+    border-bottom: 1px solid ${p => p.theme.text.subtitle};
 
     :focus {
         border-color: ${p => p.theme.gray(400)};

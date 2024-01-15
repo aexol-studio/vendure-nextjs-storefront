@@ -1,19 +1,16 @@
 import styled from '@emotion/styled';
 import { useTranslation } from 'next-i18next';
 
-import { Stack } from '@/src/components/atoms/Stack';
+import { Stack, TypoGraphy, Link, NotifyFooterForm } from '@/src/components/atoms';
+import { Socials } from '@/src/components/atoms/Socials';
+import { NavigationType } from '@/src/graphql/selectors';
+import { RootNode } from '@/src/util/arrayToTree';
 
-import { TypoGraphy } from '@/src/components/atoms/TypoGraphy';
-
-import { Link } from '@/src/components/atoms/Link';
-
-import { NotifyFooterForm } from '../components';
-import { Socials } from '../components/atoms/Socials';
-
-export const Footer = () => {
+export const Footer: React.FC<{
+    navigation: RootNode<NavigationType> | null;
+}> = ({ navigation }) => {
     const { t } = useTranslation('common');
 
-    const footerSections = t('footer.sections', { returnObjects: true });
     const footerLaw = t('footer.law', { returnObjects: true });
 
     return (
@@ -31,20 +28,22 @@ export const Footer = () => {
                     <NotifyFooterForm />
                 </Stack>
                 <FooterSections justifyBetween>
-                    {footerSections.map(section => (
-                        <Stack key={section.header} column>
-                            <TypoGraphy as="h3" size="1.5rem" weight={600}>
-                                {section.header}
-                            </TypoGraphy>
-                            <Stack column gap="2rem">
-                                {section.linksTitles.map(link => (
-                                    <Link key={link} href="#">
-                                        {link}
-                                    </Link>
-                                ))}
+                    {navigation?.children
+                        .filter(c => c.slug !== 'all' && c.slug !== 'search')
+                        .map(section => (
+                            <Stack key={section.name} column>
+                                <TypoGraphy as="h3" size="1.5rem" weight={600}>
+                                    {section.name}
+                                </TypoGraphy>
+                                <Stack column gap="2rem">
+                                    {section.children.map(link => (
+                                        <Link key={link.slug} href={`/collections/${link.slug}`}>
+                                            {link.name}
+                                        </Link>
+                                    ))}
+                                </Stack>
                             </Stack>
-                        </Stack>
-                    ))}
+                        ))}
                 </FooterSections>
             </Main>
             <LawsWrapper justifyBetween itemsCenter>
@@ -81,13 +80,11 @@ const Main = styled(Stack)`
     gap: 5rem;
     background-color: ${({ theme }) => theme.background.secondary};
     @media (min-width: ${p => p.theme.breakpoints.ssm}) {
-        padding: 13.5rem 7rem 5rem 10.5rem;
+        padding: 13.5rem 7rem 14.5rem 10.5rem;
     }
     @media (min-width: ${p => p.theme.breakpoints.lg}) {
-        min-height: 360px;
         gap: 0;
         flex-direction: row;
-        padding-bottom: 0;
     }
 `;
 

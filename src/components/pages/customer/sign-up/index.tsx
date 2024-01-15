@@ -1,5 +1,5 @@
 import { Layout } from '@/src/layouts';
-import { InferGetStaticPropsType } from 'next';
+import { InferGetServerSidePropsType } from 'next';
 import React, { useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { RegisterCustomerInputType } from '@/src/graphql/selectors';
@@ -15,12 +15,12 @@ import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { TP } from '@/src/components/atoms/TypoGraphy';
 import { usePush } from '@/src/lib/redirect';
-import { getStaticProps } from './props';
+import { getServerSideProps } from './props';
 import { useChannels } from '@/src/state/channels';
 
 type FormValues = RegisterCustomerInputType & { confirmPassword: string };
 
-export const SignUpPage: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = props => {
+export const SignUpPage: React.FC<InferGetServerSidePropsType<typeof getServerSideProps>> = props => {
     const ctx = useChannels();
     const { t } = useTranslation('customer');
     const { t: tErrors } = useTranslation('common');

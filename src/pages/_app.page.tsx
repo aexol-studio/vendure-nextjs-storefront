@@ -12,7 +12,7 @@ import { ProductProvider } from '@/src/state/product';
 import { CollectionProvider } from '@/src/state/collection';
 import { ChannelsProvider } from '../state/channels';
 
-const nunito = Nunito({ subsets: ['latin'] });
+const nunito = Nunito({ subsets: ['latin'], variable: '--nunito-font' });
 
 const App = ({ Component, pageProps }: AppProps) => {
     return (

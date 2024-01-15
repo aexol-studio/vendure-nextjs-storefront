@@ -8,7 +8,6 @@ import { GetServerSidePropsContext } from 'next';
 
 export const getServerSideProps = async (context: GetServerSidePropsContext) => {
     const r = await makeServerSideProps(['common', 'customer'])(context);
-    const language = (context.params?.locale as string) ?? 'en';
 
     const collections = await getCollections(r.context);
     const navigation = arrayToTree(collections);
@@ -32,7 +31,6 @@ export const getServerSideProps = async (context: GetServerSidePropsContext) => 
             collections,
             activeCustomer,
             navigation,
-            language,
         };
 
         return { props: returnedStuff };

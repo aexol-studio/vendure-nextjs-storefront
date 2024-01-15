@@ -136,7 +136,7 @@ export const LightTheme = createTheme(300, t => ({
     success: '#1beb1b',
     price: {
         default: t.gray(1000),
-        discount: '#eb1a1a',
+        discount: '#FF8080',
     },
     breakpoints: {
         ssm: '576px',

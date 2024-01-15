@@ -8,10 +8,9 @@ import { useTranslation } from 'next-i18next';
 type NotifyForm = { email: string };
 export const NotifyFooterForm = () => {
     const { t } = useTranslation('common');
-    const { register, handleSubmit, formState } = useForm<NotifyForm>();
+    const { register, handleSubmit } = useForm<NotifyForm>();
     const onSubmit: SubmitHandler<NotifyForm> = data => window.alert(`${t('footer.notify.alert')} ${data.email}`);
 
-    console.log(formState.errors);
     return (
         <NotifyWrapper onSubmit={handleSubmit(onSubmit)}>
             <input

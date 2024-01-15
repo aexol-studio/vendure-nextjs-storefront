@@ -4,19 +4,19 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { Filter, X } from 'lucide-react';
 import { InferGetStaticPropsType } from 'next';
 import { useTranslation } from 'next-i18next';
-import { ContentContainer, Stack, TP, TH2, TH1, MainGrid } from '@/src/components/atoms';
+import { ContentContainer, Stack, TP, TH1, MainGrid } from '@/src/components/atoms';
 import { Breadcrumbs } from '@/src/components/molecules/Breadcrumbs';
 import { IconButton } from '@/src/components/molecules/Button';
 import { FacetFilterCheckbox } from '@/src/components/molecules/FacetFilter';
 import { Pagination } from '@/src/components/molecules/Pagination';
-import { ProductImageWithInfo } from '@/src/components/molecules/ProductImageWithInfo';
 import { ProductTile } from '@/src/components/molecules/ProductTile';
 import { SortBy } from '@/src/components/molecules/SortBy';
 import { getStaticProps } from './props';
 import { Layout } from '@/src/layouts';
 
 const CollectionPage: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = props => {
-    const { t } = useTranslation('common');
+    const { t } = useTranslation('collections');
+    const { t: breadcrumb } = useTranslation('common');
     const {
         collection,
         products,
@@ -34,7 +34,7 @@ const CollectionPage: React.FC<InferGetStaticPropsType<typeof getStaticProps>> =
 
     const breadcrumbs = [
         {
-            name: t('home'),
+            name: breadcrumb('breadcrumbs.home'),
             href: '/',
         },
         {
@@ -56,13 +56,15 @@ const CollectionPage: React.FC<InferGetStaticPropsType<typeof getStaticProps>> =
                             onClick={() => setFiltersOpen(false)}
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
-                            exit={{ opacity: 0 }}>
+                            exit={{ opacity: 0 }}
+                            transition={{ duration: 0.2, ease: 'easeInOut' }}>
                             <FacetsFilters
                                 onClick={e => e.stopPropagation()}
                                 initial={{ translateX: '-100%' }}
                                 animate={{ translateX: '0%' }}
-                                exit={{ translateX: '-100%' }}>
-                                <Stack column gap="3rem">
+                                exit={{ translateX: '-100%' }}
+                                transition={{ duration: 0.3, ease: 'easeInOut' }}>
+                                <Stack column>
                                     <Stack justifyBetween itemsCenter>
                                         <TP weight={400} upperCase>
                                             {t('filters')}
@@ -93,24 +95,6 @@ const CollectionPage: React.FC<InferGetStaticPropsType<typeof getStaticProps>> =
                 <RelativeStack gap="2rem" column>
                     <ScrollPoint id="collection-scroll" />
                     <Breadcrumbs breadcrumbs={breadcrumbs} />
-                    {collection?.children && collection.children.length > 0 ? (
-                        <Stack column gap="1.25rem">
-                            <TH2>{t('related-collections')}</TH2>
-                            <Stack itemsCenter gap="2rem">
-                                {collection.children.map(col => (
-                                    <ProductImageWithInfo
-                                        key={col.name}
-                                        href={`/collections/${col.slug}`}
-                                        imageSrc={col.featuredAsset?.preview}
-                                        size="tile"
-                                        text={col.name}
-                                        alt={col.name}
-                                        title={col.name}
-                                    />
-                                ))}
-                            </Stack>
-                        </Stack>
-                    ) : null}
                     <Wrapper justifyBetween>
                         <Stack itemsEnd>
                             <TH1>{collection?.name}</TH1>

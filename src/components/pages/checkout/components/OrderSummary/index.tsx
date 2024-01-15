@@ -1,52 +1,44 @@
 import { Stack } from '@/src/components/atoms/Stack';
 import { Divider } from '@/src/components/atoms/Divider';
 import { TH2, TP } from '@/src/components/atoms/TypoGraphy';
-import React, { Fragment } from 'react';
-import { CheckoutStatus } from '../CheckoutStatus';
+import React, { PropsWithChildren, useEffect, useState } from 'react';
 import { Line } from './Line';
-import { useRouter } from 'next/router';
 import { useTranslation } from 'next-i18next';
-import { priceFormatter } from '@/src/util/priceFomatter';
+import { priceFormatter } from '@/src/util/priceFormatter';
 import { CurrencyCode } from '@/src/zeus';
 import { DiscountForm } from '@/src/components/molecules/DiscountForm';
 import styled from '@emotion/styled';
-import { YAMLProductsType } from '@/src/graphql/selectors';
-import { YMALCarousel } from './YMAL';
 import { useCheckout } from '@/src/state/checkout';
 import { Discounts } from '@/src/components/molecules/Discounts';
-import { LogoAexol } from '@/src/assets';
-
 interface OrderSummaryProps {
-    isForm?: boolean;
-    YMALProducts?: YAMLProductsType[];
+    shipping?: React.ReactNode;
+    footer?: React.ReactNode;
 }
 
-export const OrderSummary: React.FC<OrderSummaryProps> = ({ isForm, YMALProducts }) => {
+export const OrderSummary: React.FC<PropsWithChildren<OrderSummaryProps>> = ({ footer, shipping }) => {
     const { activeOrder, applyCouponCode, removeCouponCode } = useCheckout();
-
     const { t } = useTranslation('checkout');
-    const { t: tInfo } = useTranslation('common');
-    const { asPath } = useRouter();
-    const step = asPath.includes('payment') ? 'payment' : 'shipping';
+    // const { asPath } = useRouter();
+    // const step = asPath.includes('payment') ? 'payment' : 'shipping';
     const currencyCode = activeOrder?.currencyCode ?? CurrencyCode.USD;
 
+    // it is about hydration of discount form in checkout form
+    const [jsEnabled, setJsEnabled] = useState(false);
+    useEffect(() => {
+        setJsEnabled(true);
+    }, []);
+
     return (
-        <SummaryContainer isForm={isForm}>
+        <SummaryContainer isForm={!!shipping}>
             <SummaryContent w100 column gap="2.5rem">
-                <Stack itemsCenter w100 gap="3.5rem">
-                    <LogoAexol width={48} height={48} />
-                    <TH2 size="2.5rem" weight={500}>
-                        {tInfo('shop')}
-                    </TH2>
-                </Stack>
                 <Stack w100 column gap="2.5rem">
-                    <CheckoutStatus step={step} />
+                    {/* <CheckoutStatus step={step} /> */}
                     <TH2 size="3rem" weight={500}>
                         {t('orderSummary.title')}
                     </TH2>
                     <Stack column>
                         {activeOrder?.lines.map(line => (
-                            <Line currencyCode={currencyCode} isForm={isForm} key={line.id} line={line} />
+                            <Line currencyCode={currencyCode} isForm={!!shipping} key={line.id} line={line} />
                         ))}
                         <Stack column gap="2.5rem">
                             <Stack justifyBetween>
@@ -57,21 +49,19 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({ isForm, YMALProducts
                                 <TP>{t('orderSummary.shipping')}</TP>
                                 <TP>{priceFormatter(activeOrder?.shippingWithTax ?? 0, currencyCode)}</TP>
                             </Stack>
-                            {isForm && (
-                                <Fragment>
-                                    <Divider />
-                                    <Stack column gap="2.5rem">
-                                        <Discounts
-                                            discounts={activeOrder?.discounts}
-                                            currencyCode={currencyCode}
-                                            removeCouponCode={removeCouponCode}
-                                        />
-                                        <Stack style={{ maxWidth: '25.6rem' }}>
-                                            <DiscountForm applyCouponCode={applyCouponCode} />
-                                        </Stack>
+                            {!!shipping && jsEnabled && (
+                                <Stack w100 column gap="2.5rem">
+                                    <Discounts
+                                        discounts={activeOrder?.discounts}
+                                        currencyCode={currencyCode}
+                                        removeCouponCode={removeCouponCode}
+                                    />
+                                    <Stack w100>
+                                        <DiscountForm applyCouponCode={applyCouponCode} />
                                     </Stack>
-                                </Fragment>
+                                </Stack>
                             )}
+                            {shipping}
                             <Divider />
                             <Stack justifyBetween>
                                 <TP size="1.75rem" weight={600}>
@@ -81,12 +71,9 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({ isForm, YMALProducts
                                     {priceFormatter(activeOrder?.totalWithTax ?? 0, currencyCode)}
                                 </TP>
                             </Stack>
+                            {footer}
                         </Stack>
                     </Stack>
-                    <Divider />
-                    {YMALProducts && YMALProducts.length > 0 ? (
-                        <YMALCarousel currencyCode={currencyCode} YMALProducts={YMALProducts} />
-                    ) : null}
                 </Stack>
             </SummaryContent>
         </SummaryContainer>
@@ -94,9 +81,13 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({ isForm, YMALProducts
 };
 
 const SummaryContainer = styled(Stack)<{ isForm?: boolean }>`
-    width: ${({ isForm }) => (isForm ? 'calc(50% - 2.5rem)' : '100%')};
+    min-width: 44rem;
+    max-width: 44rem;
+    width: ${({ isForm }) => (isForm ? 'auto' : '100%')};
     position: ${({ isForm }) => (isForm ? 'sticky' : 'relative')};
     top: ${({ isForm }) => (isForm ? '4.5rem' : '0')};
+    border: 1px solid ${p => p.theme.gray(100)};
+    padding: 3.25rem;
     height: fit-content;
 
     @media (max-width: 1024px) {

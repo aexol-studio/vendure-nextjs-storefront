@@ -53,13 +53,17 @@ export const AddressBox: React.FC<Props> = ({ address, selected, onEdit, onDelet
                 <Wrapper w100 itemsCenter gap="2.5rem">
                     {onEdit && (
                         <Option onClick={() => onEdit(address.id)}>
-                            <TP size="1.25rem">{t('addressForm.edit')}</TP>
+                            <TP color="contrast" size="1.25rem">
+                                {t('addressForm.edit')}
+                            </TP>
                             <Edit size={'1.5rem'} />
                         </Option>
                     )}
                     {onDelete && (
                         <Option loading={deleting === address.id} onClick={() => onDelete(address.id)}>
-                            <TP size="1.25rem">{t('addressForm.delete')}</TP>
+                            <TP color="contrast" size="1.25rem">
+                                {t('addressForm.delete')}
+                            </TP>
                             <Delete size={'1.5rem'} />
                         </Option>
                     )}

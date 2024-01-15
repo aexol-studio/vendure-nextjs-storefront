@@ -1,17 +1,18 @@
 import { SSGQuery } from '@/src/graphql/client';
-import { ProductDetailSelector, NewestProductSelector } from '@/src/graphql/selectors';
+import { ProductDetailSelector, homePageSlidersSelector } from '@/src/graphql/selectors';
 import { getCollections } from '@/src/graphql/sharedQueries';
 import { ContextModel, makeStaticProps } from '@/src/lib/getStatic';
 import { arrayToTree } from '@/src/util/arrayToTree';
-import { SortOrder } from '@/src/zeus';
 
 export const getStaticProps = async (context: ContextModel<{ slug?: string }>) => {
-    const r = await makeStaticProps(['common'])(context);
+    const r = await makeStaticProps(['common', 'products'])(context);
     const language = r.props._nextI18Next?.initialLocale || 'en';
     const { slug } = context.params || {};
+    const api = SSGQuery(r.context);
+
     const response =
         typeof slug === 'string'
-            ? await SSGQuery(r.context)({
+            ? await api({
                   product: [{ slug }, ProductDetailSelector],
               })
             : null;
@@ -20,8 +21,11 @@ export const getStaticProps = async (context: ContextModel<{ slug?: string }>) =
     const collections = await getCollections(r.context);
     const navigation = arrayToTree(collections);
 
-    const newestProducts = await SSGQuery(r.context)({
-        products: [{ options: { take: 10, sort: { createdAt: SortOrder.DESC } } }, { items: NewestProductSelector }],
+    const relatedProducts = await api({
+        collection: [{ slug: response.product.collections[0].slug }, homePageSlidersSelector],
+    });
+    const clientsAlsoBought = await api({
+        collection: [{ slug: 'search' }, homePageSlidersSelector],
     });
 
     const { optionGroups: _optionGroups, ...product } = response.product;
@@ -57,7 +61,8 @@ export const getStaticProps = async (context: ContextModel<{ slug?: string }>) =
             optionGroups,
         },
         collections,
-        newestProducts,
+        relatedProducts,
+        clientsAlsoBought,
         navigation,
         language,
     };

@@ -9,15 +9,17 @@ import { SortOrder } from '@/src/zeus';
 export const getStaticProps = async (context: ContextModel<{ slug?: string }>) => {
     const { slug } = context.params || {};
 
-    const r = await makeStaticProps(['common'])(context);
+    const r = await makeStaticProps(['common', 'collections'])(context);
     const collections = await getCollections(r.context);
     const navigation = arrayToTree(collections);
+    const api = SSGQuery(r.context);
 
-    const { collection } = await SSGQuery(r.context)({
+    const { collection } = await api({
         collection: [{ slug }, CollectionSelector],
     });
+    if (!collection) return { notFound: true };
 
-    const productsQuery = await SSGQuery(r.context)({
+    const productsQuery = await api({
         search: [
             {
                 input: {

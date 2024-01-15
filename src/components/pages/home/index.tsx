@@ -3,7 +3,7 @@ import { InferGetStaticPropsType } from 'next';
 import React from 'react';
 import { useTranslation } from 'next-i18next';
 import { Stack, ContentContainer } from '@/src/components/atoms';
-import { HomePageSliders } from '@/src/components/molecules/HomePageSliders';
+import { HomePageSliders } from '@/src/components/organisms/HomePageSliders';
 import { Hero } from '@/src/components/organisms/Hero';
 import { Layout } from '@/src/layouts';
 import type { getStaticProps } from './props';
@@ -29,7 +29,7 @@ export const Home: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = pr
                     }
                 />
                 <ContentContainer>
-                    <HomePageSliders sliders={props.sliders} />
+                    <HomePageSliders sliders={props.sliders} seeAllText={t('see-all')} />
                 </ContentContainer>
             </Main>
         </Layout>

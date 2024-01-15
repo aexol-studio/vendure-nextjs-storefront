@@ -12,7 +12,7 @@ import { Divider } from '@/src/components/atoms/Divider';
 import { useCart } from '@/src/state/cart';
 import { Link } from '@/src/components/atoms/Link';
 import { useTranslation } from 'next-i18next';
-import { priceFormatter } from '@/src/util/priceFomatter';
+import { priceFormatter } from '@/src/util/priceFormatter';
 import { DiscountForm } from '@/src/components/molecules/DiscountForm';
 import { CurrencyCode } from '@/src/zeus';
 

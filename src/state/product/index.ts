@@ -6,7 +6,7 @@ import { ProductDetailType } from '@/src/graphql/selectors';
 import { usePush } from '@/src/lib/redirect';
 import { useCart } from '@/src/state/cart';
 import { OptionGroupWithStock, ProductContainerType, Variant } from './types';
-import { findRelatedVariant, productEmptyState } from './utils';
+import { findRelatedVariant, productEmptyState, setRecentlyViewedInCookie } from './utils';
 
 const useProductContainer = createContainer<ProductContainerType, { product: ProductDetailType }>(initialState => {
     if (!initialState?.product) return productEmptyState;
@@ -19,6 +19,7 @@ const useProductContainer = createContainer<ProductContainerType, { product: Pro
     const [variant, setVariant] = useState<Variant | undefined>(initialState.product?.variants[0]);
     const [addingError, setAddingError] = useState<string | undefined>();
     const { asPath } = useRouter();
+
     useEffect(() => {
         setVariant(initialState.product?.variants[0]);
     }, [initialState.product]);
@@ -37,10 +38,29 @@ const useProductContainer = createContainer<ProductContainerType, { product: Pro
 
     useEffect(() => {
         if (typeof window === 'undefined') return;
+
         const url = new URLSearchParams(window.location.search);
         const query = url.get('variant');
         if (!query || !initialState.product) return;
         const variant = initialState.product?.variants.find(v => v.id === query);
+
+        try {
+            if (variant) {
+                const cookie = window.document.cookie
+                    .split(';')
+                    .map(c => c.trim())
+                    .find(c => c.startsWith('recentlyViewed='));
+                if (cookie) {
+                    const recentlyViewed = setRecentlyViewedInCookie(cookie, variant?.id);
+                    window.document.cookie = `recentlyViewed=${recentlyViewed};path=/;max-age=31536000`;
+                } else {
+                    window.document.cookie = `recentlyViewed=${variant?.id};path=/;max-age=31536000`;
+                }
+            }
+        } catch (error) {
+            console.log(error);
+        }
+
         setVariant(variant);
         const newState = variant?.options.reduce(
             (acc, option) => {

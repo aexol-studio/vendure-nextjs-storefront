@@ -1,6 +1,6 @@
 import { Layout } from '@/src/layouts';
 import { InferGetServerSidePropsType } from 'next';
-import React, { useEffect, useRef } from 'react';
+import React, { useRef } from 'react';
 import { CustomerNavigation } from '../components/CustomerNavigation';
 import { AddressBox } from './components/AddressBox';
 import { Stack } from '@/src/components/atoms/Stack';
@@ -14,6 +14,7 @@ import { CustomerWrap } from '../../components/shared';
 import { baseCountryFromLanguage } from '@/src/util/baseCountryFromLanguage';
 import { getServerSideProps } from './props';
 import { useChannels } from '@/src/state/channels';
+import { useOutsideClick } from '@/src/util/hooks/useOutsideClick';
 
 export const AddressesPage: React.FC<InferGetServerSidePropsType<typeof getServerSideProps>> = props => {
     const { t } = useTranslation('customer');
@@ -23,20 +24,10 @@ export const AddressesPage: React.FC<InferGetServerSidePropsType<typeof getServe
 
     const country =
         activeCustomer.addresses?.find(a => a.defaultBillingAddress || a.defaultShippingAddress)?.country?.code ??
-        baseCountryFromLanguage(props.language);
+        baseCountryFromLanguage(ctx.locale);
 
     const ref = useRef<HTMLDivElement>(null);
-    useEffect(() => {
-        const handleClickOutside = (e: MouseEvent) => {
-            if (ref.current && !ref.current.contains(e.target as Node)) {
-                onModalClose();
-            }
-        };
-        document.addEventListener('mousedown', handleClickOutside);
-        return () => {
-            document.removeEventListener('mousedown', handleClickOutside);
-        };
-    }, []);
+    useOutsideClick(ref, () => onModalClose());
 
     return (
         <Layout categories={props.collections} navigation={props.navigation} pageTitle={t('addressesPageTitle')}>

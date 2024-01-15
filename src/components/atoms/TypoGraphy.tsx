@@ -8,6 +8,7 @@ export type BaseProps = {
     upperCase?: boolean;
     capitalize?: boolean;
     color?: keyof (typeof thv)['text'];
+    noWrap?: boolean;
 };
 
 export const TypoGraphy = styled.div<BaseProps>`
@@ -15,6 +16,7 @@ export const TypoGraphy = styled.div<BaseProps>`
     font-weight: ${p => p.weight};
     text-transform: ${p => (p.upperCase ? 'uppercase' : p.capitalize ? 'capitalize' : 'none')};
     color: ${p => (p.color ? thv.text[p.color] : thv.text.main)};
+    white-space: ${p => (p.noWrap ? 'nowrap' : 'normal')};
 `;
 
 type TypoGraphyProps = Partial<Parameters<typeof TypoGraphy>[0]>;

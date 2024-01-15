@@ -1,5 +1,5 @@
 import { Layout } from '@/src/layouts';
-import { InferGetStaticPropsType } from 'next';
+import { InferGetServerSidePropsType } from 'next';
 import React from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { LoginCustomerInputType } from '@/src/graphql/selectors';
@@ -16,10 +16,10 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { TP } from '@/src/components/atoms/TypoGraphy';
 import { useCart } from '@/src/state/cart';
 import { Absolute, Form, FormContainer, FormContent, FormWrapper } from '../components/shared';
-import { getStaticProps } from './props';
+import { getServerSideProps } from './props';
 import { useChannels } from '@/src/state/channels';
 
-export const SignInPage: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = props => {
+export const SignInPage: React.FC<InferGetServerSidePropsType<typeof getServerSideProps>> = props => {
     const ctx = useChannels();
     const { t } = useTranslation('customer');
     const { t: tErrors } = useTranslation('common');

@@ -1,26 +1,25 @@
-import { useKeenSlider } from 'keen-slider/react';
+import { KeenSliderInstance, KeenSliderOptions, useKeenSlider } from 'keen-slider/react';
 import { useEffect, useState } from 'react';
 
-export const useSlider = ({ spacing }: { spacing: number }) => {
+export const useSlider = ({ loop = true, spacing }: { loop?: boolean; spacing: number }) => {
     const [jsEnabled, setJsEnabled] = useState(false);
     useEffect(() => {
         setJsEnabled(true);
     }, []);
 
     const [currentSlide, setCurrentSlide] = useState(0);
-
-    const [ref, slider] = useKeenSlider(
-        {
-            slides: { perView: 'auto', spacing },
-            initial: 0,
-            loop: true,
-            mode: 'free-snap',
-            detailsChanged: s => {
-                setCurrentSlide(s.track.details.rel);
-            },
+    const keenSliderOptions: KeenSliderOptions = {
+        slides: { perView: 'auto', spacing },
+        initial: 0,
+        loop,
+        mode: 'free-snap',
+        detailsChanged: s => {
+            setCurrentSlide(s.track.details.rel);
         },
-        [],
-    );
+    };
+
+    const [ref, slider] = useKeenSlider(keenSliderOptions, []);
+    useEffect(refreshSlider(slider, keenSliderOptions), [slider.current]);
 
     const nextSlide = () => (jsEnabled ? slider.current?.next() : console.log('JavaScript is not enabled'));
     const prevSlide = () => (jsEnabled ? slider.current?.prev() : console.log('JavaScript is not enabled'));
@@ -29,3 +28,20 @@ export const useSlider = ({ spacing }: { spacing: number }) => {
 
     return { jsEnabled, ref, slider, nextSlide, prevSlide, goToSlide, currentSlide };
 };
+
+function refreshSlider(
+    sliderInstanceRef: React.MutableRefObject<KeenSliderInstance | null>,
+    sliderOptionsValue: KeenSliderOptions,
+) {
+    return () => {
+        if (sliderInstanceRef.current) {
+            sliderInstanceRef.current.update({ ...sliderOptionsValue });
+        }
+
+        return () => {
+            if (sliderInstanceRef.current) {
+                sliderInstanceRef.current.destroy();
+            }
+        };
+    };
+}

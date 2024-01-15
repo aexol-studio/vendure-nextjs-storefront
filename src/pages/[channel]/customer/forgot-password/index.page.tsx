@@ -1,11 +1,12 @@
 import React from 'react';
-import { InferGetStaticPropsType } from 'next';
+import { InferGetServerSidePropsType } from 'next';
 
 import { ForgotPasswordPage } from '@/src/components/pages/customer/forgot-password';
-import { getStaticProps } from '@/src/components/pages/customer/forgot-password/props';
-import { getStaticPaths } from '@/src/lib/getStatic';
+import { getServerSideProps } from '@/src/components/pages/customer/forgot-password/props';
 
-const Page: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = props => <ForgotPasswordPage {...props} />;
+const Page: React.FC<InferGetServerSidePropsType<typeof getServerSideProps>> = props => (
+    <ForgotPasswordPage {...props} />
+);
 
-export { getStaticPaths, getStaticProps };
+export { getServerSideProps };
 export default Page;

@@ -1,10 +1,10 @@
 import { getCollections } from '@/src/graphql/sharedQueries';
-import { ContextModel, makeStaticProps } from '@/src/lib/getStatic';
+import { makeServerSideProps } from '@/src/lib/getStatic';
 import { arrayToTree } from '@/src/util/arrayToTree';
+import { GetServerSidePropsContext } from 'next';
 
-export const getStaticProps = async (context: ContextModel) => {
-    const r = await makeStaticProps(['common', 'customer'])(context);
-    const language = r.props._nextI18Next?.initialLocale ?? 'en';
+export const getServerSideProps = async (context: GetServerSidePropsContext) => {
+    const r = await makeServerSideProps(['common', 'customer'])(context);
     const collections = await getCollections(r.context);
     const navigation = arrayToTree(collections);
 
@@ -13,11 +13,7 @@ export const getStaticProps = async (context: ContextModel) => {
         ...r.context,
         collections,
         navigation,
-        language,
     };
 
-    return {
-        props: returnedStuff,
-        revalidate: process.env.NEXT_REVALIDATE ? parseInt(process.env.NEXT_REVALIDATE) : 10,
-    };
+    return { props: returnedStuff };
 };

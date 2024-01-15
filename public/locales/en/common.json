@@ -1,12 +1,18 @@
 {
-    "home": "Home",
+    "breadcrumbs": {
+        "home": "Home"
+    },
+    "announcements-bar": [
+        "SHOP BEST PRODUCTS",
+        "FREE SHIPPING ON ORDERS OVER $100",
+        "SECURE PAYMENT",
+        "30 DAYS RETURN POLICY"
+    ],
     "shop": "Demo Shop",
     "title": "Hello",
     "search-products": "Search products",
     "made-by": "Made by VendureAgency.com 2023",
     "select-category": "Select category",
-    "filters": "Filters",
-    "sort-by": "Sort by",
     "cart": "Cart",
     "cart-summary": "Cart summary",
     "your-cart": "Your cart",
@@ -14,7 +20,13 @@
     "proceed-to-checkout": "Proceed to checkout",
     "continue-shopping": "Continue shopping",
     "price": "Price",
+    "search-for-best-products": "Search for best products",
     "discount": "Discount",
+    "discounts-errors": {
+        "coupon-code-invalid": "Couldn't find a coupon with that code",
+        "something-went-wrong": "Something went wrong",
+        "enter-code": "Please enter code"
+    },
     "shipping": "Shipping",
     "subtotal": "Subtotal",
     "total": "Total",
@@ -23,23 +35,8 @@
     "remove": "Remove",
     "add-to-cart": "Add to cart",
     "buy-now": "Buy now",
-    "related-collections": "Related Collections",
-    "newest-products": "Newest Products",
     "featured-products": "Featured Products",
-    "sort-keys": {
-        "title": "Title",
-        "price": "Price"
-    },
-    "sort-directions": {
-        "ASC": "Ascending",
-        "DESC": "Descending"
-    },
-    "stockLevel": {
-        "OUT_OF_STOCK": "Out of stock",
-        "IN_STOCK": "In stock",
-        "LOW_STOCK": "🔥 Make it quick only {{value}} left! 🔥",
-        "COMING_SOON": "Coming soon"
-    },
+    "best-collections": "Best Collections",
     "commonError": "Something wen't wrong",
     "send": "Send",
     "search-results": "Search results for:",
@@ -155,7 +152,6 @@
             "required": "Phone number is required"
         }
     },
-    "seeAll": "See all",
     "footer": {
         "notify": {
             "header": "Stay radiant!",
@@ -183,6 +179,5 @@
         "ship-to-country": "Ship to country",
         "change-language": "Change language",
         "save": "Save"
-    },
-    "best-seller": "Best seller"
+    }
 }

@@ -1,6 +1,6 @@
-import { Stack, Link, ProductImageGrid } from '@/src/components/atoms/';
+import { Stack, Link, ProductImageGrid, TP } from '@/src/components/atoms/';
 import { CollectionTileType, ProductSearchType } from '@/src/graphql/selectors';
-import { priceFormatter } from '@/src/util/priceFomatter';
+import { priceFormatter } from '@/src/util/priceFormatter';
 import styled from '@emotion/styled';
 import React from 'react';
 
@@ -33,11 +33,13 @@ export const ProductTile: React.FC<{
                 {product.collectionIds
                     .filter((cId, index) => product.collectionIds.indexOf(cId) === index)
                     .map(cId => collections.find(c => c.id === cId))
-                    .filter(c => c)
+                    .filter(c => c && c.slug !== 'all' && c.slug !== 'search')
                     .map(c => (
-                        <ProductCategory href={`/collections/${c?.slug}/`} key={c?.slug}>
-                            {c?.name}
-                        </ProductCategory>
+                        <CategoryBlock href={`/collections/${c?.slug}`} key={c?.slug}>
+                            <TP size="1.25rem" color="contrast">
+                                {c?.name}
+                            </TP>
+                        </CategoryBlock>
                     ))}
             </Categories>
             <Stack column gap="0.25rem">
@@ -65,18 +67,19 @@ const ProductName = styled.div`
     color: ${p => p.theme.gray(900)};
     font-size: 1.5rem;
 `;
-// const ImageLink = styled(Link);
-const ProductCategory = styled(Link)`
-    font-weight: 600;
-    text-transform: uppercase;
-    font-size: 1rem;
-    padding: 0.5rem;
-    color: ${p => p.theme.gray(0)};
-    background: ${p => p.theme.gray(500)};
-    :hover {
-        color: ${p => p.theme.gray(900)};
+
+const CategoryBlock = styled(Link)`
+    padding: 1rem;
+
+    background-color: ${({ theme }) => theme.gray(500)};
+
+    @media (min-width: ${({ theme }) => theme.breakpoints.sm}) {
+        :hover {
+            background-color: ${({ theme }) => theme.gray(600)};
+        }
     }
 `;
+
 const ProductPrice = styled(Stack)`
     font-size: 1.25rem;
 `;
@@ -89,5 +92,7 @@ const Main = styled(Stack)`
     width: 100%;
     font-weight: 500;
 
-    max-width: 35.5rem;
+    @media (min-width: ${({ theme }) => theme.breakpoints.xl}) {
+        max-width: 35.5rem;
+    }
 `;

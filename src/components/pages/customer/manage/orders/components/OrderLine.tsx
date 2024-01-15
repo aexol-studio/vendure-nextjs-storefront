@@ -25,11 +25,11 @@ export const OrderLine: React.FC<Props> = ({ currencyCode, line }) => {
                 title={line.productVariant.name}
             />
             <Stack column>
-                <TP size="1.5rem" weight={500} style={{ whiteSpace: 'nowrap' }}>
+                <TP size="1.5rem" weight={500} noWrap>
                     {line.productVariant.product.name}
                 </TP>
                 {optionInName && (
-                    <TP size="1.25rem" weight={400} style={{ textTransform: 'capitalize' }}>
+                    <TP size="1.25rem" weight={400} capitalize>
                         {line.productVariant.name.replace(line.productVariant.product.name, '')}
                     </TP>
                 )}

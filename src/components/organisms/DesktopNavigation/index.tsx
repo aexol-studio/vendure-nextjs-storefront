@@ -19,16 +19,20 @@ export const DesktopNavigation: React.FC<NavProps> = ({ navigation }) => {
     return (
         <DesktopStack itemsCenter gap="10rem">
             {navigation?.children.map(collection => {
+                const href =
+                    collection.parent?.slug !== '__root_collection__'
+                        ? `/collections/${collection.parent?.slug}/${collection.slug}`
+                        : `/collections/${collection.slug}`;
                 if (collection.children.length === 0) {
                     return (
                         <RelativeStack w100 key={collection.name}>
-                            <StyledLink href={`/collections/${collection.slug}`}>{collection.name}</StyledLink>
+                            <StyledLink href={href}>{collection.name}</StyledLink>
                         </RelativeStack>
                     );
                 }
                 return (
                     <RelativeStack w100 key={collection.name}>
-                        <StyledLink href={`/collections/${collection.slug}`}>{collection.name}</StyledLink>
+                        <StyledLink href={href}>{collection.name}</StyledLink>
                         <AbsoluteStack w100>
                             <ContentContainer>
                                 <Background w100 justifyBetween>

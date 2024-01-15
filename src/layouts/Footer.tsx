@@ -32,20 +32,26 @@ export const Footer: React.FC<{
                         <FooterSections justifyBetween>
                             {navigation?.children
                                 .filter(c => c.slug !== 'all' && c.slug !== 'search')
-                                .map(section => (
-                                    <Stack key={section.name} column>
-                                        <TypoGraphy as="h3" size="1.5rem" weight={600}>
-                                            {section.name}
-                                        </TypoGraphy>
-                                        <Stack column gap="2rem">
-                                            {section.children.map(link => (
-                                                <Link key={link.slug} href={`/collections/${link.slug}`}>
-                                                    {link.name}
-                                                </Link>
-                                            ))}
+                                .map(section => {
+                                    const href =
+                                        section.parent?.slug !== '__root_collection__'
+                                            ? `/collections/${section.parent?.slug}/${section.slug}`
+                                            : `/collections/${section.slug}`;
+                                    return (
+                                        <Stack key={section.name} column>
+                                            <TypoGraphy as="h3" size="1.5rem" weight={600}>
+                                                {section.name}
+                                            </TypoGraphy>
+                                            <Stack column gap="2rem">
+                                                {section.children.map(link => (
+                                                    <Link key={link.slug} href={href}>
+                                                        {link.name}
+                                                    </Link>
+                                                ))}
+                                            </Stack>
                                         </Stack>
-                                    </Stack>
-                                ))}
+                                    );
+                                })}
                         </FooterSections>
                     </Container>
                 </ContentContainer>

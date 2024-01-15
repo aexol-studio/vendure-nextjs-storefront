@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from 'react';
-import { Stack, ProductImage } from '@/src/components/atoms';
+import { ProductImage, Stack } from '@/src/components/atoms';
 import styled from '@emotion/styled';
 import { ImageOff } from 'lucide-react';
+import React, { useEffect, useState } from 'react';
 type Asset = { source: string; preview: string } | undefined;
 
 interface ProductPhotosPreview {
@@ -20,7 +20,7 @@ export const ProductPhotosPreview: React.FC<ProductPhotosPreview> = ({ featuredA
     }, [featuredAsset, images]);
 
     return (
-        <Wrapper itemsStart gap="3rem">
+        <Wrapper w100 justifyBetween>
             <AssetBrowser column gap="1.75rem">
                 {images?.map(a => {
                     const isSelected = chosenImage?.source === a?.source;
@@ -66,10 +66,6 @@ const StyledProductImage = styled(ProductImage)<{ isSelected: boolean }>`
 const ProductImageContainer = styled.div`
     position: relative;
     width: max-content;
-
-    img {
-        width: 42rem;
-    }
 `;
 
 const AssetBrowser = styled(Stack)`

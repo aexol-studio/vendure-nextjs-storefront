@@ -80,18 +80,24 @@ export const ProductPage: React.FC<InferGetStaticPropsType<typeof getStaticProps
                                     .filter(c => c.slug !== 'all' && c.slug !== 'search')
                                     .sort(() => -1)
                                     .slice(0, 1)
-                                    .map(c => (
-                                        <CategoryBlock href={`/collections/${c.slug}`} key={c.slug}>
-                                            <TP
-                                                size="1.25rem"
-                                                color="subtitle"
-                                                upperCase
-                                                weight={500}
-                                                style={{ letterSpacing: '0.5px' }}>
-                                                {c.name}
-                                            </TP>
-                                        </CategoryBlock>
-                                    ))}
+                                    .map(c => {
+                                        const href =
+                                            c.parent?.slug !== '__root_collection__'
+                                                ? `/collections/${c.parent?.slug}/${c.slug}`
+                                                : `/collections/${c.slug}`;
+                                        return (
+                                            <CategoryBlock href={href} key={c.slug}>
+                                                <TP
+                                                    size="1.25rem"
+                                                    color="subtitle"
+                                                    upperCase
+                                                    weight={500}
+                                                    style={{ letterSpacing: '0.5px' }}>
+                                                    {c.name}
+                                                </TP>
+                                            </CategoryBlock>
+                                        );
+                                    })}
                                 <TH1 size="2.5rem">{product?.name}</TH1>
                                 {variant && <Price price={variant.priceWithTax} currencyCode={variant.currencyCode} />}
                             </ProductInfoStack>

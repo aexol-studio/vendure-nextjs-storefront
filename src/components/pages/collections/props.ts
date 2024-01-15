@@ -11,10 +11,7 @@ export const getStaticProps = async (context: ContextModel<{ slug?: string[] }>)
     const lastIndexSlug = slug?.length ? slug[slug.length - 1] : '';
     const _context = {
         ...context,
-        params: {
-            ...context.params,
-            slug: lastIndexSlug,
-        },
+        params: { ...context.params, slug: lastIndexSlug },
     };
 
     const r = await makeStaticProps(['common', 'collections'])(_context);

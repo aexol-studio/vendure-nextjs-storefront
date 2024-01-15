@@ -48,10 +48,10 @@ export const SortBy: React.FC<Props> = ({ handleSort, sort }) => {
                                         await handleSort(o);
                                     }}>
                                     <Stack itemsCenter>
-                                        <TP capitalize weight={400} size="1.75rem">
+                                        <TP capitalize weight={400} size="1.5rem">
                                             {o.key}&nbsp;
                                         </TP>
-                                        <TP capitalize weight={400} size="1.75rem">
+                                        <TP capitalize weight={400} size="1.5rem">
                                             ({t(`sort-directions.${o.direction}`)})
                                         </TP>
                                     </Stack>

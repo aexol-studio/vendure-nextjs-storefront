@@ -56,6 +56,7 @@ const TextWrapper = styled(Stack)`
 const Content = styled(Stack)`
     width: 100%;
     max-width: 1280px;
+    padding: 0;
     flex-direction: column-reverse;
 
     @media (min-width: ${p => p.theme.breakpoints.md}) {
@@ -66,8 +67,9 @@ const Content = styled(Stack)`
         align-items: center;
     }
 
-    @media (min-width: 1560px) {
+    @media (max-width: 1560px) {
         max-width: 1440px;
+        padding: 0 4rem;
     }
 `;
 

@@ -10,7 +10,7 @@ import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import { useChannels } from '@/src/state/channels';
 import languageDetector from '@/src/lib/lngDetector';
 import { useRouter } from 'next/router';
-import { DEFAULT_CHANNEL, DEFAULT_CHANNEL_SLUG, channels } from '@/src/lib/consts';
+import { DEFAULT_CHANNEL, DEFAULT_CHANNEL_SLUG, DEFAULT_LOCALE, channels } from '@/src/lib/consts';
 import { getFlagByCode } from '@/src/util/i18Helpers';
 import { useOutsideClick } from '@/src/util/hooks/useOutsideClick';
 
@@ -22,11 +22,10 @@ type FormValues = {
 export const Picker: React.FC = () => {
     const { channel, locale } = useChannels();
     const { t } = useTranslation('common');
-    const { query, push, pathname } = useRouter();
+    const { query, push, pathname, asPath } = useRouter();
     const [isOpen, setIsOpen] = useState(false);
     const defaultChannel = channels.find(c => c.channel === channel)?.slug as string;
     const ref = useRef<HTMLDivElement>(null);
-
     useOutsideClick(ref, () => setIsOpen(false));
 
     const { control, handleSubmit, watch, setValue } = useForm<FormValues>({
@@ -35,89 +34,74 @@ export const Picker: React.FC = () => {
 
     const onSubmit: SubmitHandler<FormValues> = data => {
         const newLang = data.locale;
-        const channelAsLocale = channels.find(c => c.nationalLocale === data.channel);
-        const sameAsChannel = newLang === channelAsLocale?.nationalLocale;
+        const channelAsLocale = channels.find(c => c.slug === data.channel);
+        const sameAsChannel = newLang === channelAsLocale?.slug;
 
         languageDetector.cache && languageDetector.cache(newLang);
-
         const haveChannel = pathname.includes('[channel]');
         const haveLocale = pathname.includes('[locale]');
-
-        if (haveChannel) {
-            const cookie = document.cookie
-                .split('; ')
-                .find(row => row.startsWith('channel'))
-                ?.split('=')[1];
-            if (cookie) {
-                if (cookie !== channelAsLocale?.channel) {
-                    document.cookie = `channel=${channelAsLocale?.channel}`;
-                } else {
-                    document.cookie = `channel=${channelAsLocale?.channel}`;
-                }
-            } else {
-                document.cookie = `channel=${channelAsLocale?.channel}`;
-            }
-        }
+        if (haveChannel) document.cookie = `channel=${channelAsLocale?.channel}`;
 
         const correctSlug = (typeof query.slug === 'string' ? query.slug : query.slug?.join('/')) as string;
+        const preparedPathname = pathname
+            .replace('[slug]', correctSlug)
+            .replace('[...slug]', correctSlug)
+            .replace('[code]', query.code as string);
 
         if (sameAsChannel) {
             if (haveChannel && haveLocale) {
-                const split = pathname.split('[locale]');
+                const split = preparedPathname.split('[locale]');
                 const correctPathname = (
                     split[0] +
-                    (newLang === channelAsLocale.nationalLocale ? '' : newLang) +
+                    (newLang === channelAsLocale.slug ? '' : newLang) +
                     split[1]
-                )
-                    .replace('[channel]', channelAsLocale.channel === DEFAULT_CHANNEL ? '' : channelAsLocale.slug)
-                    .replace('[...slug]', correctSlug)
-                    .replace('[code]', query.code as string);
+                ).replace(
+                    '[channel]',
+                    channelAsLocale.channel === DEFAULT_CHANNEL ? '' : channelAsLocale.nationalLocale,
+                );
+
                 console.log(correctPathname);
                 push(correctPathname);
             }
             if (haveChannel && !haveLocale) {
-                const split = pathname.split('[channel]');
-                const correctPathname = (split[0] + channelAsLocale.slug + split[1])
-                    .replace('[...slug]', correctSlug)
-                    .replace('[code]', query.code as string);
+                const split = preparedPathname.split('[channel]');
+                const correctPathname =
+                    split[0] +
+                    (channelAsLocale.slug === DEFAULT_CHANNEL_SLUG ? '' : channelAsLocale.nationalLocale) +
+                    split[1];
+
                 console.log(correctPathname);
                 push(correctPathname);
             }
             if (!haveChannel && !haveLocale) {
-                const correctPathname = (pathname + '/' + channelAsLocale.slug)
-                    .replace('[...slug]', correctSlug)
-                    .replace('[code]', query.code as string);
+                const _channel = channelAsLocale?.channel === DEFAULT_CHANNEL ? '' : channelAsLocale?.nationalLocale;
+                const _newLang = newLang === DEFAULT_LOCALE ? '' : newLang;
+                const correctPathname = '/' + (_channel + '/' + _newLang) + asPath;
+
                 console.log(correctPathname);
                 push(correctPathname);
             }
         } else {
             if (haveChannel && haveLocale) {
-                const split = pathname.split('[locale]');
-                const correctPathname = (split[0] + newLang + split[1])
-                    .replace(
-                        '[channel]',
-                        channelAsLocale?.channel === DEFAULT_CHANNEL ? '' : channelAsLocale?.slug ?? '',
-                    )
-                    .replace('[...slug]', correctSlug)
-                    .replace('[code]', query.code as string);
+                const split = preparedPathname.split('[locale]');
+                const correctPathname = (split[0] + newLang + split[1]).replace(
+                    '[channel]',
+                    channelAsLocale?.slug ?? '',
+                );
 
                 console.log(correctPathname);
                 push(correctPathname);
             }
             if (haveChannel && !haveLocale) {
-                const split = pathname.split('[channel]');
-                const correctPathname = (split[0] + channelAsLocale?.nationalLocale + '/' + newLang + split[1])
-                    .replace('[...slug]', correctSlug)
-                    .replace('[code]', query.code as string);
+                const split = preparedPathname.split('[channel]');
+                const correctPathname = split[0] + (channelAsLocale?.nationalLocale + '/' + newLang) + split[1];
 
                 console.log(correctPathname);
                 push(correctPathname);
             }
 
             if (!haveChannel && !haveLocale) {
-                const correctPathname = (pathname + '/' + DEFAULT_CHANNEL_SLUG + '/' + newLang)
-                    .replace('[...slug]', correctSlug)
-                    .replace('[code]', query.code as string);
+                const correctPathname = '/' + (DEFAULT_CHANNEL_SLUG + '/' + newLang) + asPath;
 
                 console.log(correctPathname);
                 push(correctPathname);

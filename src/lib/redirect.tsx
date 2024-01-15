@@ -21,20 +21,16 @@ export const useRedirect = ({ to }: { to?: string }) => {
         const ch = cachedChannel
             ? channels.find(c => c.channel === cachedChannel)
             : channels.find(c => c.slug === detectedLng);
-        console.log(detectedLng, cachedChannel, ch);
 
         const channelSlug = ch?.slug ?? DEFAULT_CHANNEL_SLUG;
         if (channelSlug === DEFAULT_CHANNEL_SLUG) {
             return;
         }
-
         const locale = ch?.slug === ch?.nationalLocale ? '' : `/${ch?.nationalLocale}`;
-
         if (to?.startsWith('/' + channelSlug) && router.route !== '/404') {
             router.replace('/' + channelSlug + router.route.replace('/[channel]', '').replace('/[locale]', locale));
             return;
         }
-
         if (detectedLng && languageDetector.cache) {
             languageDetector.cache(detectedLng);
         }
@@ -54,7 +50,6 @@ export const Redirect =
                 ?.split('=')[1];
             setCookie(cachedChannel);
         }, []);
-
         const ch = channels.find(c => c.channel === cookie);
         const channelSlug = ch?.slug ?? DEFAULT_CHANNEL_SLUG;
 

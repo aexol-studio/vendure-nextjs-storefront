@@ -17,15 +17,20 @@ export const HomePageSliders: React.FC<BestOfI> = ({ sliders, seeAllText }) => {
     return (
         <Stack w100 column gap="6rem">
             {sliders.map(slider => {
-                const slides = slider.productVariants.items.map((variant, index) => (
+                const slides = slider?.productVariants?.items?.map((variant, index) => (
                     <ProductVariantTile key={index} variant={variant} lazy={index > 0} />
                 ));
-                if (!slides.length) return null;
+                if (!slides?.length) return null;
+                const href =
+                    slider?.parent?.slug !== '__root_collection__'
+                        ? `/collections/${slider?.parent?.slug}/${slider?.slug}`
+                        : `/collections/${slider?.slug}`;
+
                 return (
                     <StyledSection key={slider.slug}>
                         <Stack w100 justifyBetween>
                             <TH2>{`${slider.name} (${slider.productVariants.totalItems})`}</TH2>
-                            <StyledLink href={`/collections/${slider.slug}`}>
+                            <StyledLink href={href}>
                                 <TP upperCase color="contrast" weight={500} style={{ letterSpacing: '0.5px' }}>
                                     {seeAllText}
                                 </TP>

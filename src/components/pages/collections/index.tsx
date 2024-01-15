@@ -43,7 +43,7 @@ const CollectionPage: React.FC<InferGetStaticPropsType<typeof getStaticProps>> =
         },
         {
             name: props.collection?.name,
-            href: `/collections/${props.collection?.slug}`,
+            href: `/collections/${props.collection?.parent?.slug}/${props.collection?.slug}`,
         },
     ].filter(b => b.name !== '__root_collection__');
 

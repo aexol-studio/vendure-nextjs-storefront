@@ -36,18 +36,24 @@ export const ProductVariantTile: React.FC<ProductVariantTileProps> = ({
                         .filter(c => c.slug !== 'all' && c.slug !== 'search')
                         .sort(() => -1)
                         .slice(0, displayAllCategories ? undefined : 1)
-                        .map(c => (
-                            <CategoryWrapper href={`/collections/${c.slug}`} key={c.slug}>
-                                <TP
-                                    size="1.25rem"
-                                    color="contrast"
-                                    upperCase
-                                    weight={500}
-                                    style={{ letterSpacing: '0.5px' }}>
-                                    {c.name}
-                                </TP>
-                            </CategoryWrapper>
-                        ))}
+                        .map(c => {
+                            const href =
+                                c?.parent?.slug !== '__root_collection__'
+                                    ? `/collections/${c?.parent?.slug}/${c?.slug}`
+                                    : `/collections/${c?.slug}`;
+                            return (
+                                <CategoryWrapper href={href} key={c.slug}>
+                                    <TP
+                                        size="1.25rem"
+                                        color="contrast"
+                                        upperCase
+                                        weight={500}
+                                        style={{ letterSpacing: '0.5px' }}>
+                                        {c.name}
+                                    </TP>
+                                </CategoryWrapper>
+                            );
+                        })}
                 </Categories>
                 <ImageLink href={`/products/${variant.product.slug}?variant=${variant.id}`}>
                     <ProductImage

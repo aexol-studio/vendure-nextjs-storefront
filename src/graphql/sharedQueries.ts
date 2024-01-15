@@ -22,7 +22,6 @@ export const getCollectionsPaths = () =>
                 return fullPaths;
             })
             .flat();
-        console.log(routes);
         return routes;
     });
 

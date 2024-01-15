@@ -4,6 +4,7 @@ import { DEFAULT_CHANNEL, DEFAULT_LOCALE } from '@/src/lib/consts';
 import { localizeGetStaticPaths } from '@/src/lib/getStatic';
 
 export const getStaticPaths = async () => {
+    //TODO: add channel and locale to query
     const resp = await SSGQuery({ channel: DEFAULT_CHANNEL, locale: DEFAULT_LOCALE })({
         products: [{}, { items: ProductSlugSelector }],
     });

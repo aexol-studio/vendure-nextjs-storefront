@@ -34,18 +34,25 @@ export const ProductTile: React.FC<{
                     .filter((cId, index) => product.collectionIds.indexOf(cId) === index)
                     .map(cId => collections.find(c => c.id === cId))
                     .filter(c => c && c.slug !== 'all' && c.slug !== 'search')
-                    .map(c => (
-                        <CategoryBlock href={`/collections/${c?.slug}`} key={c?.slug}>
-                            <TP
-                                size="1.25rem"
-                                color="contrast"
-                                upperCase
-                                weight={500}
-                                style={{ letterSpacing: '0.5px' }}>
-                                {c?.name}
-                            </TP>
-                        </CategoryBlock>
-                    ))}
+                    .map(c => {
+                        const href =
+                            c?.parent?.slug !== '__root_collection__'
+                                ? `/collections/${c?.parent?.slug}/${c?.slug}`
+                                : `/collections/${c?.slug}`;
+
+                        return (
+                            <CategoryBlock href={href} key={c?.slug}>
+                                <TP
+                                    size="1.25rem"
+                                    color="contrast"
+                                    upperCase
+                                    weight={500}
+                                    style={{ letterSpacing: '0.5px' }}>
+                                    {c?.name}
+                                </TP>
+                            </CategoryBlock>
+                        );
+                    })}
             </Categories>
             <Stack column gap="0.25rem">
                 <Stack column gap="0.5rem">

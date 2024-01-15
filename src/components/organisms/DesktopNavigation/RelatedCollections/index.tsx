@@ -14,21 +14,27 @@ export const RelatedCollections: React.FC<{
                 {title}
             </TP>
             <Stack itemsCenter gap="2rem">
-                {collection.children.slice(0, 2).map(children => (
-                    <Stack key={children.name + '2'} column gap="1rem">
-                        <Link href={`/collections/${children.slug}`}>
-                            <ProductImage
-                                src={children.featuredAsset?.preview || ''}
-                                size="thumbnail-big"
-                                alt={collection.name}
-                                title={collection.name}
-                            />
-                        </Link>
-                        <StyledLink href={`/collections/${children.slug}`}>
-                            {children.name} ({children.productVariants ? children.productVariants.totalItems : 0})
-                        </StyledLink>
-                    </Stack>
-                ))}
+                {collection.children.slice(0, 2).map(children => {
+                    const href =
+                        children.parent?.slug === '__root_collection__'
+                            ? `/collections/${children.slug}`
+                            : `/collections/${children.parent?.slug}/${children.slug}`;
+                    return (
+                        <Stack key={children.name + '2'} column gap="1rem">
+                            <Link href={href}>
+                                <ProductImage
+                                    src={children.featuredAsset?.preview || ''}
+                                    size="thumbnail-big"
+                                    alt={collection.name}
+                                    title={collection.name}
+                                />
+                            </Link>
+                            <StyledLink href={href}>
+                                {children.name} ({children.productVariants ? children.productVariants.totalItems : 0})
+                            </StyledLink>
+                        </Stack>
+                    );
+                })}
             </Stack>
         </Stack>
     );

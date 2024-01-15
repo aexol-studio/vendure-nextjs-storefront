@@ -143,6 +143,7 @@ export const CollectionTileSelector = Selector('Collection')({
     id: true,
     slug: true,
     parentId: true,
+    parent: { slug: true },
     description: true,
     featuredAsset: {
         preview: true,
@@ -184,7 +185,7 @@ export const ProductDetailSelector = Selector('Product')({
             name: true,
         },
     },
-    collections: { slug: true, name: true },
+    collections: { slug: true, name: true, parent: { slug: true } },
     featuredAsset: {
         source: true,
         preview: true,
@@ -513,7 +514,11 @@ export const productVariantTileSelector = Selector('ProductVariant')({
     currencyCode: true,
     priceWithTax: true,
     featuredAsset: { preview: true },
-    product: { collections: { slug: true, name: true }, slug: true, featuredAsset: { preview: true } },
+    product: {
+        collections: { slug: true, name: true, parent: { slug: true } },
+        slug: true,
+        featuredAsset: { preview: true },
+    },
 });
 
 export type ProductVariantTileType = FromSelector<typeof productVariantTileSelector, 'ProductVariant', typeof scalars>;
@@ -521,6 +526,7 @@ export type ProductVariantTileType = FromSelector<typeof productVariantTileSelec
 export const homePageSlidersSelector = Selector('Collection')({
     name: true,
     slug: true,
+    parent: { slug: true },
     productVariants: [
         { options: { take: 8, sort: { priceWithTax: SortOrder.DESC } } },
         {

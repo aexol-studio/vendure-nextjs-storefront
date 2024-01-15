@@ -100,13 +100,13 @@ const CollectionPage: React.FC<InferGetStaticPropsType<typeof getStaticProps>> =
                             <TH1>{collection?.name}</TH1>
                         </Stack>
                         <Stack justifyEnd itemsCenter gap="2.5rem">
-                            <SortBy sort={sort} handleSort={handleSort} />
                             <Filters onClick={() => setFiltersOpen(true)}>
                                 <TP>{t('filters')}</TP>
                                 <IconButton title={t('filters')}>
                                     <Filter />
                                 </IconButton>
                             </Filters>
+                            <SortBy sort={sort} handleSort={handleSort} />{' '}
                         </Stack>
                     </Wrapper>
                     <MainGrid>

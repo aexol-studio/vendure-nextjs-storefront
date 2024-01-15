@@ -82,13 +82,13 @@ export const SearchPage: React.FC<InferGetServerSidePropsType<typeof getServerSi
                 <Main gap="2rem" column>
                     <MainBar categories={props.collections} title={t('search-results') + ' ' + searchPhrase} />
                     <Stack itemsCenter gap="2.5rem" justifyEnd w100>
-                        <SortBy sort={sort} handleSort={handleSort} />
                         <Filters onClick={() => setFiltersOpen(true)}>
                             <TP>{t('filters')}</TP>
                             <IconButton title={t('filters')}>
                                 <Filter />
                             </IconButton>
                         </Filters>
+                        <SortBy sort={sort} handleSort={handleSort} />
                     </Stack>
                     <MainGrid>
                         {products?.map(p => <ProductTile collections={props.collections} product={p} key={p.slug} />)}

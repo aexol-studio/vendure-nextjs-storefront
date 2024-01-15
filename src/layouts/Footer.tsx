@@ -1,7 +1,7 @@
 import styled from '@emotion/styled';
 import { useTranslation } from 'next-i18next';
 
-import { Stack, TypoGraphy, Link, NotifyFooterForm } from '@/src/components/atoms';
+import { Stack, TypoGraphy, Link, NotifyFooterForm, ContentContainer } from '@/src/components/atoms';
 import { Socials } from '@/src/components/atoms/Socials';
 import { NavigationType } from '@/src/graphql/selectors';
 import { RootNode } from '@/src/util/arrayToTree';
@@ -15,46 +15,54 @@ export const Footer: React.FC<{
 
     return (
         <Wrapper>
-            <Main column justifyBetween>
-                <Stack column style={{ marginRight: '4rem' }}>
-                    <Stack column>
-                        <TypoGraphy as="h2" weight={400} size="2rem">
-                            {t('footer.notify.header')}
-                        </TypoGraphy>
-                        <TypoGraphy as="p" weight={400} size="1.5rem">
-                            {t('footer.notify.paragraph')}
-                        </TypoGraphy>
-                    </Stack>
-                    <NotifyFooterForm />
-                </Stack>
-                <FooterSections justifyBetween>
-                    {navigation?.children
-                        .filter(c => c.slug !== 'all' && c.slug !== 'search')
-                        .map(section => (
-                            <Stack key={section.name} column>
-                                <TypoGraphy as="h3" size="1.5rem" weight={600}>
-                                    {section.name}
+            <Main>
+                <ContentContainer>
+                    <Container column justifyBetween>
+                        <Stack column style={{ marginRight: '4rem' }}>
+                            <Stack column>
+                                <TypoGraphy as="h2" weight={400} size="2rem">
+                                    {t('footer.notify.header')}
                                 </TypoGraphy>
-                                <Stack column gap="2rem">
-                                    {section.children.map(link => (
-                                        <Link key={link.slug} href={`/collections/${link.slug}`}>
-                                            {link.name}
-                                        </Link>
-                                    ))}
-                                </Stack>
+                                <TypoGraphy as="p" weight={400} size="1.5rem">
+                                    {t('footer.notify.paragraph')}
+                                </TypoGraphy>
                             </Stack>
-                        ))}
-                </FooterSections>
+                            <NotifyFooterForm />
+                        </Stack>
+                        <FooterSections justifyBetween>
+                            {navigation?.children
+                                .filter(c => c.slug !== 'all' && c.slug !== 'search')
+                                .map(section => (
+                                    <Stack key={section.name} column>
+                                        <TypoGraphy as="h3" size="1.5rem" weight={600}>
+                                            {section.name}
+                                        </TypoGraphy>
+                                        <Stack column gap="2rem">
+                                            {section.children.map(link => (
+                                                <Link key={link.slug} href={`/collections/${link.slug}`}>
+                                                    {link.name}
+                                                </Link>
+                                            ))}
+                                        </Stack>
+                                    </Stack>
+                                ))}
+                        </FooterSections>
+                    </Container>
+                </ContentContainer>
             </Main>
-            <LawsWrapper justifyBetween itemsCenter>
-                <Laws>
-                    {footerLaw.map(l => (
-                        <Link key={l} href="#">
-                            {l}
-                        </Link>
-                    ))}
-                </Laws>
-                <Socials />
+            <LawsWrapper>
+                <ContentContainer>
+                    <Stack justifyBetween itemsCenter>
+                        <Laws>
+                            {footerLaw.map(l => (
+                                <Link key={l} href="#">
+                                    {l}
+                                </Link>
+                            ))}
+                        </Laws>
+                        <Socials />
+                    </Stack>
+                </ContentContainer>
             </LawsWrapper>
         </Wrapper>
     );
@@ -76,18 +84,21 @@ const Wrapper = styled.footer`
     }
 `;
 const Main = styled(Stack)`
-    padding: 5rem;
     gap: 5rem;
     background-color: ${({ theme }) => theme.background.secondary};
+`;
+
+const Container = styled(Stack)`
+    gap: 2rem;
+    padding: 3rem 0;
     @media (min-width: ${p => p.theme.breakpoints.ssm}) {
-        padding: 13.5rem 7rem 14.5rem 10.5rem;
+        padding: 13.5rem 0 14.5rem 0rem;
     }
     @media (min-width: ${p => p.theme.breakpoints.lg}) {
         gap: 0;
         flex-direction: row;
     }
 `;
-
 const FooterSections = styled(Stack)`
     > div {
         width: min-content;
@@ -105,10 +116,11 @@ const FooterSections = styled(Stack)`
 `;
 const LawsWrapper = styled(Stack)`
     background: ${({ theme }) => theme.background.third};
-    padding: 3rem 6rem;
+    padding: 3rem 0;
 `;
 
 const Laws = styled(Stack)`
+    gap: 1.5rem;
     @media (min-width: ${p => p.theme.breakpoints.ssm}) {
         gap: 5rem;
     }

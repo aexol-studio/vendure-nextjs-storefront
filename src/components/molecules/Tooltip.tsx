@@ -53,10 +53,10 @@ const StyledTooltip = styled(motion.div)`
     display: flex;
     align-items: center;
     justify-content: center;
-    color: #11111d;
+    color: ${({ theme }) => theme.text.main};
     font-weight: 400;
     padding: 0.4rem 0.8rem;
     border-radius: 0.4rem;
-    background-color: #ffffff;
+    background-color: ${({ theme }) => theme.gray(0)};
     box-shadow: 0px 4px 16px ${({ theme }) => theme.shadow};
 `;

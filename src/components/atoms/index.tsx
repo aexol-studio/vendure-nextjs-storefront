@@ -9,6 +9,5 @@ export * from './ProductImage';
 export * from './Select';
 export * from './Stack';
 export * from './TypoGraphy';
-export * from './LanguagePicker';
 export * from './NotifyFooterForm';
 export * from './Socials';

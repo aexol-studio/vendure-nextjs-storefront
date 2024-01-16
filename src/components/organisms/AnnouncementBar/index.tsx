@@ -6,13 +6,9 @@ import styled from '@emotion/styled';
 type AnnouncementBarType = {
     text: string;
     href: string;
-    bgColor: string;
-    textColor: string;
-    hoverTextColor?: string;
-    hoverBgColor?: string;
 };
 
-type Omitted = Omit<Omit<AnnouncementBarType, 'text'>, 'href'>;
+// type Omitted = Omit<Omit<AnnouncementBarType, 'text'>, 'href'>;
 export const AnnouncementBar: React.FC<{ entries: AnnouncementBarType[]; secondsBetween: number }> = ({
     entries,
     secondsBetween,
@@ -55,16 +51,8 @@ export const AnnouncementBar: React.FC<{ entries: AnnouncementBarType[]; seconds
         </Stack>
     );
 };
-const Entry = styled(Stack)<Omitted>`
+const Entry = styled(Stack)`
     padding: 1rem 0;
-    background: ${p => p.bgColor};
-    color: ${p => p.textColor};
+    background: ${p => p.theme.background.ice};
     cursor: pointer;
-    transition:
-        background 0.4s ease-out,
-        color 0.4s ease-out;
-    /* &:hover {
-        background: ${p => p.hoverBgColor};
-        color: ${p => p.hoverTextColor};
-    } */
 `;

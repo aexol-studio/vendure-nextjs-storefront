@@ -1,16 +1,22 @@
 import { SSGQuery } from '@/src/graphql/client';
 import { ProductSlugSelector } from '@/src/graphql/selectors';
-import { DEFAULT_CHANNEL, DEFAULT_LOCALE } from '@/src/lib/consts';
-import { localizeGetStaticPaths } from '@/src/lib/getStatic';
+import { DEFAULT_CHANNEL, channels } from '@/src/lib/consts';
+import { getAllPossibleWithChannels } from '@/src/lib/getStatic';
 
 export const getStaticPaths = async () => {
-    //TODO: add channel and locale to query
-    const resp = await SSGQuery({ channel: DEFAULT_CHANNEL, locale: DEFAULT_LOCALE })({
-        products: [{}, { items: ProductSlugSelector }],
-    });
-    const paths = localizeGetStaticPaths(
-        resp.products.items.map(product => ({
-            params: { id: product.id, slug: product.slug },
+    const allPaths = getAllPossibleWithChannels();
+    const resp = await Promise.all(
+        allPaths.map(async path => {
+            const channel = channels.find(c => c.slug === path.params.channel)?.channel ?? DEFAULT_CHANNEL;
+            const { products } = await SSGQuery({ channel, locale: path.params.locale })({
+                products: [{}, { items: ProductSlugSelector }],
+            });
+            return { ...products, ...path.params };
+        }),
+    );
+    const paths = resp.flatMap(data =>
+        data.items.map(item => ({
+            params: { ...data, slug: item.slug },
         })),
     );
     return { paths, fallback: false };

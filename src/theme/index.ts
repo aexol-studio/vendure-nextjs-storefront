@@ -17,6 +17,7 @@ type DetailTheme = {
         main: string;
         secondary: string;
         third: string;
+        ice: string;
     };
     button: {
         back: string;
@@ -119,6 +120,7 @@ export const LightTheme = createTheme(300, t => ({
         main: t.gray(0),
         secondary: t.gray(25),
         third: t.gray(50),
+        ice: '#f8f8f8',
     },
     text: {
         main: `lch(9.72% 6.43 251.05)`,
@@ -131,7 +133,7 @@ export const LightTheme = createTheme(300, t => ({
         front: t.gray(0),
         icon: { front: t.gray(900) },
     },
-    shadow: t.grayAlpha(200, 100),
+    shadow: `#69737c30`,
     error: '#eb1b19',
     success: '#1beb1b',
     price: {

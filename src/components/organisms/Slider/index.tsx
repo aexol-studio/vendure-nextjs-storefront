@@ -16,7 +16,7 @@ export const Slider: React.FC<SliderProps> = ({ slides, withArrows, withDots, sp
     if (!slides?.length) return null;
     const { jsEnabled, ref, nextSlide, prevSlide, goToSlide, currentSlide } = useSlider({
         spacing,
-        loop: withArrows ? slides?.length > withArrows : false,
+        loop: withArrows ? slides?.length > withArrows : true,
     });
 
     return (

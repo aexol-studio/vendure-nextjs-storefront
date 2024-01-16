@@ -38,8 +38,8 @@ export const CustomerNavigation: React.FC = () => {
             <Stack>
                 {routes.map(route => (
                     <Stack column key={route.href}>
-                        <MenuItem key={route.href}>
-                            <StyledLink href={route.href}>{t(route.label)}</StyledLink>
+                        <MenuItem href={route.href}>
+                            <TP>{t(route.label)}</TP>
                             <UnderLine
                                 initial={{ width: 0 }}
                                 animate={{
@@ -65,11 +65,6 @@ export const CustomerNavigation: React.FC = () => {
     );
 };
 
-const StyledLink = styled(Link)`
-    color: ${p => p.theme.text.main};
-    font-weight: 400;
-`;
-
 const UnderLine = styled(motion.div)`
     position: absolute;
     bottom: 0;
@@ -91,7 +86,7 @@ const NavigationBox = styled(Stack)`
     }
 `;
 
-const MenuItem = styled(Stack)`
+const MenuItem = styled(Link)`
     position: relative;
     border: 1px solid ${p => p.theme.gray(100)};
     padding: 1.6rem 2.4rem;

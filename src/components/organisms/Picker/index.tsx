@@ -208,10 +208,6 @@ const LocaleInList = styled(Stack)`
         width: 2rem;
         height: 2rem;
     }
-
-    &:hover {
-        background-color: ${({ theme }) => theme.background.secondary};
-    }
 `;
 
 const CurrentLocale = styled.button`

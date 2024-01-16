@@ -60,30 +60,10 @@ export const Navigation: React.FC<NavigationProps> = ({ navigation, categories }
 
     // THIS SHOULD COME FROM PLUGIN
     const entries = [
-        {
-            text: t('announcements-bar')[0],
-            href: '/collections/all',
-            bgColor: `lch(95% 0 0)`,
-            textColor: '#F8F8F8',
-        },
-        {
-            text: t('announcements-bar')[1],
-            href: '/',
-            bgColor: `lch(95% 0 0)`,
-            textColor: '#F8F8F8',
-        },
-        {
-            text: t('announcements-bar')[2],
-            href: '/',
-            bgColor: `lch(95% 0 0)`,
-            textColor: '#F8F8F8',
-        },
-        {
-            text: t('announcements-bar')[3],
-            href: '/',
-            bgColor: `lch(95% 0 0)`,
-            textColor: '#F8F8F8',
-        },
+        { text: t('announcements-bar')[0], href: '/collections/all' },
+        { text: t('announcements-bar')[1], href: '/' },
+        { text: t('announcements-bar')[2], href: '/' },
+        { text: t('announcements-bar')[3], href: '/' },
     ];
 
     return (
@@ -119,7 +99,6 @@ export const Navigation: React.FC<NavigationProps> = ({ navigation, categories }
                                 ref={iconRef}>
                                 <SearchIcon />
                             </IconButton>
-                            {/* <LanguagePicker /> */}
                             <Picker />
                             <UserMenu isLogged={isLogged} />
                             <CartDrawer activeOrder={cart} />

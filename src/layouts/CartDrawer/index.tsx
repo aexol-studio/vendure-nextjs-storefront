@@ -91,7 +91,7 @@ const CartComponentMain = styled(motion.div)`
 
     background: ${p => p.theme.gray(0)};
     border-left: 1px solid ${p => p.theme.gray(100)};
-    box-shadow: 0rem 0.2rem 1rem #69737c30;
+    box-shadow: 0rem 0.2rem 1rem ${p => p.theme.shadow};
 `;
 
 const CartContainer = styled(Stack)`

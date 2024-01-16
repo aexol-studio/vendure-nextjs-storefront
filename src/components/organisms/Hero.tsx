@@ -86,7 +86,7 @@ const StandAloneLink = styled(Link)`
 
 const Main = styled(Stack)`
     width: 100%;
-    background: #f8f8f8;
+    background: ${p => p.theme.background.ice};
     padding: 4.5rem 0;
 `;
 

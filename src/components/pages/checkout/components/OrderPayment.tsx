@@ -264,15 +264,15 @@ const StyledButton = styled.button<{ active?: boolean }>`
     gap: 3.5rem;
     align-items: center;
     justify-content: center;
-    background-color: ${p => (p.active ? '#e5e5e5' : '#fff')};
-    border: 1px solid #e5e5e5;
+    background-color: ${p => (p.active ? p.theme.background.ice : p.theme.gray(0))};
+    border: 1px solid ${p => p.theme.background.ice};
     border-radius: 0.25rem;
     padding: 1.5rem 3rem;
     cursor: pointer;
     transition: all 0.2s ease-in-out;
 
     &:hover {
-        background-color: #e5e5e5;
+        background-color: ${p => p.theme.background.ice};
     }
 `;
 

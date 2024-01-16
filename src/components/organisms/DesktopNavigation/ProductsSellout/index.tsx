@@ -1,7 +1,7 @@
 import { NavigationType } from '@/src/graphql/selectors';
 import { RootNode } from '@/src/util/arrayToTree';
 import React from 'react';
-import { Price, Stack, TP } from '@/src/components/atoms';
+import { Link, Price, Stack, TP } from '@/src/components/atoms';
 import { Slider } from '../../Slider';
 import styled from '@emotion/styled';
 import { CurrencyCode } from '@/src/zeus';
@@ -66,12 +66,14 @@ export const ProductsSellout: React.FC<{
                             </Absolute>
                         )}
                     </Relative>
-                    {val.title && (
-                        <TP size="1.5rem" weight={500}>
-                            {val.title}
-                        </TP>
-                    )}
-                    {val.price && val.currencyCode && <Price currencyCode={val.currencyCode} price={val.price} />}
+                    <Link href={val.href}>
+                        {val.title && (
+                            <TP size="1.5rem" weight={500}>
+                                {val.title}
+                            </TP>
+                        )}
+                        {val.price && val.currencyCode && <Price currencyCode={val.currencyCode} price={val.price} />}
+                    </Link>
                 </Stack>
                 <Button onClick={async () => await addToCart(val.id, 1, true)}>{addToCartLabel}</Button>
             </Slide>
@@ -104,7 +106,7 @@ const Relative = styled.div`
 `;
 
 const MaxWidth = styled.div`
-    max-width: 48rem;
+    max-width: 42rem;
 `;
 
 const Absolute = styled(Stack)`

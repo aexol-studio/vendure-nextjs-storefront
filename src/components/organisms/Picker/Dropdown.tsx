@@ -109,10 +109,11 @@ const DropdownContent = styled.div<{ maxHeight: string }>`
 `;
 
 const DropdownItem = styled.div`
-    cursor: pointer;
-    padding: 1rem;
+    width: 100%;
     &:hover {
         background-color: ${({ theme }) => theme.background.secondary};
     }
+    cursor: pointer;
+    padding: 1rem;
     transition: all 0.2s;
 `;

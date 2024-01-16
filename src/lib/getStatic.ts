@@ -10,7 +10,7 @@ export interface ContextModel<T = Record<string, string>> {
     params: { locale: string; channel: string } & T;
 }
 
-const getAllPossibleWithChannels = () => {
+export const getAllPossibleWithChannels = () => {
     const paths: { params: { locale: string; channel: string } }[] = [];
     channels.forEach(c => {
         if (c.locales.length === 0) {

@@ -1,4 +1,4 @@
-import Page, { getServerSideProps } from '@/src/pages/[locale]/checkout/payment/index.page';
+import Page, { getServerSideProps } from '@/src/pages/[channel]/checkout/payment/index.page';
 import { Redirect } from '@/src/lib/redirect';
 import React from 'react';
 import type { InferGetServerSidePropsType } from 'next';

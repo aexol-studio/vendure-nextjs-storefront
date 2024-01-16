@@ -37,8 +37,27 @@
         "province": "State / Province",
         "postalCode": "Postal Code",
         "continueToPayment": "Continue to Payment",
+        "continueShopping": "Continue Shopping",
         "regulations": "I accept the <1>regulations</1>.",
         "terms": "I accept the <1>terms and conditions</1>.",
+        "placeholders": {
+            "emailAddress": "Email Address",
+            "firstName": "First Name",
+            "lastName": "Last Name",
+            "phoneNumber": "Phone Number",
+            "phone": "Phone",
+            "fullName": "Full Name",
+            "company": "Company",
+            "streetLine1": "Address",
+            "streetLine2": "Apartment, suite, etc.",
+            "city": "City",
+            "countryCode": "Country",
+            "province": "State / Province",
+            "postalCode": "Postal Code",
+            "NIP": "NIP",
+            "password": "Password",
+            "confirmPassword": "Confirm Password"
+        },
         "errors": {
             "root": {
                 "invalid": "An errors occurred while sending the form. Please correct the errors below",
@@ -107,9 +126,9 @@
         "total": "Total",
         "quantity": "Quantity",
         "remove": "Remove",
-        "YMAL": {
-            "title": "You may also like",
-            "addToCart": "Add to cart"
+        "customerAlsoBought": {
+            "title": "Clients also bought",
+            "addToOrder": "Add to order"
         }
     },
     "deliveryMethod": {

@@ -1,0 +1,162 @@
+{
+    "home": "Zuhause",
+    "shop": "Demo Shop",
+    "title": "Hallo",
+    "search-products": "Produkte suchen",
+    "made-by": "Hergestellt von VendureAgency.com 2023",
+    "select-category": "Kategorie auswählen",
+    "sort-by": "Sortieren nach",
+    "cart": "Wagen",
+    "cart-summary": "Warenkorb Zusammenfassung",
+    "your-cart": "Dein Einkaufswagen",
+    "items": "Artikel",
+    "proceed-to-checkout": "Weiter zum Checkout",
+    "continue-shopping": "Weiter einkaufen",
+    "price": "Preis",
+    "discount": "Rabatt",
+    "shipping": "Versand",
+    "subtotal": "Zwischensumme",
+    "total": "Gesamt",
+    "coupon-code": "Code:",
+    "empty-cart": "Dein Warenkorb ist leer",
+    "remove": "entfernen",
+    "add-to-cart": "In den Warenkorb legen",
+    "buy-now": "Jetzt kaufen",
+    "featured-products": "Ausgewählte Produkte",
+    "sort-keys": { "title": "Titel", "price": "Preis" },
+    "sort-directions": { "ASC": "Aufsteigend", "DESC": "Absteigend" },
+    "stockLevel": {
+        "OUT_OF_STOCK": "Nicht auf Lager",
+        "IN_STOCK": "Vorrätig",
+        "LOW_STOCK": "🔥 Mach es schnell nur {{value}} links! 🔥",
+        "COMING_SOON": "Demnächst"
+    },
+    "commonError": "Irgendetwas war nicht in Ordnung",
+    "send": "Sende",
+    "search-results": "Suchergebnisse für:",
+    "search-results-header": "Suchergebnisse",
+    "search-results-total": "Siehe {{totalItems}} Ergebnisse für <1>{{searchQuery}}</1>",
+    "search-query-to-short": "Die Suchanfrage muss mindestens 3 Zeichen lang sein",
+    "search-results-no-results": "Keine Ergebnisse für <1>{{searchQuery}}</1>",
+    "search-results-loading": "Suchergebnisse laden...",
+    "popular-searches": ["Computer", "Tablet", "Pflanze", "Handschuhe", "Maus"],
+    "popular-searches-heading": "Beliebte Suchen",
+    "cart-empty": "Dein Warenkorb ist leer",
+    "select-options": "Bitte wähle eine Option",
+    "shipping-protection": { "title": "Versandschutz", "subtitle": "Von Schäden, Verlust und Diebstahl für {{value}}" },
+    "navigation": {
+        "manageAccount": "Konto verwalten",
+        "manageAddresses": "Adressen verwalten",
+        "manageOrders": "Aufträge verwalten",
+        "logout": "Abmelden"
+    },
+    "orderStates": {
+        "Created": "Erstellt",
+        "Draft": "Entwurf",
+        "AddingItems": "Hinzufügen von Artikeln",
+        "Cancelled": "Abgesagt",
+        "ArrangingPayment": "Zahlung arrangieren",
+        "PaymentAuthorized": "Zahlung autorisiert",
+        "PaymentSettled": "Zahlung abgewickelt",
+        "PartiallyShipped": "Teilweise verschickt",
+        "Shipped": "Versandt",
+        "PartiallyDelivered": "Teilweise geliefert",
+        "Delivered": "Geliefert",
+        "Modifying": "Ändern von",
+        "ArrangingAdditionalPayment": "Zusätzliche Zahlung"
+    },
+    "paymentStates": { "Authorized": "Autorisiert", "Settled": "Abgewickelt", "Declined": "Abgelehnt" },
+    "notifyMe": {
+        "invalidEmail": "Bitte gib eine gültige E-Mail ein",
+        "backendError": "Konnte dich nicht zur Benachrichtigungsliste hinzufügen",
+        "placeholder": "Benachrichtigen"
+    },
+    "errors": {
+        "clearErrors": "Fehler löschen",
+        "backend": {
+            "UNKNOWN_ERROR": "Unbekannter Fehler",
+            "NATIVE_AUTH_STRATEGY_ERROR": "Fehler in der nativen Authentifizierungsstrategie",
+            "INVALID_CREDENTIALS_ERROR": "Ungültige Anmeldeinformationen",
+            "ORDER_STATE_TRANSITION_ERROR": "Fehler beim Zustandsübergang bestellen",
+            "EMAIL_ADDRESS_CONFLICT_ERROR": "Fehler bei E-Mail-Adresskonflikt",
+            "GUEST_CHECKOUT_ERROR": "Fehler beim Auschecken von Gästen",
+            "ORDER_LIMIT_ERROR": "Fehler bei der Bestellgrenze",
+            "NEGATIVE_QUANTITY_ERROR": "Negativer Mengenfehler",
+            "INSUFFICIENT_STOCK_ERROR": "Unzureichender Bestand Fehler",
+            "COUPON_CODE_INVALID_ERROR": "Gutscheincode ungültig Fehler",
+            "COUPON_CODE_EXPIRED_ERROR": "Gutscheincode abgelaufener Fehler",
+            "COUPON_CODE_LIMIT_ERROR": "Fehler beim Gutscheincode-Limit",
+            "ORDER_MODIFICATION_ERROR": "Fehler bei der Auftragsänderung",
+            "INELIGIBLE_SHIPPING_METHOD_ERROR": "Fehler bei nicht zulässiger Versandmethode",
+            "NO_ACTIVE_ORDER_ERROR": "Kein aktiver Bestellfehler",
+            "ORDER_PAYMENT_STATE_ERROR": "Fehler beim Zahlungsstatus der Bestellung",
+            "INELIGIBLE_PAYMENT_METHOD_ERROR": "Fehler bei nicht zulässiger Zahlungsmethode",
+            "PAYMENT_FAILED_ERROR": "Fehler bei der Zahlung",
+            "PAYMENT_DECLINED_ERROR": "Fehler bei abgelehnter Zahlung",
+            "ALREADY_LOGGED_IN_ERROR": "Bereits eingeloggter Fehler",
+            "MISSING_PASSWORD_ERROR": "Fehler bei fehlendem Passwort",
+            "PASSWORD_VALIDATION_ERROR": "Fehler bei der Passwortüberprüfung",
+            "PASSWORD_ALREADY_SET_ERROR": "Fehler: Passwort bereits festgelegt",
+            "VERIFICATION_TOKEN_INVALID_ERROR": "Fehler bei ungültigem Verifizierungs-Token",
+            "VERIFICATION_TOKEN_EXPIRED_ERROR": "Fehler bei abgelaufenem Verifizierungs-Token",
+            "IDENTIFIER_CHANGE_TOKEN_INVALID_ERROR": "Fehler bei ungültigem Identifier Change Token",
+            "IDENTIFIER_CHANGE_TOKEN_EXPIRED_ERROR": "Identifier change token expired error",
+            "PASSWORD_RESET_TOKEN_INVALID_ERROR": "Ungültiger Fehler beim Zurücksetzen des Kennwort-Tokens",
+            "PASSWORD_RESET_TOKEN_EXPIRED_ERROR": "Kennwortrücksetzungs-Token abgelaufen",
+            "NOT_VERIFIED_ERROR": "Nicht verifizierter Fehler"
+        },
+        "stripe": {
+            "api_connection_error": "Stripe API Verbindungsfehler",
+            "api_error": "Stripe API Fehler",
+            "authentication_error": "Fehler bei der Stripe-Authentifizierung",
+            "card_error": "Fehler auf der Streifenkarte",
+            "idempotency_error": "Stripe-Idempotenz-Fehler",
+            "invalid_request_error": "Stripe Fehler bei ungültiger Anfrage",
+            "rate_limit_error": "Fehler bei der Begrenzung der Strip-Rate",
+            "validation_error": "Stripe Validierungsfehler"
+        },
+        "email": { "required": "E-Mail ist erforderlich", "invalid": "E-Mail ist ungültig" },
+        "password": {
+            "required": "Passwort ist erforderlich",
+            "minLength": "Das Passwort muss mindestens 8 Zeichen lang sein",
+            "maxLength": "Das Passwort darf nicht mehr als 25 Zeichen lang sein",
+            "mustDifferent": "Das Passwort muss sich von dem aktuellen unterscheiden"
+        },
+        "confirmPassword": {
+            "required": "Passwort bestätigen ist erforderlich",
+            "mustMatch": "Passwörter müssen übereinstimmen"
+        },
+        "firstName": { "required": "Der Vorname ist erforderlich" },
+        "lastName": { "required": "Nachname ist erforderlich" },
+        "phoneNumber": { "required": "Telefonnummer ist erforderlich" }
+    },
+    "seeAll": "Alle anzeigen",
+    "footer": {
+        "notify": {
+            "header": "Stay radiant!",
+            "paragraph": "Join our newsletter for exclusive offers & beauty tips",
+            "placeholder": "email@example.com",
+            "alert": "Notified!"
+        },
+        "sections": [
+            {
+                "header": "Skin care essentials",
+                "linksTitles": ["Face care", "Body care"]
+            },
+            {
+                "header": "Hair care & more",
+                "linksTitles": ["Scalp & hair health", "Lips moisturizing"]
+            },
+            {
+                "header": "Relaxation & renewal",
+                "linksTitles": ["Feet care", "Body treatments"]
+            }
+        ],
+        "law": ["About us", "Privacy policy", "Terms & conditions"]
+    },
+    "picker": {
+        "ship-to-country": "Ship to country",
+        "change-language": "Change language",
+        "save": "Save"
+    }
+}

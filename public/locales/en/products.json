@@ -1,0 +1,15 @@
+{
+    "add-to-cart": "Add to cart",
+    "buy-now": "Buy now",
+    "sku": "SKU",
+    "best-seller": "Best seller",
+    "description": "Product description",
+    "details": "Product details",
+    "stock-levels": {
+        "in-stock": "In stock",
+        "out-of-stock": "Out of stock",
+        "low-stock": "Make it quick only {{value}} left! 🔥"
+    },
+    "recently-viewed": "Recently viewed",
+    "clients-also-bought": "Clients also bought"
+}

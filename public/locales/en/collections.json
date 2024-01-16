@@ -1,0 +1,13 @@
+{
+    "search-results": "Search Results",
+    "filters": "Filters",
+    "sort-by": "Sort",
+    "sort-keys": {
+        "title": "Title",
+        "price": "Price"
+    },
+    "sort-directions": {
+        "ASC": "Low to High",
+        "DESC": "High to Low"
+    }
+}

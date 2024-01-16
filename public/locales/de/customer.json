@@ -1,0 +1,122 @@
+{
+    "home": "Zuhause",
+    "signIn": "Eintragen",
+    "signInTitle": "Melde dich bei deinem Konto an",
+    "signUp": "Anmelden",
+    "signUpTitle": "Ein neues Konto erstellen",
+    "signOut": "Abmelden",
+    "resetPasswordTitle": "Setze dein Passwort zurück",
+    "addressesPageTitle": "Adressen",
+    "username": "Benutzername",
+    "password": "Passwort",
+    "rememberMe": "Erinnere dich an mich",
+    "confirmPassword": "Passwort bestätigen",
+    "forgotPassword": "Passwort vergessen?",
+    "forgotPasswordTitle": "Setze dein Passwort zurück",
+    "email": "E-Mail Adresse",
+    "newPassword": "Neues Passwort",
+    "confirmNewPassword": "Bestätige das neue Passwort",
+    "resetPassword": "Passwort zurücksetzen",
+    "signUpSuccess": "Du hast dich erfolgreich angemeldet. Bitte überprüfe deine E-Mail, um dein Konto zu bestätigen.",
+    "forgotPasswordSuccess": "Wir haben dir eine E-Mail mit Anweisungen zum Zurücksetzen deines Passworts geschickt",
+    "verify": {
+        "success": "Dein Konto wurde verifiziert",
+        "fail": "Dein Konto konnte nicht verifiziert werden",
+        "title": "Überprüfe dein Konto"
+    },
+    "navigation": {
+        "manageAccount": "Konto verwalten",
+        "manageAddresses": "Adressen verwalten",
+        "manageOrders": "Aufträge verwalten",
+        "logout": "Abmelden"
+    },
+    "accountPage": {
+        "title": "Mein Konto",
+        "lastOrder": {
+            "title": "Letzte Bestellung",
+            "noOrders": "Du hast noch keine Aufträge",
+            "viewOrder": "Bestellung ansehen",
+            "totalQuantity": "Gesamtmenge",
+            "totalProducts": "Produkte insgesamt",
+            "totalPrice": "Gesamtpreis",
+            "orderCode": "Code bestellen",
+            "orderDate": "Bestelldatum"
+        },
+        "detailsForm": {
+            "title": "Konto Details",
+            "changeDetails": "Details ändern",
+            "addressEmail": "Adresse E-Mail",
+            "firstName": "Vorname",
+            "lastName": "Nachname",
+            "phoneNumber": "Rufnummer",
+            "successMessage": "Deine Kontodaten wurden erfolgreich aktualisiert"
+        },
+        "passwordForm": {
+            "title": "Passwort ändern",
+            "confirmPassword": "Passwort bestätigen",
+            "oldPassword": "Altes Passwort",
+            "newPassword": "Neues Passwort",
+            "newPasswordConfirm": "Neues Passwort bestätigen"
+        }
+    },
+    "orderPage": {
+        "title": "Bestellung",
+        "backToOrders": "Zu Meine Bestellungen gehen",
+        "orderCode": "Code bestellen",
+        "items": "Artikel",
+        "shippingAddress": "Lieferadresse",
+        "billingAddress": "Rechnungsadresse",
+        "shippingMethod": "Versandmethode",
+        "discounts": "Ermäßigungen",
+        "totalPrice": "Gesamtpreis",
+        "quantity": "Menge",
+        "customerName": "Name des Kunden",
+        "email": "E-Mail",
+        "phone": "Telefon"
+    },
+    "ordersPage": {
+        "title": "Meine Befehle",
+        "loading": "Bestellungen laden...",
+        "orderDate": "Bestelldatum",
+        "orderCode": "Code bestellen",
+        "totalQuantity": "Gesamtmenge",
+        "totalItems": "Posten insgesamt",
+        "totalPrice": "Gesamtpreis",
+        "loadMore": "Mehr laden",
+        "viewOrder": "Bestellung ansehen"
+    },
+    "addressForm": {
+        "title": "Meine Adressen",
+        "phone": "Telefon",
+        "fullName": "Vollständiger Name",
+        "company": "Unternehmen",
+        "streetLine1": "Adresse",
+        "streetLine2": "Wohnung, Suite, etc.",
+        "city": "Stadt",
+        "countryCode": "Land",
+        "province": "Bundesland/Provinz",
+        "postalCode": "Postleitzahl",
+        "defaultShippingAddress": "Standard-Lieferadresse",
+        "defaultBillingAddress": "Standard-Rechnungsadresse",
+        "cancel": "Abbrechen",
+        "update": "Adresse aktualisieren",
+        "add": "Adresse hinzufügen",
+        "edit": "Adresse bearbeiten",
+        "delete": "Adresse löschen",
+        "errors": {
+            "root": {
+                "invalid": "Beim Senden des Formulars ist ein Fehler aufgetreten. Bitte korrigiere die Fehler unten",
+                "closeButton": "Schließen"
+            },
+            "phone": { "required": "Telefon ist erforderlich" },
+            "fullName": { "required": "Vollständiger Name ist erforderlich" },
+            "company": { "required": "Unternehmen ist erforderlich" },
+            "streetLine1": { "required": "Adresse ist erforderlich" },
+            "streetLine2": { "required": "Wohnung, Suite, etc. ist erforderlich" },
+            "city": { "required": "Stadt ist erforderlich" },
+            "countryCode": { "required": "Land ist erforderlich" },
+            "province": { "required": "Bundesland/Provinz ist erforderlich" },
+            "postalCode": { "required": "Postleitzahl ist erforderlich" }
+        }
+    }
+}

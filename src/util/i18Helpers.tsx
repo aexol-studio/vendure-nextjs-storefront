@@ -1,4 +1,4 @@
-import { US, PL, FR, DE, ES, JP, NL, DK } from 'country-flag-icons/react/3x2';
+import { US, PL, FR, DE, ES, JP, NL, DK, CZ } from 'country-flag-icons/react/3x2';
 import React from 'react';
 
 export const getFlagByCode = (langCode: string | undefined, isCurrent?: boolean) => {
@@ -58,6 +58,13 @@ export const getFlagByCode = (langCode: string | undefined, isCurrent?: boolean)
                 <>
                     <DK className="no-default-fill" />
                     {!isCurrent && <p>Dansk</p>}
+                </>
+            );
+        case 'cz':
+            return (
+                <>
+                    <CZ className="no-default-fill" />
+                    {!isCurrent && <p>Czech</p>}
                 </>
             );
     }

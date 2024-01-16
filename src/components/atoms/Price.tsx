@@ -1,6 +1,6 @@
 import { Stack } from '@/src/components/atoms/Stack';
 import { BaseProps, TP } from '@/src/components/atoms/TypoGraphy';
-import { priceFormatter } from '@/src/util/priceFomatter';
+import { priceFormatter } from '@/src/util/priceFormatter';
 import { CurrencyCode } from '@/src/zeus';
 import styled from '@emotion/styled';
 

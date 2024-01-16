@@ -6,7 +6,7 @@ import { Discounts } from '@/src/components/molecules/Discounts';
 import { ActiveOrderType } from '@/src/graphql/selectors';
 import { usePush } from '@/src/lib/redirect';
 import { useCart } from '@/src/state/cart';
-import { priceFormatter } from '@/src/util/priceFomatter';
+import { priceFormatter } from '@/src/util/priceFormatter';
 import { CurrencyCode } from '@/src/zeus';
 import styled from '@emotion/styled';
 import { useTranslation } from 'next-i18next';
@@ -81,7 +81,7 @@ export const CartFooter: React.FC<Props> = ({ activeOrder, currencyCode, discoun
 
 const CartFooterWrapper = styled(Stack)<{ haveItems?: boolean }>`
     padding: 1.5rem 2rem;
-    box-shadow: 0 -0.5rem 1rem 0 ${({ theme }) => theme.shadow};
+    border-top: 1px solid ${p => p.theme.gray(100)};
     height: ${p => (p.haveItems ? '30%' : 'fit-content')};
 `;
 

@@ -36,7 +36,7 @@ export const NavigationSearch: React.FC<ReturnType<typeof useNavigationSearch>> 
                     <Input
                         onKeyDown={e => e.key === 'Escape' && closeSearch()}
                         ref={inputRef}
-                        placeholder="Search for best products"
+                        placeholder={t('search-for-best-products')}
                         value={searchQuery}
                         onChange={e => setSearchQuery(e.target.value)}
                         type="text"
@@ -100,7 +100,7 @@ export const NavigationSearch: React.FC<ReturnType<typeof useNavigationSearch>> 
                         </Wrapper>
                     )}
                     <PopularSearches popularSearches={popularSearches} onClick={item => setSearchQuery(item)}>
-                        <TypoGraphy size="2rem" weight={400} style={{ whiteSpace: 'nowrap' }}>
+                        <TypoGraphy size="2rem" weight={400} noWrap>
                             {t('popular-searches-heading')}
                         </TypoGraphy>
                     </PopularSearches>{' '}

@@ -19,6 +19,7 @@ a:hover {
 
 button,
 select {
+    font-family: inherit;
     cursor: pointer;
 }
 
@@ -80,6 +81,7 @@ html {
 
 input,
 select {
+    font-family: inherit;
     font-size: 1.6rem;
     /* turn off highlighting */
     -webkit-background-clip: text;
@@ -142,7 +144,6 @@ a {
 
   opacity: 1 !important;
 
-  font-family: 'sans' !important;
   font-size: 13px !important;
   line-height: 44px !important;
 

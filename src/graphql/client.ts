@@ -1,5 +1,6 @@
 import { GraphQLError, GraphQLResponse, Thunder, ZeusScalars, chainOptions, fetchOptions } from '@/src/zeus';
 import { GetServerSidePropsContext } from 'next';
+import { getContext } from '@/src/lib/utils';
 
 let token: string | null = typeof window !== 'undefined' ? window.localStorage.getItem('token') : null;
 
@@ -17,8 +18,6 @@ export const scalars = ZeusScalars({
     },
 });
 
-export const DEFAULT_LANGUAGE = 'en';
-export const DEFAULT_CHANNEL = 'default-channel';
 //use 'http://localhost:3000/shop-api/' in local .env file for localhost development and provide env to use on prod/dev envs
 
 export const VENDURE_HOST = `${process.env.NEXT_PUBLIC_HOST || 'https://vendure-dev.aexol.com'}/shop-api`;
@@ -65,41 +64,41 @@ const apiFetchVendure =
 
 export const VendureChain = (...options: chainOptions) => Thunder(apiFetchVendure(options));
 
-const i18nToVendure = {
-    en: 'default-channel',
-    pl: 'default-channel',
-    fr: 'default-channel',
-    de: 'default-channel',
-    ja: 'default-channel',
-    es: 'default-channel',
-    nl: 'default-channel',
-    da: 'default-channel',
-};
-
-const getChannelByLanguage = (lang: string) => i18nToVendure[lang as keyof typeof i18nToVendure] || DEFAULT_CHANNEL;
-
-export const storefrontApiQuery = (language: string, channel?: string) => {
-    const HOST = `${VENDURE_HOST}?languageCode=${language}`;
-    const properChannel = channel || getChannelByLanguage(language);
+export const storefrontApiQuery = (ctx: { locale: string; channel: string }) => {
+    const HOST = `${VENDURE_HOST}?languageCode=${ctx.locale}`;
 
     return VendureChain(HOST, {
         headers: {
             'Content-Type': 'application/json',
-            'vendure-token': properChannel,
+            'vendure-token': ctx.channel,
         },
     })('query', { scalars });
 };
 
-export const storefrontApiMutation = (language: string, channel?: string) => {
-    const HOST = `${VENDURE_HOST}?languageCode=${language}`;
-    const properChannel = channel || getChannelByLanguage(language);
+export const storefrontApiMutation = (ctx: { locale: string; channel: string }) => {
+    const HOST = `${VENDURE_HOST}?languageCode=${ctx.locale}`;
 
     return VendureChain(HOST, {
         headers: {
             'Content-Type': 'application/json',
-            'vendure-token': properChannel,
+            'vendure-token': ctx.channel,
         },
     })('mutation', { scalars });
+};
+
+export const SSGQuery = (params: { locale: string; channel: string }) => {
+    const reqParams = {
+        locale: params?.locale as string,
+        channel: params?.channel as string,
+    };
+
+    const HOST = `${VENDURE_HOST}?languageCode=${reqParams.locale}`;
+    return VendureChain(HOST, {
+        headers: {
+            'Content-Type': 'application/json',
+            'vendure-token': reqParams.channel,
+        },
+    })('query', { scalars });
 };
 
 export const SSRQuery = (context: GetServerSidePropsContext) => {
@@ -107,10 +106,12 @@ export const SSRQuery = (context: GetServerSidePropsContext) => {
         session: context.req.cookies['session'],
         'session.sig': context.req.cookies['session.sig'],
     };
-    const locale = (context.params?.locale as string) || DEFAULT_LANGUAGE;
-    const HOST = `${VENDURE_HOST}?languageCode=${locale}`;
-    const properChannel = getChannelByLanguage(locale);
 
+    const ctx = getContext(context);
+    const properChannel = ctx?.params?.channel as string;
+    const locale = ctx?.params?.locale as string;
+
+    const HOST = `${VENDURE_HOST}?languageCode=${locale}`;
     return VendureChain(HOST, {
         headers: {
             Cookie: `session=${authCookies['session']}; session.sig=${authCookies['session.sig']}`,
@@ -126,10 +127,11 @@ export const SSRMutation = (context: GetServerSidePropsContext) => {
         'session.sig': context.req.cookies['session.sig'],
     };
 
-    const locale = (context.params?.locale as string) || DEFAULT_LANGUAGE;
-    const HOST = `${VENDURE_HOST}?languageCode=${locale}`;
-    const properChannel = getChannelByLanguage(locale);
+    const ctx = getContext(context);
+    const properChannel = ctx?.params?.channel as string;
+    const locale = ctx?.params?.locale as string;
 
+    const HOST = `${VENDURE_HOST}?languageCode=${locale}`;
     return VendureChain(HOST, {
         headers: {
             Cookie: `session=${authCookies['session']}; session.sig=${authCookies['session.sig']}`,

@@ -1,5 +1,5 @@
 import { motion, AnimatePresence } from 'framer-motion';
-import { useEffect, useMemo, useRef } from 'react';
+import { useMemo, useRef } from 'react';
 import styled from '@emotion/styled';
 import { TP } from '@/src/components/atoms/TypoGraphy';
 import { Stack } from '@/src/components/atoms/Stack';
@@ -11,6 +11,7 @@ import { CurrencyCode } from '@/src/zeus';
 import { CartHeader } from './CartHeader';
 import { CartFooter } from './CartFooter';
 import { CartBody } from './CartBody';
+import { useOutsideClick } from '@/src/util/hooks/useOutsideClick';
 
 export const CartDrawer = ({ activeOrder }: { activeOrder?: ActiveOrderType }) => {
     const { isOpen, open, close } = useCart();
@@ -21,17 +22,7 @@ export const CartDrawer = ({ activeOrder }: { activeOrder?: ActiveOrderType }) =
     }, [activeOrder]);
 
     const ref = useRef<HTMLDivElement>(null);
-    useEffect(() => {
-        const handleClickOutside = (event: MouseEvent) => {
-            if (ref.current && !ref.current.contains(event.target as Node)) {
-                close();
-            }
-        };
-        document.addEventListener('mousedown', handleClickOutside);
-        return () => {
-            document.removeEventListener('mousedown', handleClickOutside);
-        };
-    }, []);
+    useOutsideClick(ref, () => close());
 
     return (
         <>
@@ -99,7 +90,8 @@ const CartComponentMain = styled(motion.div)`
     overflow-y: auto;
 
     background: ${p => p.theme.gray(0)};
-    box-shadow: 0rem 0.2rem 0.5rem ${({ theme }) => theme.shadow};
+    border-left: 1px solid ${p => p.theme.gray(100)};
+    box-shadow: 0rem 0.2rem 1rem ${p => p.theme.shadow};
 `;
 
 const CartContainer = styled(Stack)`

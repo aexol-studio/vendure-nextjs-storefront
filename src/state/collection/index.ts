@@ -4,8 +4,9 @@ import { CollectionType, FiltersFacetType, ProductSearchType, SearchSelector } f
 import { GraphQLTypes, SortOrder } from '@/src/zeus';
 import { storefrontApiQuery } from '@/src/graphql/client';
 import { useRouter } from 'next/router';
-import { PER_PAGE, collectionsEmptyState, reduceFacets } from './utils';
+import { PER_PAGE, collectionsEmptyState, prepareFilters, reduceFacets } from './utils';
 import { CollectionContainerType, Sort } from './types';
+import { useChannels } from '../channels';
 
 const useCollectionContainer = createContainer<
     CollectionContainerType,
@@ -18,10 +19,10 @@ const useCollectionContainer = createContainer<
         filters?: { [key: string]: string[] };
         sort?: Sort;
         page?: number;
-        language: string;
     }
 >(initialState => {
     if (!initialState?.collection) return collectionsEmptyState;
+    const ctx = useChannels();
     const [collection, setCollection] = useState(initialState.collection);
     const [products, setProducts] = useState(initialState.products);
     const [totalProducts, setTotalProducts] = useState(initialState.totalProducts);
@@ -29,12 +30,7 @@ const useCollectionContainer = createContainer<
     const [filters, setFilters] = useState<{ [key: string]: string[] }>(
         initialState.filters ? initialState.filters : {},
     );
-    const initialSort = initialState.sort
-        ? initialState.sort
-        : {
-              key: 'title',
-              direction: SortOrder.ASC,
-          };
+    const initialSort = initialState.sort ? initialState.sort : { key: 'title', direction: SortOrder.ASC };
     const [sort, setSort] = useState<{
         key: string;
         direction: SortOrder;
@@ -63,16 +59,8 @@ const useCollectionContainer = createContainer<
             setSort({ key, direction: direction.toUpperCase() as SortOrder });
         }
         if (query.q) setQ(query.q as string);
-        if (query && Object.keys(query).filter(k => k !== 'slug' && k !== 'locale').length) {
-            const filters: { [key: string]: string[] } = {};
-            Object.entries(query).forEach(([key, value]) => {
-                if (key === 'slug' || key === 'locale' || key === 'page' || key === 'sort' || !value) return;
-                const facetGroup = initialState.facets.find(f => f.name === key);
-                if (!facetGroup) return;
-                const facet = facetGroup.values?.find(v => v.name === value);
-                if (!facet) return;
-                filters[facetGroup.id] = [...(filters[facetGroup.id] || []), facet.id];
-            });
+        if (query && Object.keys(query).filter(k => k !== 'slug' && k !== 'locale' && k !== 'channel').length) {
+            const filters = prepareFilters(query, initialState.facets);
             let q = undefined;
             let sort = { key: 'title', direction: SortOrder.ASC };
             if (query.q) q = query.q as string;
@@ -155,7 +143,7 @@ const useCollectionContainer = createContainer<
             term: q,
         };
 
-        const { search } = await storefrontApiQuery(initialState.language)({
+        const { search } = await storefrontApiQuery(ctx)({
             search: [{ input }, SearchSelector],
         });
 

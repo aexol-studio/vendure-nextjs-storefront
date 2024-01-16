@@ -1,42 +1,159 @@
 {
-    "title": "Cześć",
+    "home": "Strona główna",
+    "shop": "Sklep demonstracyjny",
+    "title": "Witaj",
+    "search-products": "Wyszukaj produkty",
+    "made-by": "Wykonane przez VendureAgency.com 2023",
+    "select-category": "Wybierz kategorię",
+    "sort-by": "Sortuj według",
+    "cart": "Wózek",
+    "cart-summary": "Podsumowanie koszyka",
+    "your-cart": "Twój koszyk",
+    "items": "pozycje",
+    "proceed-to-checkout": "Przejdź do kasy",
+    "continue-shopping": "Kontynuuj zakupy",
+    "price": "Cena",
+    "discount": "Zniżka",
+    "shipping": "Wysyłka",
+    "subtotal": "Suma częściowa",
+    "total": "Łącznie",
+    "coupon-code": "Kod:",
+    "empty-cart": "Twój koszyk jest pusty",
+    "remove": "Usuń",
     "add-to-cart": "Dodaj do koszyka",
     "buy-now": "Kup teraz",
-    "stockLevel": { "OUT_OF_STOCK": "Brak na stanie", "IN_STOCK": "W magazynie" },
+    "featured-products": "Polecane produkty",
+    "sort-keys": { "title": "Tytuł", "price": "Cena" },
+    "sort-directions": { "ASC": "Rosnąco", "DESC": "Schodzenie" },
+    "stockLevel": {
+        "OUT_OF_STOCK": "Brak w magazynie",
+        "IN_STOCK": "W magazynie",
+        "LOW_STOCK": "Zrób to szybko tylko {{value}} zostało! 🔥",
+        "COMING_SOON": "Już wkrótce"
+    },
+    "commonError": "Coś było nie tak",
+    "send": "Wyślij",
+    "search-results": "Wyniki wyszukiwania dla:",
+    "search-results-header": "Wyniki wyszukiwania",
+    "search-results-total": "Zobacz {{totalItems}} wyniki dla <1>{{searchQuery}}</1>",
+    "search-query-to-short": "Zapytanie wyszukiwania musi zawierać co najmniej 3 znaki",
+    "search-results-no-results": "Brak wyników dla <1>{{searchQuery}}</1>",
+    "search-results-loading": "Ładowanie wyników wyszukiwania...",
+    "popular-searches": ["Komputer", "Tablet", "Roślina", "Rękawice", "Mysz"],
+    "popular-searches-heading": "Popularne wyszukiwania",
+    "cart-empty": "Twój koszyk jest pusty",
+    "select-options": "Wybierz opcję",
+    "shipping-protection": { "title": "Ochrona wysyłki", "subtitle": "Od uszkodzeń, strat i kradzieży dla {{value}}" },
+    "navigation": {
+        "manageAccount": "Zarządzaj kontem",
+        "manageAddresses": "Zarządzaj adresami",
+        "manageOrders": "Zarządzaj zamówieniami",
+        "logout": "Wyloguj się"
+    },
+    "orderStates": {
+        "Created": "Utworzony",
+        "Draft": "Wersja robocza",
+        "AddingItems": "Dodawanie elementów",
+        "Cancelled": "Anulowane",
+        "ArrangingPayment": "Organizacja płatności",
+        "PaymentAuthorized": "Autoryzowana płatność",
+        "PaymentSettled": "Płatność rozliczona",
+        "PartiallyShipped": "Częściowo wysłane",
+        "Shipped": "Wysłane",
+        "PartiallyDelivered": "Częściowo zrealizowane",
+        "Delivered": "Dostarczone",
+        "Modifying": "Modyfikowanie",
+        "ArrangingAdditionalPayment": "Dodatkowa płatność"
+    },
+    "paymentStates": { "Authorized": "Autoryzowany", "Settled": "Rozliczony", "Declined": "Odmówiono" },
     "notifyMe": {
-        "invalidEmail": "Proszę wpisać prawidłowy adres email",
-        "backendError": "Nie udało się dodać siędo notyfikacji",
+        "invalidEmail": "Wprowadź prawidłowy adres e-mail",
+        "backendError": "Nie mogę dodać Cię do listy powiadomień",
         "placeholder": "Powiadom mnie"
     },
-    "send": "Wyślij",
-    "bestOf": "Najlepsze w",
+    "errors": {
+        "clearErrors": "Usuń błędy",
+        "backend": {
+            "UNKNOWN_ERROR": "Nieznany błąd",
+            "NATIVE_AUTH_STRATEGY_ERROR": "Błąd natywnej strategii uwierzytelniania",
+            "INVALID_CREDENTIALS_ERROR": "Nieprawidłowe dane uwierzytelniające",
+            "ORDER_STATE_TRANSITION_ERROR": "Błąd zmiany stanu zamówienia",
+            "EMAIL_ADDRESS_CONFLICT_ERROR": "Błąd konfliktu adresów e-mail",
+            "GUEST_CHECKOUT_ERROR": "Błąd kasy gościa",
+            "ORDER_LIMIT_ERROR": "Błąd limitu zamówienia",
+            "NEGATIVE_QUANTITY_ERROR": "Ujemny błąd ilościowy",
+            "INSUFFICIENT_STOCK_ERROR": "Niewystarczający błąd zapasów",
+            "COUPON_CODE_INVALID_ERROR": "Błąd nieprawidłowego kodu kuponu",
+            "COUPON_CODE_EXPIRED_ERROR": "Kod kuponu wygasł błąd",
+            "COUPON_CODE_LIMIT_ERROR": "Błąd limitu kodu kuponu",
+            "ORDER_MODIFICATION_ERROR": "Błąd modyfikacji zamówienia",
+            "INELIGIBLE_SHIPPING_METHOD_ERROR": "Błąd niekwalifikującej się metody wysyłki",
+            "NO_ACTIVE_ORDER_ERROR": "Brak błędu aktywnego zamówienia",
+            "ORDER_PAYMENT_STATE_ERROR": "Błąd stanu płatności zamówienia",
+            "INELIGIBLE_PAYMENT_METHOD_ERROR": "Błąd niekwalifikującej się metody płatności",
+            "PAYMENT_FAILED_ERROR": "Błąd płatności nie powiódł się",
+            "PAYMENT_DECLINED_ERROR": "Błąd odrzucenia płatności",
+            "ALREADY_LOGGED_IN_ERROR": "Błąd już zalogowany",
+            "MISSING_PASSWORD_ERROR": "Błąd braku hasła",
+            "PASSWORD_VALIDATION_ERROR": "Błąd weryfikacji hasła",
+            "PASSWORD_ALREADY_SET_ERROR": "Błąd już ustawionego hasła",
+            "VERIFICATION_TOKEN_INVALID_ERROR": "Błąd nieprawidłowego tokena weryfikacyjnego",
+            "VERIFICATION_TOKEN_EXPIRED_ERROR": "Błąd wygaśnięcia tokena weryfikacyjnego",
+            "IDENTIFIER_CHANGE_TOKEN_INVALID_ERROR": "Błąd nieprawidłowego tokenu zmiany identyfikatora",
+            "IDENTIFIER_CHANGE_TOKEN_EXPIRED_ERROR": "Błąd wygaśnięcia tokenu zmiany identyfikatora",
+            "PASSWORD_RESET_TOKEN_INVALID_ERROR": "Błąd nieprawidłowego tokenu resetowania hasła",
+            "PASSWORD_RESET_TOKEN_EXPIRED_ERROR": "Błąd wygaśnięcia tokenu resetowania hasła",
+            "NOT_VERIFIED_ERROR": "Niezweryfikowany błąd"
+        },
+        "stripe": {
+            "api_connection_error": "Błąd połączenia API Stripe",
+            "api_error": "Błąd interfejsu API Stripe",
+            "authentication_error": "Błąd uwierzytelniania Stripe",
+            "card_error": "Błąd karty Stripe",
+            "idempotency_error": "Błąd idempotencji paska",
+            "invalid_request_error": "Błąd nieprawidłowego żądania Stripe",
+            "rate_limit_error": "Błąd limitu szybkości paska",
+            "validation_error": "Błąd walidacji Stripe"
+        },
+        "email": { "required": "Wymagany jest adres e-mail", "invalid": "Adres e-mail jest nieprawidłowy" },
+        "password": {
+            "required": "Wymagane jest hasło",
+            "minLength": "Hasło musi składać się z co najmniej 8 znaków",
+            "maxLength": "Hasło nie może mieć więcej niż 25 znaków",
+            "mustDifferent": "Hasło musi być inne niż obecne"
+        },
+        "confirmPassword": { "required": "Wymagane jest potwierdzenie hasła", "mustMatch": "Hasła muszą być zgodne" },
+        "firstName": { "required": "Imię jest wymagane" },
+        "lastName": { "required": "Nazwisko jest wymagane" },
+        "phoneNumber": { "required": "Numer telefonu jest wymagany" }
+    },
+    "seeAll": "Zobacz wszystko",
     "footer": {
+        "notify": {
+            "header": "Stay radiant!",
+            "paragraph": "Join our newsletter for exclusive offers & beauty tips",
+            "placeholder": "email@example.com",
+            "alert": "Notified!"
+        },
         "sections": [
             {
-                "header": "Bestsellery",
-                "linksTitles": ["Laptop", "Tablet", "Mysz bezprzewodowa", "Kabel USB", "Kabel Ethernet"]
+                "header": "Skin care essentials",
+                "linksTitles": ["Face care", "Body care"]
             },
             {
-                "header": "Promocje + Oferty",
-                "linksTitles": [
-                    "Poleć znajomemu i zdobądź 10%",
-                    "Zarejestruj się i zdobądź 20%",
-                    "Napisz do nas i zdobądź 25%",
-                    "Wszystkie promocje i oferty"
-                ]
+                "header": "Hair care & more",
+                "linksTitles": ["Scalp & hair health", "Lips moisturizing"]
             },
             {
-                "header": "Skontaktuj się z nami",
-                "contactInfo": [
-                    "4-500-600-44332",
-                    "Poniedziałek - Piątek: 9:00 - 20:00",
-                    "Sobota: 10:00 - 16:30",
-                    "Niedziela - ZAMKNIĘTE"
-                ]
-            },
-            { "header": "Informacje", "linksTitles": ["Konto", "Status zamówienia", "Zwroty", "FAQ", "Feedback"] },
-            { "header": "Firma", "linksTitles": ["Nasza historia", "Blog"] }
+                "header": "Relaxation & renewal",
+                "linksTitles": ["Feet care", "Body treatments"]
+            }
         ],
-        "law": ["Polityka prywatności", "Warunki użytkowania", "Polityka cookies"]
+        "law": ["About us", "Privacy policy", "Terms & conditions"]
+    },
+    "picker": {
+        "ship-to-country": "Ship to country",
+        "change-language": "Change language",
+        "save": "Save"
     }
 }

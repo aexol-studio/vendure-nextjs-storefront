@@ -5,9 +5,15 @@
  */
 module.exports = {
     // https://www.i18next.com/overview/configuration-options#logging
+    // i18n: {
+    //     defaultLocale: 'pl',
+    //     locales: ['pl', 'de', 'cz'],
+    //     returnObjects: true,
+    //     fallbackLng: 'pl',
+    // },
     i18n: {
         defaultLocale: 'en',
-        locales: ['en', 'pl', 'fr', 'de', 'ja', 'es', 'nl', 'da'],
+        locales: ['en', 'pl', 'fr', 'de', 'ja', 'es'],
         returnObjects: true,
         fallbackLng: 'en',
     },

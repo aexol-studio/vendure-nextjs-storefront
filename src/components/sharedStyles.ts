@@ -14,6 +14,7 @@ type BaseUnit =
     | 3.5
     | 4
     | 5
+    | 5.5
     | 6
     | 7
     | 8
@@ -28,6 +29,7 @@ type BaseUnit =
     | 40
     | 48
     | 64;
+
 export type BaseRemUnit = `${BaseUnit}rem`;
 
 export interface BaseFlexParams {

@@ -1,0 +1,118 @@
+{
+    "home": "Home",
+    "signIn": "Přihlásit se",
+    "signInTitle": "Přihlaste se ke svému účtu",
+    "signUp": "Zaregistrujte se",
+    "signUpTitle": "Vytvoření nového účtu",
+    "signOut": "Odhlásit se",
+    "resetPasswordTitle": "Obnovení hesla",
+    "addressesPageTitle": "Adresy",
+    "username": "Uživatelské jméno",
+    "password": "Heslo",
+    "rememberMe": "Pamatuj si mě",
+    "confirmPassword": "Potvrzení hesla",
+    "forgotPassword": "Zapomněli jste heslo?",
+    "forgotPasswordTitle": "Obnovení hesla",
+    "email": "E-mailová adresa",
+    "newPassword": "Nové heslo",
+    "confirmNewPassword": "Potvrzení nového hesla",
+    "resetPassword": "Obnovení hesla",
+    "signUpSuccess": "Úspěšně jste se zaregistrovali, zkontrolujte prosím svůj e-mail pro ověření účtu",
+    "forgotPasswordSuccess": "Zaslali jsme vám e-mail s pokyny k obnovení hesla.",
+    "verify": { "success": "Váš účet byl ověřen", "fail": "Váš účet se nepodařilo ověřit", "title": "Ověření účtu" },
+    "navigation": {
+        "manageAccount": "Správa účtu",
+        "manageAddresses": "Správa adres",
+        "manageOrders": "Správa objednávek",
+        "logout": "Odhlášení"
+    },
+    "accountPage": {
+        "title": "Můj účet",
+        "lastOrder": {
+            "title": "Poslední objednávka",
+            "noOrders": "Zatím nemáte žádné objednávky",
+            "viewOrder": "Zobrazit objednávku",
+            "totalQuantity": "Celkové množství",
+            "totalProducts": "Celkové produkty",
+            "totalPrice": "Celková cena",
+            "orderCode": "Objednací kód",
+            "orderDate": "Datum objednávky"
+        },
+        "detailsForm": {
+            "title": "Podrobnosti o účtu",
+            "changeDetails": "Změnit podrobnosti",
+            "addressEmail": "E-mailová adresa",
+            "firstName": "Křestní jméno",
+            "lastName": "Příjmení",
+            "phoneNumber": "Telefonní číslo",
+            "successMessage": "Údaje o vašem účtu byly úspěšně aktualizovány"
+        },
+        "passwordForm": {
+            "title": "Změna hesla",
+            "confirmPassword": "Potvrzení hesla",
+            "oldPassword": "Staré heslo",
+            "newPassword": "Nové heslo",
+            "newPasswordConfirm": "Potvrzení nového hesla"
+        }
+    },
+    "orderPage": {
+        "title": "Objednávka",
+        "backToOrders": "Přejít na Moje objednávky",
+        "orderCode": "Objednací kód",
+        "items": "Položky",
+        "shippingAddress": "Dodací adresa",
+        "billingAddress": "Fakturační adresa",
+        "shippingMethod": "Způsob přepravy",
+        "discounts": "Slevy",
+        "totalPrice": "Celková cena",
+        "quantity": "Množství",
+        "customerName": "Jméno zákazníka",
+        "email": "E-mail",
+        "phone": "Telefon"
+    },
+    "ordersPage": {
+        "title": "Moje objednávky",
+        "loading": "Načítání objednávek...",
+        "orderDate": "Datum objednávky",
+        "orderCode": "Objednací kód",
+        "totalQuantity": "Celkové množství",
+        "totalItems": "Položky celkem",
+        "totalPrice": "Celková cena",
+        "loadMore": "Načíst více",
+        "viewOrder": "Zobrazit objednávku"
+    },
+    "addressForm": {
+        "title": "Moje adresy",
+        "phone": "Telefon",
+        "fullName": "Celé jméno",
+        "company": "Společnost",
+        "streetLine1": "Adresa",
+        "streetLine2": "Apartmán, apartmá atd.",
+        "city": "Město",
+        "countryCode": "Země",
+        "province": "Stát / provincie",
+        "postalCode": "Poštovní směrovací číslo",
+        "defaultShippingAddress": "Výchozí dodací adresa",
+        "defaultBillingAddress": "Výchozí fakturační adresa",
+        "cancel": "Zrušit",
+        "update": "Aktualizace adresy",
+        "add": "Přidat adresu",
+        "edit": "Upravit adresu",
+        "delete": "Smazat adresu",
+        "errors": {
+            "root": {
+                "invalid": "Při odesílání formuláře došlo k chybě. Opravte prosím níže uvedené chyby",
+                "closeButton": "Zavřít"
+            },
+            "phone": { "required": "Je vyžadován telefon" },
+            "fullName": { "required": "Vyžaduje se celé jméno" },
+            "company": { "required": "Společnost je povinna" },
+            "streetLine1": { "required": "Je vyžadována adresa" },
+            "streetLine2": { "required": "Je vyžadován apartmán, apartmá apod." },
+            "city": { "required": "Město je povinno" },
+            "countryCode": { "required": "Země je vyžadována" },
+            "province": { "required": "Vyžaduje se stát / provincie" },
+            "postalCode": { "required": "Je vyžadováno poštovní směrovací číslo" }
+        }
+    }
+}

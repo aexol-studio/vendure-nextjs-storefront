@@ -1,74 +1,133 @@
 import styled from '@emotion/styled';
 import { useTranslation } from 'next-i18next';
 
-import { ContentContainer } from '@/src/components/atoms/ContentContainer';
-import { Stack } from '@/src/components/atoms/Stack';
-import { FooterSection } from '@/src/components/molecules/FooterSection';
+import { Stack, TypoGraphy, Link, NotifyFooterForm, ContentContainer } from '@/src/components/atoms';
 import { Socials } from '@/src/components/atoms/Socials';
-import { TP } from '@/src/components/atoms/TypoGraphy';
-import { Copy } from '@/src/components/atoms/Copy';
-import { Link } from '@/src/components/atoms/Link';
+import { NavigationType } from '@/src/graphql/selectors';
+import { RootNode } from '@/src/util/arrayToTree';
 
-export const Footer = () => {
+export const Footer: React.FC<{
+    navigation: RootNode<NavigationType> | null;
+}> = ({ navigation }) => {
     const { t } = useTranslation('common');
 
-    const footerSections = t('footer.sections', { returnObjects: true });
     const footerLaw = t('footer.law', { returnObjects: true });
 
     return (
-        <Main>
-            <ContentContainer>
-                <UpperPart column justifyBetween>
-                    <LinksGrid>
-                        {footerSections.map(section => (
-                            <FooterSection {...section} key={section.header} />
-                        ))}
-                    </LinksGrid>
-                    <Socials />
-                </UpperPart>
-            </ContentContainer>
-            <Rules justifyCenter>
+        <Wrapper>
+            <Main>
                 <ContentContainer>
-                    <Stack justifyBetween itemsCenter w100>
-                        <Stack gap="1rem">
+                    <Container column justifyBetween>
+                        <Stack column gap="1rem" style={{ marginRight: '4rem' }}>
+                            <Stack column>
+                                <TypoGraphy as="h2" weight={400} size="2.5rem">
+                                    {t('footer.notify.header')}
+                                </TypoGraphy>
+                                <TypoGraphy as="p" weight={400} size="1.5rem">
+                                    {t('footer.notify.paragraph')}
+                                </TypoGraphy>
+                            </Stack>
+                            <NotifyFooterForm />
+                        </Stack>
+                        <FooterSections justifyBetween>
+                            {navigation?.children
+                                .filter(c => c.slug !== 'all' && c.slug !== 'search')
+                                .map(section => {
+                                    const href =
+                                        section.parent?.slug !== '__root_collection__'
+                                            ? `/collections/${section.parent?.slug}/${section.slug}`
+                                            : `/collections/${section.slug}`;
+                                    return (
+                                        <Stack key={section.name} column>
+                                            <TypoGraphy as="h3" size="1.5rem" weight={600}>
+                                                {section.name}
+                                            </TypoGraphy>
+                                            <Stack column gap="2rem">
+                                                {section.children.map(link => (
+                                                    <Link key={link.slug} href={href}>
+                                                        {link.name}
+                                                    </Link>
+                                                ))}
+                                            </Stack>
+                                        </Stack>
+                                    );
+                                })}
+                        </FooterSections>
+                    </Container>
+                </ContentContainer>
+            </Main>
+            <LawsWrapper>
+                <ContentContainer>
+                    <Stack justifyBetween itemsCenter>
+                        <Laws>
                             {footerLaw.map(l => (
-                                <Link href="#" key={l} style={{ color: 'inherit' }}>
-                                    <TP size="1rem">{l}</TP>
+                                <Link key={l} href="#">
+                                    {l}
                                 </Link>
                             ))}
-                        </Stack>
-                        <Copy />
+                        </Laws>
+                        <Socials />
                     </Stack>
                 </ContentContainer>
-            </Rules>
-        </Main>
+            </LawsWrapper>
+        </Wrapper>
     );
 };
 
-const Main = styled.footer`
-    margin-top: 4rem;
-    border-top: 1px solid ${p => p.theme.gray(100)};
-    background-color: ${({ theme }) => theme.background.main};
-    color: ${({ theme }) => theme.gray(800)};
-    width: 100%;
-`;
-
-const LinksGrid = styled.div`
-    width: max-content;
-    gap: 2rem;
-    column-gap: 3rem;
-    display: grid;
-    grid-template-columns: auto auto auto;
-
-    @media (max-width: ${({ theme }) => theme.breakpoints.md}) {
-        grid-template-columns: auto auto;
+const Wrapper = styled.footer`
+    h2,
+    p {
+        width: max-content;
+        line-height: 3.5rem;
+    }
+    h3 {
+        margin-bottom: 3rem;
+        text-transform: uppercase;
+    }
+    a {
+        text-transform: capitalize;
+        color: ${({ theme }) => theme.text.main};
     }
 `;
-const UpperPart = styled(Stack)`
-    padding-block: 4rem;
+const Main = styled(Stack)`
+    gap: 5rem;
+    background-color: ${({ theme }) => theme.background.secondary};
 `;
 
-const Rules = styled(Stack)`
-    border-top: 1px solid ${p => p.theme.gray(100)};
-    padding-block: 2rem;
+const Container = styled(Stack)`
+    gap: 2rem;
+    padding: 3rem 0;
+    @media (min-width: ${p => p.theme.breakpoints.ssm}) {
+        padding: 13.5rem 0 14.5rem 0rem;
+    }
+    @media (min-width: ${p => p.theme.breakpoints.lg}) {
+        gap: 0;
+        flex-direction: row;
+    }
+`;
+const FooterSections = styled(Stack)`
+    > div {
+        width: min-content;
+    }
+    @media (min-width: ${p => p.theme.breakpoints.ssm}) {
+        gap: 10rem;
+        justify-content: flex-start;
+        > div {
+            width: max-content;
+        }
+    }
+    @media (min-width: ${p => p.theme.breakpoints['2xl']}) {
+        gap: 14rem;
+    }
+`;
+const LawsWrapper = styled(Stack)`
+    background: ${({ theme }) => theme.background.third};
+    padding: 3rem 0;
+`;
+
+const Laws = styled(Stack)`
+    gap: 1.5rem;
+    @media (min-width: ${p => p.theme.breakpoints.ssm}) {
+        gap: 5rem;
+    }
 `;

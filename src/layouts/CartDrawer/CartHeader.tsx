@@ -17,10 +17,10 @@ export const CartHeader: React.FC<Props> = ({ activeOrder }) => {
     const { close } = useCart();
     return (
         <CartHeaderWrapper justifyBetween itemsCenter>
-            <Stack itemsCenter gap="1.25rem">
+            <Stack itemsEnd gap="1rem">
                 <TH2>{t('your-cart')}</TH2>
                 {activeOrder?.totalQuantity ? (
-                    <TP style={{ marginTop: '0.8rem' }}>
+                    <TP style={{ marginBottom: '0.5rem' }}>
                         ({activeOrder?.lines.length} {t('items')})
                     </TP>
                 ) : null}
@@ -34,5 +34,5 @@ export const CartHeader: React.FC<Props> = ({ activeOrder }) => {
 
 const CartHeaderWrapper = styled(Stack)`
     padding: 1.5rem 2rem;
-    box-shadow: 0 0.5rem 1rem 0 ${({ theme }) => theme.shadow};
+    border-bottom: 1px solid ${p => p.theme.gray(100)};
 `;

@@ -1,7 +1,7 @@
-import React, { useEffect, useMemo, useState } from 'react';
-import { Stack, ProductImage, ImageSwitcherArrow } from '@/src/components/atoms';
+import { ProductImage, Stack } from '@/src/components/atoms';
 import styled from '@emotion/styled';
 import { ImageOff } from 'lucide-react';
+import React, { useEffect, useState } from 'react';
 type Asset = { source: string; preview: string } | undefined;
 
 interface ProductPhotosPreview {
@@ -19,23 +19,8 @@ export const ProductPhotosPreview: React.FC<ProductPhotosPreview> = ({ featuredA
         setChosenImage(featuredAsset ?? images?.[0]);
     }, [featuredAsset, images]);
 
-    const handleArrowClick = (forward?: boolean) => {
-        const chosenImageIndex = images?.findIndex(image => chosenImage?.source === image?.source);
-        if (typeof chosenImageIndex === 'undefined') return;
-        if (forward) {
-            setChosenImage(images?.[chosenImageIndex + 1]);
-            return;
-        }
-        setChosenImage(images?.[chosenImageIndex - 1]);
-    };
-
-    const chosenImageIndex = useMemo(
-        () => images?.findIndex(image => chosenImage?.source === image?.source),
-        [images, chosenImage],
-    );
-
     return (
-        <Wrapper gap="3rem">
+        <Wrapper w100 justifyBetween>
             <AssetBrowser column gap="1.75rem">
                 {images?.map(a => {
                     const isSelected = chosenImage?.source === a?.source;
@@ -54,13 +39,7 @@ export const ProductPhotosPreview: React.FC<ProductPhotosPreview> = ({ featuredA
             </AssetBrowser>
             {chosenImage ? (
                 <ProductImageContainer>
-                    <ImageSwitcherArrow handleClick={() => handleArrowClick()} disabled={chosenImageIndex === 0} />
                     <ProductImage size="detail" src={chosenImage.preview} alt={name} title={name} />
-                    <ImageSwitcherArrow
-                        handleClick={() => handleArrowClick(true)}
-                        disabled={chosenImageIndex === (images?.length ?? 1) - 1}
-                        right
-                    />
                 </ProductImageContainer>
             ) : (
                 <NoImage size="60rem" />

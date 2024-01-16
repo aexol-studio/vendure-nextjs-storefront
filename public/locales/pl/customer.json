@@ -1,0 +1,122 @@
+{
+    "home": "Strona główna",
+    "signIn": "Zaloguj się",
+    "signInTitle": "Zaloguj się na swoje konto",
+    "signUp": "Zarejestruj się",
+    "signUpTitle": "Utwórz nowe konto",
+    "signOut": "Wyloguj się",
+    "resetPasswordTitle": "Zresetuj hasło",
+    "addressesPageTitle": "Adresy",
+    "username": "Nazwa użytkownika",
+    "password": "Hasło",
+    "rememberMe": "Pamiętaj o mnie",
+    "confirmPassword": "Potwierdź hasło",
+    "forgotPassword": "Zapomniałeś hasła?",
+    "forgotPasswordTitle": "Zresetuj hasło",
+    "email": "Adres e-mail",
+    "newPassword": "Nowe hasło",
+    "confirmNewPassword": "Potwierdź nowe hasło",
+    "resetPassword": "Zresetuj hasło",
+    "signUpSuccess": "Rejestracja przebiegła pomyślnie, sprawdź swój adres e-mail, aby zweryfikować konto.",
+    "forgotPasswordSuccess": "Wysłaliśmy Ci wiadomość e-mail z instrukcjami resetowania hasła",
+    "verify": {
+        "success": "Twoje konto zostało zweryfikowane",
+        "fail": "Twoje konto nie mogło zostać zweryfikowane",
+        "title": "Zweryfikuj swoje konto"
+    },
+    "navigation": {
+        "manageAccount": "Zarządzaj kontem",
+        "manageAddresses": "Zarządzaj adresami",
+        "manageOrders": "Zarządzaj zamówieniami",
+        "logout": "Wyloguj się"
+    },
+    "accountPage": {
+        "title": "Moje konto",
+        "lastOrder": {
+            "title": "Ostatnie zamówienie",
+            "noOrders": "Nie masz jeszcze żadnych zamówień",
+            "viewOrder": "Zobacz zamówienie",
+            "totalQuantity": "Całkowita ilość",
+            "totalProducts": "Produkty ogółem",
+            "totalPrice": "Cena całkowita",
+            "orderCode": "Kod zamówienia",
+            "orderDate": "Data zamówienia"
+        },
+        "detailsForm": {
+            "title": "Szczegóły konta",
+            "changeDetails": "Zmień szczegóły",
+            "addressEmail": "Adres e-mail",
+            "firstName": "Imię",
+            "lastName": "Nazwisko",
+            "phoneNumber": "Numer telefonu",
+            "successMessage": "Dane Twojego konta zostały pomyślnie zaktualizowane"
+        },
+        "passwordForm": {
+            "title": "Zmień hasło",
+            "confirmPassword": "Potwierdź hasło",
+            "oldPassword": "Stare hasło",
+            "newPassword": "Nowe hasło",
+            "newPasswordConfirm": "Potwierdź nowe hasło"
+        }
+    },
+    "orderPage": {
+        "title": "Zamówienie",
+        "backToOrders": "Przejdź do Moich zamówień",
+        "orderCode": "Kod zamówienia",
+        "items": "Przedmioty",
+        "shippingAddress": "Adres wysyłki",
+        "billingAddress": "Adres rozliczeniowy",
+        "shippingMethod": "Metoda wysyłki",
+        "discounts": "Rabaty",
+        "totalPrice": "Cena całkowita",
+        "quantity": "Ilość",
+        "customerName": "Nazwa klienta",
+        "email": "Email",
+        "phone": "Telefon"
+    },
+    "ordersPage": {
+        "title": "Moje zamówienia",
+        "loading": "Ładowanie zamówień...",
+        "orderDate": "Data zamówienia",
+        "orderCode": "Kod zamówienia",
+        "totalQuantity": "Całkowita ilość",
+        "totalItems": "Pozycje ogółem",
+        "totalPrice": "Cena całkowita",
+        "loadMore": "Załaduj więcej",
+        "viewOrder": "Zobacz zamówienie"
+    },
+    "addressForm": {
+        "title": "Moje adresy",
+        "phone": "Telefon",
+        "fullName": "Imię i nazwisko",
+        "company": "Firma",
+        "streetLine1": "Adres",
+        "streetLine2": "Mieszkanie, apartament itp.",
+        "city": "Miasto",
+        "countryCode": "Kraj",
+        "province": "Państwo/prowincja",
+        "postalCode": "Kod pocztowy",
+        "defaultShippingAddress": "Domyślny adres wysyłki",
+        "defaultBillingAddress": "Domyślny adres rozliczeniowy",
+        "cancel": "Anuluj",
+        "update": "Zaktualizuj adres",
+        "add": "Dodaj adres",
+        "edit": "Edytuj adres",
+        "delete": "Usuń adres",
+        "errors": {
+            "root": {
+                "invalid": "Wystąpił błąd podczas wysyłania formularza. Popraw błędy poniżej",
+                "closeButton": "Zamknij"
+            },
+            "phone": { "required": "Wymagany jest telefon" },
+            "fullName": { "required": "Wymagane jest pełne imię i nazwisko" },
+            "company": { "required": "Firma jest wymagana" },
+            "streetLine1": { "required": "Adres jest wymagany" },
+            "streetLine2": { "required": "Wymagane jest mieszkanie, apartament itp." },
+            "city": { "required": "Miasto jest wymagane" },
+            "countryCode": { "required": "Wymagany jest kraj" },
+            "province": { "required": "Wymagany jest stan/prowincja" },
+            "postalCode": { "required": "Wymagany jest kod pocztowy" }
+        }
+    }
+}

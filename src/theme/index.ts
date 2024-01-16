@@ -10,11 +10,14 @@ type DetailTheme = {
     text: {
         main: string;
         inactive: string;
+        subtitle: string;
+        contrast: string;
     };
     background: {
         main: string;
         secondary: string;
         third: string;
+        ice: string;
     };
     button: {
         back: string;
@@ -117,22 +120,25 @@ export const LightTheme = createTheme(300, t => ({
         main: t.gray(0),
         secondary: t.gray(25),
         third: t.gray(50),
+        ice: '#f8f8f8',
     },
     text: {
-        main: t.gray(900),
+        main: `lch(9.72% 6.43 251.05)`,
         inactive: t.gray(200),
+        subtitle: `lch(47.82% 6.77 249.38)`,
+        contrast: t.gray(0),
     },
     button: {
-        back: t.gray(900),
+        back: '#141C23',
         front: t.gray(0),
         icon: { front: t.gray(900) },
     },
-    shadow: t.grayAlpha(200, 200),
+    shadow: `#69737c30`,
     error: '#eb1b19',
     success: '#1beb1b',
     price: {
         default: t.gray(1000),
-        discount: '#eb1a1a',
+        discount: '#FF8080',
     },
     breakpoints: {
         ssm: '576px',

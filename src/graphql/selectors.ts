@@ -1,5 +1,5 @@
 import { scalars } from '@/src/graphql/client';
-import { FromSelector, Selector } from '@/src/zeus';
+import { FromSelector, Selector, SortOrder } from '@/src/zeus';
 
 export type OrderStateType =
     | 'Created'
@@ -143,6 +143,7 @@ export const CollectionTileSelector = Selector('Collection')({
     id: true,
     slug: true,
     parentId: true,
+    parent: { slug: true },
     description: true,
     featuredAsset: {
         preview: true,
@@ -176,6 +177,7 @@ export const ProductDetailSelector = Selector('Product')({
         currencyCode: true,
         priceWithTax: true,
         stockLevel: true,
+        sku: true,
         options: {
             id: true,
             groupId: true,
@@ -183,6 +185,7 @@ export const ProductDetailSelector = Selector('Product')({
             name: true,
         },
     },
+    collections: { slug: true, name: true, parent: { slug: true } },
     featuredAsset: {
         source: true,
         preview: true,
@@ -504,3 +507,33 @@ export const YAMLProductsSelector = Selector('Product')({
 });
 
 export type YAMLProductsType = FromSelector<typeof YAMLProductsSelector, 'Product', typeof scalars>;
+
+export const productVariantTileSelector = Selector('ProductVariant')({
+    id: true,
+    name: true,
+    currencyCode: true,
+    priceWithTax: true,
+    featuredAsset: { preview: true },
+    product: {
+        collections: { slug: true, name: true, parent: { slug: true } },
+        slug: true,
+        featuredAsset: { preview: true },
+    },
+});
+
+export type ProductVariantTileType = FromSelector<typeof productVariantTileSelector, 'ProductVariant', typeof scalars>;
+
+export const homePageSlidersSelector = Selector('Collection')({
+    name: true,
+    slug: true,
+    parent: { slug: true },
+    productVariants: [
+        { options: { take: 8, sort: { priceWithTax: SortOrder.DESC } } },
+        {
+            totalItems: true,
+            items: productVariantTileSelector,
+        },
+    ],
+});
+
+export type HomePageSlidersType = FromSelector<typeof homePageSlidersSelector, 'Collection', typeof scalars>;

@@ -9,11 +9,17 @@ export const CategoryBar = ({ collections }: { collections: CollectionTileType[]
         <Main>
             <ContentContainer>
                 <Stack itemsCenter justifyBetween gap="3rem">
-                    {collections.map(c => (
-                        <Cat key={c.id} href={`/collections/${c.slug}`}>
-                            {c.name}
-                        </Cat>
-                    ))}
+                    {collections.map(c => {
+                        const href =
+                            c.parent?.slug !== '__root_collection__'
+                                ? `/collections/${c.parent?.slug}/${c.slug}`
+                                : `/collections/${c.slug}`;
+                        return (
+                            <Cat key={c.id} href={href}>
+                                {c.name}
+                            </Cat>
+                        );
+                    })}
                 </Stack>
             </ContentContainer>
         </Main>

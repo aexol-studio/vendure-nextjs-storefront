@@ -23,6 +23,7 @@ export const CustomHelmet: React.FC<{
     }
     const u = new URL((process.env.NEXT_PUBLIC_DOMAIN || 'https://shop.aexol.com') + asPath);
     const canonicalUrl = u.origin + u.pathname;
+
     let metaDescription = product?.description || collection?.description || 'Demo store made by Aexol';
     if (metaDescription.length > 160) {
         metaDescription = metaDescription.slice(0, 160 - 3) + '...';
@@ -163,7 +164,7 @@ const generateJSONLD = ({
             __html = JSON.stringify(doStoreLD());
         }
     } catch (err) {
-        console.error(err);
+        console.log(err);
     }
     return __html ? { __html } : null;
 };

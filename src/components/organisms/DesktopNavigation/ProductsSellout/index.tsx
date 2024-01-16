@@ -1,8 +1,7 @@
 import { NavigationType } from '@/src/graphql/selectors';
 import { RootNode } from '@/src/util/arrayToTree';
 import React from 'react';
-import { Price, Stack, TP } from '@/src/components/atoms';
-import { useTranslation } from 'next-i18next';
+import { Link, Price, Stack, TP } from '@/src/components/atoms';
 import { Slider } from '../../Slider';
 import styled from '@emotion/styled';
 import { CurrencyCode } from '@/src/zeus';
@@ -20,14 +19,14 @@ type SliderItem = {
     currencyCode: CurrencyCode;
 };
 
-export const ProductsSellout: React.FC<{ collection: RootNode<NavigationType>['children'][number] }> = ({
-    collection,
-}) => {
+export const ProductsSellout: React.FC<{
+    title: string;
+    addToCart: ReturnType<typeof useCart>['addToCart'];
+    addToCartLabel: string;
+    collection: RootNode<NavigationType>['children'][number];
+}> = ({ title, addToCart, addToCartLabel, collection }) => {
     if (!collection || collection?.children?.length === 0) return null;
     if (collection.children.some(child => child.productVariants?.items.length === 0)) return null;
-
-    const { addToCart } = useCart();
-    const { t } = useTranslation('common');
 
     const slides = collection.children
         .reduce((acc, children) => {
@@ -49,7 +48,7 @@ export const ProductsSellout: React.FC<{ collection: RootNode<NavigationType>['c
             return acc;
         }, [] as SliderItem[])
         .map((val, index) => (
-            <Stack w100 column key={index} gap="2rem">
+            <Slide justifyBetween column key={index} gap="2rem">
                 <Stack w100 column gap="0.5rem">
                     <Relative>
                         <ProductImageWithInfo
@@ -67,21 +66,23 @@ export const ProductsSellout: React.FC<{ collection: RootNode<NavigationType>['c
                             </Absolute>
                         )}
                     </Relative>
-                    {val.title && (
-                        <TP size="1.5rem" weight={500}>
-                            {val.title}
-                        </TP>
-                    )}
-                    {val.price && val.currencyCode && <Price currencyCode={val.currencyCode} price={val.price} />}
+                    <Link href={val.href}>
+                        {val.title && (
+                            <TP size="1.5rem" weight={500}>
+                                {val.title}
+                            </TP>
+                        )}
+                        {val.price && val.currencyCode && <Price currencyCode={val.currencyCode} price={val.price} />}
+                    </Link>
                 </Stack>
-                <Button onClick={async () => await addToCart(val.id, 1, true)}>{t('add-to-cart')}</Button>
-            </Stack>
+                <Button onClick={async () => await addToCart(val.id, 1, true)}>{addToCartLabel}</Button>
+            </Slide>
         ));
 
     return (
         <Stack column gap="1.5rem">
             <TP size="1.5rem" weight={500}>
-                {t('featured-products')}
+                {title}
             </TP>
             <MaxWidth>
                 <Slider spacing={16} withDots slides={slides} />
@@ -90,12 +91,22 @@ export const ProductsSellout: React.FC<{ collection: RootNode<NavigationType>['c
     );
 };
 
+const Slide = styled(Stack)`
+    width: 16rem;
+    height: 100%;
+
+    button {
+        width: 100%;
+        white-space: nowrap;
+    }
+`;
+
 const Relative = styled.div`
     position: relative;
 `;
 
 const MaxWidth = styled.div`
-    max-width: 48rem;
+    max-width: 42rem;
 `;
 
 const Absolute = styled(Stack)`

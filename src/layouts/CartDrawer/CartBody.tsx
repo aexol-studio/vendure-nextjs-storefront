@@ -35,7 +35,7 @@ export const CartBody: React.FC<Props> = ({ currencyCode, activeOrder }) => {
                                     />
                                     <Stack column gap="2rem">
                                         <Stack column>
-                                            <TP size="1.75rem" weight={500} style={{ whiteSpace: 'nowrap' }}>
+                                            <TP size="1.75rem" weight={500} noWrap>
                                                 {productVariant.product.name}
                                             </TP>
                                             {optionInName && (

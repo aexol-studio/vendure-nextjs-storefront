@@ -1,5 +1,5 @@
 import { LogoAexol } from '@/src/assets';
-import { ContentContainer, LanguagePicker } from '@/src/components/atoms';
+import { ContentContainer } from '@/src/components/atoms';
 import { UserMenu } from '@/src/components/molecules/UserMenu';
 
 import { Stack } from '@/src/components/atoms/Stack';
@@ -18,45 +18,20 @@ import { SearchIcon } from 'lucide-react';
 import { IconButton } from '@/src/components/molecules/Button';
 import { AnnouncementBar } from '@/src/components/organisms/AnnouncementBar';
 import { CategoryBar } from './CategoryBar';
-import { NavigationSearch } from '../components/organisms/NavgationSearch';
+import { NavigationSearch } from '@/src/components/organisms/NavgationSearch';
 import { AnimatePresence, motion } from 'framer-motion';
-import { useNavigationSearch } from '../components/organisms/NavgationSearch/hooks';
+import { useNavigationSearch } from '@/src/components/organisms/NavgationSearch/hooks';
 import { useEffect, useRef } from 'react';
+import { Picker } from '@/src/components/organisms/Picker';
+import { useTranslation } from 'next-i18next';
 
 interface NavigationProps {
     navigation: RootNode<NavigationType> | null;
     categories: CollectionTileType[];
 }
 
-// IT SHOULD BE MOVED TO VENDURE AS PLUGIN FOR EXAMPLE
-const entries = [
-    {
-        text: 'NextJS Storefront demo made by Aexol 🚀',
-        href: 'https://aexol.com',
-        bgColor: 'lch(50% 0 0)',
-        textColor: 'lch(80% 0 0)',
-        hoverTextColor: 'lch(100% 0 0)',
-        hoverBgColor: 'lch(50% 0 0)',
-    },
-    {
-        text: '🔥 BEST STORE EVER 🔥',
-        href: 'https://aexol.com',
-        bgColor: 'lch(50% 0 0)',
-        textColor: 'lch(80% 0 0)',
-        hoverTextColor: 'lch(100% 0 0)',
-        hoverBgColor: 'lch(50% 0 0)',
-    },
-    {
-        text: 'See best products here 👀',
-        href: '/collections/all',
-        bgColor: 'lch(50% 0 0)',
-        textColor: 'lch(80% 0 0)',
-        hoverTextColor: 'lch(100% 0 0)',
-        hoverBgColor: 'lch(50% 0 0)',
-    },
-];
-
 export const Navigation: React.FC<NavigationProps> = ({ navigation, categories }) => {
+    const { t } = useTranslation('common');
     const { isLogged, cart } = useCart();
     const navigationSearch = useNavigationSearch();
     const searchRef = useRef<HTMLDivElement>(null);
@@ -83,6 +58,14 @@ export const Navigation: React.FC<NavigationProps> = ({ navigation, categories }
         };
     }, []);
 
+    // THIS SHOULD COME FROM PLUGIN
+    const entries = [
+        { text: t('announcements-bar')[0], href: '/collections/all' },
+        { text: t('announcements-bar')[1], href: '/' },
+        { text: t('announcements-bar')[2], href: '/' },
+        { text: t('announcements-bar')[3], href: '/' },
+    ];
+
     return (
         <>
             <AnnouncementBar entries={entries} secondsBetween={5} />
@@ -91,7 +74,7 @@ export const Navigation: React.FC<NavigationProps> = ({ navigation, categories }
                     <Stack itemsCenter justifyBetween gap="5rem" w100>
                         <Stack itemsCenter>
                             <Link ariaLabel={'Home'} href={'/'}>
-                                <LogoAexol />
+                                <LogoAexol width={60} />
                             </Link>
                         </Stack>
                         <AnimatePresence>
@@ -116,7 +99,7 @@ export const Navigation: React.FC<NavigationProps> = ({ navigation, categories }
                                 ref={iconRef}>
                                 <SearchIcon />
                             </IconButton>
-                            <LanguagePicker />
+                            <Picker />
                             <UserMenu isLogged={isLogged} />
                             <CartDrawer activeOrder={cart} />
                         </Stack>

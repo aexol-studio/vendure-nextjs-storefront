@@ -6,32 +6,45 @@ import { NavigationType } from '@/src/graphql/selectors';
 import { NavigationLinks } from './NavigationLinks';
 import { ProductsSellout } from './ProductsSellout';
 import { RelatedCollections } from './RelatedCollections';
+import { useTranslation } from 'next-i18next';
+import { useCart } from '@/src/state/cart';
 
 interface NavProps {
     navigation: RootNode<NavigationType> | null;
 }
 
 export const DesktopNavigation: React.FC<NavProps> = ({ navigation }) => {
+    const { t } = useTranslation('common');
+    const { addToCart } = useCart();
     return (
         <DesktopStack itemsCenter gap="10rem">
             {navigation?.children.map(collection => {
+                const href =
+                    collection.parent?.slug !== '__root_collection__'
+                        ? `/collections/${collection.parent?.slug}/${collection.slug}`
+                        : `/collections/${collection.slug}`;
                 if (collection.children.length === 0) {
                     return (
-                        <Stack key={collection.name}>
-                            <StyledLink href={`/collections/${collection.slug}`}>{collection.name}</StyledLink>
-                        </Stack>
+                        <RelativeStack w100 key={collection.name}>
+                            <StyledLink href={href}>{collection.name}</StyledLink>
+                        </RelativeStack>
                     );
                 }
                 return (
                     <RelativeStack w100 key={collection.name}>
-                        <StyledLink href={`/collections/${collection.slug}`}>{collection.name}</StyledLink>
+                        <StyledLink href={href}>{collection.name}</StyledLink>
                         <AbsoluteStack w100>
                             <ContentContainer>
                                 <Background w100 justifyBetween>
                                     <NavigationLinks collection={collection} />
                                     <Stack gap="3.5rem">
-                                        <ProductsSellout collection={collection} />
-                                        <RelatedCollections collection={collection} />
+                                        <ProductsSellout
+                                            title={t('featured-products')}
+                                            addToCart={addToCart}
+                                            addToCartLabel={t('add-to-cart')}
+                                            collection={collection}
+                                        />
+                                        <RelatedCollections title={t('best-collections')} collection={collection} />
                                     </Stack>
                                 </Background>
                             </ContentContainer>
@@ -55,7 +68,7 @@ const Background = styled(Stack)`
     box-shadow: 0.1rem 0.25rem 0.2rem ${p => p.theme.shadow};
     border: 1px solid ${p => p.theme.gray(100)};
 
-    margin-top: 3.8rem;
+    margin-top: 4rem;
     padding: 2rem 2rem 10rem 2rem;
 `;
 
@@ -68,6 +81,11 @@ const RelativeStack = styled(Stack)`
     }
 
     &:hover {
+        & > a {
+            text-decoration: underline;
+            text-decoration-thickness: 0.1rem;
+            text-underline-offset: 0.5rem;
+        }
         & > div {
             opacity: 1;
             visibility: visible;

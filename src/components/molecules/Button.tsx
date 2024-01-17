@@ -1,4 +1,3 @@
-import { thv } from '@/src/theme';
 import styled from '@emotion/styled';
 import { ButtonHTMLAttributes, forwardRef } from 'react';
 import { Loader2 } from 'lucide-react';
@@ -70,15 +69,15 @@ const Loader = styled(Loader2)`
 `;
 
 export const Button = styled(_Button)`
-    background-color: ${thv.button.back};
-    color: ${thv.button.front};
+    background-color: ${({ theme }) => theme.button.back};
+    color: ${({ theme }) => theme.button.front};
     border: 0;
     border-radius: ${p => p.theme.borderRadius};
     padding: 1rem 3rem;
     font-weight: 600;
     outline: 0;
     min-width: 12rem;
-    border: 1px solid ${thv.button.back};
+    border: 1px solid ${({ theme }) => theme.button.back};
     :hover {
         color: ${p => p.theme.button.hover?.front || p.theme.button.front};
         background: ${p => p.theme.button.hover?.back || p.theme.button.back};
@@ -95,15 +94,15 @@ export const FullWidthButton = styled(Button)`
 `;
 
 export const SecondaryButton = styled(_Button)`
-    background-color: ${thv.button.front};
-    color: ${thv.button.back};
+    background-color: ${({ theme }) => theme.button.front};
+    color: ${({ theme }) => theme.button.back};
     border: 0;
     border-radius: ${p => p.theme.borderRadius};
     padding: 1rem 3rem;
     font-weight: 600;
     outline: 0;
     min-width: 12rem;
-    border: 1px solid ${thv.button.back};
+    border: 1px solid ${({ theme }) => theme.button.back};
     :hover {
         background: ${p => p.theme.gray(100)};
     }
@@ -115,7 +114,7 @@ export const FullWidthSecondaryButton = styled(SecondaryButton)`
 
 export const IconButton = styled.button<{ isActive?: boolean }>`
     position: relative;
-    color: ${thv.button.icon.front};
+    color: ${({ theme }) => theme.button.icon.front};
     border: 0;
     border-radius: 100%;
     font-weight: 600;

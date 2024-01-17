@@ -1,4 +1,3 @@
-import { thv } from '@/src/theme';
 import styled from '@emotion/styled';
 import { useTranslation } from 'next-i18next';
 
@@ -43,10 +42,10 @@ const Main = styled.div`
         /* safari */
         -webkit-appearance: none;
         /* other styles for aesthetics */
-        background-color: ${thv.background.main};
-        border: 1px solid ${thv.text.main};
+        background-color: ${({ theme }) => theme.background.main};
+        border: 1px solid ${({ theme }) => theme.text.main};
         border-radius: ${p => p.theme.borderRadius};
-        color: ${thv.text.main};
+        color: ${({ theme }) => theme.text.main};
         cursor: pointer;
         font-size: 1.25rem;
         max-width: 100%;

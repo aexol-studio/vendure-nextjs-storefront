@@ -17,7 +17,6 @@ type DetailTheme = {
         main: string;
         secondary: string;
         third: string;
-        ice: string;
     };
     button: {
         back: string;
@@ -54,9 +53,9 @@ type DetailTheme = {
     };
 };
 
-export type MainTheme = FunctionTheme & DetailTheme;
+export type MainTheme = FunctionTheme & DetailTheme & { colorsPalette: Record<string, string> };
 
-const defaultThemeFunction = (hue: number) => ({
+export const defaultThemeFunction = (hue: number) => ({
     accent: (l: Level) => `lch(${100.0 - l / 10.0}% ${l / 10.0} ${hue});`,
     gray: (g: Level) => `lch(${100.0 - g / 10.0}% 0 0);`,
     grayAlpha: (g: Level, alpha: number) => `lch(${100.0 - g / 10.0}% 0 0 / ${alpha});`,
@@ -71,7 +70,7 @@ type Gen<T> = {
     [P in keyof T]: T[P] extends string ? (emotionHtmlTheme: Emotional) => string : Gen<T[P]>;
 };
 
-const themeTransform = (t: MainTheme) => {
+export const themeTransform = (t: MainTheme) => {
     const tree = (o: Record<string, string> | Record<string, unknown>, prefix: string[] = []) => {
         Object.entries(o).forEach(([k, v]) => {
             if (typeof v === 'string') {
@@ -103,50 +102,30 @@ const themeTransform = (t: MainTheme) => {
     return deepRestCopy as Gen<DetailTheme>;
 };
 
+//TU MAMY PALETY : ZWYKŁA + DLA DANEJ KOLEKCJI
+const defaultPalette = {
+    red: '#23232',
+    blue: '#44555',
+};
+
+const childrenPalette = {
+    red: '#00000',
+    blue: '#99999',
+};
 export const createTheme = (
     hue: number,
     fn: (theme: FunctionTheme) => DetailTheme,
     themeFunction = defaultThemeFunction,
+    slug: string,
 ): MainTheme => {
     const r = themeFunction(hue);
+    //sprawdzać czy slug(który jest tablicą w app.page.tsx) zawiera daną kolekcję np /electronics
+    const colorsPalette = slug && slug.includes('electronics') ? childrenPalette : defaultPalette;
+
     return {
         ...r,
+        //zwrócić odpowiednią paletę
+        colorsPalette,
         ...fn(r),
     };
 };
-
-export const LightTheme = createTheme(300, t => ({
-    background: {
-        main: t.gray(0),
-        secondary: t.gray(25),
-        third: t.gray(50),
-        ice: '#f8f8f8',
-    },
-    text: {
-        main: `lch(9.72% 6.43 251.05)`,
-        inactive: t.gray(200),
-        subtitle: `lch(47.82% 6.77 249.38)`,
-        contrast: t.gray(0),
-    },
-    button: {
-        back: '#141C23',
-        front: t.gray(0),
-        icon: { front: t.gray(900) },
-    },
-    shadow: `#69737c30`,
-    error: '#eb1b19',
-    success: '#1beb1b',
-    price: {
-        default: t.gray(1000),
-        discount: '#FF8080',
-    },
-    breakpoints: {
-        ssm: '576px',
-        sm: '640px',
-        md: '768px',
-        lg: '1024px',
-        xl: '1280px',
-        '2xl': '1536px',
-    },
-}));
-export const thv = themeTransform(LightTheme);

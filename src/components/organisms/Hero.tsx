@@ -1,5 +1,4 @@
 import { Link, Stack, TH1, TH2, TP } from '@/src/components/atoms';
-import { thv } from '@/src/theme';
 import { optimizeImage } from '@/src/util/optimizeImage';
 import styled from '@emotion/styled';
 import { ArrowRight } from 'lucide-react';
@@ -79,7 +78,7 @@ const StandAloneLink = styled(Link)`
     align-items: center;
     gap: 1rem;
 
-    color: ${thv.text.main};
+    color: ${({ theme }) => theme.text.main};
     font-weight: 600;
     text-transform: uppercase;
 `;

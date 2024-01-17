@@ -6,11 +6,14 @@ import {
     ShippingMethodsSelector,
     homePageSlidersSelector,
 } from '@/src/graphql/selectors';
-import { makeServerSideProps, prepareSSRRedirect } from '@/src/lib/getStatic';
+import { makeServerSideProps } from '@/src/lib/getStatic';
+import { redirectFromDefaultChannelSSR, prepareSSRRedirect } from '@/src/lib/redirect';
 import { GetServerSidePropsContext } from 'next';
 
 export const getServerSideProps = async (context: GetServerSidePropsContext) => {
     const r = await makeServerSideProps(['common', 'checkout'])(context);
+    const translationRedirect = redirectFromDefaultChannelSSR(context);
+    if (translationRedirect) return translationRedirect;
 
     const homePageRedirect = prepareSSRRedirect('/')(context);
     const paymentRedirect = prepareSSRRedirect('/checkout/payment')(context);

@@ -1,12 +1,15 @@
 import { SSRQuery } from '@/src/graphql/client';
 import { ActiveCustomerSelector, ActiveOrderSelector, OrderAddressSelector } from '@/src/graphql/selectors';
 import { getCollections } from '@/src/graphql/sharedQueries';
-import { makeServerSideProps, prepareSSRRedirect } from '@/src/lib/getStatic';
+import { makeServerSideProps } from '@/src/lib/getStatic';
+import { redirectFromDefaultChannelSSR, prepareSSRRedirect } from '@/src/lib/redirect';
 import { arrayToTree } from '@/src/util/arrayToTree';
 import { GetServerSidePropsContext } from 'next';
 
 export const getServerSideProps = async (context: GetServerSidePropsContext) => {
     const r = await makeServerSideProps(['common', 'customer'])(context);
+    const translationRedirect = redirectFromDefaultChannelSSR(context);
+    if (translationRedirect) return translationRedirect;
 
     const collections = await getCollections(r.context);
     const navigation = arrayToTree(collections);

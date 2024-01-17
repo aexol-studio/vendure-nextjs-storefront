@@ -101,7 +101,8 @@ export const Picker: React.FC = () => {
             }
 
             if (!haveChannel && !haveLocale) {
-                const correctPathname = '/' + (DEFAULT_CHANNEL_SLUG + '/' + newLang) + asPath;
+                const _channel = channelAsLocale?.channel === DEFAULT_CHANNEL ? '' : channelAsLocale?.nationalLocale;
+                const correctPathname = '/' + (_channel + '/' + newLang) + asPath;
 
                 console.log(correctPathname);
                 push(correctPathname);

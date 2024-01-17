@@ -1,10 +1,12 @@
 import { useRouter } from 'next/router';
+
 import { useCallback, useEffect, useState } from 'react';
 import React from 'react';
 import languageDetector from './lngDetector';
 import styled from '@emotion/styled';
 import { Url } from 'next/dist/shared/lib/router/router';
-import { DEFAULT_CHANNEL_SLUG, channels } from './consts';
+import { DEFAULT_CHANNEL, DEFAULT_CHANNEL_SLUG, channels } from './consts';
+import { GetServerSidePropsContext } from 'next';
 
 const AppLoader = styled.div``;
 
@@ -67,6 +69,19 @@ export const getRedirect = (to?: string) => () => {
     return <AppLoader />;
 };
 
+export const redirectFromDefaultChannel = ({ children }: { children?: React.ReactNode }) => {
+    const router = useRouter();
+    useEffect(() => {
+        if (router.query.channel === DEFAULT_CHANNEL_SLUG) {
+            router.replace(router.asPath.replace(`/${DEFAULT_CHANNEL_SLUG}`, ''));
+            if (typeof window !== 'undefined') {
+                window.document.cookie = `channel=${DEFAULT_CHANNEL};`;
+            }
+        }
+    }, []);
+    return children;
+};
+
 interface TransitionOptions {
     shallow?: boolean;
     scroll?: boolean;
@@ -75,13 +90,34 @@ interface TransitionOptions {
 
 export const usePush = () => {
     const router = useRouter();
-    const channel = router.query.channel ?? DEFAULT_CHANNEL_SLUG;
-    const locale = router.query.locale ? `/${router.query.locale}` : '';
 
     return useCallback(
         (to?: string, as?: Url, options?: TransitionOptions) => {
-            router.push(`/${channel}${locale}${to}`, as, options);
+            const channel = router.query.channel
+                ? router.query.channel === DEFAULT_CHANNEL_SLUG && !router.query.locale
+                    ? ``
+                    : `/${router.query.channel}`
+                : '';
+            const locale = router.query.locale ? `/${router.query.locale}` : '';
+            router.push(`${channel}${locale}${to}`, as, options);
         },
         [router.query],
     );
+};
+
+export const prepareSSRRedirect = (where: string) => (ctx: GetServerSidePropsContext) => {
+    const channel = ctx.params?.channel;
+    const locale = ctx.params?.locale ? `/${ctx.params.locale}` : '';
+
+    const destination = `/${channel}${locale}${where}`;
+    return { redirect: { destination, permanent: false } };
+};
+
+export const redirectFromDefaultChannelSSR = (ctx: GetServerSidePropsContext) => {
+    if (ctx.params?.channel === DEFAULT_CHANNEL_SLUG && !ctx.params?.locale) {
+        // const destination = ctx.resolvedUrl.replace(`/${DEFAULT_CHANNEL_SLUG}`, '');
+        //TODO: hold it for now
+        return null;
+    }
+    return null;
 };

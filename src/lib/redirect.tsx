@@ -1,11 +1,10 @@
 import { useRouter } from 'next/router';
 
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect } from 'react';
 import React from 'react';
-import languageDetector from './lngDetector';
 import styled from '@emotion/styled';
 import { Url } from 'next/dist/shared/lib/router/router';
-import { DEFAULT_CHANNEL, DEFAULT_CHANNEL_SLUG, channels } from './consts';
+import { DEFAULT_CHANNEL, DEFAULT_CHANNEL_SLUG } from './consts';
 import { GetServerSidePropsContext } from 'next';
 
 const AppLoader = styled.div``;
@@ -13,54 +12,56 @@ const AppLoader = styled.div``;
 export const useRedirect = ({ to }: { to?: string }) => {
     const router = useRouter();
     to = to || router.asPath.replace('/[channel]', '');
-    useEffect(() => {
-        const cachedChannel = document.cookie
-            .split(';')
-            .find(c => c.trim().startsWith('channel='))
-            ?.split('=')[1];
+    console.log(to);
+    // useEffect(() => {
+    //     const cachedChannel = document.cookie
+    //         .split(';')
+    //         .find(c => c.trim().startsWith('channel='))
+    //         ?.split('=')[1];
 
-        const detectedLng = languageDetector.detect();
-        const ch = cachedChannel
-            ? channels.find(c => c.channel === cachedChannel)
-            : channels.find(c => c.slug === detectedLng);
+    //     const detectedLng = languageDetector.detect();
+    //     const ch = cachedChannel
+    //         ? channels.find(c => c.channel === cachedChannel)
+    //         : channels.find(c => c.slug === detectedLng);
 
-        const channelSlug = ch?.slug ?? DEFAULT_CHANNEL_SLUG;
-        if (channelSlug === DEFAULT_CHANNEL_SLUG) {
-            return;
-        }
-        const locale = ch?.slug === ch?.nationalLocale ? '' : `/${ch?.nationalLocale}`;
-        if (to?.startsWith('/' + channelSlug) && router.route !== '/404') {
-            router.replace('/' + channelSlug + router.route.replace('/[channel]', '').replace('/[locale]', locale));
-            return;
-        }
-        if (detectedLng && languageDetector.cache) {
-            languageDetector.cache(detectedLng);
-        }
-        router.replace('/' + channelSlug + to?.replace('/[channel]', '').replace('/[locale]', locale));
-    });
+    //     const channelSlug = ch?.slug ?? DEFAULT_CHANNEL_SLUG;
+    //     if (channelSlug === DEFAULT_CHANNEL_SLUG) {
+    //         return;
+    //     }
+    //     const locale = ch?.slug === ch?.nationalLocale ? '' : `/${ch?.nationalLocale}`;
+    //     if (to?.startsWith('/' + channelSlug) && router.route !== '/404') {
+    //         router.replace('/' + channelSlug + router.route.replace('/[channel]', '').replace('/[locale]', locale));
+    //         return;
+    //     }
+    //     if (detectedLng && languageDetector.cache) {
+    //         languageDetector.cache(detectedLng);
+    //     }
+    //     router.replace('/' + channelSlug + to?.replace('/[channel]', '').replace('/[locale]', locale));
+    // });
 };
 
 export const Redirect =
     ({ children }: { children?: React.ReactNode }) =>
     // eslint-disable-next-line react/display-name
     () => {
-        const [cookie, setCookie] = useState<string>();
-        useEffect(() => {
-            const cachedChannel = document.cookie
-                .split(';')
-                .find(c => c.trim().startsWith('channel='))
-                ?.split('=')[1];
-            setCookie(cachedChannel);
-        }, []);
-        const ch = channels.find(c => c.channel === cookie);
-        const channelSlug = ch?.slug ?? DEFAULT_CHANNEL_SLUG;
-
-        // const detectedLng = languageDetector.detect();
-        if (channelSlug === DEFAULT_CHANNEL_SLUG) {
-            return children;
-        }
-        useRedirect({});
-        return <AppLoader />;
+        return children;
+        // const [cookie, setCookie] = useState<string>();
+        // useEffect(() => {
+        //     const cachedChannel = document.cookie
+        //         .split(';')
+        //         .find(c => c.trim().startsWith('channel='))
+        //         ?.split('=')[1];
+        //     setCookie(cachedChannel);
+        // }, []);
+        // const ch = channels.find(c => c.channel === cookie);
+        // const channelSlug = ch?.slug ?? DEFAULT_CHANNEL_SLUG;
+        // console.log('tu jestem');
+        // // const detectedLng = languageDetector.detect();
+        // if (channelSlug === DEFAULT_CHANNEL_SLUG) {
+        //     return children;
+        // }
+        // useRedirect({});
+        // return <AppLoader />;
     };
 
 // eslint-disable-next-line react/display-name
@@ -75,7 +76,7 @@ export const redirectFromDefaultChannel = ({ children }: { children?: React.Reac
         if (router.query.channel === DEFAULT_CHANNEL_SLUG) {
             router.replace(router.asPath.replace(`/${DEFAULT_CHANNEL_SLUG}`, ''));
             if (typeof window !== 'undefined') {
-                window.document.cookie = `channel=${DEFAULT_CHANNEL};`;
+                window.document.cookie = `channel=${DEFAULT_CHANNEL}; path=/`;
             }
         }
     }, []);

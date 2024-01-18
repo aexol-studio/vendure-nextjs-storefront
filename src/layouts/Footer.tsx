@@ -60,7 +60,7 @@ export const Footer: React.FC<{
                 <ContentContainer>
                     <Stack justifyBetween itemsCenter>
                         <Laws>
-                            {footerLaw.map(l => (
+                            {footerLaw?.map(l => (
                                 <Link key={l} href="#">
                                     {l}
                                 </Link>

@@ -60,7 +60,6 @@ export const ProductPage: React.FC<InferGetStaticPropsType<typeof getStaticProps
         };
         fetchData();
     }, [product?.id]);
-
     return (
         <Layout categories={props.collections} navigation={props.navigation}>
             <ContentContainer>

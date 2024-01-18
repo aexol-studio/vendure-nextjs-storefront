@@ -40,7 +40,7 @@ export const Picker: React.FC = () => {
         languageDetector.cache && languageDetector.cache(newLang);
         const haveChannel = pathname.includes('[channel]');
         const haveLocale = pathname.includes('[locale]');
-        if (haveChannel) document.cookie = `channel=${channelAsLocale?.channel}`;
+        if (haveChannel) document.cookie = `channel=${channelAsLocale?.channel}; path=/`;
 
         const correctSlug = (typeof query.slug === 'string' ? query.slug : query.slug?.join('/')) as string;
         const preparedPathname = pathname
@@ -74,7 +74,12 @@ export const Picker: React.FC = () => {
                 push(correctPathname);
             }
             if (!haveChannel && !haveLocale) {
-                const _channel = channelAsLocale?.channel === DEFAULT_CHANNEL ? '' : channelAsLocale?.nationalLocale;
+                const _channel =
+                    channelAsLocale?.channel === DEFAULT_CHANNEL
+                        ? ''
+                        : channelAsLocale?.nationalLocale === channelAsLocale.slug
+                          ? ''
+                          : channelAsLocale?.nationalLocale;
                 const _newLang = newLang === DEFAULT_LOCALE ? '' : newLang;
                 const correctPathname = '/' + (_channel + '/' + _newLang) + asPath;
 
@@ -101,9 +106,15 @@ export const Picker: React.FC = () => {
             }
 
             if (!haveChannel && !haveLocale) {
-                const correctPathname = '/' + (DEFAULT_CHANNEL_SLUG + '/' + newLang) + asPath;
+                console.log(channelAsLocale);
+                const _channel =
+                    channelAsLocale?.channel === DEFAULT_CHANNEL && newLang === DEFAULT_CHANNEL_SLUG
+                        ? ''
+                        : channelAsLocale?.nationalLocale;
 
-                console.log(correctPathname);
+                const correctPathname = '/' + (_channel + '/' + newLang) + asPath;
+
+                console.log('tutaj', correctPathname);
                 push(correctPathname);
             }
         }

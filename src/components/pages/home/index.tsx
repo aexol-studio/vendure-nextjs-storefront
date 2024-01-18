@@ -24,7 +24,7 @@ export const Home: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = pr
                     desc={t('hero-p')}
                     link="/collections/all"
                     image={
-                        props.products.find(p => p.slug.includes('laptop'))?.productAsset?.preview ??
+                        props.products?.find(p => p.slug.includes('laptop'))?.productAsset?.preview ??
                         (props.products[0]?.productAsset?.preview || '')
                     }
                 />

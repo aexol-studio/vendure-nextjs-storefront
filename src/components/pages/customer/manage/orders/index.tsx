@@ -106,7 +106,7 @@ export const HistoryPage: React.FC<InferGetServerSidePropsType<typeof getServerS
                         <TP size="2.5rem" weight={600}>
                             {t('ordersPage.title')}
                         </TP>
-                        <Main column w100>
+                        <Main column w100 gap="1.5rem">
                             <Input
                                 label={t('ordersPage.searchOrder')}
                                 placeholder={t('ordersPage.lookForOrder')}
@@ -134,9 +134,7 @@ export const HistoryPage: React.FC<InferGetServerSidePropsType<typeof getServerS
     );
 };
 
-const Main = styled(Stack)`
-    padding: 1.75rem;
-`;
+const Main = styled(Stack)``;
 
 const ButtonWrap = styled(Stack)`
     padding: 1rem;

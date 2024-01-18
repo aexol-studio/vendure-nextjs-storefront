@@ -113,6 +113,10 @@ export const ProductSlugSelector = Selector('Product')({
     description: true,
     id: true,
     slug: true,
+    facetValues: {
+        name: true,
+        code: true,
+    },
 });
 
 export const ProductDetailsFacetSelector = Selector('FacetValue')({
@@ -386,7 +390,6 @@ export const OrderSelector = Selector('Order')({
     payments: paymentSelector,
     currencyCode: true,
     shippingLines: shippingLineSelector,
-
     lines: {
         id: true,
         quantity: true,

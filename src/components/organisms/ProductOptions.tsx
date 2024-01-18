@@ -18,7 +18,7 @@ export const ProductOptions: React.FC<ProductOptionsProps> = ({ productOptionsGr
                         <TP capitalize>{og.name}</TP>
                         <StyledStack gap="1rem">
                             {og.options.map((o, j) => {
-                                if (og.name.toLowerCase() === 'color') {
+                                if (og.name.includes('color') || og.name.includes('kolor')) {
                                     return (
                                         <ColorSwatch
                                             outOfStock={!(o.stockLevel > 0)}

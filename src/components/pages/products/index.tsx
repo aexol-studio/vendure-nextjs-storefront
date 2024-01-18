@@ -102,11 +102,22 @@ export const ProductPage: React.FC<InferGetStaticPropsType<typeof getStaticProps
                             </ProductInfoStack>
                             <Stack w100>
                                 {product && product.variants.length > 1 ? (
-                                    <ProductOptions
-                                        productOptionsGroups={productOptionsGroups}
-                                        handleClick={handleOptionClick}
-                                        addingError={addingError}
-                                    />
+                                    <Stack column>
+                                        <ProductOptions
+                                            productOptionsGroups={productOptionsGroups}
+                                            handleClick={handleOptionClick}
+                                            addingError={addingError}
+                                        />
+                                        <Stack>
+                                            {props.otherColors.map(x => {
+                                                return (
+                                                    <Link href={`/products/${x.handle}`} key={x.handle}>
+                                                        {x.name}
+                                                    </Link>
+                                                );
+                                            })}
+                                        </Stack>
+                                    </Stack>
                                 ) : null}
                             </Stack>
                             <Stack w100 gap="1rem" column>

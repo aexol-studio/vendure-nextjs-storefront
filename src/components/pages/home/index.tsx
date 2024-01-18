@@ -14,6 +14,7 @@ const Main = styled(Stack)`
 
 export const Home: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = props => {
     const { t } = useTranslation('homepage');
+
     return (
         <Layout navigation={props.navigation} categories={props.categories} pageTitle={t('seo.home')}>
             <Main w100 column gap="4rem">

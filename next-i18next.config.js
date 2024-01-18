@@ -13,7 +13,7 @@ module.exports = {
     // },
     i18n: {
         defaultLocale: 'en',
-        locales: ['en', 'pl', 'fr', 'de', 'ja', 'es'],
+        locales: ['en', 'pl', 'fr', 'de', 'ja', 'es', 'cs'],
         returnObjects: true,
         fallbackLng: 'en',
     },

@@ -1,10 +1,10 @@
 import { useRouter } from 'next/router';
 
-import { useCallback, useEffect } from 'react';
+import { useCallback } from 'react';
 import React from 'react';
 import styled from '@emotion/styled';
 import { Url } from 'next/dist/shared/lib/router/router';
-import { DEFAULT_CHANNEL, DEFAULT_CHANNEL_SLUG } from './consts';
+import { DEFAULT_CHANNEL_SLUG } from './consts';
 import { GetServerSidePropsContext } from 'next';
 
 const AppLoader = styled.div``;
@@ -45,6 +45,8 @@ export const Redirect =
     // eslint-disable-next-line react/display-name
     () => {
         return children;
+
+        // prev version
         // const [cookie, setCookie] = useState<string>();
         // useEffect(() => {
         //     const cachedChannel = document.cookie
@@ -55,7 +57,6 @@ export const Redirect =
         // }, []);
         // const ch = channels.find(c => c.channel === cookie);
         // const channelSlug = ch?.slug ?? DEFAULT_CHANNEL_SLUG;
-        // console.log('tu jestem');
         // // const detectedLng = languageDetector.detect();
         // if (channelSlug === DEFAULT_CHANNEL_SLUG) {
         //     return children;
@@ -68,19 +69,6 @@ export const Redirect =
 export const getRedirect = (to?: string) => () => {
     useRedirect({ to });
     return <AppLoader />;
-};
-
-export const redirectFromDefaultChannel = ({ children }: { children?: React.ReactNode }) => {
-    const router = useRouter();
-    useEffect(() => {
-        if (router.query.channel === DEFAULT_CHANNEL_SLUG) {
-            router.replace(router.asPath.replace(`/${DEFAULT_CHANNEL_SLUG}`, ''));
-            if (typeof window !== 'undefined') {
-                window.document.cookie = `channel=${DEFAULT_CHANNEL}; path=/`;
-            }
-        }
-    }, []);
-    return children;
 };
 
 interface TransitionOptions {

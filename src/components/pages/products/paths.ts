@@ -11,13 +11,25 @@ export const getStaticPaths = async () => {
             const { products } = await SSGQuery({ channel, locale: path.params.locale })({
                 products: [{}, { items: ProductSlugSelector }],
             });
-            return { ...products, ...path.params };
+
+            const items: { slug: string }[] = [];
+
+            products?.items.forEach(item => {
+                item.facetValues.forEach(facetValue => {
+                    items.push({ ...item, slug: `${item.slug}-${facetValue.name}` });
+                });
+            });
+            console.log(items);
+
+            return { items, ...path.params };
         }),
     );
     const paths = resp.flatMap(data =>
-        data.items.map(item => ({
-            params: { ...data, slug: item.slug },
-        })),
+        data.items.map(item => {
+            return { params: { ...data, slug: item.slug } };
+        }),
     );
+
+    console.log(paths);
     return { paths, fallback: false };
 };

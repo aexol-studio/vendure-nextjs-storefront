@@ -28,9 +28,14 @@ import { useTranslation } from 'next-i18next';
 interface NavigationProps {
     navigation: RootNode<NavigationType> | null;
     categories: CollectionTileType[];
+    changeModal?: {
+        modal: boolean;
+        channel: string;
+        locale: string;
+    };
 }
 
-export const Navigation: React.FC<NavigationProps> = ({ navigation, categories }) => {
+export const Navigation: React.FC<NavigationProps> = ({ navigation, categories, changeModal }) => {
     const { t } = useTranslation('common');
     const { isLogged, cart } = useCart();
     const navigationSearch = useNavigationSearch();
@@ -99,7 +104,7 @@ export const Navigation: React.FC<NavigationProps> = ({ navigation, categories }
                                 ref={iconRef}>
                                 <SearchIcon />
                             </IconButton>
-                            <Picker />
+                            <Picker changeModal={changeModal} />
                             <UserMenu isLogged={isLogged} />
                             <CartDrawer activeOrder={cart} />
                         </Stack>

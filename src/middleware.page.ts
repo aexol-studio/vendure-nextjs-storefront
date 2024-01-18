@@ -2,16 +2,21 @@ import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 import { DEFAULT_CHANNEL_SLUG, DEFAULT_LOCALE } from './lib/consts';
 
-// const LOCALES = ['en', 'pl'];
+// const getAllLocales = () => {
+//     return channels.map(i => i.locales).flat();
+// };
+
 // const getBrowserLanguage = (req: NextRequest) => {
-//     return req.headers
+//     const data = req.headers
 //         .get('accept-language')
 //         ?.split(',')
 //         .map(i => i.split(';'))
 //         ?.reduce((ac: { code: string; priority: string }[], lang) => [...ac, { code: lang[0], priority: lang[1] }], [])
-//         ?.sort((a, b) => (a.priority > b.priority ? -1 : 1))
-//         ?.find(i => LOCALES.includes(i.code.substring(0, 2)))
-//         ?.code?.substring(0, 2);
+//         ?.sort((a, b) => (a.priority > b.priority ? -1 : 1));
+//     const code = data ? data[0].code : undefined;
+//     const locales = getAllLocales();
+//     console.log(locales);
+//     return code && locales.includes(code.substring(0, 2)) ? code.substring(0, 2) : undefined;
 // };
 
 export function middleware(request: NextRequest) {
@@ -31,6 +36,7 @@ export function middleware(request: NextRequest) {
             if (!locale || (locale && locale?.length !== 2)) {
                 response.cookies.set('channel', channel, { path: '/' });
                 response.cookies.set('i18next', DEFAULT_LOCALE, { path: '/' });
+                // response.cookies.set('suggest-change', `${suggestChange}`);
                 return response;
             }
         }
@@ -41,6 +47,7 @@ export function middleware(request: NextRequest) {
     const locale = cachedLocale || DEFAULT_LOCALE;
     response.cookies.set('channel', channel, { path: '/' });
     response.cookies.set('i18next', locale, { path: '/' });
+    // response.cookies.set('suggest-change', `${suggestChange}`);
     return response;
 }
 

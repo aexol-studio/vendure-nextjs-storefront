@@ -10,19 +10,23 @@ export const getStaticProps = async (context: ContextModel<{ slug?: string }>) =
     const { slug } = context.params || {};
     const api = SSGQuery(r.context);
 
+    const slug2 = slug?.split('-')[slug?.split('-').length - 1];
+    console.log(slug2);
+
     const response =
         typeof slug === 'string'
             ? await api({
-                  product: [{ slug }, ProductDetailSelector],
+                  product: [{ slug: slug.replace(`-${slug2}`, '') }, ProductDetailSelector],
               })
             : null;
+    console.log('HERE');
     if (!response?.product) return { notFound: true };
 
     const collections = await getCollections(r.context);
     const navigation = arrayToTree(collections);
 
     const relatedProducts = await api({
-        collection: [{ slug: response.product.collections[0].slug }, homePageSlidersSelector],
+        collection: [{ slug: response.product?.collections[0]?.slug || 'search' }, homePageSlidersSelector],
     });
     const clientsAlsoBought = await api({
         collection: [{ slug: 'search' }, homePageSlidersSelector],
@@ -52,6 +56,13 @@ export const getStaticProps = async (context: ContextModel<{ slug?: string }>) =
                 }),
         };
     });
+
+    const otherColors = product.facetValues.map(fv => {
+        return {
+            ...fv,
+            handle: `${product.slug}-${fv.name}`,
+        };
+    });
     const returnedStuff = {
         ...r.props,
         ...r.context,
@@ -60,6 +71,7 @@ export const getStaticProps = async (context: ContextModel<{ slug?: string }>) =
             ...product,
             optionGroups,
         },
+        otherColors,
         collections,
         relatedProducts,
         clientsAlsoBought,

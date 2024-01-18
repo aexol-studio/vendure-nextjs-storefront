@@ -1,6 +1,6 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import styled from '@emotion/styled';
-import { Stack } from '../../atoms';
+import { Stack, TP } from '../../atoms';
 import { LogoAexol } from '@/src/assets';
 import { XIcon } from 'lucide-react';
 import { Button } from '../../molecules/Button';
@@ -19,17 +19,33 @@ type FormValues = {
     locale: string;
 };
 
-export const Picker: React.FC = () => {
+export const Picker: React.FC<{
+    changeModal?: {
+        modal: boolean;
+        channel: string;
+        locale: string;
+    };
+}> = ({ changeModal }) => {
     const { channel, locale } = useChannels();
     const { t } = useTranslation('common');
     const { query, push, pathname, asPath } = useRouter();
     const [isOpen, setIsOpen] = useState(false);
+
+    useEffect(() => {
+        if (changeModal?.modal) setIsOpen(true);
+    }, [changeModal?.modal]);
+
+    console.log(changeModal);
     const defaultChannel = channels.find(c => c.channel === channel)?.slug as string;
     const ref = useRef<HTMLDivElement>(null);
     useOutsideClick(ref, () => setIsOpen(false));
 
     const { control, handleSubmit, watch, setValue } = useForm<FormValues>({
-        defaultValues: { channel: defaultChannel, locale },
+        defaultValues: {
+            channel: defaultChannel,
+            locale,
+        },
+        values: changeModal?.modal ? { channel: changeModal.channel, locale: changeModal.locale } : undefined,
     });
 
     const onSubmit: SubmitHandler<FormValues> = data => {
@@ -130,7 +146,15 @@ export const Picker: React.FC = () => {
                         <IconWrapper onClick={() => setIsOpen(false)}>
                             <XIcon />
                         </IconWrapper>
-                        <LogoAexol />
+                        <Stack column>
+                            <LogoAexol />
+                            {changeModal?.modal ? (
+                                <TP>
+                                    Wykryliśmy że jesteś z {getFlagByCode(changeModal.channel, true)} i mówisz po{' '}
+                                    {getFlagByCode(changeModal.locale, true)}. Czy chcesz zmienić język?
+                                </TP>
+                            ) : null}
+                        </Stack>
                         <StyledForm onSubmit={handleSubmit(onSubmit)}>
                             <Controller
                                 name="channel"

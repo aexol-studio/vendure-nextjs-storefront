@@ -32,6 +32,7 @@ interface NavigationProps {
         modal: boolean;
         channel: string;
         locale: string;
+        country_name: string;
     };
 }
 

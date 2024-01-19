@@ -178,6 +178,8 @@
     "picker": {
         "ship-to-country": "Ship to country",
         "change-language": "Change language",
-        "save": "Save"
+        "save": "Save",
+        "cancel": "Cancel",
+        "detected": "We detected your location as <1>{{country}}</1>, do you want to continue with selected options?"
     }
 }

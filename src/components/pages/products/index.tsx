@@ -60,6 +60,7 @@ export const ProductPage: React.FC<InferGetStaticPropsType<typeof getStaticProps
         };
         fetchData();
     }, [product?.id]);
+
     return (
         <Layout categories={props.collections} navigation={props.navigation}>
             <ContentContainer>
@@ -102,22 +103,11 @@ export const ProductPage: React.FC<InferGetStaticPropsType<typeof getStaticProps
                             </ProductInfoStack>
                             <Stack w100>
                                 {product && product.variants.length > 1 ? (
-                                    <Stack column>
-                                        <ProductOptions
-                                            productOptionsGroups={productOptionsGroups}
-                                            handleClick={handleOptionClick}
-                                            addingError={addingError}
-                                        />
-                                        <Stack>
-                                            {props.otherColors.map(x => {
-                                                return (
-                                                    <Link href={`/products/${x.handle}`} key={x.handle}>
-                                                        {x.name}
-                                                    </Link>
-                                                );
-                                            })}
-                                        </Stack>
-                                    </Stack>
+                                    <ProductOptions
+                                        productOptionsGroups={productOptionsGroups}
+                                        handleClick={handleOptionClick}
+                                        addingError={addingError}
+                                    />
                                 ) : null}
                             </Stack>
                             <Stack w100 gap="1rem" column>

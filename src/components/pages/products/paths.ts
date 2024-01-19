@@ -11,17 +11,7 @@ export const getStaticPaths = async () => {
             const { products } = await SSGQuery({ channel, locale: path.params.locale })({
                 products: [{}, { items: ProductSlugSelector }],
             });
-
-            const items: { slug: string }[] = [];
-
-            products?.items.forEach(item => {
-                item.facetValues.forEach(facetValue => {
-                    items.push({ ...item, slug: `${item.slug}-${facetValue.name}` });
-                });
-            });
-            console.log(items);
-
-            return { items, ...path.params };
+            return { ...products, ...path.params };
         }),
     );
     const paths = resp.flatMap(data =>
@@ -30,6 +20,5 @@ export const getStaticPaths = async () => {
         }),
     );
 
-    console.log(paths);
     return { paths, fallback: false };
 };

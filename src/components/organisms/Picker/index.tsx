@@ -1,11 +1,10 @@
 import React, { useEffect, useRef, useState } from 'react';
 import styled from '@emotion/styled';
-import { Stack, TP } from '../../atoms';
+import { Stack, TP } from '@/src/components';
 import { LogoAexol } from '@/src/assets';
 import { XIcon } from 'lucide-react';
-import { Button } from '../../molecules/Button';
 import { Dropdown } from './Dropdown';
-import { useTranslation } from 'next-i18next';
+import { Trans, useTranslation } from 'next-i18next';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import { useChannels } from '@/src/state/channels';
 import languageDetector from '@/src/lib/lngDetector';
@@ -13,6 +12,7 @@ import { useRouter } from 'next/router';
 import { DEFAULT_CHANNEL, DEFAULT_CHANNEL_SLUG, DEFAULT_LOCALE, channels } from '@/src/lib/consts';
 import { getFlagByCode } from '@/src/util/i18Helpers';
 import { useOutsideClick } from '@/src/util/hooks/useOutsideClick';
+import { Button } from '../../molecules/Button';
 
 type FormValues = {
     channel: string;
@@ -24,6 +24,7 @@ export const Picker: React.FC<{
         modal: boolean;
         channel: string;
         locale: string;
+        country_name: string;
     };
 }> = ({ changeModal }) => {
     const { channel, locale } = useChannels();
@@ -35,7 +36,6 @@ export const Picker: React.FC<{
         if (changeModal?.modal) setIsOpen(true);
     }, [changeModal?.modal]);
 
-    console.log(changeModal);
     const defaultChannel = channels.find(c => c.channel === channel)?.slug as string;
     const ref = useRef<HTMLDivElement>(null);
     useOutsideClick(ref, () => setIsOpen(false));
@@ -146,15 +146,19 @@ export const Picker: React.FC<{
                         <IconWrapper onClick={() => setIsOpen(false)}>
                             <XIcon />
                         </IconWrapper>
-                        <Stack column>
+                        <Header gap="2rem" column itemsCenter>
                             <LogoAexol />
                             {changeModal?.modal ? (
                                 <TP>
-                                    Wykryliśmy że jesteś z {getFlagByCode(changeModal.channel, true)} i mówisz po{' '}
-                                    {getFlagByCode(changeModal.locale, true)}. Czy chcesz zmienić język?
+                                    <Trans
+                                        values={{ country: changeModal.country_name }}
+                                        components={{ 1: <strong></strong> }}
+                                        i18nKey="picker.detected"
+                                        t={t}
+                                    />
                                 </TP>
                             ) : null}
-                        </Stack>
+                        </Header>
                         <StyledForm onSubmit={handleSubmit(onSubmit)}>
                             <Controller
                                 name="channel"
@@ -220,7 +224,10 @@ export const Picker: React.FC<{
                                     />
                                 )}
                             />
-                            <StyledButton type="submit"> {t('picker.save')} </StyledButton>
+                            <WhiteStyledButton type="submit">{t('picker.save')} </WhiteStyledButton>
+                            <WhiteStyledButton type="button" onClick={() => setIsOpen(false)}>
+                                {t('picker.cancel')}
+                            </WhiteStyledButton>
                         </StyledForm>
                     </PickerWrapper>
                 </Overlay>
@@ -228,6 +235,11 @@ export const Picker: React.FC<{
         </>
     );
 };
+
+const Header = styled(Stack)`
+    max-width: 32rem;
+    width: 100%;
+`;
 
 const StyledForm = styled.form`
     width: 24rem;
@@ -293,9 +305,12 @@ const IconWrapper = styled.div`
     cursor: pointer;
 `;
 
-const StyledButton = styled(Button)`
+const WhiteStyledButton = styled(Button)`
     padding-block: 1.5rem;
     display: flex;
     justify-content: center;
     width: 100%;
+    background-color: ${({ theme }) => theme.background.main};
+    color: ${({ theme }) => theme.gray(1000)};
+    transition: all 0.2s ease-in-out;
 `;

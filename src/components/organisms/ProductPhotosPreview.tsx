@@ -50,8 +50,13 @@ export const ProductPhotosPreview: React.FC<ProductPhotosPreview> = ({ featuredA
 
 const Wrapper = styled(Stack)`
     flex-direction: column-reverse;
+    align-items: center;
+    justify-content: center;
+
     @media (min-width: 1024px) {
         flex-direction: row;
+        align-items: flex-start;
+        justify-content: space-between;
     }
 `;
 
@@ -70,11 +75,13 @@ const ProductImageContainer = styled.div`
 
 const AssetBrowser = styled(Stack)`
     flex-direction: row;
-    max-width: 52rem;
+    max-width: 100%;
     overflow-x: scroll;
     padding-bottom: 1rem;
+
     @media (min-width: 1024px) {
         flex-direction: column;
+        max-width: 52rem;
         max-height: 60rem;
         overflow-y: scroll;
         padding-bottom: 0;

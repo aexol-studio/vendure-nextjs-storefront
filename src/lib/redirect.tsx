@@ -9,21 +9,23 @@ import { GetServerSidePropsContext } from 'next';
 
 const AppLoader = styled.div``;
 
-export const useRedirect = ({ to }: { to?: string }) => {
-    const router = useRouter();
-    to = to || router.asPath.replace('/[channel]', '');
-    console.log(to);
+//NOTE: middleware do this
+export const useRedirect = (
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    { to }: { to?: string },
+) => {
+    // const router = useRouter();
+    // to = to || router.asPath.replace('/[channel]', '');
+    // console.log(to);
     // useEffect(() => {
     //     const cachedChannel = document.cookie
     //         .split(';')
     //         .find(c => c.trim().startsWith('channel='))
     //         ?.split('=')[1];
-
     //     const detectedLng = languageDetector.detect();
     //     const ch = cachedChannel
     //         ? channels.find(c => c.channel === cachedChannel)
     //         : channels.find(c => c.slug === detectedLng);
-
     //     const channelSlug = ch?.slug ?? DEFAULT_CHANNEL_SLUG;
     //     if (channelSlug === DEFAULT_CHANNEL_SLUG) {
     //         return;
@@ -40,6 +42,7 @@ export const useRedirect = ({ to }: { to?: string }) => {
     // });
 };
 
+//NOTE: middleware do this
 export const Redirect =
     ({ children }: { children?: React.ReactNode }) =>
     // eslint-disable-next-line react/display-name
@@ -102,11 +105,8 @@ export const prepareSSRRedirect = (where: string) => (ctx: GetServerSidePropsCon
     return { redirect: { destination, permanent: false } };
 };
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const redirectFromDefaultChannelSSR = (ctx: GetServerSidePropsContext) => {
-    if (ctx.params?.channel === DEFAULT_CHANNEL_SLUG && !ctx.params?.locale) {
-        // const destination = ctx.resolvedUrl.replace(`/${DEFAULT_CHANNEL_SLUG}`, '');
-        //TODO: hold it for now
-        return null;
-    }
+    //NOTE: middleware do this
     return null;
 };

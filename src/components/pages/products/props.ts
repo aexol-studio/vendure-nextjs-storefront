@@ -16,13 +16,14 @@ export const getStaticProps = async (context: ContextModel<{ slug?: string }>) =
                   product: [{ slug }, ProductDetailSelector],
               })
             : null;
+
     if (!response?.product) return { notFound: true };
 
     const collections = await getCollections(r.context);
     const navigation = arrayToTree(collections);
 
     const relatedProducts = await api({
-        collection: [{ slug: response.product.collections[0].slug }, homePageSlidersSelector],
+        collection: [{ slug: response.product?.collections[0]?.slug || 'search' }, homePageSlidersSelector],
     });
     const clientsAlsoBought = await api({
         collection: [{ slug: 'search' }, homePageSlidersSelector],
@@ -52,6 +53,7 @@ export const getStaticProps = async (context: ContextModel<{ slug?: string }>) =
                 }),
         };
     });
+
     const returnedStuff = {
         ...r.props,
         ...r.context,

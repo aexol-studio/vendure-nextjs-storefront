@@ -13,7 +13,7 @@ interface OrderAddressProps {
 export const OrderAddress: React.FC<OrderAddressProps> = ({ address, label, icon }) => {
     if (!address) return null;
     return (
-        <NoteCard column gap="0.5rem">
+        <NoteCard>
             <Stack gap="0.25rem" itemsCenter>
                 {icon}
                 <TP size="1.25rem" weight={500}>
@@ -38,9 +38,10 @@ export const OrderAddress: React.FC<OrderAddressProps> = ({ address, label, icon
 };
 
 const NoteCard = styled(Stack)`
-    background-color: #ffff99;
+    background-color: ${p => p.theme.noteCard};
     box-shadow: 0 0.2rem 0.5rem 0.1rem ${p => p.theme.shadow};
     padding: 2rem 1.5rem 4rem 1.5rem;
     width: 100%;
     box-sizing: border-box;
+    max-width: 25rem;
 `;

@@ -83,7 +83,7 @@ const ProductName = styled.div`
 const CategoryBlock = styled(Link)`
     padding: 1rem;
 
-    background-color: #69737c;
+    background-color: ${({ theme }) => theme.tile.background};
 
     @media (min-width: ${({ theme }) => theme.breakpoints.sm}) {
         :hover {

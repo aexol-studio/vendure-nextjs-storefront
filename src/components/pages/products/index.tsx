@@ -12,7 +12,7 @@ import { InferGetStaticPropsType } from 'next';
 
 import { Trans, useTranslation } from 'next-i18next';
 import { ProductOptions } from '@/src/components/organisms/ProductOptions';
-import { Breadcrumbs } from '@/src/components/molecules/Breadcrumbs';
+import { Breadcrumbs } from '@/src/components/molecules';
 import { useProduct } from '@/src/state/product';
 import { ProductPhotosPreview } from '@/src/components/organisms/ProductPhotosPreview';
 import { getStaticProps } from '@/src/components/pages/products/props';

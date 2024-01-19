@@ -39,7 +39,6 @@
     "search-query-to-short": "Zapytanie wyszukiwania musi zawierać co najmniej 3 znaki",
     "search-results-no-results": "Brak wyników dla <1>{{searchQuery}}</1>",
     "search-results-loading": "Ładowanie wyników wyszukiwania...",
-    "popular-searches": ["Komputer", "Tablet", "Roślina", "Rękawice", "Mysz"],
     "popular-searches-heading": "Popularne wyszukiwania",
     "cart-empty": "Twój koszyk jest pusty",
     "select-options": "Wybierz opcję",

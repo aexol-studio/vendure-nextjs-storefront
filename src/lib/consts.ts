@@ -27,4 +27,10 @@ export const channels = [
         nationalLocale: DEFAULT_NATIONAL_LOCALE,
         locales: ['en', 'pl', 'fr', 'de', 'ja', 'es'],
     },
+    // {
+    //     slug: 'pl',
+    //     channel: 'pl-channel',
+    //     nationalLocale: 'pl',
+    //     locales: ['pl', 'en'],
+    // },
 ];

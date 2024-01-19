@@ -25,7 +25,7 @@ export const OrderBox: React.FC<{ order: ActiveOrderType }> = ({ order }) => {
                                 alt={order.lines[0].productVariant.product.name}
                                 title={order.lines[0].productVariant.product.name}
                             />
-                            <Stack column>
+                            <Stack column gap="0.5rem">
                                 <Stack w100 column>
                                     <TP size="1.5rem" weight={500}>
                                         {t('ordersPage.orderDate')}:&nbsp;
@@ -40,7 +40,7 @@ export const OrderBox: React.FC<{ order: ActiveOrderType }> = ({ order }) => {
                                 </Stack>
                             </Stack>
                         </Stack>
-                        <Stack column w100>
+                        <Stack column w100 gap="0.5rem">
                             <Stack w100 itemsCenter>
                                 <TP size="1.5rem" weight={500}>
                                     {t('ordersPage.totalQuantity')}:&nbsp;
@@ -83,7 +83,8 @@ const Styled = styled(motion.div)`
 `;
 
 const ContentStack = styled(Stack)`
-    padding: 1.75rem;
+    padding: 1.75rem 1rem;
+    border: 1px solid ${({ theme }) => theme.gray(100)};
     box-shadow: 0 0 0.75rem ${({ theme }) => theme.shadow};
 `;
 
@@ -92,6 +93,6 @@ const ClickableStack = styled(Stack)`
         width: 100%;
     }
     width: 50%;
-    padding: 1rem;
+    padding: 1rem 0;
     position: relative;
 `;

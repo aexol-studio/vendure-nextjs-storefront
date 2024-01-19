@@ -12,7 +12,7 @@ import { OrderLine } from '../components/OrderLine';
 import { OrderShippingStatus } from '../components/OrderShippingStatus';
 import { OrderPaymentState } from '../components/OrderPaymentState';
 import { OrderAddress } from '../components/OrderAddress';
-import { CustomerOrderStates } from '../components/CustomerOrderStates';
+import { CustomerOrderStatus } from '../components/CustomerOrderStates';
 import { OrderCustomer } from '../components/OrderCustomer';
 import { getServerSideProps } from './props';
 import { CustomerWrap } from '../../../components/shared';
@@ -37,7 +37,7 @@ export const OrderPage: React.FC<InferGetServerSidePropsType<typeof getServerSid
                 </Stack>
                 <CustomerWrap itemsStart gap="1.75rem">
                     <Stack column w100 gap="3.5rem">
-                        <Stack column gap="1.5rem">
+                        <Stack column gap="2.5rem">
                             <StyledLink href="/customer/manage/orders">
                                 <MoveLeft size={20} />
                                 {t('orderPage.backToOrders')}
@@ -51,7 +51,7 @@ export const OrderPage: React.FC<InferGetServerSidePropsType<typeof getServerSid
                                 </Stack>
                                 <OrderPaymentState payment={paymentMethod} />
                             </Stack>
-                            <CustomerOrderStates state={order?.state} />
+                            <CustomerOrderStatus state={order?.state} />
                         </Stack>
                         <Stack w100 justifyBetween gap="2.5rem">
                             <Stack w100 column gap="2.5rem">
@@ -74,7 +74,7 @@ export const OrderPage: React.FC<InferGetServerSidePropsType<typeof getServerSid
                                     />
                                 </Stack>
                             </Stack>
-                            <Stack column w100>
+                            <Stack column>
                                 <Stack w100 column gap="2.5rem">
                                     <Stack gap="0.5rem" itemsCenter>
                                         <ShoppingCart size={'1.6rem'} />

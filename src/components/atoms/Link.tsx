@@ -1,6 +1,7 @@
 import React, { PropsWithChildren } from 'react';
 import NextLink, { LinkProps } from 'next/link';
 import { useRouter } from 'next/router';
+import { DEFAULT_CHANNEL_SLUG } from '@/src/lib/consts';
 
 const notTranslatedLinks: string[] = [];
 
@@ -28,11 +29,15 @@ export const Link: React.FC<PropsWithChildren<LinkComponentProps>> = ({
     // if (locale && !skipLocaleHandling && locale !== 'en') {
     //     linkHref = href ? `/${locale}${linkHref}` : router.pathname.replace('[locale]', locale);
     // }
-
-    if (channel && !skipLocaleHandling) {
+    const _channel = channel
+        ? channel === DEFAULT_CHANNEL_SLUG && !router.query.locale
+            ? ``
+            : `/${router.query.channel}`
+        : '';
+    if (_channel && !skipLocaleHandling) {
         linkHref = href
-            ? `/${channel}${locale ? `/${locale}` : ''}${linkHref}`
-            : router.pathname.replace('[channel]', channel).replace('/[locale]/', `/${locale}/` ?? '');
+            ? `${_channel}${locale ? `/${locale}` : ''}${linkHref}`
+            : router.pathname.replace('[channel]', _channel).replace('/[locale]/', `/${locale}/` ?? '');
     }
 
     return (

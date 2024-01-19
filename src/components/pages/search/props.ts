@@ -2,6 +2,7 @@ import { SSRQuery } from '@/src/graphql/client';
 import { CollectionSelector, FacetSelector, ProductSearchSelector } from '@/src/graphql/selectors';
 import { getCollections } from '@/src/graphql/sharedQueries';
 import { makeServerSideProps } from '@/src/lib/getStatic';
+import { redirectFromDefaultChannelSSR } from '@/src/lib/redirect';
 import { PER_PAGE, prepareFilters, reduceFacets } from '@/src/state/collection/utils';
 import { arrayToTree } from '@/src/util/arrayToTree';
 import { SortOrder, GraphQLTypes } from '@/src/zeus';
@@ -9,6 +10,8 @@ import { GetServerSidePropsContext } from 'next';
 
 export const getServerSideProps = async (context: GetServerSidePropsContext) => {
     const r = await makeServerSideProps(['common', 'collections'])(context);
+    const translationRedirect = redirectFromDefaultChannelSSR(context);
+    if (translationRedirect) return translationRedirect;
 
     const collections = await getCollections(r.context);
     const navigation = arrayToTree(collections);

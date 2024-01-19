@@ -60,7 +60,7 @@ export const Footer: React.FC<{
                 <ContentContainer>
                     <Stack justifyBetween itemsCenter>
                         <Laws>
-                            {footerLaw.map(l => (
+                            {footerLaw?.map(l => (
                                 <Link key={l} href="#">
                                     {l}
                                 </Link>
@@ -87,6 +87,10 @@ const Wrapper = styled.footer`
     a {
         text-transform: capitalize;
         color: ${({ theme }) => theme.text.main};
+        transform: opacity 0.25s ease-in-out;
+        &:hover {
+            opacity: 0.7;
+        }
     }
 `;
 const Main = styled(Stack)`

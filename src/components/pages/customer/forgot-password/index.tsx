@@ -15,6 +15,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { TP } from '@/src/components/atoms/TypoGraphy';
 import { getServerSideProps } from './props';
 import { useChannels } from '@/src/state/channels';
+import styled from '@emotion/styled';
 
 type FormValues = {
     emailAddress: string;
@@ -104,8 +105,8 @@ export const ForgotPasswordPage: React.FC<InferGetServerSidePropsType<typeof get
                                 </Button>
                             </Form>
                             <Stack column itemsCenter gap="0.5rem">
-                                <Link href="/customer/sign-in">{t('signIn')}</Link>
-                                <Link href="/customer/sign-up">{t('signUp')}</Link>
+                                <StyledLink href="/customer/sign-in">{t('signIn')}</StyledLink>
+                                <StyledLink href="/customer/sign-up">{t('signUp')}</StyledLink>
                             </Stack>
                         </FormContent>
                     </FormWrapper>
@@ -114,3 +115,14 @@ export const ForgotPasswordPage: React.FC<InferGetServerSidePropsType<typeof get
         </Layout>
     );
 };
+
+const StyledLink = styled(Link)`
+    position: relative;
+    color: ${({ theme }) => theme.text.main};
+    display: block;
+    transition: text-decoration 0.3s ease;
+
+    &:hover {
+        text-decoration: underline;
+    }
+`;

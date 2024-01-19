@@ -39,7 +39,6 @@
     "search-query-to-short": "Die Suchanfrage muss mindestens 3 Zeichen lang sein",
     "search-results-no-results": "Keine Ergebnisse für <1>{{searchQuery}}</1>",
     "search-results-loading": "Suchergebnisse laden...",
-    "popular-searches": ["Computer", "Tablet", "Pflanze", "Handschuhe", "Maus"],
     "popular-searches-heading": "Beliebte Suchen",
     "cart-empty": "Dein Warenkorb ist leer",
     "select-options": "Bitte wähle eine Option",

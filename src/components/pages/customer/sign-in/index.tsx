@@ -18,6 +18,7 @@ import { useCart } from '@/src/state/cart';
 import { Absolute, Form, FormContainer, FormContent, FormWrapper } from '../components/shared';
 import { getServerSideProps } from './props';
 import { useChannels } from '@/src/state/channels';
+import styled from '@emotion/styled';
 
 export const SignInPage: React.FC<InferGetServerSidePropsType<typeof getServerSideProps>> = props => {
     const ctx = useChannels();
@@ -107,8 +108,8 @@ export const SignInPage: React.FC<InferGetServerSidePropsType<typeof getServerSi
                                 </Button>
                             </Form>
                             <Stack column itemsCenter gap="0.5rem">
-                                <Link href="/customer/forgot-password">{t('forgotPassword')}</Link>
-                                <Link href="/customer/sign-up">{t('signUp')}</Link>
+                                <StyledLink href="/customer/forgot-password">{t('forgotPassword')}</StyledLink>
+                                <StyledLink href="/customer/sign-up">{t('signUp')}</StyledLink>
                             </Stack>
                         </FormContent>
                     </FormWrapper>
@@ -117,3 +118,14 @@ export const SignInPage: React.FC<InferGetServerSidePropsType<typeof getServerSi
         </Layout>
     );
 };
+
+const StyledLink = styled(Link)`
+    position: relative;
+    color: ${({ theme }) => theme.text.main};
+    display: block;
+    transition: text-decoration 0.3s ease;
+
+    &:hover {
+        text-decoration: underline;
+    }
+`;

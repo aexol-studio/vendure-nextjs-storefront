@@ -83,7 +83,8 @@
         "totalItems": "Pozycje ogółem",
         "totalPrice": "Cena całkowita",
         "loadMore": "Załaduj więcej",
-        "viewOrder": "Zobacz zamówienie"
+        "viewOrder": "Zobacz zamówienie",
+        "orderStatus":"Status zamówienia"
     },
     "addressForm": {
         "title": "Moje adresy",

@@ -59,7 +59,7 @@ export const AddressesPage: React.FC<InferGetServerSidePropsType<typeof getServe
                                 availableCountries={props.availableCountries}
                             />
                         </Stack>
-                        <Wrap w100 itemsCenter gap="2.5rem">
+                        <Wrap w100 itemsEnd gap="2.5rem">
                             {activeCustomer?.addresses?.map(address => (
                                 <AddressBox
                                     key={address.id}
@@ -78,7 +78,7 @@ export const AddressesPage: React.FC<InferGetServerSidePropsType<typeof getServe
 };
 
 const Wrapper = styled(Stack)`
-    justify-content: space-evenly;
+    justify-content: space-between;
     @media (max-width: ${({ theme }) => theme.breakpoints.lg}) {
         flex-direction: column-reverse;
     }
@@ -115,7 +115,7 @@ const Wrap = styled(Stack)`
 const ModalContent = styled(Stack)`
     width: fit-content;
     padding: 3.5rem;
-    background-color: white;
+    background-color: ${p => p.theme.background.white};
     border-radius: ${p => p.theme.borderRadius};
 `;
 
@@ -131,5 +131,5 @@ const Modal = styled(motion.div)`
     justify-content: center;
     align-items: center;
 
-    background-color: rgba(0, 0, 0, 0.5);
+    background-color: ${p => p.theme.background.modal};
 `;

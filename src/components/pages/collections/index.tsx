@@ -5,7 +5,7 @@ import { Filter, X } from 'lucide-react';
 import { InferGetStaticPropsType } from 'next';
 import { useTranslation } from 'next-i18next';
 import { ContentContainer, Stack, TP, TH1, MainGrid } from '@/src/components/atoms';
-import { Breadcrumbs } from '@/src/components/molecules/Breadcrumbs';
+import { Breadcrumbs } from '@/src/components/molecules';
 import { IconButton } from '@/src/components/molecules/Button';
 import { FacetFilterCheckbox } from '@/src/components/molecules/FacetFilter';
 import { Pagination } from '@/src/components/molecules/Pagination';

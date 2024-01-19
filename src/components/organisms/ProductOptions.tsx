@@ -18,7 +18,7 @@ export const ProductOptions: React.FC<ProductOptionsProps> = ({ productOptionsGr
                         <TP capitalize>{og.name}</TP>
                         <StyledStack gap="1rem">
                             {og.options.map((o, j) => {
-                                if (og.name.toLowerCase() === 'color') {
+                                if (og.name.includes('color') || og.name.includes('kolor')) {
                                     return (
                                         <ColorSwatch
                                             outOfStock={!(o.stockLevel > 0)}
@@ -74,7 +74,7 @@ const VariantButton = styled.button`
 const ColorSwatch = styled(VariantButton)<{ color: string; outOfStock: boolean; selected: boolean }>`
     width: 3rem;
     background-color: ${p => p.color};
-    outline: 1px solid #dcdcdc;
+    outline: 1px solid ${p => p.theme.outline};
     height: 3rem;
     cursor: pointer;
     ${p => p.outOfStock && `opacity: 0.5;`}

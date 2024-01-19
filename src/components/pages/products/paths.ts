@@ -15,9 +15,10 @@ export const getStaticPaths = async () => {
         }),
     );
     const paths = resp.flatMap(data =>
-        data.items.map(item => ({
-            params: { ...data, slug: item.slug },
-        })),
+        data.items.map(item => {
+            return { params: { ...data, slug: item.slug } };
+        }),
     );
+
     return { paths, fallback: false };
 };

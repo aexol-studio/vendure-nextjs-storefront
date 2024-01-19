@@ -1,11 +1,10 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import styled from '@emotion/styled';
-import { Stack } from '../../atoms';
+import { Stack, TP } from '@/src/components';
 import { LogoAexol } from '@/src/assets';
 import { XIcon } from 'lucide-react';
-import { Button } from '../../molecules/Button';
 import { Dropdown } from './Dropdown';
-import { useTranslation } from 'next-i18next';
+import { Trans, useTranslation } from 'next-i18next';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import { useChannels } from '@/src/state/channels';
 import languageDetector from '@/src/lib/lngDetector';
@@ -13,23 +12,40 @@ import { useRouter } from 'next/router';
 import { DEFAULT_CHANNEL, DEFAULT_CHANNEL_SLUG, DEFAULT_LOCALE, channels } from '@/src/lib/consts';
 import { getFlagByCode } from '@/src/util/i18Helpers';
 import { useOutsideClick } from '@/src/util/hooks/useOutsideClick';
+import { Button } from '../../molecules/Button';
 
 type FormValues = {
     channel: string;
     locale: string;
 };
 
-export const Picker: React.FC = () => {
+export const Picker: React.FC<{
+    changeModal?: {
+        modal: boolean;
+        channel: string;
+        locale: string;
+        country_name: string;
+    };
+}> = ({ changeModal }) => {
     const { channel, locale } = useChannels();
     const { t } = useTranslation('common');
     const { query, push, pathname, asPath } = useRouter();
     const [isOpen, setIsOpen] = useState(false);
+
+    useEffect(() => {
+        if (changeModal?.modal) setIsOpen(true);
+    }, [changeModal?.modal]);
+
     const defaultChannel = channels.find(c => c.channel === channel)?.slug as string;
     const ref = useRef<HTMLDivElement>(null);
     useOutsideClick(ref, () => setIsOpen(false));
 
     const { control, handleSubmit, watch, setValue } = useForm<FormValues>({
-        defaultValues: { channel: defaultChannel, locale },
+        defaultValues: {
+            channel: defaultChannel,
+            locale,
+        },
+        values: changeModal?.modal ? { channel: changeModal.channel, locale: changeModal.locale } : undefined,
     });
 
     const onSubmit: SubmitHandler<FormValues> = data => {
@@ -40,7 +56,7 @@ export const Picker: React.FC = () => {
         languageDetector.cache && languageDetector.cache(newLang);
         const haveChannel = pathname.includes('[channel]');
         const haveLocale = pathname.includes('[locale]');
-        if (haveChannel) document.cookie = `channel=${channelAsLocale?.channel}`;
+        if (haveChannel) document.cookie = `channel=${channelAsLocale?.channel}; path=/`;
 
         const correctSlug = (typeof query.slug === 'string' ? query.slug : query.slug?.join('/')) as string;
         const preparedPathname = pathname
@@ -74,7 +90,12 @@ export const Picker: React.FC = () => {
                 push(correctPathname);
             }
             if (!haveChannel && !haveLocale) {
-                const _channel = channelAsLocale?.channel === DEFAULT_CHANNEL ? '' : channelAsLocale?.nationalLocale;
+                const _channel =
+                    channelAsLocale?.channel === DEFAULT_CHANNEL
+                        ? ''
+                        : channelAsLocale?.nationalLocale === channelAsLocale.slug
+                          ? ''
+                          : channelAsLocale?.nationalLocale;
                 const _newLang = newLang === DEFAULT_LOCALE ? '' : newLang;
                 const correctPathname = '/' + (_channel + '/' + _newLang) + asPath;
 
@@ -101,9 +122,15 @@ export const Picker: React.FC = () => {
             }
 
             if (!haveChannel && !haveLocale) {
-                const correctPathname = '/' + (DEFAULT_CHANNEL_SLUG + '/' + newLang) + asPath;
+                console.log(channelAsLocale);
+                const _channel =
+                    channelAsLocale?.channel === DEFAULT_CHANNEL && newLang === DEFAULT_CHANNEL_SLUG
+                        ? ''
+                        : channelAsLocale?.nationalLocale;
 
-                console.log(correctPathname);
+                const correctPathname = '/' + (_channel + '/' + newLang) + asPath;
+
+                console.log('tutaj', correctPathname);
                 push(correctPathname);
             }
         }
@@ -119,7 +146,19 @@ export const Picker: React.FC = () => {
                         <IconWrapper onClick={() => setIsOpen(false)}>
                             <XIcon />
                         </IconWrapper>
-                        <LogoAexol />
+                        <Header gap="2rem" column itemsCenter>
+                            <LogoAexol />
+                            {changeModal?.modal ? (
+                                <TP>
+                                    <Trans
+                                        values={{ country: changeModal.country_name }}
+                                        components={{ 1: <strong></strong> }}
+                                        i18nKey="picker.detected"
+                                        t={t}
+                                    />
+                                </TP>
+                            ) : null}
+                        </Header>
                         <StyledForm onSubmit={handleSubmit(onSubmit)}>
                             <Controller
                                 name="channel"
@@ -185,7 +224,10 @@ export const Picker: React.FC = () => {
                                     />
                                 )}
                             />
-                            <StyledButton type="submit"> {t('picker.save')} </StyledButton>
+                            <WhiteStyledButton type="submit">{t('picker.save')} </WhiteStyledButton>
+                            <WhiteStyledButton type="button" onClick={() => setIsOpen(false)}>
+                                {t('picker.cancel')}
+                            </WhiteStyledButton>
                         </StyledForm>
                     </PickerWrapper>
                 </Overlay>
@@ -193,6 +235,11 @@ export const Picker: React.FC = () => {
         </>
     );
 };
+
+const Header = styled(Stack)`
+    max-width: 32rem;
+    width: 100%;
+`;
 
 const StyledForm = styled.form`
     width: 24rem;
@@ -258,9 +305,15 @@ const IconWrapper = styled.div`
     cursor: pointer;
 `;
 
-const StyledButton = styled(Button)`
-    padding-block: 1.5rem;
+const WhiteStyledButton = styled(Button)`
     display: flex;
     justify-content: center;
     width: 100%;
+    background-color: ${({ theme }) => theme.background.main};
+    color: ${({ theme }) => theme.gray(1000)};
+    transition: all 0.2s ease-in-out;
+
+    @media (min-width: ${({ theme }) => theme.breakpoints.lg}) {
+        padding-block: 1.5rem;
+    }
 `;

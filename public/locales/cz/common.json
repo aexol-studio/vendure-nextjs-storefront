@@ -39,7 +39,6 @@
     "search-query-to-short": "Vyhledávací dotaz musí být dlouhý alespoň 3 znaky.",
     "search-results-no-results": "Žádné výsledky pro <1>{{searchQuery}}</1>",
     "search-results-loading": "Načítání výsledků hledání...",
-    "popular-searches": ["Počítač", "Tablet", "Rostlina", "Rukavice", "Myš"],
     "popular-searches-heading": "Oblíbená vyhledávání",
     "cart-empty": "Váš košík je prázdný",
     "select-options": "Vyberte prosím možnosti",

@@ -45,7 +45,6 @@
     "search-query-to-short": "Search query must be at least 3 characters long",
     "search-results-no-results": "No results for <1>{{searchQuery}}</1>",
     "search-results-loading": "Loading search results...",
-    "popular-searches": ["Computer", "Tablet", "Plant", "Gloves", "Mouse"],
     "popular-searches-heading": "Popular searches",
     "cart-empty": "Your cart is empty",
     "select-options": "Please select an options",
@@ -81,7 +80,7 @@
     },
     "notifyMe": {
         "invalidEmail": "Please enter valid email",
-        "backendError": "Couldnt't add you to notify list",
+        "backendError": "Couldn't subscribe you, please try again later",
         "placeholder": "Notify me"
     },
     "errors": {
@@ -117,16 +116,6 @@
             "PASSWORD_RESET_TOKEN_INVALID_ERROR": "Password reset token invalid error",
             "PASSWORD_RESET_TOKEN_EXPIRED_ERROR": "Password reset token expired error",
             "NOT_VERIFIED_ERROR": "Not verified error"
-        },
-        "stripe": {
-            "api_connection_error": "Stripe API connection error",
-            "api_error": "Stripe API error",
-            "authentication_error": "Stripe authentication error",
-            "card_error": "Stripe card error",
-            "idempotency_error": "Stripe idempotency error",
-            "invalid_request_error": "Stripe invalid request error",
-            "rate_limit_error": "Stripe rate limit error",
-            "validation_error": "Stripe validation error"
         },
         "email": {
             "required": "Email is required",

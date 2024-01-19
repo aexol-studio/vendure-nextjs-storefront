@@ -4,12 +4,11 @@ import { useCallback } from 'react';
 import React from 'react';
 import styled from '@emotion/styled';
 import { Url } from 'next/dist/shared/lib/router/router';
-import { DEFAULT_CHANNEL_SLUG } from './consts';
 import { GetServerSidePropsContext } from 'next';
 
 const AppLoader = styled.div``;
 
-//NOTE: middleware do this
+//NOTE: middleware do this (keep it in emergency)
 export const useRedirect = (
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     { to }: { to?: string },
@@ -42,7 +41,7 @@ export const useRedirect = (
     // });
 };
 
-//NOTE: middleware do this
+//NOTE: middleware do this (keep it in emergency)
 export const Redirect =
     ({ children }: { children?: React.ReactNode }) =>
     // eslint-disable-next-line react/display-name
@@ -85,11 +84,9 @@ export const usePush = () => {
 
     return useCallback(
         (to?: string, as?: Url, options?: TransitionOptions) => {
-            const channel = router.query.channel
-                ? router.query.channel === DEFAULT_CHANNEL_SLUG && !router.query.locale
-                    ? ``
-                    : `/${router.query.channel}`
-                : '';
+            //VERIFY: router.query.channel === DEFAULT_CHANNEL_SLUG this case should not exist because of middleware
+
+            const channel = router.query.channel ? `/${router.query.channel}` : '';
             const locale = router.query.locale ? `/${router.query.locale}` : '';
             router.push(`${channel}${locale}${to}`, as, options);
         },
@@ -98,15 +95,15 @@ export const usePush = () => {
 };
 
 export const prepareSSRRedirect = (where: string) => (ctx: GetServerSidePropsContext) => {
-    const channel = ctx.params?.channel;
+    const channel = ctx.params?.channel ? `/${ctx.params.channel}` : '';
     const locale = ctx.params?.locale ? `/${ctx.params.locale}` : '';
 
-    const destination = `/${channel}${locale}${where}`;
+    const destination = `${channel}${locale}${where}`;
     return { redirect: { destination, permanent: false } };
 };
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const redirectFromDefaultChannelSSR = (ctx: GetServerSidePropsContext) => {
-    //NOTE: middleware do this
+    //NOTE: middleware do this (keep it in emergency)
     return null;
 };

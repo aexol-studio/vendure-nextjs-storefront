@@ -17,7 +17,7 @@ export const NavigationSearch: React.FC<ReturnType<typeof useNavigationSearch>> 
     onSubmit,
 }) => {
     const { t } = useTranslation('common');
-    const popularSearches = t('popular-searches', { returnObjects: true });
+    const popularSearches = ['Computer', 'Tablet', 'Plant', 'Gloves', 'Mouse'];
 
     const inputRef = useRef<HTMLInputElement>(null);
     useEffect(() => {
@@ -48,6 +48,11 @@ export const NavigationSearch: React.FC<ReturnType<typeof useNavigationSearch>> 
             </Stack>
             <SearchPosition w100>
                 <SearchContent w100>
+                    <PopularSearches popularSearches={popularSearches} onClick={item => setSearchQuery(item)}>
+                        <TypoGraphy size="2rem" weight={400} noWrap>
+                            {t('popular-searches-heading')}
+                        </TypoGraphy>
+                    </PopularSearches>
                     {searchQuery.length < 3 ? (
                         <TP>{t('search-query-to-short')}</TP>
                     ) : loading ? (
@@ -99,11 +104,6 @@ export const NavigationSearch: React.FC<ReturnType<typeof useNavigationSearch>> 
                             </StyledLink>
                         </Wrapper>
                     )}
-                    <PopularSearches popularSearches={popularSearches} onClick={item => setSearchQuery(item)}>
-                        <TypoGraphy size="2rem" weight={400} noWrap>
-                            {t('popular-searches-heading')}
-                        </TypoGraphy>
-                    </PopularSearches>{' '}
                 </SearchContent>
             </SearchPosition>
         </Stack>
@@ -139,7 +139,6 @@ const SearchPosition = styled(Stack)`
     width: 100%;
     top: calc(100% + 1rem);
     position: absolute;
-    right: -1.5rem;
     z-index: 2136;
 
     @media (min-width: ${p => p.theme.breakpoints.md}) {

@@ -9,7 +9,7 @@ export const ContentContainer = styled.div`
     width: 1280px;
     padding: 0;
 
-    @media (max-width: 1560px) {
+    @media (max-width: ${({ theme }) => theme.breakpoints['2xl']}) {
         width: 1440px;
         padding: 0 4rem;
     }

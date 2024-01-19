@@ -1,10 +1,9 @@
 import React from 'react';
-import { Stack } from '@/src/components/atoms/Stack';
 import { HomePageSlidersType } from '@/src/graphql/selectors';
 import { TH2, TP } from '@/src/components/atoms/TypoGraphy';
 import { Slider } from '@/src/components/organisms/Slider';
 import styled from '@emotion/styled';
-import { Link } from '@/src/components/atoms';
+import { Link, Stack } from '@/src/components/atoms';
 import { ProductVariantTile } from '@/src/components/molecules/ProductVariantTile';
 
 interface BestOfI {

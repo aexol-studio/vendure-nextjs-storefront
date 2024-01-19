@@ -306,11 +306,14 @@ const IconWrapper = styled.div`
 `;
 
 const WhiteStyledButton = styled(Button)`
-    padding-block: 1.5rem;
     display: flex;
     justify-content: center;
     width: 100%;
     background-color: ${({ theme }) => theme.background.main};
     color: ${({ theme }) => theme.gray(1000)};
     transition: all 0.2s ease-in-out;
+
+    @media (min-width: ${({ theme }) => theme.breakpoints.lg}) {
+        padding-block: 1.5rem;
+    }
 `;

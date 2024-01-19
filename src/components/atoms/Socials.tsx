@@ -1,8 +1,7 @@
 import React from 'react';
 import { Stack } from './Stack';
 import { Facebook, Github, Instagram, Twitter, Youtube } from 'lucide-react';
-
-import { Link } from '@/src/components/atoms/Link';
+import { Link } from '@/src/components/atoms';
 import styled from '@emotion/styled';
 
 const socialHrefs = [

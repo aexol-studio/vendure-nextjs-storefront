@@ -72,7 +72,8 @@
         "quantity": "Quantity",
         "customerName": "Customer Name",
         "email": "Email",
-        "phone": "Phone"
+        "phone": "Phone",
+        "orderStatus": "Order Status"
     },
     "ordersPage": {
         "title": "My Orders",

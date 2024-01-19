@@ -91,4 +91,10 @@ const MenuItem = styled(Link)`
     border: 1px solid ${p => p.theme.gray(100)};
     padding: 1.6rem 2.4rem;
     height: 100%;
+    &:hover {
+        & > p {
+            opacity: 0.7;
+        }
+    }
+    transition: opacity 0.3s ease-in;
 `;

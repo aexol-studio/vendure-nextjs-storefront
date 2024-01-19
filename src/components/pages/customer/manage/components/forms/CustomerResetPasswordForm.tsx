@@ -100,6 +100,7 @@ export const CustomerResetPasswordForm: React.FC = () => {
             setError('root', { message: tErrors('errors.backend.UNKNOWN_ERROR') });
         }
     };
+
     return (
         <MotionCustomerWrap
             initial={{ opacity: 0 }}
@@ -111,7 +112,15 @@ export const CustomerResetPasswordForm: React.FC = () => {
                 damping: 30,
             }}>
             <Form onSubmit={handleSubmit(onPasswordChange)} noValidate>
-                <Banner error={errors.root} clearErrors={() => clearErrors('root')} />
+                <Banner
+                    error={{
+                        message:
+                            errors.newPasswordConfirmation?.message ||
+                            errors.root?.message ||
+                            errors.newPassword?.message,
+                    }}
+                    clearErrors={() => clearErrors(['newPasswordConfirmation', 'newPassword'])}
+                />
                 <Stack gap="2rem" column itemsCenter>
                     <Input
                         label={t('accountPage.passwordForm.oldPassword')}

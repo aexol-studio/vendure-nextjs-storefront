@@ -18,6 +18,8 @@ type DetailTheme = {
         secondary: string;
         third: string;
         ice: string;
+        white: string;
+        modal: string;
     };
     button: {
         back: string;
@@ -34,6 +36,13 @@ type DetailTheme = {
     shadow: string;
     error: string;
     success: string;
+    tile: {
+        background: string;
+        hover: string;
+    };
+    placeholder: string;
+    noteCard: string;
+    outline: string;
     breakpoints: {
         /** 576px */
         ssm: string;
@@ -121,6 +130,8 @@ export const LightTheme = createTheme(300, t => ({
         secondary: t.gray(25),
         third: t.gray(50),
         ice: '#f8f8f8',
+        white: '#ffffff',
+        modal: 'rgba(0, 0, 0, 0.5)',
     },
     text: {
         main: `lch(9.72% 6.43 251.05)`,
@@ -140,6 +151,13 @@ export const LightTheme = createTheme(300, t => ({
         default: t.gray(1000),
         discount: '#FF8080',
     },
+    tile: {
+        background: '#69737c',
+        hover: '#5b636b',
+    },
+    placeholder: '#9398a1',
+    noteCard: '#ffff99',
+    outline: '#dcdcdc',
     breakpoints: {
         ssm: '576px',
         sm: '640px',

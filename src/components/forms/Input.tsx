@@ -98,7 +98,7 @@ export const StyledInput = styled.input<{ error?: boolean }>`
     }
 
     ::placeholder {
-        color: #9398a1;
+        color: ${p => p.theme.placeholder};
     }
     ${p => p.error && `border-color: ${p.theme.error} !important;`}
 `;

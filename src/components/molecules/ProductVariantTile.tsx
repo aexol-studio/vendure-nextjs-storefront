@@ -99,17 +99,17 @@ const LinkContainer = styled(Link)`
 
 const CategoryBlock = styled(Stack)`
     padding: 1rem;
-    background-color: #69737c;
+    background-color: ${({ theme }) => theme.tile.background};
 `;
 
 const CategoryLinkBlock = styled(Link)`
     padding: 1rem;
 
-    background-color: #69737c;
+    background-color: ${({ theme }) => theme.tile.background};
 
     @media (min-width: ${({ theme }) => theme.breakpoints.sm}) {
         :hover {
-            background-color: #5b636b;
+            background-color: ${({ theme }) => theme.tile.hover};
         }
     }
 `;

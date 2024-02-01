@@ -19,7 +19,13 @@
     "react/display-name": "off",
     "@typescript-eslint/ban-ts-comment": "off",
     "react/no-unknown-property": "off",
-    "react/react-in-jsx-scope":"off",
-    "react/prop-types":"off"
-  }
+    "react/react-in-jsx-scope": "off",
+    "react/prop-types": "off"
+  },
+  "prettier/prettier": [
+    "error",
+    {
+      "endOfLine": "auto"
+    }
+  ]
 }

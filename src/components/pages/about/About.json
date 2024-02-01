@@ -1,0 +1,70 @@
+{
+    "title": "About us",
+    "description": "We are passionate about solving real-world problems using code and making an impact on its users' lives.",
+    "TitleCard2": {
+        "title": "Sharing is caring",
+        "text": "We do share our solutions on GitHub gathering more than 10000 Github Stars all-together."
+    },
+    "Opensource": [
+        {
+            "name": "graphql-editor",
+            "href": "https://github.com/graphql-editor/graphql-editor",
+            "content": "Visual editor & GraphQL IDE. Draw GraphQL schemas using visual nodes and explore GraphQL API with beautiful UI."
+        },
+        {
+            "name": "graphql-zeus",
+            "href": "https://github.com/graphql-editor/graphql-zeus",
+            "content": "GraphQL client and GraphQL code generator with GraphQL autocomplete library generation for browser,nodejs and React Native."
+        },
+        {
+            "name": "rerousel",
+            "href": "https://github.com/aexol-studio/rerousel",
+            "content": "Simplest infinite carousel for React."
+        },
+        {
+            "name": "react-pdf-editor",
+            "href": "https://github.com/aexol-studio/react-pdf-editor",
+            "content": "Pdf editor react component."
+        },
+        {
+            "name": "elm-pages-tailwind-starter",
+            "href": "https://github.com/aexol-studio/elm-pages-tailwind-starter",
+            "content": "Starter for elm pages and Tailwind."
+        },
+        {
+            "name": "diagram",
+            "href": "https://github.com/graphql-editor/diagram",
+            "content": "Tool for making node graphs. Inspired by dependency graph. Used mainly for automation services."
+        }
+    ],
+    "faces": [
+        {
+            "photo": "claudia-page.jpg",
+            "name": "Claudia Barrera",
+            "position": "Design Lead",
+            "description": "I have polished my skills in creating visually captivating designs that work across various digital platforms. I've demonstrated a successful track record in design team leading, overcoming obstacles, and fostering a work atmosphere that encourages individual talents to bloom.",
+            "ln": "https://www.linkedin.com/in/claudia-barrera-pineda/"
+        },
+        {
+            "photo": "ada-page.jpg",
+            "name": "Adrianna Gregorczuk",
+            "position": "Head of Growth",
+            "description": "I am experienced and effective Head of Growth bringing more than seven years' of valuable technology industry experience and a passion for management. I am always results oriented with a proven track record of improving the market position of Aexol and GraphQL Editor.",
+            "ln": "https://www.linkedin.com/in/adrianna-gregorczuk/"
+        },
+        {
+            "photo": "tomek-page.jpg",
+            "name": "Tomasz Poniatowicz",
+            "position": "A bit of everything",
+            "description": "Over the years we’ve built and successfully launched over 50 apps that climbed to the top of the app stores rankings in a number of large markets like the US, Japan, Canada, Germany and France. I've done the acquisition & ads part.",
+            "ln": "https://www.linkedin.com/in/tomaszponiatowicz/"
+        },
+        {
+            "photo": "artur-page.jpg",
+            "name": "Artur Czemiel",
+            "position": "CEO, TypeScript AllStack",
+            "description": "I help to shape GraphQL landscape through innovative tools right now. Created the 'Weed Scale' app featured in High Times and earning about 1,5M$ on it and GraphQL Editor - #1 GraphQL IDE.",
+            "ln": "https://www.linkedin.com/in/arturczemiel/"
+        }
+    ]
+}

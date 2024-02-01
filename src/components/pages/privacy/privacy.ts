@@ -223,13 +223,13 @@ export const privacyContent = `
         Data will be transferred to third countries. Due to the fact that the level of Personal Data protection outside
         the EEA differs from that provided by European law, the Controller undertakes to apply appropriate safeguards
         that, in accordance with EU law, legalize the transfer and provide adequate guarantees for the protection of your
-        Personal Data. The Personal Data that you provide will be maintained in a safe and secure manner. GraphQL Editor
-        databases and information are stored on secure servers with appropriate firewalls. GraphQL Editor uses
+        Personal Data. The Personal Data that you provide will be maintained in a safe and secure manner. Aexol
+        databases and information are stored on secure servers with appropriate firewalls. Aexol uses
         industry-standard physical, technical and administrative security measures to safeguard all Personal Data, keeping
         it confidential and secure. We conduct periodic reviews of our security measures pertaining to our Personal Data
         collection and storage, to guard against unauthorized access to our systems. When you enter Personal Data (such as
-        login credentials) in respect to your User Account ("User Information") all communications between GraphQL Editor
-        and the Users of GraphQL Editor Services are encrypted using Secure Socket Layer (SSL) Certificates. As a user of
+        login credentials) in respect to your User Account ("User Information") all communications between Aexol
+        and the Users of Aexol Services are encrypted using Secure Socket Layer (SSL) Certificates. As a user of
         the Services, You should use the Services responsibly and not share your User Information including your username
         or password or account information with anyone.</p>
 

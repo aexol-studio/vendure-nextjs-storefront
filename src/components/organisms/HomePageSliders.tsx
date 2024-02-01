@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { HomePageSlidersType } from '@/src/graphql/selectors';
 import { TH2, TP } from '@/src/components/atoms/TypoGraphy';
 import { Slider } from '@/src/components/organisms/Slider';
@@ -12,7 +12,13 @@ interface BestOfI {
 }
 
 export const HomePageSliders: React.FC<BestOfI> = ({ sliders, seeAllText }) => {
-    if (!sliders?.length) return null;
+    const [mounted, setMounted] = useState(false);
+
+    useEffect(() => {
+        setMounted(true);
+    }, []);
+
+    if (!mounted || !sliders?.length) return null;
     return (
         <Stack w100 column gap="6rem">
             {sliders.map(slider => {
@@ -52,7 +58,6 @@ const StyledSection = styled.section`
 
 const StyledLink = styled(Link)`
     padding: 1rem 2rem;
-
     background-color: ${({ theme }) => theme.text.main};
     display: flex;
     align-items: center;

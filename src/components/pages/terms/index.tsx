@@ -4,18 +4,18 @@ import React from 'react';
 import { useTranslation } from 'next-i18next';
 import { Layout } from '@/src/layouts';
 import type { getStaticProps } from '@/src/components/pages/home/props';
-import { privacyContent } from './privacy';
+import { termsContent } from './terms';
 
-export const Privacy: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = props => {
+export const Terms: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = props => {
     const { t } = useTranslation('homepage');
     return (
         <Layout navigation={props.navigation} categories={props.categories} pageTitle={t('seo.home')}>
-            <HtmlContentPrivacyPolicy dangerouslySetInnerHTML={{ __html: privacyContent }} />
+            <HtmlContentTerms dangerouslySetInnerHTML={{ __html: termsContent }} />
         </Layout>
     );
 };
 
-const HtmlContentPrivacyPolicy = styled.section`
+const HtmlContentTerms = styled.section`
     word-wrap: break-word;
     overflow-wrap: break-word;
     margin: auto;
@@ -34,14 +34,18 @@ const HtmlContentPrivacyPolicy = styled.section`
         margin: 4rem 0rem;
     }
     p,
+    span,
     a {
         font-size: 2rem;
         line-height: 150%;
-        margin-bottom: 3rem;
+        margin: 1.4rem 0rem;
         color: #000;
     }
     a:hover {
         color: blue;
+    }
+    span {
+        font-style: italic;
     }
     strong {
         font-size: 2rem;
@@ -53,8 +57,8 @@ const HtmlContentPrivacyPolicy = styled.section`
         font-size: 2rem;
         line-height: 150%;
         color: #000;
-        list-style: disc;
-        margin-left: 2rem;
+        list-style: inside;
+        margin: 0.4rem 0rem;
     }
     ul {
         margin-bottom: 2.4rem;

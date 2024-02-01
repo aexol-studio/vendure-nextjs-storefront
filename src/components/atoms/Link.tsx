@@ -37,7 +37,7 @@ export const Link: React.FC<PropsWithChildren<LinkComponentProps>> = ({
     if (_channel && !skipLocaleHandling) {
         linkHref = href
             ? `${_channel}${locale ? `/${locale}` : ''}${linkHref}`
-            : router.pathname.replace('[channel]', _channel).replace('/[locale]/', `/${locale}/` ?? '');
+            : router.pathname.replace('/[channel]', _channel).replace('/[locale]', `/${locale}` ?? '');
     }
 
     return (

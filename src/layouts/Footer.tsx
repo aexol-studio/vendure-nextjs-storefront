@@ -70,6 +70,13 @@ export const Footer: React.FC<{
                     </Stack>
                 </ContentContainer>
             </LawsWrapper>
+            <LinkBar>
+                <Link href="https://aexol.com/" external>
+                    <p>
+                        Made by <strong>Aexol</strong>
+                    </p>
+                </Link>
+            </LinkBar>
         </Wrapper>
     );
 };
@@ -133,5 +140,21 @@ const Laws = styled(Stack)`
     gap: 1.5rem;
     @media (min-width: ${p => p.theme.breakpoints.ssm}) {
         gap: 5rem;
+    }
+`;
+const LinkBar = styled.div`
+    width: 100%;
+    height: fit-content;
+    background-color: ${({ theme }) => theme.background.third};
+    display: flex;
+    justify-content: center;
+    user-select: none;
+    & p {
+        font-size: 1rem;
+    }
+    & strong {
+        text-transform: uppercase;
+        font-weight: 900;
+        color: gray;
     }
 `;

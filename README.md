@@ -5,7 +5,12 @@ This is a NextJS starter for Vendure in the shape of a demo e-commerce shop. It'
 
 1. Clone this repo via SSH, HTTPS or the GitHub CLI.
 2. Install packages using ```npm i```
-3. Run locally using ```npm run dev```
+3. Setup your vendure server locally and run it on `http://localhost:3000/`
+4. Create a `.env` file in the root of the project and add the following variables:
+```env
+NEXT_PUBLIC_HOST="http://localhost:3000/shop-api"
+```
+5. Then feel free to run it locally using ```npm run dev```
 
 > [!IMPORTANT]
 > **Reminder: you need to also have the Vendure store running locally to use this storefront** 
@@ -17,7 +22,7 @@ This is a NextJS starter for Vendure in the shape of a demo e-commerce shop. It'
 - [Vendure NextJS Storefront](#vendure-nextjs-storefront)
   - [Installation](#installation)
   - [Table of contents](#table-of-contents)
-  - [Vendure Server](#vendure-server)
+    - [Vendure Server](#vendure-server)
   - [Zeus](#zeus)
   - [Page naming convention](#page-naming-convention)
   - [Internationalization with i18next](#internationalization-with-i18next)
@@ -25,7 +30,7 @@ This is a NextJS starter for Vendure in the shape of a demo e-commerce shop. It'
   - [Styles](#styles)
   - [Theme](#theme)
   - [Useful Links](#useful-links)
-  - [Who?](#who)
+  - [Who are the authors?](#who-are-the-authors)
   - [Roadmap](#roadmap)
 
 

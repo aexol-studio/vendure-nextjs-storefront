@@ -72,7 +72,7 @@ We use GraphQL Zeus to provide the Selectors for certain GraphQL query parts. Yo
 
 <br />
 
-## <span>🗨️</span>Page Naming Conventions
+## <span>⚡</span>Page Naming Conventions
 ## <span></span>Page Naming Conventions
 
 

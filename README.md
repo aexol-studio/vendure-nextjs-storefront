@@ -21,7 +21,7 @@ This is a NextJS starter for Vendure in the form of a demo e-commerce shop.
   - [Styles](#🎨-Styles)
   - [Theme](#🏞️-Theme)
   - [Useful Links](#🔗-Useful-Links)
-  - 🧮[Roadmap](#Roadmap)
+  - [Roadmap](#Roadmap)
 
 <br />
 
@@ -221,7 +221,7 @@ We are the devs and contributors to the GraphQL ecosystem with a lot of experien
 
 <br />
 
-## Roadmap 🧮
+## Roadmap <span>🧮</span>
 
 - [ ] Finish this starter
 - [X] Deployment of the storefront connected to demo shop

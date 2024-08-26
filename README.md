@@ -20,13 +20,13 @@ This is a NextJS starter for Vendure in the form of a demo e-commerce shop.
   - [Icons](#⏺️-Icons)
   - [Styles](#🎨-Styles)
   - [Theme](#🏞️-Theme)
-  - [Useful Links](#🔗-Useful-Links)
-  - [Roadmap](#🧮-Roadmap)
+  - [Useful Links](#Useful)
+  - 🧮[Roadmap](#Roadmap)
 
 <br />
 
 
-##  Installation 
+##Installation 
 
 ### 1. Clone this repo via SSH, HTTPS or the GitHub CLI.
 ### 2. Install the packages using: ```npm i```.
@@ -211,7 +211,7 @@ We are the devs and contributors to the GraphQL ecosystem with a lot of experien
 
 <br />
 
-## 🔗 Useful Links
+## Useful
 
 - [Zeus Documentation](https://graphqleditor.com/docs/tools/zeus/basics/getting-started/)
 - [i18next Documentation](https://www.i18next.com/)
@@ -221,7 +221,7 @@ We are the devs and contributors to the GraphQL ecosystem with a lot of experien
 
 <br />
 
-## 🧮 Roadmap
+## Roadmap
 
 - [ ] Finish this starter
 - [X] Deployment of the storefront connected to demo shop

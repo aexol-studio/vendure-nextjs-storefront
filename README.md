@@ -72,7 +72,7 @@ We use GraphQL Zeus to provide the Selectors for certain GraphQL query parts. Yo
 
 <br />
 
-## <span>🗒️</span>Page Naming Conventions
+## <span>💬</span>Page Naming Conventions
 
 
 We aimed for a fairly simple naming convention for pages that aligns with the DDD (Domain-driven design) principles:
@@ -166,7 +166,7 @@ Due to this set-up of props, the usage is very similar to Tailwind. In this case
 <br />
 
 
-## <span>🏞️</span>Theme
+## <span>🌆</span>Theme
 Theming is provided by a set of generic functions in the code and [Emotion](https://emotion.sh/docs/introduction).
 
 You can use values from the theme with `thv`. It is a function that consumes the theme and returns only the value.
@@ -206,7 +206,7 @@ export const IconButton = styled.button<{ isActive?: boolean }>`
 
 ## MORE INFO
 
-## <span>🖋️</span>About Us
+## <span>📝</span>About Us
 
 We are the devs and contributors to the GraphQL ecosystem with a lot of experience. We want to enter Vendure to create developer-friendly e-commerce solutions that don't rely on clunky and outdated stuff like Shopify's Liquid wrapped with JavaScript.
 

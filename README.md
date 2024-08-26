@@ -26,7 +26,7 @@ This is a NextJS starter for Vendure in the form of a demo e-commerce shop.
 
 <br />
 
-##  <span>⚙️</span>Installation 
+##  <span>🧰</span>Installation 
 
 ### 1. Clone this repo via SSH, HTTPS or the GitHub CLI.
 ### 2. Install the packages using: ```npm i```.
@@ -72,8 +72,7 @@ We use GraphQL Zeus to provide the Selectors for certain GraphQL query parts. Yo
 
 <br />
 
-## <span>⚡</span>Page Naming Conventions
-## <span></span>Page Naming Conventions
+## <span>🗒️</span>Page Naming Conventions
 
 
 We aimed for a fairly simple naming convention for pages that aligns with the DDD (Domain-driven design) principles:
@@ -128,7 +127,7 @@ export const Home: React.FC = () => {
 
 ## APPEARANCE
 
-## <span>⏺️</span>Icons
+## <span>🎭</span>Icons
 
 Lucide Icons is an open source library of over one thousand svg icons and symbols separated into official packages. This makes them easier to pick the icons you need for your project.
 

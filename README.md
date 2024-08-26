@@ -10,7 +10,7 @@ This is a NextJS starter for Vendure in the form of a demo e-commerce shop.
 
 ## 📋 Table of Contents
 - [Vendure NextJS Storefront](#vendure-nextjs-storefront)
-  - 🖋️[Authors](#🖋Authors)
+  - :milky_way:[Authors](#🖋Authors)
   - 📋[Table of Contents](#table-of-contents)
   - 🌐[Installation](#Installation)
     - [Vendure Server](#vendure-server)

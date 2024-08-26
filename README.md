@@ -21,7 +21,7 @@ This is a NextJS starter for Vendure in the form of a demo e-commerce shop.
   - [Styles](#🎨-Styles)
   - [Theme](#🏞️-Theme)
   - [Useful Links](#🔗-Useful-Links)
-  - [Roadmap](#Roadmap)
+  - 🧮[Roadmap](#Roadmap)
 
 <br />
 

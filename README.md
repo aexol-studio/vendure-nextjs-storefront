@@ -8,12 +8,6 @@ This is a NextJS starter for Vendure in the form of a demo e-commerce shop.
 
 <br />
 
-## 🖋️ Authors
-
-We are devs and contributors to the GraphQL ecosystem with a lot of experience and we want to enter Vendure to create developer-friendly e-commerce solutions that don't rely on clunky and outdated stuff like Shopify's Liquid wrapped with JavaScript.
-
-<br />
-
 ## 📋 Table of Contents
 - [Vendure NextJS Storefront](#vendure-nextjs-storefront)
   - [Authors](#🖋️-Authors)
@@ -30,6 +24,7 @@ We are devs and contributors to the GraphQL ecosystem with a lot of experience a
   - [Roadmap](#🧮-Roadmap)
 
 <br />
+
 
 ## ⚙️ Installation
 
@@ -129,6 +124,8 @@ export const Home: React.FC = () => {
 
 <br />
 
+## APPEARANCE
+
 ## ⏺️ Icons
 
 Lucide Icons is an open source library of over one thousand svg icons and symbols separated into official packages. This makes them easier to pick the icons you need for your project.
@@ -203,6 +200,14 @@ export const IconButton = styled.button<{ isActive?: boolean }>`
 `;
 
 ```
+
+<br />
+
+## MORE INFO
+
+## 🖋️ About Us
+
+We are the devs and contributors to the GraphQL ecosystem with a lot of experience. We want to enter Vendure to create developer-friendly e-commerce solutions that don't rely on clunky and outdated stuff like Shopify's Liquid wrapped with JavaScript.
 
 <br />
 

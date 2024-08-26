@@ -15,7 +15,7 @@ This is a NextJS starter for Vendure in the form of a demo e-commerce shop.
   -  [Installation](#Installation)
     - [Vendure Server](#vendure-server)
   - [Zeus](#Zeus)
-  - [Page Naming Conventions](#Page-Naming-Conventions)
+  - [Page Naming Conventions](#page-Naming-Conventions)
   - [Internationalization With i18next](#internationalization-With-i18next)
   - [Icons](#Icons)
   - [Styles](#styles)

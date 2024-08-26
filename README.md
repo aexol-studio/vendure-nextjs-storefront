@@ -8,21 +8,23 @@ This is a NextJS starter for Vendure in the form of a demo e-commerce shop.
 
 <br />
 
-## 📋 Table of Contents
+## Table of Contents
 
 - [Vendure NextJS Storefront](#vendure-nextjs-storefront)
   - [Table of Contents](#able-of-contents)
   -  [Installation](#Installation)
-    - [Vendure Server](#vendure-server)
+      - [Vendure Server](#vendure-server)
   - [Zeus](#Zeus)
   - [Page Naming Conventions](#page-Naming-Conventions)
   - [Internationalization With i18next](#internationalization-With-i18next)
-  - [Icons](#Icons)
-  - [Styles](#styles)
-  - [Theme](#theme)
-  - [About Us](#About-Us)
-  - [Useful Links](#Useful-Links)
-  - [Roadmap](#Roadmap)
+  - Appearance
+    - [Icons](#Icons)
+    - [Styles](#styles)
+    - [Theme](#theme)
+  - More Info
+    - [About Us](#About-Us)
+    - [Useful Links](#Useful-Links)
+    - [Roadmap](#Roadmap)
 
 <br />
 

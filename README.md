@@ -24,7 +24,7 @@ We are devs and contributors to the GraphQL ecosystem with a lot of experience a
   - [Page Naming Conventions](#🗨️-Page-Naming-Conventions)
   - [Internationalization With i18next](#🌐-internationalization-With-i18next)
   - [Icons](#⏺️-Icons)
-  - [Styles](#🎨-Styles)
+  - [Styles](#:art:-Styles)
   - [Theme](#🏞️-Theme)
   - [Useful Links](#🔗-Useful-Links)
   - [Roadmap](#🧮-Roadmap)

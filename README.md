@@ -9,6 +9,7 @@ This is a NextJS starter for Vendure in the form of a demo e-commerce shop.
 <br />
 
 ## 📋 Table of Contents
+
 - [Vendure NextJS Storefront](#vendure-nextjs-storefront)
   - [Table of Contents](#able-of-contents)
   -  [Installation](#Installation)
@@ -19,7 +20,7 @@ This is a NextJS starter for Vendure in the form of a demo e-commerce shop.
   - [Icons](#Icons)
   - [Styles](#styles)
   - [Theme](#theme)
-  - [About Us](#about-us)
+  - [About Us](#About-Us)
   - [Useful Links](#Useful-Links)
   - [Roadmap](#Roadmap)
 

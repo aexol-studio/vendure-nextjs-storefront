@@ -12,11 +12,11 @@ This is a NextJS starter for Vendure in the form of a demo e-commerce shop.
 - [Vendure NextJS Storefront](#vendure-nextjs-storefront)
   - 🖋️[Authors](#🖋Authors)
   - 📋[Table of Contents](#table-of-contents)
-  -  [Installation](#Installation)
+  - 🌐[Installation](#Installation)
     - [Vendure Server](#vendure-server)
   - ⚡pierun![Zeus](#Zeus)
   - [Page Naming Conventions](#Page-Naming-Conventions)
-  - [Internationalization With i18next](#Internationalization-With-i18next)
+  - 🌐[Internationalization With i18next](#Internationalization-With-i18next)
   - [Icons](#⏺️-Icons)
   - [Styles](#🎨-Styles)
   - [Theme](#🏞️-Theme)
@@ -26,7 +26,7 @@ This is a NextJS starter for Vendure in the form of a demo e-commerce shop.
 <br />
 
 
-##Installation 
+## Installation 
 
 ### 1. Clone this repo via SSH, HTTPS or the GitHub CLI.
 ### 2. Install the packages using: ```npm i```.

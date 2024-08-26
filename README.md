@@ -10,23 +10,22 @@ This is a NextJS starter for Vendure in the form of a demo e-commerce shop.
 
 ## 📋 Table of Contents
 - [Vendure NextJS Storefront](#vendure-nextjs-storefront)
-  - [Authors](#🖋️-Authors)
-  - [Table of Contents](#📋-table-of-contents)
+  - [Authors](#Authors)
+  - [Table of Contents](#able-of-contents)
   -  [Installation](#Installation)
     - [Vendure Server](#vendure-server)
-  - [Zeus](#⚡-Zeus)
-  - [Page Naming Conventions](#🗨️-Page-Naming-Conventions)
-  - [Internationalization With i18next](#🌐-internationalization-With-i18next)
-  - [Icons](#⏺️-Icons)
-  - [Styles](#🎨-Styles)
-  - [Theme](#🏞️-Theme)
-  - [Useful Links](#🔗-Useful-Links)
-  - 🧮[Roadmap](#Roadmap)
+  - [Zeus](#Zeus)
+  - [Page Naming Conventions](#Page-Naming-Conventions)
+  - [Internationalization With i18next](#internationalization-With-i18next)
+  - [Icons](#Icons)
+  - [Styles](#Styles)
+  - [Theme](#Theme)
+  - [Useful Links](#Useful-Links)
+  - [Roadmap](#Roadmap)
 
 <br />
 
-
-##  ⚙️ Installation 
+##  <span>⚙️</span>Installation 
 
 ### 1. Clone this repo via SSH, HTTPS or the GitHub CLI.
 ### 2. Install the packages using: ```npm i```.
@@ -66,13 +65,13 @@ NEXT_PUBLIC_HOST="http://localhost:3000/shop-api".
 
 <br />
 
-## ⚡ Zeus
+## <span>⚡</span>Zeus
 
 We use GraphQL Zeus to provide the Selectors for certain GraphQL query parts. You can think of Selectors as fragments in GraphQL, just with extra type-safety.
 
 <br />
 
-## 🗨️ Page Naming Conventions
+## <span>🗨️</span> Page Naming Conventions
 
 We aimed for a fairly simple naming convention for pages that aligns with the DDD (Domain-driven design) principles:
 
@@ -87,7 +86,7 @@ Using such naming conventions helps maintain a clean and organized folder struct
 
 <br />
 
-## 🌐 Internationalization With i18next
+## <span>🌐</span>Internationalization With i18next
 
 Because the majority of e-commerce shops uses localization to accomodate clients from all over the world, we have also added integrated i18next to handle language translations. i18next makes it really easy to add and update translated content. 
 
@@ -126,7 +125,7 @@ export const Home: React.FC = () => {
 
 ## APPEARANCE
 
-## ⏺️ Icons
+## <span>⏺️</span>Icons
 
 Lucide Icons is an open source library of over one thousand svg icons and symbols separated into official packages. This makes them easier to pick the icons you need for your project.
 
@@ -134,7 +133,7 @@ Lucide Icons is an open source library of over one thousand svg icons and symbol
 
 <br />
 
-## 🎨 Styles
+## <span>🎨</span>Styles
 
 We are building our own engine based on styled components with props that work similarly to our favorite CSS framework: [Tailwind](https://tailwindcss.com/). 
 
@@ -165,7 +164,7 @@ Due to this set-up of props, the usage is very similar to Tailwind. In this case
 <br />
 
 
-## 🏞️ Theme
+## <span>🏞️</span>Theme
 Theming is provided by a set of generic functions in the code and [Emotion](https://emotion.sh/docs/introduction).
 
 You can use values from the theme with `thv`. It is a function that consumes the theme and returns only the value.
@@ -205,13 +204,13 @@ export const IconButton = styled.button<{ isActive?: boolean }>`
 
 ## MORE INFO
 
-## 🖋️ About Us
+## <span>🖋️</span>About Us
 
 We are the devs and contributors to the GraphQL ecosystem with a lot of experience. We want to enter Vendure to create developer-friendly e-commerce solutions that don't rely on clunky and outdated stuff like Shopify's Liquid wrapped with JavaScript.
 
 <br />
 
-## 🔗 Useful Links
+## <span>🔗</span>Useful Links
 
 - [Zeus Documentation](https://graphqleditor.com/docs/tools/zeus/basics/getting-started/)
 - [i18next Documentation](https://www.i18next.com/)

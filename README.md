@@ -8,7 +8,7 @@ This is a NextJS starter for Vendure in the form of a demo e-commerce shop.
 
 <br />
 
-## 🖋️ The Authors
+## 🖋️ Authors
 
 We are devs and contributors to the GraphQL ecosystem with a lot of experience and we want to enter Vendure to create developer-friendly e-commerce solutions that don't rely on clunky and outdated stuff like Shopify's Liquid wrapped with JavaScript.
 
@@ -16,18 +16,18 @@ We are devs and contributors to the GraphQL ecosystem with a lot of experience a
 
 ## 📋 Table of Contents
 - [Vendure NextJS Storefront](#vendure-nextjs-storefront)
-  - [Who are the authors?](#who-are-the-authors)
+  - [Authors](#🖋️-Authors)
   - [Table of Contents](#📋-table-of-contents)
   - [Installation](#⚙️-Installation)
     - [Vendure Server](#vendure-server)
-  - [Zeus](#zeus)
-  - [Page Naming conventions](#page-naming-conventions)
-  - [Internationalization with i18next](#internationalization-with-i18next)
-  - [Icons](#icons)
-  - [Styles](#styles)
-  - [Theme](#theme)
-  - [Useful Links](#useful-links)
-  - [Roadmap](#roadmap)
+  - [Zeus](#⚡-Zeus)
+  - [Page Naming Conventions](#🗨️-Page-Naming-Conventions)
+  - [Internationalization With i18next](#🌐-internationalization-With-i18next)
+  - [Icons](#⏺️-Icons)
+  - [Styles](#🎨-Styles)
+  - [Theme](#🏞️-Theme)
+  - [Useful Links](#🔗-Useful-Links)
+  - [Roadmap](#🧮-Roadmap)
 
 <br />
 
@@ -157,7 +157,8 @@ export const Stack = styled.div<BaseFlexParams>`
 
 <br />
 
-With the props set up like that you can then use it almost like you would with Tailwind (just without `ClassName`):
+Due to this set-up of props, the usage is very similar to Tailwind. In this case, you have to skip `ClassName`:
+
 ```tsx
 <Stack column gap="2rem">
   {children}
@@ -168,9 +169,13 @@ With the props set up like that you can then use it almost like you would with T
 
 
 ## 🏞️ Theme
-Theming is provided by [Emotion](https://emotion.sh/docs/introduction) and some generic functions.
+Theming is provided by a set of generic functions in the code and [Emotion](https://emotion.sh/docs/introduction).
 
-You can use values from the theme with `thv` which returns a function that consumes the theme and returns just the value or the usual method with `${p => p.theme}`. You can see both uses in the example below:
+You can use values from the theme with `thv`. It is a function that consumes the theme and returns only the value.
+
+You can alternatively use the usual method with `${p => p.theme}`. 
+
+You can see both methods in the example below:
 
 ```tsx
 import { thv } from '@/src/theme';

@@ -221,7 +221,7 @@ We are the devs and contributors to the GraphQL ecosystem with a lot of experien
 
 <br />
 
- 🧮 ## Roadmap
+ ## Roadmap<span>🧮</span>
 
 - [ ] Finish this starter
 - [X] Deployment of the storefront connected to demo shop

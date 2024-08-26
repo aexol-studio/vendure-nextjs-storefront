@@ -15,8 +15,8 @@ This is a NextJS starter for Vendure in the form of a demo e-commerce shop.
   -  [Installation](#Installation)
     - [Vendure Server](#vendure-server)
   - ⚡pierun![Zeus](#Zeus)
-  - [Page Naming Conventions](#🗨️-Page-Naming-Conventions)
-  - [Internationalization With i18next](#🌐-internationalization-With-i18next)
+  - [Page Naming Conventions](#Page-Naming-Conventions)
+  - [Internationalization With i18next](#Internationalization-With-i18next)
   - [Icons](#⏺️-Icons)
   - [Styles](#🎨-Styles)
   - [Theme](#🏞️-Theme)
@@ -72,7 +72,7 @@ We use GraphQL Zeus to provide the Selectors for certain GraphQL query parts. Yo
 
 <br />
 
-## 🗨️ Page Naming Conventions
+## Page Naming Conventions
 
 We aimed for a fairly simple naming convention for pages that aligns with the DDD (Domain-driven design) principles:
 
@@ -87,7 +87,7 @@ Using such naming conventions helps maintain a clean and organized folder struct
 
 <br />
 
-## 🌐 Internationalization With i18next
+## Internationalization With i18next
 
 Because the majority of e-commerce shops uses localization to accomodate clients from all over the world, we have also added integrated i18next to handle language translations. i18next makes it really easy to add and update translated content. 
 

@@ -1,51 +1,51 @@
-# Vendure NextJS Storefront
-This is a NextJS starter for Vendure in the shape of a demo e-commerce shop. It's still in **alpha**, but feel free to read the concepts, run the store locally or just check out how it works at [shop.aexol.com](https://shop.aexol.com).
+### VENDURE NEXTJS STOREFRONT
+![Vector 902 (Stroke) (1)](https://github.com/user-attachments/assets/18e2f31f-a70f-4c3e-b284-3b66c989a15f)
 
-## Installation
-
-1. Clone this repo via SSH, HTTPS or the GitHub CLI.
-2. Install packages using ```npm i```
-3. Setup your vendure server locally and run it on `http://localhost:3000/`
-4. Create a `.env` file in the root of the project and add the following variables:
-```env
-NEXT_PUBLIC_HOST="http://localhost:3000/shop-api"
-```
-5. Then feel free to run it locally using ```npm run dev```
-
-> [!IMPORTANT]
-> **Reminder: you need to also have the Vendure store running locally to use this storefront** 
+This is a NextJS starter for Vendure in the form of a demo e-commerce shop. 
 
 > [!TIP]
-> You can read about how to set that up in the Vendure Server section below
+> The project is still in the **alpha phase**, but you can read the concepts, run the storefront page locally, or check how it works at: [shop.aexol.com](https://shop.aexol.com).
 
-## Table of contents
+<br />
+
+## 🖋️ The Authors
+
+We are devs and contributors to the GraphQL ecosystem with a lot of experience and we want to enter Vendure to create developer-friendly e-commerce solutions that don't rely on clunky and outdated stuff like Shopify's Liquid wrapped with JavaScript.
+
+<br />
+
+## 📋 Table of Contents
 - [Vendure NextJS Storefront](#vendure-nextjs-storefront)
-  - [Installation](#installation)
-  - [Table of contents](#table-of-contents)
+  - [Who are the authors?](#who-are-the-authors)
+  - [Table of Contents](#📋-table-of-contents)
+  - [Installation](#⚙️-Installation)
     - [Vendure Server](#vendure-server)
   - [Zeus](#zeus)
-  - [Page naming convention](#page-naming-convention)
+  - [Page Naming conventions](#page-naming-conventions)
   - [Internationalization with i18next](#internationalization-with-i18next)
   - [Icons](#icons)
   - [Styles](#styles)
   - [Theme](#theme)
   - [Useful Links](#useful-links)
-  - [Who are the authors?](#who-are-the-authors)
   - [Roadmap](#roadmap)
 
+<br />
 
-### Vendure Server
+## ⚙️ Installation
 
-This storefront requires a Vendure V2 server. You can either run a local instance, or use our public demo server.
+### 1. Clone this repo via SSH, HTTPS or the GitHub CLI.
+### 2. Install the packages using: ```npm i```.
+### 3. Set up your Vendure server locally and run it on `http://localhost:3000/`.
 
-Our demo of Vendure server (MinIO & Postgres & SMTP) can be found [here](https://github.com/aexol-studio/aexol-shop-backend) to see all changes.
+#### VENDURE SERVER
+You need to have the Vendure store running locally to use this storefront. This storefront also requires a Vendure V2 server. You can either run a local instance, or you can access the demo of the Vendure server (MinIO & Postgres & SMTP) [HERE](https://github.com/aexol-studio/aexol-shop-backend).
 
-For the best experience when using our demo, you'll need to apply some ‘small’ modifications.
+<br />
 
-Here's a list of those small changes to the Vendure server:
+❗ For the best experience when using our demo, you also need to apply certain modifications to the Vendure server:
+- Apply two collections `all` and `search`. Both of them should contain all products (with the exception of cases using gift cards / shipping-protections)
+- Add the stock level as a number value and not as enum values, as seen below:
 
-- apply two collections `all` and `search`. Both of them should contain all products (or not? for cases with gift cards / shipping-protections)
-- add the stock level as a number value and not as enum values
 ```ts
 export class ExactStockDisplayStrategy implements StockDisplayStrategy {
   getStockLevel(
@@ -61,28 +61,49 @@ export const catalogOptions: VendureConfig["catalogOptions"] = {
   stockDisplayStrategy: new ExactStockDisplayStrategy(),
 };
 ```
+   
+### 4. Create a new `.env` file in the root of the project and add the following variables:
+```env
+NEXT_PUBLIC_HOST="http://localhost:3000/shop-api".
+```
+### 5. Run the project locally using ```npm run dev```.
 
-## Zeus
 
-We use GraphQL Zeus to provide Selectors for certain GraphQL query parts. You can think of Selectors as fragments in GraphQL, just with the added type-safety.
+<br />
 
-## Page naming convention
+## ⚡ Zeus
 
-In this starter, we're following a fairly simple naming convention for pages, that aligns with DDD (Domain-driven design) principles. Each page file is named using the format `page-name.page.tsx`, where `page-name` represents the name of the page or route. For example, the main page of your application would be named `index.page.tsx`.
-We're also using slug pages for products and collections, where we have a `products` and `collections` folder with a `[slug].page.tsx` where the `[slug]` is replaced by product or collection name fetched from the backend as props. This allows us to dynamically generate those pages at scale, while maintaining a simple to navigate structure with routes like `/collections/electronics/` or `/products/laptop/`.
-Using this naming convention helps maintain a clean and organized folder structure that reflects the structure of your application's domains or features. By separating pages into their respective folders and adopting a consistent naming convention, you can easily locate and manage your application's routes and easily navigate any issues that might arise.
+We use GraphQL Zeus to provide the Selectors for certain GraphQL query parts. You can think of Selectors as fragments in GraphQL, just with extra type-safety.
 
-## Internationalization with i18next
+<br />
 
-As most e-commerce shops use localization to reach clients who use different languages we have also added integrated i18next to handle translations. This makes it really easy to add and update translated content. Here's how we use i18next:
+## 🗨️ Page Naming Conventions
 
-1. **Translation Files**: We maintain separate JSON translation files for each supported language. These files contain translation keys and their corresponding localized text.
-   For example, you might find the English translation file for home page at `public/locales/en/homePage.json`
+We aimed for a fairly simple naming convention for pages that aligns with the DDD (Domain-driven design) principles:
 
-2. **Locale Configuration**: We configure i18next to load the appropriate translation files based on the user's selected locale.
+| |
+|---------------|
+| Each page file is named using the format `page-name.page.tsx`, where `page-name` represents the name of the page or route. <br /> For example, the main page of your application would be named `index.page.tsx`. |
+| We are using slug pages for products and collections, where we have a `products` and `collections` folder with a `[slug].page.tsx`. The `[slug]` is replaced by the product or collection name fetched from the backend as props. <br /> This allows to dynamically generate those pages at scale, while maintaining a structure  that's easy to navigate with routes like `/collections/electronics/` or `/products/laptop/`. |
 
-3. **Integration with React**: We use the `next-i18next` package to integrate i18next with React components, making it seamless to access translations in your React components via a simple `useTranslation` hook which will then always use the matching translation for the user's selected locale.
+<br />
+  
+Using such naming conventions helps maintain a clean and organized folder structure that reflects the structure of your application's domains or features. By separating pages into their respective folders and adopting a consistent naming convention, you can easily locate and manage your application's routes and easily navigate any issues that might arise.
 
+<br />
+
+## 🌐 Internationalization With i18next
+
+Because the majority of e-commerce shops uses localization to accomodate clients from all over the world, we have also added integrated i18next to handle language translations. i18next makes it really easy to add and update translated content. 
+
+Here's how we use i18next:
+| | |
+|---------------|---|
+| **Translation Files** |  We maintain separate JSON translation files for each supported language. These files contain translation keys and their corresponding localized text. <br /> For example, you might find the English translation file for home page at `public/locales/en/homePage.json` |
+| **Locale Configuration** | We configure i18next to load the appropriate translation files based on the user's selected locale. |
+| **Integration with React** | We use the `next-i18next` package to integrate i18next with React components, making it seamless to access translations in your React components via a simple `useTranslation` hook which will then always use the matching translation for the user's selected locale. |
+
+Example:
 ```ts
 import { useTranslation } from 'next-i18next';
 
@@ -102,17 +123,25 @@ export const Home: React.FC = () => {
     );
 };
 ```
+
 > [!TIP]
 > For quick localization you can use [DevTranslate](https://devtranslate.app) to translate json files into up to 28 languages at the same time.
 
+<br />
 
-## Icons
+## ⏺️ Icons
 
-Lucide icons is an open source library which contains over one thousand svg icons and symbols separated into official packages, to make it easier to pick one for your project. Head on over to [lucide.dev](https://lucide.dev/) and check them out yourself.
+Lucide Icons is an open source library of over one thousand svg icons and symbols separated into official packages. This makes them easier to pick the icons you need for your project.
 
-## Styles
+❗ To check them out yourself head to: [lucide.dev](https://lucide.dev/).
 
-We really like using [Tailwind](https://tailwindcss.com/) - that's why we are building our own engine based on styled components with props that work similarly to Tailwind. For example here's our `Stack` component:
+<br />
+
+## 🎨 Styles
+
+We are building our own engine based on styled components with props that work similarly to our favorite CSS framework: [Tailwind](https://tailwindcss.com/). 
+
+For example, here's what our `Stack` component looks like:
 
 ```tsx
 export const Stack = styled.div<BaseFlexParams>`
@@ -126,6 +155,8 @@ export const Stack = styled.div<BaseFlexParams>`
 `;
 ```
 
+<br />
+
 With the props set up like that you can then use it almost like you would with Tailwind (just without `ClassName`):
 ```tsx
 <Stack column gap="2rem">
@@ -133,7 +164,10 @@ With the props set up like that you can then use it almost like you would with T
 </Stack>
 ```
 
-## Theme
+<br />
+
+
+## 🏞️ Theme
 Theming is provided by [Emotion](https://emotion.sh/docs/introduction) and some generic functions.
 
 You can use values from the theme with `thv` which returns a function that consumes the theme and returns just the value or the usual method with `${p => p.theme}`. You can see both uses in the example below:
@@ -165,7 +199,9 @@ export const IconButton = styled.button<{ isActive?: boolean }>`
 
 ```
 
-## Useful Links
+<br />
+
+## 🔗 Useful Links
 
 - [Zeus Documentation](https://graphqleditor.com/docs/tools/zeus/basics/getting-started/)
 - [i18next Documentation](https://www.i18next.com/)
@@ -173,11 +209,9 @@ export const IconButton = styled.button<{ isActive?: boolean }>`
 - [React Documentation](https://reactjs.org/docs)
 - [TypeScript Documentation](https://www.typescriptlang.org/docs)
 
-## Who are the authors?
+<br />
 
-We are devs and contributors to the GraphQL ecosystem with a lot of experience and we want to enter Vendure to create developer-friendly e-commerce solutions that don't rely on clunky and outdated stuff like Shopify's Liquid wrapped with JavaScript.
-
-## Roadmap
+## 🧮 Roadmap
 
 - [ ] Finish this starter
 - [X] Deployment of the storefront connected to demo shop

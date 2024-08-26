@@ -16,7 +16,7 @@ This is a NextJS starter for Vendure in the form of a demo e-commerce shop.
   - [Zeus](#Zeus)
   - [Page Naming Conventions](#Page-Naming-Conventions)
   - [Internationalization With i18next](#internationalization-With-i18next)
-  - [Icons](#icons)
+  - [Icons](#Icons)
   - [Styles](#styles)
   - [Theme](#theme)
   - [About Us](#about-us)
@@ -71,7 +71,7 @@ We use GraphQL Zeus to provide the Selectors for certain GraphQL query parts. Yo
 
 <br />
 
-## <span>🗨️</span> Page Naming Conventions
+## <span>🗨️</span>Page Naming Conventions
 
 We aimed for a fairly simple naming convention for pages that aligns with the DDD (Domain-driven design) principles:
 

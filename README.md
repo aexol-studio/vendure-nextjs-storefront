@@ -225,17 +225,17 @@ We are the devs and contributors to the GraphQL ecosystem with a lot of experien
 
 ## <span>🧮</span>Roadmap
 
-- [ ] Finish this starter
-- [X] Deployment of the storefront connected to demo shop
-- [X] Basic Cart functionality
-- [X] Basic Checkout process
-- [ ] Design implementation
-- [X] Basic Payment process
-- [X] Basic User Profile
-- [X] Search products
-- [X] Filters
-- [ ] Localization with devtranslate.app
-- [ ] Adding Static Git CMS MDTX
+- [ ] Finish the starter
+- [X] Deploy the storefront connected to the demo shop
+- [X] Implement basic cart functionality
+- [X] Implement basic checkout process
+- [ ] Implement the design
+- [X] Add a basic payment process
+- [X] Add a basic User Profile
+- [X] Add the search products function
+- [X] Add filters
+- [ ] Provide localization with devtranslate.app
+- [ ] Add Static Git CMS MDTX
 - [ ] Configure SEO and schema.org for every site
-- [ ] Assure ISR ready on every sub site
-- [ ] Migrate to the new next router
+- [ ] Assure ISR is ready on every sub-site
+- [ ] Migrate to the next router

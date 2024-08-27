@@ -93,7 +93,7 @@ Using such naming conventions helps maintain a clean and organized folder struct
 Because the majority of e-commerce shops uses localization to accomodate clients from all over the world, we have also added integrated i18next to handle language translations. i18next makes it really easy to add and update translated content. 
 
 |Hew we use i18next: | |
-|---------------|---|
+|:---|---|
 | **Translation Files** |  We maintain separate JSON translation files for each supported language. These files contain translation keys and their corresponding localized text. <br /> For example, you might find the English translation file for home page at `public/locales/en/homePage.json` |
 | **Locale Configuration** | We configure i18next to load the appropriate translation files based on the user's selected locale. |
 | **Integration with React** | We use the `next-i18next` package to integrate i18next with React components, making it seamless to access translations in your React components via a simple `useTranslation` hook which will then always use the matching translation for the user's selected locale. |

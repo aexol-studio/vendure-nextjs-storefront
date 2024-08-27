@@ -3,7 +3,7 @@
 This is a NextJS starter for Vendure in the form of a demo e-commerce shop. 
 
 > [!TIP]
-> The project is still in the **alpha phase**, but you can read the concepts, run the storefront page locally, or check how it works at: [shop.aexol.com](https://shop.aexol.com).
+> The project is in its **alpha phase**! However, you can still read the concepts, run the storefront page locally, or check how it works at: [shop.aexol.com](https://shop.aexol.com).
 
 <br />
 
@@ -39,7 +39,7 @@ You need to have the Vendure store running locally to use this storefront. This 
 <br />
 
 ❗ For the best experience when using our demo, you also need to apply certain modifications to the Vendure server:
-- Apply two collections `all` and `search`. Both of them should contain all products (with the exception of cases using gift cards / shipping-protections)
+- Apply two collections `all` and `search`. Both of them should contain all products (with the exception of cases using gift cards or shipping-protections)
 - Add the stock level as a number value and not as enum values, as seen below:
 
 ```ts
@@ -64,12 +64,11 @@ NEXT_PUBLIC_HOST="http://localhost:3000/shop-api".
 ```
 ### 5. Run the project locally using ```npm run dev```.
 
-
 <br />
 
 ## <span>⚡</span>Zeus
 
-We use GraphQL Zeus to provide the Selectors for certain GraphQL query parts. You can think of Selectors as fragments in GraphQL, just with extra type-safety.
+We use GraphQL Zeus to provide the Selectors for certain GraphQL queries. You can think of Selectors as fragments in GraphQL, just with extra type-safety.
 
 <br />
 
@@ -80,23 +79,23 @@ We aimed for a fairly simple naming convention for pages that aligns with the DD
 
 
 - Each page file is named using the format `page-name.page.tsx`, where `page-name` represents the name of the page or route. <br /> For example, the main page of your application would be named `index.page.tsx`.
-- We are using slug pages for products and collections, where we have a `products` and `collections` folder with a `[slug].page.tsx`. The `[slug]` is replaced by the product or collection name fetched from the backend as props. <br /> This allows to dynamically generate those pages at scale, while maintaining a structure  that's easy to navigate with routes like `/collections/electronics/` or `/products/laptop/`.
+- We are using slug pages for products and collections, where we have a `products` and `collections` folder with a `[slug].page.tsx`. The `[slug]` is replaced by the product or collection name fetched from the backend as props. <br /> This allows to dynamically generate those pages at scale, while maintaining a structure that is easy to navigate with routes such as `/collections/electronics/` or `/products/laptop/`.
 
 <br />
   
-Using such naming conventions helps maintain a clean and organized folder structure that reflects the structure of your application's domains or features. By separating pages into their respective folders and adopting a consistent naming convention, you can easily locate and manage your application's routes and easily navigate any issues that might arise.
+Using such naming conventions helps maintain a clean and organized folder structure that reflects the structure of your application's domains or features. By separating pages into their respective folders and adopting a consistent naming convention, you can easily locate and manage your application's routes and comfortably navigate through any issues that might arise.
 
 <br />
 
 ## <span>🌐</span>Internationalization With i18next
 
-Because the majority of e-commerce shops uses localization to accomodate clients from all over the world, we have also added integrated i18next to handle language translations. i18next makes it really easy to add and update translated content. 
+Because the majority of e-commerce shops uses localization to accomodate clients from all over the world, we have integrated i18next to handle language translations. i18next makes it convenient to add and update translated content. 
 
 |Hew we use i18next: | |
 |:---|---|
 | **Translation Files** |  We maintain separate JSON translation files for each supported language. These files contain translation keys and their corresponding localized text. <br /> For example, you might find the English translation file for home page at `public/locales/en/homePage.json` |
 | **Locale Configuration** | We configure i18next to load the appropriate translation files based on the user's selected locale. |
-| **Integration with React** | We use the `next-i18next` package to integrate i18next with React components, making it seamless to access translations in your React components via a simple `useTranslation` hook which will then always use the matching translation for the user's selected locale. |
+| **Integration with React** | We use the `next-i18next` package to integrate i18next with React components to seamlessly access the translations in your React components via a simple `useTranslation` hook. It will then always use the matching translation for the user's selected locale. |
 
 Example:
 ```ts
@@ -120,7 +119,7 @@ export const Home: React.FC = () => {
 ```
 
 > [!TIP]
-> For quick localization you can use [DevTranslate](https://devtranslate.app) to translate json files into up to 28 languages at the same time.
+> For quick localization you can use [DevTranslate](https://devtranslate.app) to translate json files into up to 28 languages all at the same time.
 
 <br />
 
@@ -128,7 +127,7 @@ export const Home: React.FC = () => {
 
 ## <span>🎭</span>Icons
 
-Lucide Icons is an open source library of over one thousand svg icons and symbols separated into official packages. This makes them easier to pick the icons you need for your project.
+Lucide Icons is an open source library of over one thousand svg icons and symbols separated into official packages. This makes picking the icons you need for your project much easier.
 
 ❗ To check them out yourself head to: [lucide.dev](https://lucide.dev/).
 
@@ -154,7 +153,7 @@ export const Stack = styled.div<BaseFlexParams>`
 
 <br />
 
-Due to this set-up of props, the usage is very similar to Tailwind. In this case, you have to skip `ClassName`:
+Due to this set-up of props, the usage is very similar to Tailwind. The difference is that, in this case, you have to skip `ClassName`, as seen  below:
 
 ```tsx
 <Stack column gap="2rem">
@@ -172,7 +171,7 @@ You can use values from the theme with `thv`. It is a function that consumes the
 
 You can alternatively use the usual method with `${p => p.theme}`. 
 
-You can see both methods in the example below:
+You can see both methods as seen in the example below:
 
 ```tsx
 import { thv } from '@/src/theme';

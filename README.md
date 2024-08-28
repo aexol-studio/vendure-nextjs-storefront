@@ -1,4 +1,4 @@
-### VENDURE NEXTJS STOREFRONT ![Vector 902 (Stroke) (1)](https://github.com/user-attachments/assets/93e38773-7467-4374-a9e8-13387aa5b076)
+### ![VENDURE NEXTJS STOREFRONT IDEA](https://github.com/user-attachments/assets/7ca619e2-feed-4332-9185-a657e0feff73) ![Vector 902 (Stroke) (1)](https://github.com/user-attachments/assets/93e38773-7467-4374-a9e8-13387aa5b076)
 
 This is a NextJS starter for Vendure in the form of a demo e-commerce shop. 
 

@@ -27,7 +27,10 @@ This is a NextJS starter for Vendure in the form of a demo e-commerce shop.
 
 <br />
 
-##  <span>🧰</span>&nbsp;&nbsp;Installation 
+##  <span> <img src="https://github.com/user-attachments/assets/39a779c9-824a-432b-a4c5-e9e66e3ad7d6" width=3%> </span>&nbsp;&nbsp;Installation 
+![svgviewer-output](https://github.com/user-attachments/assets/de0783fd-cd28-42a5-ab35-4a7543fe2283)<?xml version="1.0" encoding="utf-8"?>
+<!-- License: MIT. Made by Twitter: https://github.com/twitter/twemoji -->
+<svg width="16px" height="16px" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" class="iconify iconify--twemoji" preserveAspectRatio="xMidYMid meet"><path fill="#292F33" d="M26 .5H10C8.07.5 6.5 2.07 6.5 4v4h3V4c0-.271.229-.5.5-.5h16c.271 0 .5.229.5.5v4h3V4c0-1.93-1.57-3.5-3.5-3.5z"></path><path fill="#0055F2" d="M36 31.765S36 36 31.765 36H4.235C0 36 0 31.765 0 31.765V11.647c0-4.235 4.235-4.235 4.235-4.235h27.529s4.235 0 4.235 4.235v20.118z"></path><path fill="#CCD6DD" d="M4 22h28v2H4z"></path><path fill="#023480" d="M0 15h36v2H0zm4 9h28v2H4zm0 6h28v2H4z"></path><path fill="#CCD6DD" d="M4 28h28v2H4z"></path><path fill="#AAB8C2" d="M10 19H8a1 1 0 0 1-1-1v-4a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v4a1 1 0 0 1-1 1zm18 0h-2a1 1 0 0 1-1-1v-4a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v4a1 1 0 0 1-1 1z"></path><path fill="#292F33" d="M25 17v1a1 1 0 0 0 1 1h2a1 1 0 0 0 1-1v-1h-4zM7 17v1a1 1 0 0 0 1 1h2a1 1 0 0 0 1-1v-1H7z"></path><path fill="#292F33" d="M26 15h2v3h-2zM8 15h2v3H8z"></path></svg>
 
 ### 1. Clone this repo via SSH, HTTPS or the GitHub CLI.
 ### 2. Install the packages using: ```npm i```.

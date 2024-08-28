@@ -72,7 +72,7 @@ We use GraphQL Zeus to provide the Selectors for certain GraphQL queries. You ca
 
 <br />
 
-## <span>💬</span>Page Naming Conventions
+## <span>💬</span>&nbsp;Page Naming Conventions
 
 
 We aimed for a fairly simple naming convention for pages that aligns with the DDD (Domain-driven design) principles:
@@ -87,7 +87,7 @@ Using such naming conventions helps maintain a clean and organized folder struct
 
 <br />
 
-## <span>🌐</span>Internationalization With i18next
+## <span>🌐</span>&nbsp;Internationalization With i18next
 
 Because the majority of e-commerce shops uses localization to accomodate clients from all over the world, we have integrated i18next to handle language translations. i18next makes it convenient to add and update translated content. 
 
@@ -128,7 +128,7 @@ export const Home: React.FC = () => {
 
 ## APPEARANCE
 
-## <span>🎭</span>Icons
+## <span>🎭</span>&nbsp;Icons
 
 Lucide Icons is an open source library of over one thousand svg icons and symbols separated into official packages. This makes picking the icons you need for your project much easier.
 
@@ -136,7 +136,7 @@ Lucide Icons is an open source library of over one thousand svg icons and symbol
 
 <br />
 
-## <span>🎨</span>Styles
+## <span>🎨</span>&nbsp;Styles
 
 We are building our own engine based on styled components with props that work similarly to our favorite CSS framework: [Tailwind](https://tailwindcss.com/). 
 
@@ -167,7 +167,7 @@ Due to this set-up of props, the usage is very similar to Tailwind. The differen
 <br />
 
 
-## <span>🌆</span>Theme
+## <span>🌆</span>&nbsp;Theme
 Theming is provided by a set of generic functions in the code and [Emotion](https://emotion.sh/docs/introduction).
 
 You can use values from the theme with `thv`. It is a function that consumes the theme and returns only the value.
@@ -207,13 +207,13 @@ export const IconButton = styled.button<{ isActive?: boolean }>`
 
 ## MORE INFO
 
-## <span>📝</span>About Us
+## <span>📝</span>&nbsp;About Us
 
 We are the devs and contributors to the GraphQL ecosystem with a lot of experience. We want to enter Vendure to create developer-friendly e-commerce solutions that don't rely on clunky and outdated stuff like Shopify's Liquid wrapped with JavaScript.
 
 <br />
 
-## <span>🔗</span>Useful Links
+## <span>🔗</span>&nbsp;Useful Links
 
 - [Zeus Documentation](https://graphqleditor.com/docs/tools/zeus/basics/getting-started/)
 - [i18next Documentation](https://www.i18next.com/)
@@ -223,7 +223,7 @@ We are the devs and contributors to the GraphQL ecosystem with a lot of experien
 
 <br />
 
-## <span>🧮</span>Roadmap
+## <span>🧮</span>&nbsp;Roadmap
 
 - [ ] Finish the starter
 - [X] Deploy the storefront connected to the demo shop

@@ -68,7 +68,7 @@ NEXT_PUBLIC_HOST="http://localhost:3000/shop-api".
 
 <br />
 
-## <span> <img src="https://github.com/user-attachments/assets/2b98ae79-3b28-4310-8531-8dcacb9822c7" width=24px> </span>&nbsp;&nbsp;Zeus
+## <span><img src="https://github.com/user-attachments/assets/2b98ae79-3b28-4310-8531-8dcacb9822c7" width=24px></span>&nbsp;&nbsp;Zeus
 <!-- License: PD. Made by paomedia: https://github.com/paomedia/small-n-flat -->
 
 We use GraphQL Zeus to provide the Selectors for certain GraphQL queries. You can think of Selectors as fragments in GraphQL, just with extra type-safety.

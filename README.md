@@ -169,7 +169,7 @@ Due to this set-up of props, the usage is very similar to Tailwind. The differen
 <br />
 
 
-## <span><img src="https://github.com/user-attachments/assets/1e57800b-6fc4-4d06-8bfb-9e074edec104" width=32px></span>&nbsp;&nbsp;Theme
+## <span><img src="https://github.com/user-attachments/assets/dd5e86cf-536e-479d-aa09-460e3964fd28" width=32px></span>&nbsp;&nbsp;Theme
 
 Theming is provided by a set of generic functions in the code and [Emotion](https://emotion.sh/docs/introduction).
 

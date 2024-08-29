@@ -75,8 +75,7 @@ We use GraphQL Zeus to provide the Selectors for certain GraphQL queries. You ca
 
 <br />
 
-## <span>💬</span>&nbsp;&nbsp;Page Naming Conventions
-
+## <span><img src="https://github.com/user-attachments/assets/8140d8d8-7c6b-4da8-8afd-90a38ec278db" width=32px></span>&nbsp;&nbsp;Page Naming Conventions
 
 We aimed for a fairly simple naming convention for pages that aligns with the DDD (Domain-driven design) principles:
 
@@ -90,7 +89,7 @@ Using such naming conventions helps maintain a clean and organized folder struct
 
 <br />
 
-## <span>🌐</span>&nbsp;&nbsp;Internationalization With i18next
+## <span>![svgviewer-output (9)](https://github.com/user-attachments/assets/9c2e6fbb-d109-41bb-8aa0-aa63a30dfd8f)</span>&nbsp;&nbsp;Internationalization With i18next
 
 Because the majority of e-commerce shops uses localization to accomodate clients from all over the world, we have integrated i18next to handle language translations. i18next makes it convenient to add and update translated content. 
 
@@ -131,7 +130,7 @@ export const Home: React.FC = () => {
 
 ## APPEARANCE
 
-## <span>🎭</span>&nbsp;&nbsp;Icons
+## <span>![svgviewer-output (14)](https://github.com/user-attachments/assets/056cc59d-2b1c-47aa-b259-ac10efbf5f57)</span>&nbsp;&nbsp;Icons
 
 Lucide Icons is an open source library of over one thousand svg icons and symbols separated into official packages. This makes picking the icons you need for your project much easier.
 
@@ -139,7 +138,7 @@ Lucide Icons is an open source library of over one thousand svg icons and symbol
 
 <br />
 
-## <span>🎨</span>&nbsp;&nbsp;Styles
+## <span>![svgviewer-output (17)](https://github.com/user-attachments/assets/60bd6c23-bc65-4773-a06a-35d3d5315002)</span>&nbsp;&nbsp;Styles
 
 We are building our own engine based on styled components with props that work similarly to our favorite CSS framework: [Tailwind](https://tailwindcss.com/). 
 
@@ -170,7 +169,8 @@ Due to this set-up of props, the usage is very similar to Tailwind. The differen
 <br />
 
 
-## <span>🌆</span>&nbsp;&nbsp;Theme
+## <span><img src="https://github.com/user-attachments/assets/1e57800b-6fc4-4d06-8bfb-9e074edec104" width=32px></span>&nbsp;&nbsp;Theme
+
 Theming is provided by a set of generic functions in the code and [Emotion](https://emotion.sh/docs/introduction).
 
 You can use values from the theme with `thv`. It is a function that consumes the theme and returns only the value.
@@ -210,13 +210,13 @@ export const IconButton = styled.button<{ isActive?: boolean }>`
 
 ## MORE INFO
 
-## <span>📝</span>&nbsp;&nbsp;About Us
+## <span>![svgviewer-output (26)](https://github.com/user-attachments/assets/3a9c2be0-99dc-4a91-a506-834022adccae)</span>&nbsp;&nbsp;About Us
 
 We are the devs and contributors to the GraphQL ecosystem with a lot of experience. We want to enter Vendure to create developer-friendly e-commerce solutions that don't rely on clunky and outdated stuff like Shopify's Liquid wrapped with JavaScript.
 
 <br />
 
-## <span>🔗</span>&nbsp;&nbsp;Useful Links
+## <span>![svgviewer-output (23)](https://github.com/user-attachments/assets/8b32f68f-7dfa-46b7-9250-6474998e517a)</span>&nbsp;&nbsp;Useful Links
 
 - [Zeus Documentation](https://graphqleditor.com/docs/tools/zeus/basics/getting-started/)
 - [i18next Documentation](https://www.i18next.com/)
@@ -226,7 +226,7 @@ We are the devs and contributors to the GraphQL ecosystem with a lot of experien
 
 <br />
 
-## <span>🧮</span>&nbsp;&nbsp;Roadmap
+## <span>![svgviewer-output (24)](https://github.com/user-attachments/assets/fb09df04-1285-43da-8261-a30c5d85a885)</span>&nbsp;&nbsp;Roadmap
 
 - [ ] Finish the starter
 - [X] Deploy the storefront connected to the demo shop

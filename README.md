@@ -1,29 +1,27 @@
-### ![VENDURE NEXTJS STOREFRONT IDEA](https://github.com/user-attachments/assets/7ca619e2-feed-4332-9185-a657e0feff73) ![Vector 902 (Stroke) (1)](https://github.com/user-attachments/assets/93e38773-7467-4374-a9e8-13387aa5b076)
-
+### ![VENDURE NEXTJS STOREFRONT IDEA](https://github.com/user-attachments/assets/a909bfd1-17d7-447e-b216-c6c3f37c6536) ![Vector 902 (Stroke) (1)](https://github.com/user-attachments/assets/93e38773-7467-4374-a9e8-13387aa5b076#gh-dark-mode-only) ![Vector 902 (Stroke) (1)](https://github.com/user-attachments/assets/51b16a12-11c3-4b72-8f87-d78afdbe9c83#gh-light-mode-only)
 This is a NextJS starter for Vendure in the form of a demo e-commerce shop. 
 
-> [!TIP]
 > The project is in its **alpha phase**! However, you can still read the concepts, run the storefront page locally, or check how it works at: [shop.aexol.com](https://shop.aexol.com).
 
 <br />
 
 ## Table of Contents
 
-- [Vendure NextJS Storefront](#vendure-nextjs-storefront)
-  - [Table of Contents](#table-of-contents)
-  -  [Installation](#Installation)
-      - [Vendure Server](#vendure-server)
-  - [Zeus](#Zeus)
-  - [Page Naming Conventions](#page-Naming-Conventions)
-  - [Internationalization With i18next](#internationalization-With-i18next)
-  - [Appearance](#appearance)
-    - [Icons](#Icons)
-    - [Styles](#styles)
-    - [Theme](#theme)
-  - [More Info](#more-info)
-    - [About Us](#About-Us)
-    - [Useful Links](#Useful-Links)
-    - [Roadmap](#Roadmap)
+[Vendure NextJS Storefront](#vendure-nextjs-storefront)
+- [Table of Contents](#table-of-contents)
+-  [Installation](#Installation)
+    - [Vendure Server](#vendure-server)
+- [Zeus](#Zeus)
+- [Page Naming Conventions](#page-Naming-Conventions)
+- [Internationalization With i18next](#internationalization-With-i18next)
+- [Appearance](#appearance)
+  - [Icons](#Icons)
+  - [Styles](#styles)
+  - [Theme](#theme)
+- [More Info](#more-info)
+  - [About Us](#About-Us)
+  - [Useful Links](#Useful-Links)
+  - [Roadmap](#Roadmap)
 
 <br />
 

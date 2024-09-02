@@ -35,10 +35,10 @@ This is a NextJS starter for Vendure in the form of a demo e-commerce shop.
    
 **2.** Install the packages using: ```npm i```.
    
-**3.** Set up your Vendure server locally and run it on `http://localhost:3000/`.
+**3.** Set up your Vendure server locally and run it on `http://localhost:3000/`. You can read more about how to set that up in the Vendure Server section below.
 
 #### VENDURE SERVER
-You need to have the Vendure store running locally to use this storefront. This storefront also requires a Vendure V2 server. You can either run a local instance, or you can access the demo of the Vendure server (MinIO & Postgres & SMTP) [HERE](https://github.com/aexol-studio/aexol-shop-backend).
+You need to have the Vendure store running locally to use this storefront. This storefront requires a Vendure V2 server. You can either run a local instance or use our public demo server. The demo of the Vendure server (MinIO & Postgres & SMTP) can be found [here](https://github.com/aexol-studio/aexol-shop-backend). Check it out to see all changes.
 
 <br />
 
@@ -75,7 +75,7 @@ NEXT_PUBLIC_HOST="http://localhost:3000/shop-api".
 ## <span><img src="https://github.com/user-attachments/assets/2b98ae79-3b28-4310-8531-8dcacb9822c7" width=24px></span>&nbsp;&nbsp;Zeus
 <!-- License: PD. Made by paomedia: https://github.com/paomedia/small-n-flat -->
 
-We use GraphQL Zeus to provide the Selectors for certain GraphQL queries. You can think of Selectors as fragments in GraphQL, just with extra type-safety.
+We use GraphQL Zeus to provide selectors for GraphQL queries and mutations. You can think of selectors as fragments in GraphQL, just with the added type-safety.
 
 <br />
 
@@ -95,7 +95,7 @@ Using such naming conventions helps maintain a clean and organized folder struct
 
 ## <span><img src="https://github.com/user-attachments/assets/9c2e6fbb-d109-41bb-8aa0-aa63a30dfd8f" width=24px></span>&nbsp;&nbsp;Internationalization With i18next
 
-Because the majority of e-commerce shops uses localization to accomodate clients from all over the world, we have integrated i18next to handle language translations. i18next makes it convenient to add and update translated content. 
+Because the majority of e-commerce shops uses localization to accomodate clients from all over the world, we have integrated i18next to handle language translations. i18next makes adding and updating translated content extremely easy.
 
 <br />
 
@@ -183,7 +183,7 @@ You can use values from the theme with `thv`. It is a function that consumes the
 
 You can alternatively use the usual method with `${p => p.theme}`. 
 
-You can see both methods as seen in the example below:
+You can see both methods in the example below:
 
 ```tsx
 import { thv } from '@/src/theme';
@@ -218,7 +218,7 @@ export const IconButton = styled.button<{ isActive?: boolean }>`
 
 ## <span><img src="https://github.com/user-attachments/assets/3a9c2be0-99dc-4a91-a506-834022adccae" width=24px></span>&nbsp;&nbsp;About Us
 
-We are the devs and contributors to the GraphQL ecosystem with a lot of experience. We want to enter Vendure to create developer-friendly e-commerce solutions that don't rely on clunky and outdated stuff like Shopify's Liquid wrapped with JavaScript.
+We are devs and contributors to the GraphQL ecosystem with a lot of experience. We want to enter Vendure to create developer-friendly e-commerce solutions that don't rely on clunky and outdated stuff like Shopify's Liquid wrapped with JavaScript.
 
 <br />
 

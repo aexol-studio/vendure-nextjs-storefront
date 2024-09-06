@@ -12,6 +12,7 @@ export default class MyDocument extends Document {
         return (
             <Html lang={lang}>
                 <Head>
+                <meta name="robots" content="noindex">
                     {/* enable analytics script only for production */}
                     {/* {isProduction && (
                         <>

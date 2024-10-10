@@ -37,7 +37,6 @@ COPY --from=builder --chown=node:node /home/node/public ./public
 
 # Automatically leverage output traces to reduce image size
 # https://nextjs.org/docs/advanced-features/output-file-tracing
-COPY --from=builder --chown=node:node /home/node/open-telemetry.js ./
 COPY --from=builder --chown=node:node /home/node/node_modules ./node_modules
 COPY --from=builder --chown=node:node /home/node/.next/standalone ./
 COPY --from=builder --chown=node:node /home/node/.next/static ./.next/static

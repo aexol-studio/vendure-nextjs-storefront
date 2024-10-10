@@ -45,10 +45,10 @@ jobs:
           echo "tag=${{ inputs.image-tag-prefix }}${SHORT_SHA}-${DATE}" >> $GITHUB_OUTPUT
       
       - name: Build container image
-        run: docker build -t registry.digitalocean.com/aexol/vendure/storefront:${{ steps.vars.outputs.tag }} .
+        run: docker build -t registry.digitalocean.com/aexol-studio/vendure-nextjs-storefront:${{ steps.vars.outputs.tag }} .
 
       - name: Log in to DigitalOcean Container Registry with short-lived credentials
         run: doctl registry login --expiry-seconds 1200
 
       - name: Push image to DigitalOcean Container Registry
-        run: docker push registry.digitalocean.com/aexol/vendure/storefront:${{ steps.vars.outputs.tag }}
+        run: docker push registry.digitalocean.com/aexol-studio/vendure-nextjs-storefront:${{ steps.vars.outputs.tag }}

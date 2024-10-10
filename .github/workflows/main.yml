@@ -1,0 +1,54 @@
+name: Node.js CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: setup-node
+        uses: actions/setup-node@v1
+        with:
+            node-version: 18.14
+      - name: checkout
+        uses: actions/checkout@v2
+      - name: install dependencies
+        run: npm ci
+      - name: check build errors
+        run: npm run build
+      - name: check test if exsists
+        run: npm test --if-present
+  push_to_registry:
+    name: login, build and push docker image to docker hub
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Install doctl
+        uses: digitalocean/action-doctl@v2
+        with:
+          token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
+
+      - name: Set build environment vars
+        id: vars
+        run: |
+          export DATE="$(date +'%s')"
+          export SHORT_SHA="$(git rev-parse --short HEAD)"
+          echo "date=$DATE" >> $GITHUB_OUTPUT
+          echo "sha_short=$SHORT_SHA" >> $GITHUB_OUTPUT
+          echo "tag=${{ inputs.image-tag-prefix }}${SHORT_SHA}-${DATE}" >> $GITHUB_OUTPUT
+      
+      - name: Build container image
+        run: docker build -t registry.digitalocean.com/aexol/vendure/storefront:${{ steps.vars.outputs.tag }} .
+
+      - name: Log in to DigitalOcean Container Registry with short-lived credentials
+        run: doctl registry login --expiry-seconds 1200
+
+      - name: Push image to DigitalOcean Container Registry
+        run: docker push registry.digitalocean.com/aexol/vendure/storefront:${{ steps.vars.outputs.tag }}
